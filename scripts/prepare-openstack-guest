@@ -32,7 +32,7 @@ if [ -e /usr/bin/apt ] ; then
    # Remove Netplan, since it interferes with the network configuration of
    # cloud-init in the OpenStack setup.
    # FIXME: This needs to be investigated further!
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y netplan.io
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y netplan.io || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
