@@ -167,7 +167,7 @@ NAME=""
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    BUILDER_VMSETUP="virtualbox"
    NAME="VirtualBox"
-   PROVISIONERS="install-virtualbox-guest-utils ${PROVISIONERS}"
+   PROVISIONERS="${PROVISIONERS} install-virtualbox-guest-utils"
 elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
