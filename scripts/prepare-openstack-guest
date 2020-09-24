@@ -27,12 +27,14 @@ set -ex
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt ] ; then
    /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
 
    # Remove Netplan, since it interferes with the network configuration of
    # cloud-init in the OpenStack setup.
    # FIXME: This needs to be investigated further!
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove netplan.io
+
+   # Install Cloud-Init:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
