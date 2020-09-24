@@ -36,6 +36,7 @@
     "{{user `vm_disk_swap`}}M"
   ],
   "qemuargs": [
-    [ "-bios", "OVMF.fd" ]
+    [ "-bios", "OVMF.fd" ],
+    [ "-vga", "qxl" ]
   ]
 }
