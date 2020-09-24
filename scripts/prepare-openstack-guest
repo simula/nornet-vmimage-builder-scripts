@@ -39,9 +39,11 @@ if [ -e /usr/bin/apt ] ; then
    systemctl unmask networking
    systemctl enable networking
    systemctl restart networking
-   # systemctl stop    systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   systemctl disable systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
-   systemctl mask    systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online
+   for service in systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online ; do
+      # systemctl stop    $service
+      systemctl disable $service || true
+      systemctl mask    $service || true
+   done
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
