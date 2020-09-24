@@ -23,8 +23,10 @@
   "accelerator": "kvm",
   "headless": true,
   "format": "qcow2",
+  "disk_interface": "virtio-scsi",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
+  "net_device": "virtio-net",
 
   "cpus": 4,
   "memory": 4096,
@@ -44,6 +46,15 @@
     // VM is instantiated in OpenStack!
     // By defining the devices here, it is ensured that the NIC is named ens3.
     [ "-device", "virtio-net,netdev=user.0" ],
-    [ "-device", "virtio-scsi-pci,id=scsi0" ]
+    [ "-device", "virtio-scsi-pci,id=scsi0" ],
+
+    // NOTE: When defining the SCSI controller manually, it is also necessary
+    // to manually write the disk definitions!
+    [ "-device", "scsi-hd,bus=scsi0.0,drive=drive0" ],
+    [ "-device", "scsi-hd,bus=scsi0.0,drive=drive1" ],
+    [ "-device", "scsi-hd,bus=scsi0.0,drive=drive2" ],
+    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}},id=drive0,cache=unsafe,discard=unmap,format=qcow2" ],
+    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}}-1,id=drive1,cache=unsafe,discard=unmap,format=qcow2" ],
+    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}}-2,id=drive2,cache=unsafe,discard=unmap,format=qcow2" ]
   ]
 }
