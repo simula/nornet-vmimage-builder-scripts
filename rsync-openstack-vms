@@ -13,7 +13,7 @@ for vm in ${VMs} ; do
          pushd ${imageDirectory} >/dev/null
          image=`ls -S .`
          if [ -e "${image}" ] ; then
-            sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -Pv --partial  ${image} ${DESTINATION}${image}.qcow2"
+            sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -Pvzc --partial  ${image} ${DESTINATION}${image}.qcow2"
             imageFiles="${imageFiles} ${image}.qcow2"
          fi
          popd >/dev/null
