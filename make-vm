@@ -167,7 +167,6 @@ NAME=""
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    BUILDER_VMSETUP="virtualbox"
    NAME="VirtualBox"
-   PROVISIONERS="${PROVISIONERS} install-virtualbox-guest-utils"
 elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
@@ -181,6 +180,9 @@ if [[ "${projectConfiguration}" =~ ^.*-OpenStack.*$ ]] ; then
    projectConfiguration=${projectConfiguration/-OpenStack/}
    PROVISIONERS="prepare-openstack-guest ${PROVISIONERS}"
 fi
+if [[ "${projectConfiguration}" =~ ^.*-Desktop.*$ ]] ; then
+   PROVISIONERS="configure-kde-desktop ${PROVISIONERS}"
+fi
 if [ ! -e "${projectConfiguration}" ] ; then
    echo >&2 "ERROR: Configuration ${projectConfiguration} does not exist!"
    exit 1
@@ -188,6 +190,9 @@ fi
 . "${projectConfiguration}"
 
 
+if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+   PROVISIONERS="${PROVISIONERS} install-virtualbox-guest-utils"
+fi
 PROVISIONERS="${PROVISIONERS} clean-up"
 NAME="${NAME}-${PROJECT}"
 

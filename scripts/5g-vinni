@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -x
+
+
+# ###### Prepare source repositories ########################################
+
+# NOTE: The repositories are not cloned here!
+
+sudo -u nornetpp mkdir -p /home/nornetpp/src/5gvinni-oai-ns
+cd /home/nornetpp/src/5gvinni-oai-ns
+sudo -u nornetpp git init
+sudo -u nornetpp git remote add origin https://github.com/simula/5gvinni-oai-ns.git

@@ -33,8 +33,8 @@ if [ -e /usr/bin/apt-get ] ; then
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-x11 || true
    fi
 
-#    # cloud-init is not useful for VirtualBox VMs:
-#    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y cloud-init || true
+   # # cloud-init is not useful for VirtualBox VMs:
+   # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y cloud-init || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
