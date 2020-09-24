@@ -39,6 +39,6 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y nornet-display sddm @KDE qt5-style-oxygen oxygen-gtk2 plasma-oxygen oxygen-icon-theme oxygen-cursor-themes oxygen-sound-theme oxygen-fonts firefox
 
-   servicectl enable sddm.service
-   servicectl start sddm.service
+   systemctl enable sddm.service
+   systemctl start sddm.service
 fi
