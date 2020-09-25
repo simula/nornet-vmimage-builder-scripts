@@ -91,7 +91,7 @@ autoinstall:
       - id: disk0-partition-efi
         type: partition
         device: disk0
-        size: 65011712
+        size: 31457280
         flag: boot
         grub_device: true
         preserve: false
