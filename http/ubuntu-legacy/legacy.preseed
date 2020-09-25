@@ -146,7 +146,7 @@ d-i pkgsel/install-language-support                 boolean true
 d-i pkgsel/update-policy                            select unattended-upgrades
 d-i pkgsel/upgrade                                  select full-upgrade
 d-i pkgsel/updatedb                                 boolean true
-d-i pkgsel/include                                  string bash-completion openssh-server cloud-init
+d-i pkgsel/include                                  string bash-completion gdisk openssh-server cloud-init
 # d-i base-installer/kernel/override-image          string <SET_NEW_KERNEL_HERE>
 
 # ====== Post-Install =======================================================
@@ -158,8 +158,8 @@ d-i pkgsel/include                                  string bash-completion opens
 # * Clean up
 d-i preseed/late_command                            string \
  in-target sgdisk --change-name=1:EFI --change-name=2:Root /dev/sda ; \
- in-target /bin/bash -c -- 'if [ -e /dev/sdb ] ; then sgdisk --zap-all --new 1:0:0 --typecode 1:8300 --change-name=1:Home /dev/sdb ; partprobe ; mkfs.btrfs -L Home /dev/sdb1 ; fi' ; \
- in-target /bin/bash -c -- 'if [ -e /dev/sdc ] ; then sgdisk --zap-all --new 1:0:0 --typecode 1:8200 --change-name=1:Swap /dev/sdc ; partprobe ; mkswap -L Swap /dev/sdc1 ; fi' ; \
+ in-target /bin/bash -c -- 'if [ -e /dev/sdb ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home /dev/sdb ; partprobe ; mkfs.btrfs -L Home /dev/sdb1 ; fi' ; \
+ in-target /bin/bash -c -- 'if [ -e /dev/sdc ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8200 --change-name=1:Swap /dev/sdc ; partprobe ; mkswap -L Swap /dev/sdc1 ; fi' ; \
  if [ -e /dev/sdb -a -e /dev/sdc ] ; then \
     mkdir -p /tmp/old ; \
     mkdir -p /tmp/new ; \
