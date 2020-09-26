@@ -177,14 +177,6 @@ d-i preseed/late_command                            string \
  fi ; \
  in-target /usr/bin/apt-add-repository -s -y ppa:dreibh/ppa ; \
  in-target /usr/bin/apt-get update ; \
- in-target /bin/bash -c -- '/bin/echo "source /etc/network/interfaces.d/*" >/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "# The loopback network interface" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "auto lo" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "iface lo inet loopback" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "iface lo inet6 loopback" >>/etc/network/interfaces' ; \
- in-target /bin/bash -c -- '/bin/echo "" >>/etc/network/interfaces' ; \
  in-target /bin/sed -i "s/XKBMODEL=\"[a-z]*\"/XKBMODEL=\"pc105\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBLAYOUT=\"[a-z]*\"/XKBLAYOUT=\"de\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
