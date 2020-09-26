@@ -153,9 +153,8 @@ d-i pkgsel/include                                  string bash-completion gdisk
 # The following tasks are performed:
 # * Handle 3-disk layout (separate disks for root, home, swap)
 # * Rewrite /etc/network/interfaces
+# * Add PPA
 # * Set the keyboard layout (buggy installer does not set it!)
-# * Reinstall nornet-management to update Grub configuration (console=ttyS0...)
-# * Clean up
 d-i preseed/late_command                            string \
  in-target sgdisk --change-name=1:EFI --change-name=2:Root /dev/sda ; \
  in-target /bin/bash -c -- 'if [ -e /dev/sdb ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home /dev/sdb ; partprobe ; mkfs.btrfs -L Home /dev/sdb1 ; fi' ; \
@@ -164,11 +163,10 @@ d-i preseed/late_command                            string \
     mkdir -p /tmp/old ; \
     mkdir -p /tmp/new ; \
     mount /dev/sda2 /tmp/old ; \
-    btrfs subvolume snapshot -r /tmp/old/@home /tmp/old/@home_ro ; \
+    btrfs subvolume snapshot /tmp/old/@home /tmp/old/@home_ro ; \
     mount /dev/sdb1 /tmp/new ; \
-    /bin/sh -c -- 'btrfs send /tmp/old/@home_ro | btrfs receive /tmp/new' ; \
-    btrfs subvolume snapshot /tmp/new/@home_ro /tmp/new/@home ; \
-    btrfs subvolume delete /tmp/new/@home_ro ; \
+    btrfs subvolume create /tmp/new/@home ; \
+    cp -a /tmp/old/@home_ro/* /tmp/new/@home/ ; \
     btrfs subvolume delete /tmp/old/@home_ro /tmp/old/@home ; \
     umount /tmp/old ; \
     umount /tmp/new ; \
