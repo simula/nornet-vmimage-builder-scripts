@@ -73,14 +73,14 @@ while [ $# -gt 0 ] ; do
       fi
       shift
    elif [ "$1" == "--home" -o "$1" == "-r" ] ; then
-      VM_DISK_ROOT="$2"
+      VM_DISK_HOME="$2"
       if [[ ! "${VM_DISK_HOME}" =~ ^[0-9]*$ ]] ; then
          echo >&2 "ERROR: Bad size for home: ${VM_DISK_HOME} MiB"
          exit 1
       fi
       shift
    elif [ "$1" == "--swap" -o "$1" == "-r" ] ; then
-      VM_DISK_ROOT="$2"
+      VM_DISK_SWAP="$2"
       if [[ ! "${VM_DISK_SWAP}" =~ ^[0-9]*$ ]] ; then
          echo >&2 "ERROR: Bad size for swap: ${VM_DISK_SWAP} MiB"
          exit 1
