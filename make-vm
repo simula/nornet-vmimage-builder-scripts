@@ -132,6 +132,15 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--password" -o "$1" == "-p" ] ; then
       USER_PASSWORD="$2"
       shift
+   elif [ "$1" == "--background-sddm" -o "$1" == "-BS" ] ; then
+      BACKGROUND_SDDM="$2"
+      shift
+   elif [ "$1" == "--background-lockscreen" -o "$1" == "-BL" ] ; then
+      BACKGROUND_LOCKSCREEN="$2"
+      shift
+   elif [ "$1" == "--background-desktop" -o "$1" == "-BD" ] ; then
+      BACKGROUND_DESKTOP="$2"
+      shift
    elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
       DRY_RUN=1
    else
@@ -153,7 +162,10 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--user|-u username]"
       echo >&2 "   [--realname|-r real_user_name]"
       echo >&2 "   [--password|-p password]"
-      echo >&2 "   [--|hostname|-h FQDN"
+      echo >&2 "   [--hostname|-h FQDN"
+      echo >&2 "   [--background-sddm|-BD image_file]"
+      echo >&2 "   [--background-lockscreen|-BL image_file]"
+      echo >&2 "   [--background-desktop|-BD image_file]"
       # echo >&2 "   [--| ]"
       echo >&2 "   [--dry-run|-n]"
       exit 1
