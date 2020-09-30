@@ -65,6 +65,10 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--release" -o "$1" == "-R" ] ; then
       RELEASE="$2"
       shift
+   elif [ "$1" == "--system" -o "$1" == "-S" ] ; then
+      DISTRIBUTION=`echo "$2" | sed -e "s/-.*$//g"`
+      RELEASE=`echo "$2" | sed -e "s/^[^\-]*-//g"`
+      shift
    elif [ "$1" == "--root" -o "$1" == "-r" ] ; then
       VM_DISK_ROOT="$2"
       if [[ ! "${VM_DISK_ROOT}" =~ ^[0-9]*$ ]] ; then
@@ -150,6 +154,7 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--project|-P Template|NEAT|MELODIC|...]"
       echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
       echo >&2 "   [--release|-R RELEASE]"
+      echo >&2 "   [--system|-D DISTRIBUTION-RELEASE]"
       echo >&2 "   [--root|-r MiB]"
       echo >&2 "   [--home|-h MiB]"
       echo >&2 "   [--swap|-s MiB]"
