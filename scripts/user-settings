@@ -47,6 +47,7 @@ ulimit -c unlimited
 export EDITOR=joe
 export CVSEDITOR=\${EDITOR}
 export SVN_EDITOR=\${EDITOR}
+export XZ_DEFAULTS="--threads=0"
 
 cores=\`getconf _NPROCESSORS_ONLN 2>/dev/null || true\`
 if [ \$cores -gt 1 ] ; then
