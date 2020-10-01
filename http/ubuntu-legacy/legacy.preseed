@@ -175,7 +175,7 @@ d-i preseed/late_command                            string \
     in-target /bin/bash -c -- '( cat /etc/fstab | grep -v "/home" | grep -v "/swapfile" ; echo "UUID=`blkid /dev/sdb1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` /home           btrfs   defaults,subvol=@home 0       2" ; echo "UUID=`blkid /dev/sdc1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` none            swap    sw              0       0") >/etc/fstab.new' ; \
     in-target mv /etc/fstab.new /etc/fstab ; \
  fi ; \
- in-target /usr/bin/apt-add-repository -s -y ppa:dreibh/ppa ; \
+ in-target /usr/bin/apt-add-repository -y ppa:dreibh/ppa ; \
  in-target /usr/bin/apt-get update ; \
  in-target /bin/sed -i "s/XKBMODEL=\"[a-z]*\"/XKBMODEL=\"pc105\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBLAYOUT=\"[a-z]*\"/XKBLAYOUT=\"de\"/g" /etc/default/keyboard ; \
