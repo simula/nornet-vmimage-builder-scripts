@@ -146,7 +146,7 @@ d-i pkgsel/install-language-support                 boolean true
 d-i pkgsel/update-policy                            select unattended-upgrades
 d-i pkgsel/upgrade                                  select full-upgrade
 d-i pkgsel/updatedb                                 boolean true
-d-i pkgsel/include                                  string bash-completion gdisk openssh-server cloud-init
+d-i pkgsel/include                                  string acpid bash-completion gdisk openssh-server cloud-init
 # d-i base-installer/kernel/override-image          string <SET_NEW_KERNEL_HERE>
 
 # ====== Post-Install =======================================================
