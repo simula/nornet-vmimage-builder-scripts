@@ -26,7 +26,7 @@ HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="SimulaMet-Desktop"
+PROJECTS="HAW-Desktop"
 HOSTNAME="baumwall.haw.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
