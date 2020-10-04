@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -ex
+
+
+# Documentation:
+# - https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/A_brief_guide_to_Mozilla_preferences
+# - https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
+
+#  ?????????
+# - https://superuser.com/questions/373276/how-to-enable-extension-when-running-firefox-for-the-first-time
+
+
+# ====== Ensure that script is ran by user account to provision =============
+if [ $(id -u) -eq 0 ] ; then
+   # Running by configuring sudo root. Run script again, but as user!
+   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
+   if [ "$SUDO_USER" != "root" ] ; then
+      sudo -u $SUDO_USER $0 $@ && exit 0
+      exit 1
+   else
+      # Prevent recursive invocation as "root" user:
+      echo >&2 "ERROR: Run this script either as user or with sudo."
+      exit 1
+   fi
+else
+   # Echo running as user
+   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+fi
+
+
+# ###### Get UID from XPI extension file ####################################
+# From: https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
+function GetUID ()
+{
+   local LOC_XPI="$1"
+   local LOC_UID=""
+
+   # get extension UID from install.rdf in original format (<em:id>extension-uid</em:id>)
+   LOC_UID=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "<em:id>" | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1)
+
+   # if extension UID not found, get it from install.rdf in new format (<RDF:Description ... em:id="{extension-uid}" ...)
+   [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "em:id=" | head -n 1 | sed "s/^.*em:id=\"\([^\"]*\).*$/\1/")
+
+   # if extension UID not found, get it from key "id" in manifest.json ("id": "extension-uid")
+   [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"id\"" | head -n 1 | cut -d'"' -f4)
+
+   # if extension UID not found, get it from key "name" in manifest.json ("name": "extension name")
+   [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"name\"" | head -n 1 | cut -d'"' -f4 | tr ' ' '-')}
+
+   # display extension UID
+   echo "${LOC_UID}"
+}
+
+
+# ###### Get name from XPI extension file ####################################
+# From: https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
+function GetName ()
+{
+   local LOC_XPI="$1"
+   local LOC_NAME=""
+
+   # get extension name from install.rdf in original format (<em:id>extension-uid</em:id>)
+   LOC_NAME=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "<em:name>" | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1)
+
+   # if extension name not found, get it from install.rdf in new format (<RDF:Description ... em:name="extension-name" ...)
+   [ "${LOC_NAME}" = "" ] && LOC_NAME=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "em:name=" | head -n 1 | sed "s/^.*em:name//" | cut -d'"' -f2)
+
+   # if extension name not found, get it from key "name" in manifest.json ("name": "extension name")
+   [ "${LOC_NAME}" = "" ] && LOC_NAME=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"name\"" | head -n 1 | cut -d'"' -f4)
+
+   # display extension name
+   echo "${LOC_NAME}"
+}
+
+
+# ###### Install XPI ########################################################
+function install-xpi ()
+{
+   local number="$1"
+   local profilePaths="$2"
+
+   URL="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
+   echo "Processing ${URL} ..."
+
+   MY_XPI="${number}.xpi"
+   wget --quiet -O ${MY_XPI} "${URL}"
+
+   MY_UID=`GetUID ${MY_XPI}`
+   MY_NAME=`GetName ${MY_XPI}`
+   echo " * Name: ${MY_NAME}"
+   echo " * UID:  ${MY_UID}"
+
+   for profilePath in ${profilePaths} ; do
+      cp ${MY_XPI} "${profilePath}/extensions/${MY_UID}.xpi"
+   done
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Create initial profile, if none is existing ========================
+if [ ! -d "$HOME/.mozilla/firefox" ] ; then
+   echo "###### Creating new profile setup! ######"
+    mkdir -p "$HOME/.mozilla/firefox"
+    pushd "$HOME/.mozilla/firefox" >/dev/null
+
+    profileName="profile-`dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"'`"
+    mkdir "${profileName}"
+    mkdir "${profileName}/extensions"
+    cat >profiles.ini <<EOF
+[Install4F96D1932A9F858E]
+Default=${profileName}
+Locked=1
+
+[Profile0]
+Name=default
+IsRelative=1
+Path=${profileName}
+
+[General]
+StartWithLastProfile=1
+Version=2
+EOF
+
+    popd >/dev/null
+fi
+
+
+# ====== Install extensions =================================================
+PROFILE_PATHS=""
+if [ -e "$HOME/.mozilla/firefox/profiles.ini" ] ; then
+   profilePaths=`grep "^Path=" "$HOME/.mozilla/firefox/profiles.ini" | sed -e "s/^Path=//g"`
+   for profilePath in ${profilePaths} ; do
+      if [ -d "$HOME/.mozilla/firefox/${profilePath}/extensions/" ] ; then
+         PROFILE_PATHS="${PROFILE_PATHS} $HOME/.mozilla/firefox/${profilePath}"
+      fi
+   done
+fi
+if [ "${PROFILE_PATHS}" == "" ] ; then
+   echo 2>&1 "ERROR: Unable to detect Firefox profile paths!"
+   exit 1
+fi
+
+
+EXTENSIONS=""
+EXTENSIONS="${EXTENSIONS=} 607454"   # uBlock Origin
+EXTENSIONS="${EXTENSIONS=} 722"      # NoScript
+EXTENSIONS="${EXTENSIONS=} 5791"     # FlagFox
+EXTENSIONS="${EXTENSIONS=} 6822"     # Binnen-I be gone
+
+
+for extension in ${EXTENSIONS} ; do
+   install-xpi ${extension} "${PROFILE_PATHS}"
+done
+
+
+# ====== Enhance settings ===================================================
+for profilePath in ${PROFILE_PATHS} ; do
+
+   installedExtensionUIDs=""
+   xpis=`find ${profilePath}/extensions -mindepth 1 -maxdepth 1 -name "*.xpi"`
+   uids=""
+   for xpi in ${xpis}; do
+      uid=`GetUID ${xpi}`
+      uids="${uids} ${uid}"
+   done
+
+   (
+      echo ''
+      echo '// Settings to change on next run:'
+
+      echo 'user_pref("extensions.pendingOperations", true);'
+
+      echo 'user_pref("browser.contentblocking.category", "custom");'
+      echo 'user_pref("browser.privatebrowsing.autostart", false);'
+      echo 'user_pref("browser.safebrowsing.malware.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.phishing.enabled", false);'
+      echo 'user_pref("accessibility.force_disabled", 1);'
+
+      # ------ Privacy settings ---------------------------------------------
+      # Further documentation: https://gist.github.com/0XDE57/fbd302cef7693e62c769
+      echo 'user_pref("network.cookie.cookieBehavior", 1);'
+      echo 'user_pref("network.cookie.lifetimePolicy", 2);'
+
+      echo 'user_pref("privacy.donottrackheader.enabled", true);'
+      echo 'user_pref("privacy.history.custom", true);'
+      echo 'user_pref("browser.formfill.enable", false);'
+      echo 'user_pref("privacy.trackingprotection.enabled", true);'
+      echo 'user_pref("privacy.trackingprotection.socialtracking.enabled", true);'
+
+      # ------ Turn off all telemetry ---------------------------------------
+      # From: https://support.mozilla.org/en-US/questions/1197144
+      echo 'user_pref("toolkit.telemetry.archive.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.rejected", true);'
+      echo 'user_pref("toolkit.telemetry.server", "");'
+      echo 'user_pref("toolkit.telemetry.unified", false);'
+      echo 'user_pref("toolkit.telemetry.unifiedIsOptIn", false);'
+      echo 'user_pref("toolkit.telemetry.prompted",2);'
+      echo 'user_pref("toolkit.telemetry.rejected",true);'
+      echo 'user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);'
+
+      echo 'user_pref("datareporting.policy.dataSubmissionEnabled", false);'
+      echo 'user_pref("datareporting.healthreport.service.enabled", false);'
+      echo 'user_pref("datareporting.healthreport.uploadEnabled", false);'
+
+      # ------ Other "phone home" stuff -------------------------------------
+      echo 'user_pref("app.shield.optoutstudies.enabled", false);'
+      echo 'user_pref("app.normandy.first_run", false);'
+
+      # ------ Set own homepage ---------------------------------------------
+      echo 'user_pref("browser.startup.homepage", "https://www.uni-due.de/~be0001/");'
+      echo 'user_pref("startup.homepage_welcome_url", "https://www.uni-due.de/~be0001/");'
+
+   ) | tee --append ${profilePath}/user.js
+done
+
+
+# ====== Run Firefox to initialise ==========================================
+for profilePath in ${PROFILE_PATHS} ; do
+
+   # ------ Initialise profile by a short Firefox run in headless mode ------
+   echo "Starting Firefox in headless mode ..."
+   du -schk ${profilePath}
+
+   firefox -P default --headless --no-remote &
+   echo "Waiting a moment to let Firefox initialise the profile ..."
+   sleep 10
+   echo "Stopping Firefox ..."
+   killall /usr/lib/firefox/firefox
+
+   echo "Waiting for Firefox to finish ..."
+   wait
+   echo "Done!"
+
+   du -schk ${profilePath}
+   # cp ${profilePath}/prefs.js ${profilePath}/prefs.js.original
+
+
+   # ------ Activate the newly installed extensions -------------------------
+   echo "Updating ${profilePath}/extensions.json ..."
+   jq . <${profilePath}/extensions.json >${profilePath}/extensions.json.old
+   cp ${profilePath}/extensions.json ${profilePath}/extensions.json.work
+   for uid in ${uids} ; do
+      echo "Activating extension ${uid} ..."
+      cat ${profilePath}/extensions.json.work | jq \
+         "(.addons[] | select(.id == \"${uid}\") | .active) |= true" | \
+         jq \
+            "(.addons[] | select(.id == \"${uid}\") | .userDisabled) |= false" \
+            >${profilePath}/extensions.json.new
+      mv ${profilePath}/extensions.json.new ${profilePath}/extensions.json.work
+   done
+   diff ${profilePath}/extensions.json.old ${profilePath}/extensions.json.work || true
+   mv ${profilePath}/extensions.json.work ${profilePath}/extensions.json
+   echo "Updated ${profilePath}/extensions.json"
+
+done
+
+echo "Done!"

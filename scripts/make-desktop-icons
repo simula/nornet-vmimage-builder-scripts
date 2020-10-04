@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -ex
+
+
+# ====== Ensure that script is ran by user account to provision =============
+if [ $(id -u) -eq 0 ] ; then
+   # Running by configuring sudo root. Run script again, but as user!
+   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
+   if [ "$SUDO_USER" != "root" ] ; then
+      sudo -u $SUDO_USER $0 $@ && exit 0
+      exit 1
+   else
+      # Prevent recursive invocation as "root" user:
+      echo >&2 "ERROR: Run this script either as user or with sudo."
+      exit 1
+   fi
+else
+   # Echo running as user
+   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+fi
+
+
+# ====== Configuration ======================================================
+DESKTOP_DIRECTORY="/home/${USER}/Desktop"
+
+# Directories to be directoryed
+DIRECTORIES="
+   /
+   /home/${USER}
+"
+
+# Applications to be directoryed:
+APPLICATIONS="
+   firefox
+   org.kde.konsole
+   wireshark
+"
+
+
+# ====== Create Desktop directory ===========================================
+mkdir -p "${DESKTOP_DIRECTORY}"
+
+
+# ====== Create directorys for directories ==================================
+for directory in ${DIRECTORIES} ; do
+   basename=`basename ${directory}`
+   if [ "${basename}" == "/" ] ; then
+      basename="root"
+   fi
+   if [ ! -e "${DESKTOP_DIRECTORY}/${basename}" ] ; then
+      echo "Creating desktop link for directory ${directory} as ${basename} ..."
+      ln -s ${directory} "${DESKTOP_DIRECTORY}/${basename}"
+   fi
+done
+
+
+# ====== Create directorys for applications =================================
+for application in ${APPLICATIONS} ; do
+   if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
+      echo "Creating desktop link for application ${application} ..."
+      ln -s /usr/share/applications/${application}.desktop "${DESKTOP_DIRECTORY}/" || true
+   fi
+done
+
+echo "Done!"
