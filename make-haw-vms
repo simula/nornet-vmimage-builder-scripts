@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+HYPERVISOR="VirtualBox"
+# SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
+SYSTEMS="Ubuntu-20.04-LTS"
+
+# ------ Parameters ---------------------------------------
+PROJECTS="SimulaMet-Desktop"
+HOSTNAME="baumwall.haw.nornet"
+USER_NAME="nornetpp"
+USER_PASSWORD="!NorNetInst!"
+USER_REALNAME="NorNet Praesum Presum"
+
+DISK_ROOT=32768
+DISK_HOME=65536
+DISK_SWAP=2048
+VIDEO="HD+"
+BACKGROUND_SDDM="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Hamburg1.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Hamburg2.jpeg"
+BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Hamburg2.jpeg"
+OPTIONS=""
+# ---------------------------------------------------------
+
+
+# ====== Build VMs ==========================================================
+for project in ${PROJECTS} ; do
+   for system in ${SYSTEMS} ; do
+      distribution=`echo "${system}" | sed -e "s/-.*$//g"`
+      release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
+      (
+         name="${HYPERVISOR}-${project}-${distribution}-${release}"
+         logfile="${name}.log"
+         startTime=`date`
+         echo "${startTime}: Starting to build ${name} ..."
+         if ./make-vm -H ${HYPERVISOR} \
+               --project ${project} --distribution ${distribution} --release ${release} \
+               --hostname "${HOSTNAME}" \
+               --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+               --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
+               --video "${VIDEO}" \
+               --background-sddm "${BACKGROUND_SDDM}" \
+               --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
+               --background-desktop "${BACKGROUND_DESKTOP}" \
+               ${OPTIONS}  >${logfile} 2>&1 ; then
+            result="OK"
+         else
+            result="FAILED!"
+         fi
+         finishTime=`date`
+         echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
+      ) &
+   done
+done
+wait
