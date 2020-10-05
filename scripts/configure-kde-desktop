@@ -297,10 +297,6 @@ DesktopListLayout=org.kde.breeze.desktop
 LayoutName=org.kde.breeze.desktop
 
 [Desktops]
-Id_1=`uuidgen`
-Id_2=`uuidgen`
-Id_3=`uuidgen`
-Id_4=`uuidgen`
 Number=4
 Rows=2
 
