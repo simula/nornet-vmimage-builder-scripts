@@ -50,9 +50,16 @@ DIRECTORIES="
 
 # Applications to be directoryed:
 APPLICATIONS="
+   dia
    firefox
+   gimp
+   libreoffice-startcenter
+   org.kde.kate
+   org.kde.kile
    org.kde.konsole
+   org.kde.okular
    wireshark
+   R
 "
 
 
