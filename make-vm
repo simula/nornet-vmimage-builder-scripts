@@ -30,6 +30,9 @@ PROVISIONERS="user-settings"   # NOTE: "clean-up" will be added later!
 
 DRY_RUN=0
 
+VM_CORES=4
+VM_MEMORY=4096
+
 USE_SEPARATE_DISKS=1
 VM_DISK_ROOT=32768
 VM_DISK_HOME=131072
@@ -68,6 +71,26 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--system" -o "$1" == "-S" ] ; then
       DISTRIBUTION=`echo "$2" | sed -e "s/-.*$//g"`
       RELEASE=`echo "$2" | sed -e "s/^[^\-]*-//g"`
+      shift
+   elif [ "$1" == "--cores" -o "$1" == "-c" ] ; then
+      VM_CORES="$2"
+      if [[ ! "${VM_CORES}" =~ ^[0-9]*$ ]] ; then
+         echo >&2 "ERROR: Bad value for cores: ${VM_CORES}"
+         exit 1
+      fi
+      if [ ${VM_CORES} -lt 1 ] ; then
+         VM_CORES=1
+      fi
+      shift
+   elif [ "$1" == "--memory" -o "$1" == "-m" ] ; then
+      VM_MEMORY="$2"
+      if [[ ! "${VM_MEMORY}" =~ ^[0-9]*$ ]] ; then
+         echo >&2 "ERROR: Bad size for memory: ${VM_MEMORY} MiB"
+         exit 1
+      fi
+      if [ ${VM_MEMORY} -lt 64 ] ; then
+         VM_MEMORY=64
+      fi
       shift
    elif [ "$1" == "--root" -o "$1" == "-r" ] ; then
       VM_DISK_ROOT="$2"
@@ -155,6 +178,8 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
       echo >&2 "   [--release|-R RELEASE]"
       echo >&2 "   [--system|-D DISTRIBUTION-RELEASE]"
+      echo >&2 "   [--cores|-c cores]"
+      echo >&2 "   [--memory|-m MiB]"
       echo >&2 "   [--root|-r MiB]"
       echo >&2 "   [--home|-h MiB]"
       echo >&2 "   [--swap|-s MiB]"
@@ -405,6 +430,8 @@ echo " - DISTRIBUTION=${DISTRIBUTION}"
 echo " - RELEASE=${RELEASE}"
 echo " - PROVISIONERS=${PROVISIONERS}"
 echo " - HTTP_DIRECTORY=${HTTP_DIRECTORY}"
+echo " - VM_CORES=${VM_CORES}"
+echo " - VM_MEMORY=${VM_MEMORY} (MiB)"
 echo " - VM_DISK_ROOT=${VM_DISK_ROOT} (MiB)"
 if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
    echo " - VM_DISK_HOME=${VM_DISK_HOME} (MiB)"
@@ -448,11 +475,13 @@ cd ${NAME}
 rm -rf ${vm_name}
 
 echo "Running Packer:"
-env CHECKPOINT_DISABLE=1 PACKER_CACHE_DIR="${CACHE_DIRECTORY}" packer build \
+env CHECKPOINT_DISABLE=1 PACKER_CACHE_DIR="${CACHE_DIRECTORY}" PACKER_LOG=1 packer build \
    -on-error=abort                         \
    -var "vm_name=${vm_name}"               \
    -var "vm_version=${vm_version}"         \
    -var "vm_version=${vm_version}"         \
+   -var "vm_cores=${VM_CORES}"             \
+   -var "vm_memory=${VM_MEMORY}"           \
    -var "vm_disk_root=${VM_DISK_ROOT}"     \
    -var "vm_disk_home=${VM_DISK_HOME}"     \
    -var "vm_disk_swap=${VM_DISK_SWAP}"     \

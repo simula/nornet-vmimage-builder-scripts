@@ -32,6 +32,8 @@ USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
+CORES=6
+MEMORY=4096
 DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048
@@ -57,6 +59,7 @@ for project in ${PROJECTS} ; do
                --project ${project} --distribution ${distribution} --release ${release} \
                --hostname "${HOSTNAME}" \
                --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+               --cores ${CORES} --memory ${MEMORY} \
                --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
                --video "${VIDEO}" \
                --background-sddm "${BACKGROUND_SDDM}" \

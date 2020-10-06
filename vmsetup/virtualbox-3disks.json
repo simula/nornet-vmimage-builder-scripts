@@ -40,8 +40,8 @@
   "hard_drive_nonrotational": true,
   "keep_registered": true,
 
-  "cpus": 4,
-  "memory": 4096,
+  "cpus": "{{user `vm_cores`}}",
+  "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
   "sound": "pulse",
   "vboxmanage": [
