@@ -52,6 +52,7 @@ DIRECTORIES="
 APPLICATIONS="
    dia
    firefox
+   fractgen
    gimp
    libreoffice-startcenter
    org.kde.kate
