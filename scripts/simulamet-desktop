@@ -28,7 +28,7 @@ set -ex
 if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
-   packages="simulamet-desktop simulamet-development dia gimp kile texlive-full"
+   packages="simulamet-desktop simulamet-development dia fractgen gimp kile texlive-full"
 
    # Try 3 times, for the case of download issues:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
