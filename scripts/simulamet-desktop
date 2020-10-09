@@ -37,7 +37,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
-   /usr/bin/dnf install -y simulamet-desktop simulamet-development
+   /usr/bin/dnf install -y simulamet-desktop simulamet-development dia fractgen kate kile libreoffice okular texlive-scheme-full wireshark
 
    systemctl enable sddm.service
    systemctl start sddm.service
