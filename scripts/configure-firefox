@@ -47,7 +47,7 @@ fi
 
 # ###### Get UID from XPI extension file ####################################
 # From: https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
-function GetUID ()
+function get-xpi-uid ()
 {
    local LOC_XPI="$1"
    local LOC_UID=""
@@ -71,7 +71,7 @@ function GetUID ()
 
 # ###### Get name from XPI extension file ####################################
 # From: https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
-function GetName ()
+function get-xpi-name ()
 {
    local LOC_XPI="$1"
    local LOC_NAME=""
@@ -102,8 +102,8 @@ function install-xpi ()
    MY_XPI=`mktemp`
    wget --quiet -O ${MY_XPI} "${URL}"
 
-   MY_UID=`GetUID ${MY_XPI}`
-   MY_NAME=`GetName ${MY_XPI}`
+   MY_UID=`get-xpi-uid ${MY_XPI}`
+   MY_NAME=`get-xpi-name ${MY_XPI}`
    echo " * Name: ${MY_NAME}"
    echo " * UID:  ${MY_UID}"
 
@@ -113,34 +113,52 @@ function install-xpi ()
 }
 
 
+# ###### Firefox run in headless mode, to initialise the profile ------------
+function run-firefox-headless ()
+{
+   # ------ Initialise profile by a short Firefox run in headless mode ------
+   echo "Starting Firefox in headless mode ..."
+   du -schk ${profilePath}
+
+   firefox -P default-release --headless --no-remote &
+   echo "Waiting a moment to let Firefox initialise the profile ..."
+   sleep 10
+   echo "Stopping Firefox ..."
+   pkill -f firefox/firefox   # Executable is /usr/lib*/firefox/firefox
+
+   echo "Waiting for Firefox to finish ..."
+   wait
+   echo "Done!"
+}
+
 
 # ###### Main program #######################################################
 
 # ====== Create initial profile, if none is existing ========================
 if [ ! -d "$HOME/.mozilla/firefox" ] ; then
    echo "###### Creating new profile setup! ######"
-    mkdir -p "$HOME/.mozilla/firefox"
-    pushd "$HOME/.mozilla/firefox" >/dev/null
+   mkdir -p "$HOME/.mozilla/firefox"
+   pushd "$HOME/.mozilla/firefox" >/dev/null
 
-    profileName="profile-`dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"'`"
-    mkdir "${profileName}"
-    mkdir "${profileName}/extensions"
-    cat >profiles.ini <<EOF
+   profileName="profile-`dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"'`"
+   mkdir "${profileName}"
+   mkdir "${profileName}/extensions"
+   cat >profiles.ini <<EOF
 [Install4F96D1932A9F858E]
-Default=${profileName}
+Default=default-release
 Locked=1
 
 [Profile0]
-Name=default
+Name=default-release
 IsRelative=1
 Path=${profileName}
+Default=1
 
 [General]
-StartWithLastProfile=1
 Version=2
 EOF
 
-    popd >/dev/null
+   popd >/dev/null
 fi
 
 
@@ -179,7 +197,7 @@ for profilePath in ${PROFILE_PATHS} ; do
    xpis=`find ${profilePath}/extensions -mindepth 1 -maxdepth 1 -name "*.xpi"`
    uids=""
    for xpi in ${xpis}; do
-      uid=`GetUID ${xpi}`
+      uid=`get-xpi-uid ${xpi}`
       uids="${uids} ${uid}"
    done
 
@@ -237,19 +255,7 @@ done
 # ====== Run Firefox to initialise ==========================================
 for profilePath in ${PROFILE_PATHS} ; do
 
-   # ------ Initialise profile by a short Firefox run in headless mode ------
-   echo "Starting Firefox in headless mode ..."
-   du -schk ${profilePath}
-
-   firefox -P default --headless --no-remote &
-   echo "Waiting a moment to let Firefox initialise the profile ..."
-   sleep 10
-   echo "Stopping Firefox ..."
-   pkill -f firefox
-
-   echo "Waiting for Firefox to finish ..."
-   wait
-   echo "Done!"
+   run-firefox-headless
 
    du -schk ${profilePath}
    # cp ${profilePath}/prefs.js ${profilePath}/prefs.js.original
