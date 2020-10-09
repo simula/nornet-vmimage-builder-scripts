@@ -222,9 +222,6 @@ if [[ "${projectConfiguration}" =~ ^.*-OpenStack.*$ ]] ; then
    projectConfiguration=${projectConfiguration/-OpenStack/}
    PROVISIONERS="prepare-openstack-guest ${PROVISIONERS}"
 fi
-if [[ "${projectConfiguration}" =~ ^.*-Desktop.*$ ]] ; then
-   PROVISIONERS="configure-kde-desktop ${PROVISIONERS}"
-fi
 if [ ! -e "${projectConfiguration}" ] ; then
    echo >&2 "ERROR: Configuration ${projectConfiguration} does not exist!"
    exit 1
