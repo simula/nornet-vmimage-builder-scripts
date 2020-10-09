@@ -46,7 +46,8 @@ cd ~/src
 
 # NOTE: The repositories are not cloned here!
 
-mkdir -p /home/nornetpp/src/5gvinni-oai-ns
-cd /home/nornetpp/src/5gvinni-oai-ns
+mkdir -p 5gvinni-oai-ns
+pushd 5gvinni-oai-ns
 git init
 git remote add origin https://github.com/simula/5gvinni-oai-ns.git
+popd

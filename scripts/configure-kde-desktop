@@ -109,7 +109,7 @@ plugin=org.kde.plasma.icon
 
 [Containments][2][Applets][22][Configuration]
 PreloadWeight=42
-localPath=/home/nornetpp/.local/share/plasma_icons/firefox.desktop
+localPath=/home/${USER_NAME}/.local/share/plasma_icons/firefox.desktop
 url=file:///usr/share/applications/firefox.desktop
 
 [Containments][2][Applets][23]
@@ -118,7 +118,7 @@ plugin=org.kde.plasma.icon
 
 [Containments][2][Applets][23][Configuration]
 PreloadWeight=42
-localPath=/home/nornetpp/.local/share/plasma_icons/org.kde.konsole.desktop
+localPath=/home/${USER_NAME}/.local/share/plasma_icons/org.kde.konsole.desktop
 url=file:///usr/share/applications/org.kde.konsole.desktop
 
 [Containments][2][Applets][3]

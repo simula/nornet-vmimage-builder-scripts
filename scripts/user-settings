@@ -35,7 +35,7 @@ fi
 
 
 # ====== Make some additions to .bashrc =====================================
-cat >>/home/nornetpp/.bashrc <<EOF
+cat >>/home/${USER_NAME}/.bashrc <<EOF
 
 
 # ---------------------------------------------------------------------------
@@ -57,14 +57,14 @@ EOF
 
 
 # ====== Make some directories ==============================================
-sudo -u nornetpp mkdir -p /home/nornetpp/src
-sudo -u nornetpp chattr +c /home/nornetpp/src || true
-sudo -u nornetpp mkdir -p /home/nornetpp/tmp
+sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/src
+sudo -u ${USER_NAME} chattr +c /home/${USER_NAME}/src || true
+sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/tmp
 
-sudo -u nornetpp mkdir -p /home/nornetpp/.ssh
-sudo -u nornetpp chmod 700 /home/nornetpp/.ssh
-sudo -u nornetpp touch /home/nornetpp/.ssh/authorized_keys
-sudo -u nornetpp chmod 600 /home/nornetpp/.ssh/authorized_keys
+sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/.ssh
+sudo -u ${USER_NAME} chmod 700 /home/${USER_NAME}/.ssh
+sudo -u ${USER_NAME} touch /home/${USER_NAME}/.ssh/authorized_keys
+sudo -u ${USER_NAME} chmod 600 /home/${USER_NAME}/.ssh/authorized_keys
 
 
 # ====== Renew SSH keys and enforce strong cipher configurations ============

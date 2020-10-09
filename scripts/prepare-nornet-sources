@@ -47,9 +47,10 @@ cd ~/src
 # NOTE: The repositories are not cloned here!
 
 mkdir -p nornet-control
-cd nornet-control
+pushd nornet-control
 git init
 git remote add origin https://github.com/simula/nornet-control.git
+popd
 
-cd /home/nornetpp
+cd ~
 ln -s src/nornet-control/src ctrl
