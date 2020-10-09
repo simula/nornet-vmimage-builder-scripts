@@ -245,7 +245,7 @@ for profilePath in ${PROFILE_PATHS} ; do
    echo "Waiting a moment to let Firefox initialise the profile ..."
    sleep 10
    echo "Stopping Firefox ..."
-   killall /usr/lib/firefox/firefox
+   pkill -f firefox
 
    echo "Waiting for Firefox to finish ..."
    wait
