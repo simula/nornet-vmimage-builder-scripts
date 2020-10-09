@@ -28,8 +28,8 @@
   "disk_discard": "unmap",
   "net_device": "virtio-net",
 
-  "cpus": 4,
-  "memory": 4096,
+  "cpus": "{{user `vm_cores`}}",
+  "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
   "disk_additional_size": [
     "{{user `vm_disk_home`}}M",

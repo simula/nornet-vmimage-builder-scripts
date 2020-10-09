@@ -28,8 +28,8 @@
   "disk_discard": "unmap",
   "net_device": "virtio-net",
 
-  "cpus": 4,
-  "memory": 4096,
+  "cpus": "{{user `vm_cores`}}",
+  "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
   // "disk_additional_size": [
   // ],
@@ -49,6 +49,6 @@
     // NOTE: When defining the SCSI controller manually, it is also necessary
     // to manually write the disk definitions!
     [ "-device", "scsi-hd,bus=scsi0.0,drive=drive0" ],
-    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}},id=drive0,cache=unsafe,discard=unmap,format=qcow2" ]    
+    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}},id=drive0,cache=unsafe,discard=unmap,format=qcow2" ]
   ]
 }
