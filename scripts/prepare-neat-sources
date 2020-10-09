@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# ====== Ensure that script is ran by user account to provision =============
+if [ $(id -u) -eq 0 ] ; then
+   # Running by configuring sudo root. Run script again, but as user!
+   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
+   if [ "$SUDO_USER" != "root" ] ; then
+      sudo -u $SUDO_USER $0 $@ && exit 0
+      exit 1
+   else
+      # Prevent recursive invocation as "root" user:
+      echo >&2 "ERROR: Run this script either as user or with sudo."
+      exit 1
+   fi
+else
+   # Echo running as user
+   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+fi
+
+
+# ====== Prepare source repositories ========================================
+
+mkdir -p /tmp/src
+cd /tmp/src
+
+git clone https://dreibh@github.com/NEAT-project/neat.git
+pushd neat
+git checkout dreibh/neat-socketapi
+popd
+
+git clone https://dreibh@bitbucket.org/dreibh/neat-examples.git
+
+git clone https://dreibh@github.com/dreibh/usrsctp.git usrsctp-neat
+pushd usrsctp-neat
+git checkout dreibh/usrsctpForNeat-packaging
+git remote add upstream-sctplib https://github.com/sctplab/usrsctp.git
+git remote add upstream-neat https://dreibh@github.com/NEAT-project/usrsctp-neat.git
+popd

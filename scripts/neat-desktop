@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# ###### NEAT Desktop package installation ##################################
+
+# ------ Ubuntu -------------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+   /usr/bin/apt-get update
+
+   packages="neat-desktop neat-development sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
+
+   # Try 3 times, for the case of download issues:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+   /usr/bin/dnf install -y neat-desktop neat-development sddm @KDE qt5-style-oxygen oxygen-gtk2 plasma-oxygen oxygen-icon-theme oxygen-cursor-themes oxygen-sound-theme oxygen-fonts firefox
+
+   systemctl enable sddm.service
+   systemctl start sddm.service
+fi
