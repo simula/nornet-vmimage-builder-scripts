@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### OpenStack configuration ############################################
+# ====== OpenStack configuration ============================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt ] ; then
@@ -30,20 +30,6 @@ if [ -e /usr/bin/apt ] ; then
 
    # Install Cloud-Init:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
-
-#   # The damned Systemd/Netplan tries to auto-configure *all* interfaces
-#   # when OpenStack boots the instance => default route via unwanted network
-#   # and using the wrong DNS.
-#   # Cloud-Init depends on Netplan. At least, turn this stuff OFF:
-#   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ifupdown
-#   systemctl unmask networking
-#   systemctl enable networking
-#   systemctl restart networking
-#   for service in systemd-networkd.socket systemd-networkd networkd-dispatcher systemd-networkd-wait-online ; do
-#      # systemctl stop    $service
-#      systemctl disable $service || true
-#      systemctl mask    $service || true
-#   done
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then

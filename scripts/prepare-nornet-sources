@@ -44,16 +44,12 @@ fi
 mkdir -p ~/src
 cd ~/src
 
-git clone https://dreibh@github.com/NEAT-project/neat.git
-pushd neat
-git checkout dreibh/neat-socketapi
-popd
+# NOTE: The repositories are not cloned here!
 
-git clone https://dreibh@bitbucket.org/dreibh/neat-examples.git
+mkdir -p nornet-control
+cd nornet-control
+git init
+git remote add origin https://github.com/simula/nornet-control.git
 
-git clone https://dreibh@github.com/dreibh/usrsctp.git usrsctp-neat
-pushd usrsctp-neat
-git checkout dreibh/usrsctpForNeat-packaging
-git remote add upstream-sctplib https://github.com/sctplab/usrsctp.git
-git remote add upstream-neat https://dreibh@github.com/NEAT-project/usrsctp-neat.git
-popd
+cd /home/nornetpp
+ln -s src/nornet-control/src ctrl

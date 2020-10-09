@@ -19,15 +19,30 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -x
+set -ex
 
 
-# ###### Prepare source repositories ########################################
+# ====== Ensure that script is ran by user account to provision =============
+if [ $(id -u) -eq 0 ] ; then
+   # Running by configuring sudo root. Run script again, but as user!
+   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
+   if [ "$SUDO_USER" != "root" ] ; then
+      sudo -u $SUDO_USER $0 $@ && exit 0
+      exit 1
+   else
+      # Prevent recursive invocation as "root" user:
+      echo >&2 "ERROR: Run this script either as user or with sudo."
+      exit 1
+   fi
+else
+   # Echo running as user
+   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+fi
 
-# NOTE: The repositories are not cloned here!
 
-sudo -u nornetpp mkdir -p /home/nornetpp/src
-cd /home/nornetpp/src
+# ====== Prepare source repositories ========================================
+mkdir -p ~/src
+cd ~/src
 
 sudo -u nornetpp git clone https://dreibh@github.com/dreibh/fractgen.git
 sudo -u nornetpp git clone https://dreibh@github.com/dreibh/netperfmeter.git

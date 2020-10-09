@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### Development configuration ##########################################
+# ====== Development configuration ==========================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /etc/apt/sources.list ] ; then

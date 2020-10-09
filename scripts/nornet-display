@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### NorNet Desktop package installation ################################
+# ====== NorNet Desktop package installation ================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then

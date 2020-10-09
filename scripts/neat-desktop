@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### NEAT Desktop package installation ##################################
+# ====== NEAT Desktop package installation ==================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then

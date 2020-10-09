@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### Set timezone #######################################################
+# ====== Set timezone =======================================================
 if [ -x /usr/bin/timedatectl ] ; then
    /usr/bin/timedatectl set-timezone Europe/Oslo
 else
@@ -34,7 +34,7 @@ else
 fi
 
 
-# ###### Make some additions to .bashrc #####################################
+# ====== Make some additions to .bashrc =====================================
 cat >>/home/nornetpp/.bashrc <<EOF
 
 
@@ -56,7 +56,7 @@ fi
 EOF
 
 
-# ###### Make some directories ##############################################
+# ====== Make some directories ==============================================
 sudo -u nornetpp mkdir -p /home/nornetpp/src
 sudo -u nornetpp chattr +c /home/nornetpp/src || true
 sudo -u nornetpp mkdir -p /home/nornetpp/tmp
@@ -67,7 +67,7 @@ sudo -u nornetpp touch /home/nornetpp/.ssh/authorized_keys
 sudo -u nornetpp chmod 600 /home/nornetpp/.ssh/authorized_keys
 
 
-# ###### Renew SSH keys and enforce strong cipher configurations ############
+# ====== Renew SSH keys and enforce strong cipher configurations ============
 if [ -e /usr/bin/Create-New-SSH-Node-Keys ] ; then
    /usr/bin/Create-New-SSH-Node-Keys -yes-to-all-i-am-really-sure
 fi

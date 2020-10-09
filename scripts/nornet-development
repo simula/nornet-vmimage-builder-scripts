@@ -22,7 +22,7 @@
 set -ex
 
 
-# ###### NorNet development configuration ###################################
+# ====== NorNet development configuration ===================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
