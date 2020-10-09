@@ -30,8 +30,6 @@ set -ex
 # - BACKGROUND_DESKTOP
 
 
-# ###### NorNet Desktop configuration #######################################
-
 # ====== Make directories ===================================================
 mkdir -p /home/${USER_NAME}/.config
 mkdir -p /home/${USER_NAME}/.local

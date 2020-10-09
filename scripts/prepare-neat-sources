@@ -44,7 +44,16 @@ fi
 mkdir -p ~/src
 cd ~/src
 
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/fractgen.git
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/netperfmeter.git
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/subnetcalc.git
-sudo -u nornetpp git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+git clone https://dreibh@github.com/NEAT-project/neat.git
+pushd neat
+git checkout dreibh/neat-socketapi
+popd
+
+git clone https://dreibh@bitbucket.org/dreibh/neat-examples.git
+
+git clone https://dreibh@github.com/dreibh/usrsctp.git usrsctp-neat
+pushd usrsctp-neat
+git checkout dreibh/usrsctpForNeat-packaging
+git remote add upstream-sctplib https://github.com/sctplab/usrsctp.git
+git remote add upstream-neat https://dreibh@github.com/NEAT-project/usrsctp-neat.git
+popd

@@ -44,7 +44,12 @@ fi
 mkdir -p ~/src
 cd ~/src
 
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/fractgen.git
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/netperfmeter.git
-sudo -u nornetpp git clone https://dreibh@github.com/dreibh/subnetcalc.git
-sudo -u nornetpp git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+# NOTE: The repositories are not cloned here!
+
+mkdir -p nornet-control
+cd nornet-control
+git init
+git remote add origin https://github.com/simula/nornet-control.git
+
+cd /home/nornetpp
+ln -s src/nornet-control/src ctrl

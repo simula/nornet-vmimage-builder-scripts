@@ -19,10 +19,10 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -x
+set -ex
 
 
-# ###### NorNet configuration ###############################################
+# ====== NorNet configuration ===============================================
 
 # !!! Ensure that growpart and resizefs are enabled !!!!!!!!!!!!!!!!!!!!!!!!!
 # With new Ubuntu autoinstaller:
@@ -52,21 +52,8 @@ elif [ -e /usr/bin/dnf ] ; then
 fi
 
 
-# ###### Set configured screen resolution as fallback #######################
+# ====== Set configured screen resolution as fallback =======================
 /usr/bin/configure-grub /etc/default/grub \
    -V "auto,${VIDEO},1024x768" \
    -T "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192" \
    -o /etc/default/grub
-
-
-# ###### Prepare source repositories ########################################
-
-# NOTE: The repositories are not cloned here!
-
-sudo -u nornetpp mkdir -p /home/nornetpp/src/nornet-control
-cd /home/nornetpp/src/nornet-control
-sudo -u nornetpp git init
-sudo -u nornetpp git remote add origin https://github.com/simula/nornet-control.git
-
-cd /home/nornetpp
-sudo -u nornetpp ln -s src/nornet-control/src ctrl

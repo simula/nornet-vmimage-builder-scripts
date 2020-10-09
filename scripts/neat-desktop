@@ -22,16 +22,23 @@
 set -ex
 
 
-# ====== OpenStack configuration ============================================
+# ====== NEAT Desktop package installation ==================================
 
 # ------ Ubuntu -------------------------------------------------------------
-if [ -e /usr/bin/apt ] ; then
+if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
-   # Install Cloud-Init:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
+   packages="neat-desktop neat-development sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
+
+   # Try 3 times, for the case of download issues:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
-   /usr/bin/dnf install -y cloud-init
+   /usr/bin/dnf install -y neat-desktop neat-development sddm @KDE qt5-style-oxygen oxygen-gtk2 plasma-oxygen oxygen-icon-theme oxygen-cursor-themes oxygen-sound-theme oxygen-fonts firefox
+
+   systemctl enable sddm.service
+   systemctl start sddm.service
 fi
