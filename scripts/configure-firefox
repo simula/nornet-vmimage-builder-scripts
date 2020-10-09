@@ -108,7 +108,7 @@ function install-xpi ()
    echo " * UID:  ${MY_UID}"
 
    for profilePath in ${profilePaths} ; do
-      mv ${MY_XPI} "${profilePath}/extensions/${MY_UID}.xpi"
+      cp ${MY_XPI} "${profilePath}/extensions/${MY_UID}.xpi"
    done
 }
 
