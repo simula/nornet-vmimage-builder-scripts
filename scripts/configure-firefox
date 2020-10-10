@@ -122,10 +122,11 @@ function run-firefox-headless ()
    du -schk ${profilePath}
 
    firefox -P default-release --headless --no-remote &
-   echo "Waiting a moment to let Firefox initialise the profile ..."
+   pid=$!
+   echo "Waiting a moment to let Firefox initialise the profile (PID ${pid}) ..."
    sleep 10
    echo "Stopping Firefox ..."
-   pkill -f firefox/firefox   # Executable is /usr/lib*/firefox/firefox
+   kill ${pid}   # Executable is /usr/lib*/firefox/firefox
 
    echo "Waiting for Firefox to finish ..."
    wait
@@ -246,7 +247,7 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo 'user_pref("browser.startup.homepage", "https://www.uni-due.de/~be0001/");'
       echo 'user_pref("startup.homepage_welcome_url", "https://www.uni-due.de/~be0001/");'
 
-   ) | tee --append ${profilePath}/user.js
+   ) | tee -a ${profilePath}/user.js
 done
 
 
