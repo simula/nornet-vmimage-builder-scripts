@@ -41,4 +41,5 @@ elif [ -e /usr/bin/dnf ] ; then
 
    systemctl enable sddm.service
    systemctl start sddm.service
+   systemctl set-default graphical.target
 fi
