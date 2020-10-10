@@ -84,8 +84,8 @@ echo 'autoboot_delay="5"' >>/boot/loader.conf
 echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
 
 mkdir -p /usr/local/etc/sudoers.d
-echo "nornetpp ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/nornetpp
-chmod 0440 /usr/local/etc/sudoers.d/nornetpp
+echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 
 
 # ====== Basic packages =====================================================
@@ -108,10 +108,11 @@ pkg install -y sudo bash joe
 
 
 # ====== Keymap =============================================================
-echo 'keymap="german.iso"' >>/etc/rc.conf
+echo 'hostname="<SET_HOSTFQDN_HERE>"' >>/etc/rc.conf
+echo 'keymap="<SET_XKBLAYOUT_HERE>"' >>/etc/rc.conf
 echo 'moused_enable="YES"' >>/etc/rc.conf
 echo 'allscreens_flags="-m on"' >>/etc/rc.conf
-
+echo '' >>/etc/rc.conf
 echo 'powerd_enable="YES"' >>/etc/rc.conf
 echo 'ntpd_enable="YES"' >>/etc/rc.conf
 echo 'hald_enable="YES"' >>/etc/rc.conf
@@ -127,3 +128,5 @@ echo 'kern.vty=vt' >>/boot/loader.conf
 sed -e $'s#default:\\\\#default:\\\\\\\n\\\t:charset=UTF-8:\\\\\\\n\\\t:lang=C.UTF-8:\\\\#g' </etc/login.conf >/etc/login.conf.new
 mv /etc/login.conf.new /etc/login.conf
 cap_mkdb /etc/login.conf
+
+reboot
