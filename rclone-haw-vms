@@ -28,8 +28,6 @@ for vm in ${VMs} ; do
          image=`find ${imageDirectory} -name "*.ova"`
          if [ -e "${image}" ] ; then
             ls -l ${image}
-#             sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -Pvzc --partial  ${image} ${DESTINATION}${image}.qcow2"
-#             imageFiles="${imageFiles} ${image}.qcow2"
             vmDate=`date -r "${image}" +"%Y-%m-%d"`
             rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
             rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"

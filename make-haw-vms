@@ -22,8 +22,8 @@ set -e
 
 
 HYPERVISOR="VirtualBox"
-# SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
-SYSTEMS="Fedora-32 Ubuntu-20.04-LTS Ubuntu-18.04-LTS"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
+# SYSTEMS="Ubuntu-16.04-LTS Ubuntu-20.04-LTS Ubuntu-18.04-LTS Fedora-31 Fedora-32"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Desktop"
