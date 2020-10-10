@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
+SYSTEMS="FreeBSD-12.1"
+
+# ------ Parameters ---------------------------------------
+PROJECTS="KDE"
+# PROJECTS="Minimal KDE"
+
+HOSTNAME="burgsteinfurt.openstack"
+USER_NAME="nornetpp"
+USER_PASSWORD="!NorNetInst""
+USER_REALNAME="NorNet Praesum Presum"
+
+CORES=4
+MEMORY=4096
+DISK_ROOT=16384
+DISK_HOME=0   # Just one disk -> not used here!
+DISK_SWAP=0   # Just one disk -> not used here!
+VIDEO="1920x1080"
+BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
+BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+OPTIONS="-1"   # Just one disk!
+# ---------------------------------------------------------
+
+
+# ====== Build VMs ==========================================================
+for project in ${PROJECTS} ; do
+   for system in ${SYSTEMS} ; do
+      distribution=`echo "${system}" | sed -e "s/-.*$//g"`
+      release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
+      (
+         name="${HYPERVISOR}-${project}-${distribution}-${release}"
+         logfile="${name}.log"
+         if [ ! -e "${name}/successfully-built.txt" ] ; then
+            startTime=`date`
+            echo "${startTime}: Starting to build ${name} ..."
+            if ./make-vm -H ${HYPERVISOR} \
+                  --project ${project} --distribution ${distribution} --release ${release} \
+                  --hostname "${HOSTNAME}" \
+                  --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+                  --cores ${CORES} --memory ${MEMORY} \
+                  --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
+                  --video "${VIDEO}" \
+                  --background-sddm "${BACKGROUND_SDDM}" \
+                  --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
+                  --background-desktop "${BACKGROUND_DESKTOP}" \
+                  ${OPTIONS}  >${logfile} 2>&1 ; then
+               result="OK"
+            else
+               result="FAILED!"
+            fi
+            finishTime=`date`
+            echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
+         else
+            echo "${name} is already there -> ${logfile}"
+         fi
+      ) &
+   done
+done
+wait
