@@ -146,7 +146,7 @@ if [ ! -d "$HOME/.mozilla/firefox" ] ; then
    mkdir "${profileName}/extensions"
    cat >profiles.ini <<EOF
 [Install4F96D1932A9F858E]
-Default=default-release
+Default=${profileName}
 Locked=1
 
 [Profile0]
