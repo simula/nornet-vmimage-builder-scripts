@@ -45,7 +45,7 @@ elif [ -e /usr/bin/dnf ] ; then
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
-   /usr/sbin/pkg install -y kde5 sddm xorg xf86-video-vmware plasma5-oxygen kf5-oxygen-icons oxygen-fonts firefox
+   /usr/sbin/pkg install -y kde5 sddm xorg xf86-video-vmware plasma5-oxygen kf5-oxygen-icons5 oxygen-fonts firefox
 
    echo 'sddm_enable="YES"' >>/etc/rc.conf
 fi
