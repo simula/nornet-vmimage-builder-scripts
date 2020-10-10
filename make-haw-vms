@@ -28,11 +28,11 @@ SYSTEMS="Fedora-32 Ubuntu-20.04-LTS Ubuntu-18.04-LTS"
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Desktop"
 HOSTNAME="baumwall.haw.nornet"
-USER_NAME="nornetpp"
-USER_PASSWORD="!NorNetInst!"
-USER_REALNAME="NorNet Praesum Presum"
+USER_NAME="student"
+USER_PASSWORD="b00tloader"
+USER_REALNAME="HAW-Student"
 
-CORES=6
+CORES=4
 MEMORY=4096
 DISK_ROOT=32768
 DISK_HOME=65536
