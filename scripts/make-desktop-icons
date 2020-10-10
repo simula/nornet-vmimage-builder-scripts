@@ -86,10 +86,15 @@ done
 
 
 # ====== Create directorys for applications =================================
+if [ `uname` == "FreeBSD" ] ; then
+   source=" /usr/local/share/applications/"
+else
+   source=" /usr/share/applications/"
+fi
 for application in ${APPLICATIONS} ; do
    if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
       echo "Creating desktop link for application ${application} ..."
-      ln -s /usr/share/applications/${application}.desktop "${DESKTOP_DIRECTORY}/" || true
+      ln -s ${source}/${application}.desktop "${DESKTOP_DIRECTORY}/" || true
    fi
 done
 
