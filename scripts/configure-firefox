@@ -246,7 +246,7 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo 'user_pref("browser.startup.homepage", "https://www.uni-due.de/~be0001/");'
       echo 'user_pref("startup.homepage_welcome_url", "https://www.uni-due.de/~be0001/");'
 
-   ) | tee --append ${profilePath}/user.js
+   ) | tee -a ${profilePath}/user.js
 done
 
 
