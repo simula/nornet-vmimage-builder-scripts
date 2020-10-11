@@ -38,9 +38,9 @@ DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048
 VIDEO="FHD"
-BACKGROUND_SDDM="/usr/share/neat-desktop/background/NEATManagement1-3840x2160-mosaic.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/neat-desktop/background/NEATDesktop1-3840x2160-mosaic.jpeg"
-BACKGROUND_DESKTOP="/usr/share/neat-desktop/background/NEATDesktop1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/neat-desktop/desktop/NEATManagement1-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/neat-desktop/desktop/NEATDesktop1-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/neat-desktop/desktop/NEATDesktop1-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 

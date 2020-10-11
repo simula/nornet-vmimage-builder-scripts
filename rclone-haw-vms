@@ -29,8 +29,10 @@ for vm in ${VMs} ; do
          if [ -e "${image}" ] ; then
             ls -l ${image}
             vmDate=`date -r "${image}" +"%Y-%m-%d"`
-            rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
-            rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
+            # rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
+            # rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
+            # rsync -Pav "${image}" nornetpp@www.nntb.no:public_html/haw/
+            rsync -J "dreibh@oesthorn.nntb.no" -Pav "${image}" nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/haw/ 
          fi
       fi
    fi
