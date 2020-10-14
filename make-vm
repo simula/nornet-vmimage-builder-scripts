@@ -130,7 +130,7 @@ while [ $# -gt 0 ] ; do
       if [ "${VIDEO}" == "XGA" ] ; then
          VIDEO="1024x768"   # Standard, 4:3
       elif [ "${VIDEO}" == "SXGA" ] ; then
-         VIDEO="1280x960"   # SXGA-, 4:3
+         VIDEO="1280x960"   # SXGA, 4:3
       elif [ "${VIDEO}" == "HD" ] ; then
          VIDEO="1280x720"   # HD, 16:9
       elif [ "${VIDEO}" == "HD+" ] ; then
