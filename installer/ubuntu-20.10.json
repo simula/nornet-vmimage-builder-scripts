@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/groovy-live-server-amd64.iso",
-  "iso_checksum": "sha256:c2c5b850c9b9fd0bd24ca004ba576d62013407590355e48df5f253c764d2ba14",
+  "iso_url": "https://releases.ubuntu.com/20.10/ubuntu-20.10-beta-live-server-amd64.iso",
+  "iso_checksum": "sha256:65538c59d7c58f670ef78f8ea7855cf3e01c927655e2235e25a22ee998a6fdb8",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

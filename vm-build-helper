@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+. ./directories.config
+
+if [ ! -e "${OUTPUT_DIRECTORY}" ] ; then
+   echo >&2 "ERROR: Output directory ${OUTPUT_DIRECTORY} does not exist!"
+   exit 1
+fi
+mkdir -p "${CACHE_DIRECTORY}" || true
+if [ ! -e "${CACHE_DIRECTORY}" ] ; then
+   echo >&2 "ERROR: Cache directory ${CACHE_DIRECTORY} does not exist!"
+   exit 1
+fi
+
+
+# ###### Build VMs ##########################################################
+build-defined-vms ()
+{
+   for project in ${PROJECTS} ; do
+      for system in ${SYSTEMS} ; do
+         distribution=`echo "${system}" | sed -e "s/-.*$//g"`
+         release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
+         (
+            name="${HYPERVISOR}-${project}-${distribution}-${release}"
+            logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
+            if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
+               startTime=`date`
+               echo "${startTime}: Starting to build ${name} ..."
+               mkdir -p "${OUTPUT_DIRECTORY}/${name}"
+               if ./make-vm -H ${HYPERVISOR} \
+                     --project ${project} --distribution ${distribution} --release ${release} \
+                     --hostname "${HOSTNAME}" \
+                     --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+                     --cores ${CORES} --memory ${MEMORY} \
+                     --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
+                     --video "${VIDEO}" \
+                     --background-sddm "${BACKGROUND_SDDM}" \
+                     --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
+                     --background-desktop "${BACKGROUND_DESKTOP}" \
+                     --cache-directory "${CACHE_DIRECTORY}" \
+                     --output-directory "${OUTPUT_DIRECTORY}" \
+                     ${OPTIONS}  >${logfile} 2>&1 ; then
+                  result="OK"
+               else
+                  result="FAILED!"
+               fi
+               finishTime=`date`
+               echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
+            else
+               echo "${name} is already there -> ${logfile}"
+            fi
+         ) &
+      done
+   done
+   wait
+}

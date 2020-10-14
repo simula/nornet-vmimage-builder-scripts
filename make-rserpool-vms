@@ -27,10 +27,10 @@ SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
 SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NEAT"
-HOSTNAME="brunost.simula.nornet"
+PROJECTS="RSerPoolDemo"
+HOSTNAME="zollverein.ude.nornet"
 USER_NAME="nornetpp"
-USER_PASSWORD="neat4me!"
+USER_PASSWORD="rserpool4me!"
 USER_REALNAME="NorNet Praesum Presum"
 
 CORES=6
@@ -39,9 +39,9 @@ DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048
 VIDEO="FHD"
-BACKGROUND_SDDM="/usr/share/neat-desktop/desktop/NEATManagement1-3840x2160-mosaic.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/neat-desktop/desktop/NEATDesktop1-3840x2160-mosaic.jpeg"
-BACKGROUND_DESKTOP="/usr/share/neat-desktop/desktop/NEATDesktop1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/rserpooldemo/desktop/Zollverein-3840x2160-plain.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/rserpooldemo/desktop/Zollverein-3840x2160-plain.jpeg"
+BACKGROUND_DESKTOP="/usr/share/rserpooldemo/desktop/Background-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 

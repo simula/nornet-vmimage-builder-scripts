@@ -18,7 +18,7 @@
 
 {
   "vm_name": "{{user `vm_name`}}",
-  "output_directory": "{{user `vm_name`}}",
+  "output_directory": "{{user `vm_directory`}}",
   "type": "virtualbox-iso",
   "guest_additions_mode": "disable",
   "guest_os_type": "Ubuntu_64",
@@ -46,6 +46,7 @@
   "sound": "pulse",
   "vboxmanage": [
     [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
+    [ "modifyvm", "{{.Name}}", "--chipset", "ICH9" ],
     [ "modifyvm", "{{.Name}}", "--firmware", "EFI" ],
     [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
     [ "modifyvm", "{{.Name}}", "--vram", "128" ],

@@ -20,10 +20,11 @@
 
 set -e
 
+. ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
 # SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
-SYSTEMS="Fedora-32 Ubuntu-20.04-LTS Ubuntu-18.04-LTS"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-20.04-LTS Ubuntu-18.04-LTS Fedora-31 Fedora-32"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Desktop"
@@ -44,39 +45,4 @@ BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Hambu
 OPTIONS=""
 # ---------------------------------------------------------
 
-
-# ====== Build VMs ==========================================================
-for project in ${PROJECTS} ; do
-   for system in ${SYSTEMS} ; do
-      distribution=`echo "${system}" | sed -e "s/-.*$//g"`
-      release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
-      (
-         name="${HYPERVISOR}-${project}-${distribution}-${release}"
-         logfile="${name}.log"
-         if [ ! -e "${name}/successfully-built.txt" ] ; then
-            startTime=`date`
-            echo "${startTime}: Starting to build ${name} ..."
-            if ./make-vm -H ${HYPERVISOR} \
-                  --project ${project} --distribution ${distribution} --release ${release} \
-                  --hostname "${HOSTNAME}" \
-                  --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
-                  --cores ${CORES} --memory ${MEMORY} \
-                  --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
-                  --video "${VIDEO}" \
-                  --background-sddm "${BACKGROUND_SDDM}" \
-                  --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
-                  --background-desktop "${BACKGROUND_DESKTOP}" \
-                  ${OPTIONS}  >${logfile} 2>&1 ; then
-               result="OK"
-            else
-               result="FAILED!"
-            fi
-            finishTime=`date`
-            echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
-         else
-            echo "${name} is already there -> ${logfile}"
-         fi
-      ) &
-   done
-done
-wait
+build-defined-vms
