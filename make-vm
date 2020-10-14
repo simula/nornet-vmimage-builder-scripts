@@ -53,10 +53,20 @@ BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-p
 BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
 BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
 
+OUTPUT_DIRECTORY="."
+CACHE_DIRECTORY="cache"
+PACKER_LOG=0
+
 
 # ###### Handle command-line parameters #####################################
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--hypervisor" -o "$1" == "-H" ] ; then
+   if [ "$1" == "--output-directory" -o "$1" == "-O" ] ; then
+      OUTPUT_DIRECTORY="$2"
+      shift
+   elif [ "$1" == "--cache-directory" -o "$1" == "-C" ] ; then
+      CACHE_DIRECTORY="$2"
+      shift
+   elif [ "$1" == "--hypervisor" -o "$1" == "-H" ] ; then
       HYPERVISOR="$2"
       shift
    elif [ "$1" == "--project" -o "$1" == "-P" ] ; then
@@ -170,9 +180,13 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
       DRY_RUN=1
+   elif [ "$1" == "--verbose" -o "$1" == "-x" ] ; then
+      PACKER_LOG=1
    else
       echo >&2 "ERROR: Unknown option $1!"
       echo >&2 "Usage: $0"
+      echo >&2 "   [--output-directory|-O directory]"
+      echo >&2 "   [--cache-directory|-C directory]"
       echo >&2 "   [--hypervisor|-H VirtualBox|QEMU]"
       echo >&2 "   [--project|-P Template|NEAT|MELODIC|...]"
       echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
@@ -196,8 +210,8 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--background-sddm|-BD image_file]"
       echo >&2 "   [--background-lockscreen|-BL image_file]"
       echo >&2 "   [--background-desktop|-BD image_file]"
-      # echo >&2 "   [--| ]"
       echo >&2 "   [--dry-run|-n]"
+      echo >&2 "   [--verbose|-x]"
       exit 1
    fi
    shift
@@ -301,8 +315,11 @@ DOMAINNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g
 
 
 # ###### Write Packer configuration #########################################
-mkdir -p ${NAME}
-JSON="`realpath ${NAME}`/${NAME}.json"
+CACHE_DIRECTORY="`realpath "${CACHE_DIRECTORY}"`"
+mkdir -p "${CACHE_DIRECTORY}"
+
+mkdir -p "${OUTPUT_DIRECTORY}/${NAME}"
+JSON="`realpath ${OUTPUT_DIRECTORY}/${NAME}`/${NAME}.json"
 JSONTMP="${JSON}.tmp"
 
 
@@ -327,14 +344,14 @@ cat >>${JSONTMP} <<EOF
   "builders": [
     {
 EOF
-if [ ! -d ${HTTP_DIRECTORY} ] ; then
+if [ ! -d "${HTTP_DIRECTORY}" ] ; then
    echo >&2 "ERROR: HTTP_DIRECTORY ${HTTP_DIRECTORY} does not exist!"
    exit 1
 fi
 
 # Copy all files from HTTP directory and replace placeholders:
-mkdir -p ${NAME}/http
-httpFiles=`find ${HTTP_DIRECTORY}/ -maxdepth 1 -type f -name "*"`
+mkdir -p "${OUTPUT_DIRECTORY}/${NAME}/http"
+httpFiles=`find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*"`
 for httpFile in ${httpFiles} ; do
    echo "Processing: ${httpFile} -> ${NAME}/http/`basename ${httpFile}`"
    sed -e "s/<SET_XKBMODEL_HERE>/${XKBMODEL}/g" \
@@ -348,7 +365,7 @@ for httpFile in ${httpFiles} ; do
        -e "s/<SET_REALNAME_HERE>/${USER_REALNAME}/g" \
        -e "s/<SET_PASSWORD_HERE>/${USER_PASSWORD}/g" \
        -e "s#<SET_HASHED_PASSWORD_HERE>#${USER_HASHED_PASSWORD}#g" \
-       <${httpFile} >"${NAME}/http/`basename ${httpFile}`"
+       <${httpFile} >"${OUTPUT_DIRECTORY}/${NAME}/http/`basename ${httpFile}`"
 done
 
 # Configure HTTP directory:
@@ -465,15 +482,11 @@ elif [ ${HYPERVISOR} == "QEMU" ] ; then
 fi
 
 
-mkdir -p cache
-CACHE_DIRECTORY="`realpath cache`"
-
-cd ${NAME}
-rm -rf ${vm_name}
-
 echo "Running Packer:"
-env CHECKPOINT_DISABLE=1 PACKER_CACHE_DIR="${CACHE_DIRECTORY}" PACKER_LOG=1 packer build \
-   -on-error=abort                         \
+cd "${OUTPUT_DIRECTORY}/${NAME}"
+rm -rf ${vm_name}
+env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" packer build \
+   -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}" \
    -var "vm_name=${vm_name}"               \
    -var "vm_version=${vm_version}"         \
    -var "vm_version=${vm_version}"         \
@@ -492,6 +505,7 @@ env CHECKPOINT_DISABLE=1 PACKER_CACHE_DIR="${CACHE_DIRECTORY}" PACKER_LOG=1 pack
    -var "user_name=${USER_NAME}"           \
    -var "user_realname=${USER_REALNAME}"   \
    -var "user_password=${USER_PASSWORD}"   \
+   -on-error=abort                         \
    ${JSON}
 
 env LANG=C date >successfully-built.txt
