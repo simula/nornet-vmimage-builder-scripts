@@ -42,10 +42,11 @@ build-defined-vms ()
          release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
          (
             name="${HYPERVISOR}-${project}-${distribution}-${release}"
-            logfile="${name}.log"
-            if [ ! -e "${name}/successfully-built.txt" ] ; then
+            logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
+            if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
                startTime=`date`
                echo "${startTime}: Starting to build ${name} ..."
+               mkdir -p "${OUTPUT_DIRECTORY}/${name}"
                if ./make-vm -H ${HYPERVISOR} \
                      --project ${project} --distribution ${distribution} --release ${release} \
                      --hostname "${HOSTNAME}" \
