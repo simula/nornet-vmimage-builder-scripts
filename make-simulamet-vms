@@ -20,6 +20,7 @@
 
 set -e
 
+. ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
 # SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32"
@@ -32,44 +33,16 @@ USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
+CORES=6
+MEMORY=4096
 DISK_ROOT=16384
 DISK_HOME=16384
 DISK_SWAP=2048
-VIDEO="HD+"
+VIDEO="FHD"
 BACKGROUND_SDDM="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Oslo.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Lindøya.jpeg"
 BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Lindøya.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 
-
-# ====== Build VMs ==========================================================
-for project in ${PROJECTS} ; do
-   for system in ${SYSTEMS} ; do
-      distribution=`echo "${system}" | sed -e "s/-.*$//g"`
-      release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
-      (
-         name="${HYPERVISOR}-${project}-${distribution}-${release}"
-         logfile="${name}.log"
-         startTime=`date`
-         echo "${startTime}: Starting to build ${name} ..."
-         if ./make-vm -H ${HYPERVISOR} \
-               --project ${project} --distribution ${distribution} --release ${release} \
-               --hostname "${HOSTNAME}" \
-               --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
-               --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
-               --video "${VIDEO}" \
-               --background-sddm "${BACKGROUND_SDDM}" \
-               --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
-               --background-desktop "${BACKGROUND_DESKTOP}" \
-               ${OPTIONS}  >${logfile} 2>&1 ; then
-            result="OK"
-         else
-            result="FAILED!"
-         fi
-         finishTime=`date`
-         echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
-      ) &
-   done
-done
-wait
+build-defined-vms

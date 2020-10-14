@@ -484,7 +484,7 @@ fi
 
 echo "Running Packer:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
-rm -rf ${vm_name}
+rm -rf "${vm_name}"
 env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" packer build \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}" \
    -var "vm_name=${vm_name}"               \
