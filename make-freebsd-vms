@@ -20,6 +20,7 @@
 
 set -e
 
+. ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
 SYSTEMS="FreeBSD-12.1"
@@ -30,7 +31,7 @@ PROJECTS="KDE"
 
 HOSTNAME="burgsteinfurt.openstack"
 USER_NAME="nornetpp"
-USER_PASSWORD="!NorNetInst""
+USER_PASSWORD="!NorNetInst"
 USER_REALNAME="NorNet Praesum Presum"
 
 CORES=4
@@ -45,39 +46,4 @@ BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x21
 OPTIONS="-1"   # Just one disk!
 # ---------------------------------------------------------
 
-
-# ====== Build VMs ==========================================================
-for project in ${PROJECTS} ; do
-   for system in ${SYSTEMS} ; do
-      distribution=`echo "${system}" | sed -e "s/-.*$//g"`
-      release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
-      (
-         name="${HYPERVISOR}-${project}-${distribution}-${release}"
-         logfile="${name}.log"
-         if [ ! -e "${name}/successfully-built.txt" ] ; then
-            startTime=`date`
-            echo "${startTime}: Starting to build ${name} ..."
-            if ./make-vm -H ${HYPERVISOR} \
-                  --project ${project} --distribution ${distribution} --release ${release} \
-                  --hostname "${HOSTNAME}" \
-                  --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
-                  --cores ${CORES} --memory ${MEMORY} \
-                  --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
-                  --video "${VIDEO}" \
-                  --background-sddm "${BACKGROUND_SDDM}" \
-                  --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
-                  --background-desktop "${BACKGROUND_DESKTOP}" \
-                  ${OPTIONS}  >${logfile} 2>&1 ; then
-               result="OK"
-            else
-               result="FAILED!"
-            fi
-            finishTime=`date`
-            echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
-         else
-            echo "${name} is already there -> ${logfile}"
-         fi
-      ) &
-   done
-done
-wait
+build-defined-vms
