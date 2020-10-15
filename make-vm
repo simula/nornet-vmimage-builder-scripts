@@ -223,9 +223,11 @@ NAME=""
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    BUILDER_VMSETUP="virtualbox"
    NAME="VirtualBox"
+   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
 elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
+   VM_DISK_PREFIX="vd"   # Using /dev/vd<N> for disks!
 else
    echo >&2 "ERROR: Invalid hypervisor ${HYPERVISOR}!"
    exit 1
@@ -437,6 +439,7 @@ vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HY
 
 
 echo "Configuration:"
+echo " - HYPERVISOR=${HYPERVISOR}"
 echo " - NAME=${NAME}"
 echo " - VM_NAME=${vm_name}"
 echo " - PROJECT=${PROJECT}"
@@ -446,6 +449,7 @@ echo " - PROVISIONERS=${PROVISIONERS}"
 echo " - HTTP_DIRECTORY=${HTTP_DIRECTORY}"
 echo " - VM_CORES=${VM_CORES}"
 echo " - VM_MEMORY=${VM_MEMORY} (MiB)"
+echo " - VM_DISK_PREFIX=${VM_DISK_PREFIX}"
 echo " - VM_DISK_ROOT=${VM_DISK_ROOT} (MiB)"
 if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
    echo " - VM_DISK_HOME=${VM_DISK_HOME} (MiB)"
@@ -464,7 +468,6 @@ if [ ${DRY_RUN} -ne 0 ] ; then
    echo "Dry run -> exiting."
    exit
 fi
-
 
 if [ ${HYPERVISOR} == "VirtualBox" ] ; then
    if [ "`lsmod|grep "^vboxdrv"`" == "" ] ; then
@@ -492,6 +495,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vm_version=${vm_version}"         \
    -var "vm_cores=${VM_CORES}"             \
    -var "vm_memory=${VM_MEMORY}"           \
+   -var "vm_disk_prefix=${VM_DISK_PREFIX}" \
    -var "vm_disk_root=${VM_DISK_ROOT}"     \
    -var "vm_disk_home=${VM_DISK_HOME}"     \
    -var "vm_disk_swap=${VM_DISK_SWAP}"     \
