@@ -25,7 +25,7 @@ set -ex
 # ====== OpenStack configuration ============================================
 
 # ------ Ubuntu -------------------------------------------------------------
-if [ -e /usr/bin/apt ] ; then
+if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    # Install Cloud-Init:

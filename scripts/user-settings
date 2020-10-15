@@ -27,7 +27,7 @@ if [ -x /usr/bin/timedatectl ] ; then
    /usr/bin/timedatectl set-timezone Europe/Oslo
 else
    # ------ Old Ubuntu (12.04 etc.) -----------------------
-   if [ -e /usr/bin/apt ] ; then
+   if [ ! -e /usr/bin/apt ] ; then
       echo "Europe/Oslo" >/etc/timezone
       dpkg-reconfigure -f noninteractive tzdata
    fi

@@ -36,15 +36,21 @@ fi
 
 
 # ------ Ubuntu -------------------------------------------------------------
-if [ -e /usr/bin/apt ] ; then
+if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
-   packages="nornet-management nornet-autoupdate td-system-configure-grub"
+   packages="nornet-management td-system-configure-grub"
 
    # Try 3 times, for the case of download issues:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
+   # The nornet-autoupdate package only exists for newer Ubuntu versions:
+   release="`lsb_release -c | cut -d':' -f2 | tr -d ' \t'`"
+   if [ "${release}" != "precise" ] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y nornet-autoupdate
+   fi
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
