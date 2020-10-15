@@ -21,7 +21,7 @@
   "output_directory": "{{user `vm_name`}}",
   "type": "qemu",
   "accelerator": "kvm",
-  "headless": false,
+  "headless": true,
   "format": "qcow2",
   "disk_interface": "virtio",
   "disk_cache": "unsafe",
