@@ -22,9 +22,9 @@ set -e
 
 . ./vm-build-helper
 
-HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
+HYPERVISOR="QEMU"   # "VirtualBox" "QEMU"
 SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS"
-SYSTEMS="Ubuntu-20.04-LTS"
+# SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="5gVINNI-OpenStack"
