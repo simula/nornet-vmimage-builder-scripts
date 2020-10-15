@@ -356,7 +356,8 @@ mkdir -p "${OUTPUT_DIRECTORY}/${NAME}/http"
 httpFiles=`find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*"`
 for httpFile in ${httpFiles} ; do
    echo "Processing: ${httpFile} -> ${NAME}/http/`basename ${httpFile}`"
-   sed -e "s/<SET_XKBMODEL_HERE>/${XKBMODEL}/g" \
+   sed -e "s/<SET_DISK_PREFIX_HERE>/${VM_DISK_PREFIX}/g" \
+       -e "s/<SET_XKBMODEL_HERE>/${XKBMODEL}/g" \
        -e "s/<SET_XKBLAYOUT_HERE>/${XKBLAYOUT}/g" \
        -e "s/<SET_XKBVARIANT_HERE>/${XKBVARIANT}/g" \
        -e "s/<SET_XKBOPTIONS_HERE>/${XKBOPTIONS}/g" \
