@@ -55,7 +55,7 @@ autoinstall:
       - type: disk
         id: disk0
         name: "system-disk"
-        path: /dev/sda
+        path: /dev/<SET_DISK_PREFIX_HERE>a
         wipe: superblock
         ptable: gpt
         preserve: false
@@ -63,7 +63,7 @@ autoinstall:
       - type: disk
         id: disk1
         name: "home-disk"
-        path: /dev/sdb
+        path: /dev/<SET_DISK_PREFIX_HERE>b
         wipe: superblock
         ptable: gpt
         preserve: false
@@ -71,7 +71,7 @@ autoinstall:
       - type: disk
         id: disk2
         name: "swap-disk"
-        path: /dev/sdc
+        path: /dev/<SET_DISK_PREFIX_HERE>c
         wipe: superblock
         ptable: gpt
         preserve: false
@@ -197,11 +197,11 @@ autoinstall:
   # ###### Post-Install Configuration #######################################
   late-commands:
     # Add partition names:
-    - sgdisk --change-name=1:EFI --change-name=2:Root /dev/sda
-    - if [ -e /dev/sdb ] ; then sgdisk --change-name=1:Home /dev/sdb ; fi
-    - if [ -e /dev/sdc ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/sdc ; fi
+    - sgdisk --change-name=1:EFI --change-name=2:Root /dev/<SET_DISK_PREFIX_HERE>a
+    - if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; fi
+    - if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/<SET_DISK_PREFIX_HERE>c ; fi
     # Add BIOS Grub partition, if not yet created, just to be sure:
-    ###- if ! sgdisk --print /dev/sda | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/sda ; fi
-    ###- sgdisk --change-name=1:GRUB /dev/sda
+    ###- if ! sgdisk --print /dev/<SET_DISK_PREFIX_HERE>a | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/<SET_DISK_PREFIX_HERE>a ; fi
+    ###- sgdisk --change-name=1:GRUB /dev/<SET_DISK_PREFIX_HERE>a
     # Generate additional locales:
     - chroot /target locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
