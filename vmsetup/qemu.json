@@ -21,9 +21,9 @@
   "output_directory": "{{user `vm_name`}}",
   "type": "qemu",
   "accelerator": "kvm",
-  "headless": true,
+  "headless": false,
   "format": "qcow2",
-  "disk_interface": "virtio-scsi",
+  "disk_interface": "virtio",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
   "net_device": "virtio-net",
@@ -35,20 +35,6 @@
   // ],
   "qemuargs": [
     [ "-bios", "OVMF.fd" ],
-    [ "-vga", "qxl" ],
-
-    // NOTE: NIC and SCSI controllers have to be defined here, to make sure
-    // they are defined in the right order! By default, Packer would create
-    // the SCSI controller first. Then, the NIC gets the next PCI slot =>
-    // interface name is ens4, instead of ens3 as expected when the
-    // VM is instantiated in OpenStack!
-    // By defining the devices here, it is ensured that the NIC is named ens3.
-    [ "-device", "virtio-net,netdev=user.0" ],
-    [ "-device", "virtio-scsi-pci,id=scsi0" ],
-
-    // NOTE: When defining the SCSI controller manually, it is also necessary
-    // to manually write the disk definitions!
-    [ "-device", "scsi-hd,bus=scsi0.0,drive=drive0" ],
-    [ "-drive", "if=none,file={{user `vm_name`}}/{{user `vm_name`}},id=drive0,cache=unsafe,discard=unmap,format=qcow2" ]
+    [ "-vga", "qxl" ]
   ]
 }
