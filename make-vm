@@ -509,3 +509,4 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    ${JSON}
 
 env LANG=C date >successfully-built.txt
+reset -I ; echo ""
