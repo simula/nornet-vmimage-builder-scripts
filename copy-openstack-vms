@@ -23,8 +23,10 @@ set -e
 DESTINATION="nornetpp@odin.simula.nornet:images/"
 SSH_PROXY="oesthorn.nntb.no"
 
+source ./directories.config
+
 imageFiles=""
-VMs=`find . -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*"`
+VMs=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*"`
 for vm in ${VMs} ; do
    pushd ${vm} >/dev/null
    if [ -e "successfully-built.txt" ] ; then
@@ -33,7 +35,7 @@ for vm in ${VMs} ; do
          pushd ${imageDirectory} >/dev/null
          image=`ls -S .`
          if [ -e "${image}" ] ; then
-            sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -Pvzc --partial  ${image} ${DESTINATION}${image}.qcow2"
+            sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -Pcv --partial  ${image} ${DESTINATION}${image}.qcow2"
             imageFiles="${imageFiles} ${image}.qcow2"
          fi
          popd >/dev/null

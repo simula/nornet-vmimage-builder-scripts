@@ -20,7 +20,9 @@
 
 set -e
 
-VMs=`find . -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-HAW*"`
+source ./directories.config
+
+VMs=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-HAW*"`
 for vm in ${VMs} ; do
    if [ -e "${vm}/successfully-built.txt" ] ; then
       imageDirectory=`find ${vm} -mindepth 1 -maxdepth 1 -type d -name "HAW*"`
@@ -32,7 +34,7 @@ for vm in ${VMs} ; do
             # rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
             # rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
             # rsync -Pav "${image}" nornetpp@www.nntb.no:public_html/haw/
-            rsync -e "ssh -J dreibh@oesthorn.nntb.no" -Pav "${image}" nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/haw/
+            rsync -e "ssh -J dreibh@oesthorn.nntb.no" -Pcv "${image}" nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/haw/
          fi
       fi
    fi
