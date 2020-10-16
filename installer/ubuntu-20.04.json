@@ -28,9 +28,22 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "4s",
+  "boot_wait": "1s",
+  // VirtualBox and QEMU take different times to start booting. Ubuntu 20.04's
+  // GRUB configuration has a timeout of 5s. Typing ESC to early leads into
+  // the EFI firmware's setup. Typing <tab> is ignored by the firmware, and it
+  // stops GRUB's countdown.
   "boot_command": [
-    "<esc><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
+    "<tab><wait>",
     "<esc><wait>",
     "linux /casper/vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
     "initrd /casper/initrd<enter><wait>",
