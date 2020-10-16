@@ -62,12 +62,12 @@
     [ "storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on" ],
 
     // ====== Add additional disks ==========================================
-    [ "createhd", "--format", "VDI", "--filename", "{{.Name}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
-    [ "createhd", "--format", "VDI", "--filename", "{{.Name}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
+    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
+    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
     [ "storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "1", "--type", "hdd",
-      "--medium", "{{.Name}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
+      "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
     [ "storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "hdd",
-      "--medium", "{{.Name}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
+      "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
     // ======================================================================
   ]
 }
