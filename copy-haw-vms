@@ -23,19 +23,27 @@ set -e
 source ./directories.config
 
 VMs=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-HAW*"`
+echo "$VMs"
 for vm in ${VMs} ; do
    if [ -e "${vm}/successfully-built.txt" ] ; then
-      imageDirectory=`find ${vm} -mindepth 1 -maxdepth 1 -type d -name "HAW*"`
-      if [ -d "${imageDirectory}" ] ; then
-         image=`find ${imageDirectory} -name "*.ova"`
-         if [ -e "${image}" ] ; then
-            ls -l ${image}
-            vmDate=`date -r "${image}" +"%Y-%m-%d"`
-            # rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
-            # rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
-            # rsync -Pav "${image}" nornetpp@www.nntb.no:public_html/haw/
-            rsync -e "ssh -J dreibh@oesthorn.nntb.no" -Pcv "${image}" nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/haw/
+      image=`find ${vm} -mindepth 2 -maxdepth 2 -name "*.ova"`
+      if [ -e "${image}" ] ; then
+         ls -l ${image}
+         vmDate=`date -r "${image}" +"%Y-%m-%d"`
+
+         # ====== Sign the image ============================================
+         if [ ! -e "${image}.asc" ] ; then
+            echo "Signing ${image} ..."
+            gpg --sign --detach-sign --armor "${image}"
          fi
+
+         # ====== Rsync the image ===========================================
+         rsync -e "ssh -J dreibh@oesthorn.nntb.no" -Pcv "${image}" "${image}.asc" nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/haw/${vmDate}/
+
+         # basename -s .ova "${image}"
+         # rclone mkdir "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
+         # rclone copy --progress "${image}" "haw:Virtual Machines/VirtualBox-HAW-${vmDate}/"
+         # rsync -Pav "${image}" nornetpp@www.nntb.no:public_html/haw/
       fi
    fi
 done
