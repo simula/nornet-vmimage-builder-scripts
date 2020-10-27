@@ -25,7 +25,7 @@
   "headless": true,
   "format": "ova",
   "export_opts": [
-    "--ovf20",
+    "--ovf10",
     "--manifest",
     "--vsys", "0",
     "--description", "{{user `vm_description`}}",
