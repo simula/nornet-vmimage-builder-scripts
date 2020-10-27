@@ -27,7 +27,7 @@ set -ex
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-utils || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-utils virtualbox-guest-dkms || true
    if [ -e /usr/lib/systemd/system/sddm.service ] ; then
       # System has X11 -> also install X11 utilities as well:
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-x11 || true
