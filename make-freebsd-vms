@@ -23,11 +23,11 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-12.1"
+SYSTEMS="FreeBSD-12.2"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="KDE"
-# PROJECTS="Minimal KDE"
+PROJECTS="Minimal KDE"
+PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.openstack"
 USER_NAME="nornetpp"
