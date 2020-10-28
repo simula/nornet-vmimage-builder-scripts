@@ -28,7 +28,7 @@ set -ex
 if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
-   packages="simulamet-desktop simulamet-development dia fractgen gimp kile texlive-full libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb"
+   packages="simulamet-desktop simulamet-development dia fractgen gimp kile texlive-full libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb hunspell-de-de hunspell-no hunspell-en-gb hunspell-en-us hunspell-en-au"
 
    # Try 3 times, for the case of download issues:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
