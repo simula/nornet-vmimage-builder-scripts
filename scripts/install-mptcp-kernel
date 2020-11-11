@@ -80,6 +80,12 @@ BEGIN {
    mv /etc/sysctl.conf.new /etc/sysctl.conf
 
 
+   # ====== DKMS ============================================================
+   if dpkg-query -W virtualbox-guest-dkms >/dev/null 2>&1 ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --reinstall virtualbox-guest-dkms
+   fi
+
+
    # ====== Remove all other kernels ========================================
    kernelType="mptcp"
    kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType} | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
