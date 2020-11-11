@@ -35,13 +35,15 @@ fi
 
 
 # ====== Set sysctls ========================================================
-echo >>/etc/sysctl.conf <<EOF
+cat >>/etc/sysctl.conf <<EOF
 
-# ------ Custom settings ----------------------------------------------------
+###################################################################
+
+# ------ Custom settings ------------------------------------------
 # Enable ECN:
 net.ipv4.tcp_ecn=1
 
-# ------ TCP settings -------------------------------------------------------
+# ------ TCP settings ---------------------------------------------
 # Turn off auto-tuning of the TCP receive buffer size:
 # sysctl -w net.ipv4.tcp_moderate_rcvbuf=0
 # sysctl -w net.netfilter.nf_conntrack_icmp_timeout=60
