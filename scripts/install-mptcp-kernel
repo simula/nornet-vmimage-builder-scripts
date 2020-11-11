@@ -44,6 +44,42 @@ if [ -e /usr/bin/apt-get ] ; then
 
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${mptcpKernelImagePackage} ${mptcpKernelHeadersPackage}
 
+
+   # ====== Adapt sysctl settings ==============================================
+   awk '
+BEGIN {
+   inBlock=0
+}
+/^.*--- TCP settings ---.*$/ {
+   inBlock=1
+   print $0
+   next
+}
+/^.*--- MPTCP settings ---.*$/ {
+   inBlock=1
+   print $0
+   next
+}
+/^.*----------------.*$/ {
+   inBlock=0
+   print $0
+   next
+}
+/^# sysctl -w.*$/ {
+   if(inBlock == 1) {
+      gsub("^# ", "", $0)
+      print $0
+      next
+   }
+}
+/^.*$/ {
+   print $0
+}
+' </etc/sysctl.conf >/etc/sysctl.conf.new
+   diff /etc/sysctl.conf /etc/sysctl.conf.new || true
+   mv /etc/sysctl.conf.new /etc/sysctl.conf
+
+
    # ====== Remove all other kernels ========================================
    kernelType="mptcp"
    kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType} | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
