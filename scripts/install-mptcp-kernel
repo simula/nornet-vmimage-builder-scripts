@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -e
 
 
 # ====== Install MPTCP kernel ===============================================
@@ -37,9 +37,31 @@ if [ -e /usr/bin/apt-get ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${mptcpKernelImagePackage} ${mptcpKernelHeadersPackage}
 
    # ====== Remove all other kernels ========================================
-   otherKernelImagePackages=`apt-show-versions | grep "^linux-image" | cut -d':' -f1 | grep -v -- "-mptcp$"`
-   echo "To remove: ${otherKernelImagePackages}"
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y ${otherKernelImagePackages}
+   kernelType="mptcp"
+   kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType} | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
+
+   echo "Kernel Type:         ${kernelType}"
+   echo "Kernel Disk Version: ${kernelDiskVersion}"
+
+   toBeRemoved=`apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | grep "^linux-" | (
+      while read line ; do
+         if [[ $line =~ ^(linux-image-|linux-headers-|linux-modules-).*$ ]] ; then
+            if [[ $line =~ ^(linux-image-${kernelDiskVersion}-${kernelType}|linux-image-extra-${kernelDiskVersion}-${kernelType}|linux-modules-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}).*$ ]] ; then
+               true
+            elif [[ $line =~ ^(linux-image-${kernelType}|linux-image-extra-${kernelType}|linux-headers-${kernelType}|linux-modules-${kernelType})$ ]] ; then
+               true
+            else
+               echo -n "${line} "
+            fi
+         fi
+      done
+   )`
+
+   echo -e "To be removed:"
+   echo "$toBeRemoved" | xargs -n1 | grep -v ".*+$" | sort -u
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y -qq --purge \
+      -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
+      $toBeRemoved
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
