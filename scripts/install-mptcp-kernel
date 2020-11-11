@@ -26,16 +26,20 @@ set -ex
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
-   /usr/bin/apt-get update
+#    /usr/bin/apt-get update
 
+   # ====== Install MPTCP kernel packages ===================================
    mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image" | grep -- '-mptcp$' | sort --version-sort --field-separator=- -r | head -n1`
-   mptcpKernelHeaderPackage=`echo "${mptcpKernelImagePackage}" | sed -e "s/-image-/-header-/g"`
+   mptcpKernelHeadersPackage=`echo "${mptcpKernelImagePackage}" | sed -e "s/-image-/-headers-/g"`
+   echo "MPTCP kernel image package: ${mptcpKernelImagePackage}"
+   echo "MPTCP kernel headers package: ${mptcpKernelHeadersPackage}"
 
-   echo "MPTCP kernel image package:  ${mptcpKernelImagePackage}"
-   echo "MPTCP kernel header package: ${mptcpKernelHeaderPackage}"
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${mptcpKernelImagePackage} ${mptcpKernelHeadersPackage}
 
-
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${mptcpKernelImagePackage} ${mptcpKernelHeaderPackage}
+   # ====== Remove all other kernels ========================================
+   otherKernelImagePackages=`apt-show-versions | grep "^linux-image" | cut -d':' -f1 | grep -v -- "-mptcp$"`
+   echo "To remove: ${otherKernelImagePackages}"
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y ${otherKernelImagePackages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
