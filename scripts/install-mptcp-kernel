@@ -26,10 +26,18 @@ set -e
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
-#    /usr/bin/apt-get update
+   # ====== Activate Thomas Dreibholz's MPTCP kernel repository =============
+   # NOTE: Assuming that Thomas Dreibholz's MPTCP kernel repository is already
+   #       configured from prepare-development-environment but commented out:
+   sed -e "s@#[ ]*\(deb.* https://packages.nntb.no/nornet-kernel/ubuntu/ .*\)@\1@g" -i /etc/apt/sources.list
+   /usr/bin/apt-get update
 
    # ====== Install MPTCP kernel packages ===================================
    mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image" | grep -- '-mptcp$' | sort --version-sort --field-separator=- -r | head -n1`
+   if [ "${mptcpKernelImagePackage}" == "" ] ; then
+      echo >&2 "ERROR: No suitable MPTCP kernel package found!"
+      exit 1
+   fi
    mptcpKernelHeadersPackage=`echo "${mptcpKernelImagePackage}" | sed -e "s/-image-/-headers-/g"`
    echo "MPTCP kernel image package: ${mptcpKernelImagePackage}"
    echo "MPTCP kernel headers package: ${mptcpKernelHeadersPackage}"
