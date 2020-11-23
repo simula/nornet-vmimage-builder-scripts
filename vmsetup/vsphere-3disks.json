@@ -1,0 +1,61 @@
+// vSphere Configuration with Own Disks for Root, Home and Swap
+// Copyright (C) 2020 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: dreibh@simula.no
+
+{
+  "vm_name": "{{user `vm_name`}}",
+  "type": "vsphere-iso",
+  "boot_keygroup_interval": "500ms",
+  "guest_os_type": "ubuntu64Guest",
+  "notes": "{{user `vm_description`}}",
+
+  "username": "{{user `vsphere_username`}}",
+  "password": "{{user `vsphere_password`}}",
+  "vcenter_server": "{{user `vsphere_server`}}",
+  "datacenter": "{{user `vsphere_datacenter`}}",
+  "cluster": "{{user `vsphere_cluster`}}",
+  "folder": "{{user `vsphere_folder`}}",
+  "host": "{{user `vsphere_host`}}",
+  "datastore": "{{user `vsphere_datastore`}}",
+  "insecure_connection": true,
+
+  "disk_controller_type": "pvscsi",
+  "storage": [
+     {
+        "disk_size": "{{user `vm_disk_root`}}",
+        "disk_thin_provisioned": true
+     },
+     {
+        "disk_size": "{{user `vm_disk_home`}}",
+        "disk_thin_provisioned": true
+     },
+     {
+        "disk_size": "{{user `vm_disk_swap`}}",
+        "disk_thin_provisioned": true
+     }
+  ],
+  "network_adapters": [
+     {
+        "network": "{{user `vsphere_network`}}",
+        "network_card": "vmxnet3"
+     }
+  ],
+
+  "cpu_cores": "{{user `vm_cores`}}",
+  "RAM": "{{user `vm_memory`}}",
+  "firmware": "efi"
+}

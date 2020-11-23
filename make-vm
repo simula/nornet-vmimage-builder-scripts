@@ -57,6 +57,17 @@ OUTPUT_DIRECTORY="."
 CACHE_DIRECTORY="cache"
 PACKER_LOG=0
 
+VSPHERE_USERNAME="MY-VSPHERE-USERNAME"
+VSPHERE_PASSWORD="MY-VSPHERE-PASSWORD"
+VSPHERE_SERVER="MY-VSPHERE-SERVER"
+VSPHERE_DATACENTER="MY-VSPHERE-DATACENTER"
+VSPHERE_CLUSTER="MY-VSPHERE-CLUSTER"
+VSPHERE_FOLDER="MY-VSPHERE-FOLDER"
+VSPHERE_HOST="MY-VSPHERE-HOST"
+VSPHERE_DATASTORE="MY-VSPHERE-DATASTORE"
+VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
+
+
 
 # ###### Handle command-line parameters #####################################
 while [ $# -gt 0 ] ; do
@@ -178,6 +189,13 @@ while [ $# -gt 0 ] ; do
    elif [ "$1" == "--background-desktop" -o "$1" == "-BD" ] ; then
       BACKGROUND_DESKTOP="$2"
       shift
+   elif [ "$1" == "--vsphere" -o "$1" == "-VC" ] ; then
+      if [ ! -e "$2" ] ; then
+         echo "ERROR: vSphere configuration $2 not found!"
+         exit 1
+      fi
+      source "$2"
+      shift
    elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
       DRY_RUN=1
    elif [ "$1" == "--verbose" -o "$1" == "-x" ] ; then
@@ -187,7 +205,8 @@ while [ $# -gt 0 ] ; do
       echo >&2 "Usage: $0"
       echo >&2 "   [--output-directory|-O directory]"
       echo >&2 "   [--cache-directory|-C directory]"
-      echo >&2 "   [--hypervisor|-H VirtualBox|QEMU]"
+      echo >&2 "   [--hypervisor|-H VirtualBox|QEMU|vSphere]"
+      echo >&2 "   [--vsphere|-VC vsphere_configuration_file]"
       echo >&2 "   [--project|-P Template|NEAT|MELODIC|...]"
       echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
       echo >&2 "   [--release|-R RELEASE]"
@@ -228,6 +247,10 @@ elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
    VM_DISK_PREFIX="vd"   # Using /dev/vd<N> for disks!
+elif [ "${HYPERVISOR}" == "vSphere" ] ; then
+   BUILDER_VMSETUP="vsphere"
+   NAME="vSphere"
+   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
 else
    echo >&2 "ERROR: Invalid hypervisor ${HYPERVISOR}!"
    exit 1
@@ -510,7 +533,16 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "user_name=${USER_NAME}"           \
    -var "user_realname=${USER_REALNAME}"   \
    -var "user_password=${USER_PASSWORD}"   \
-   -on-error=abort                         \
+   -var "vsphere_username=${VSPHERE_USERNAME}"     \
+   -var "vsphere_password=${VSPHERE_PASSWORD}"     \
+   -var "vsphere_server=${VSPHERE_SERVER}"         \
+   -var "vsphere_datacenter=${VSPHERE_DATACENTER}" \
+   -var "vsphere_cluster=${VSPHERE_CLUSTER}"       \
+   -var "vsphere_folder=${VSPHERE_FOLDER}"         \
+   -var "vsphere_host=${VSPHERE_HOST}"             \
+   -var "vsphere_datastore=${VSPHERE_DATASTORE}"   \
+   -var "vsphere_network=${VSPHERE_NETWORK}"       \
+   -on-error=abort                                 \
    ${JSON}
 
 env LANG=C date >successfully-built.txt
