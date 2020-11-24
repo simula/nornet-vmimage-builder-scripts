@@ -31,6 +31,7 @@
   "folder": "{{user `vsphere_folder`}}",
   "host": "{{user `vsphere_host`}}",
   "datastore": "{{user `vsphere_datastore`}}",
+  "http_ip": "{{user `vsphere_http_ip`}}",
   "insecure_connection": true,
 
   "disk_controller_type": "pvscsi",

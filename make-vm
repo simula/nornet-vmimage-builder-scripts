@@ -66,6 +66,7 @@ VSPHERE_FOLDER="MY-VSPHERE-FOLDER"
 VSPHERE_HOST="MY-VSPHERE-HOST"
 VSPHERE_DATASTORE="MY-VSPHERE-DATASTORE"
 VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
+VSPHERE_HTTP_IP="MY-VSPHERE-HTTP-IP"
 
 
 
@@ -542,6 +543,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vsphere_host=${VSPHERE_HOST}"             \
    -var "vsphere_datastore=${VSPHERE_DATASTORE}"   \
    -var "vsphere_network=${VSPHERE_NETWORK}"       \
+   -var "vsphere_http_ip=${VSPHERE_HTTP_IP}"       \
    -on-error=abort                                 \
    ${JSON}
 
