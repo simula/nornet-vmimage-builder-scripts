@@ -57,6 +57,7 @@ OUTPUT_DIRECTORY="."
 CACHE_DIRECTORY="cache"
 PACKER_LOG=0
 
+VSPHERE_VERSION="15"
 VSPHERE_USERNAME="MY-VSPHERE-USERNAME"
 VSPHERE_PASSWORD="MY-VSPHERE-PASSWORD"
 VSPHERE_SERVER="MY-VSPHERE-SERVER"
@@ -534,6 +535,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "user_name=${USER_NAME}"           \
    -var "user_realname=${USER_REALNAME}"   \
    -var "user_password=${USER_PASSWORD}"   \
+   -var "vsphere_version=${VSPHERE_VERSION}"       \
    -var "vsphere_username=${VSPHERE_USERNAME}"     \
    -var "vsphere_password=${VSPHERE_PASSWORD}"     \
    -var "vsphere_server=${VSPHERE_SERVER}"         \
