@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2020 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+. ./vm-build-helper
+
+HYPERVISOR="vSphere"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10"
+SYSTEMS="Ubuntu-20.04-LTS"
+
+# ------ Parameters ---------------------------------------
+PROJECTS="Minimal"
+
+HOSTNAME="tjuvholmen.simula.nornet"
+USER_NAME="nornetpp"
+USER_PASSWORD="!NorNetInst!"
+USER_REALNAME="NorNet Praesum Presum"
+
+CORES=4
+MEMORY=2048
+DISK_ROOT=16384
+DISK_HOME=8192
+DISK_SWAP=2048
+VIDEO="HD+"
+BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
+BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+OPTIONS="--vsphere $HOME/.config/vsphere.config"
+# ---------------------------------------------------------
+
+build-defined-vms
