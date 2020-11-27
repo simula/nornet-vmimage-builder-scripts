@@ -57,6 +57,7 @@ OUTPUT_DIRECTORY="."
 CACHE_DIRECTORY="cache"
 PACKER_LOG=0
 
+VSPHERE_CONFIG_FILE=""
 VSPHERE_VERSION="15"
 VSPHERE_USERNAME="MY-VSPHERE-USERNAME"
 VSPHERE_PASSWORD="MY-VSPHERE-PASSWORD"
@@ -196,7 +197,7 @@ while [ $# -gt 0 ] ; do
          echo "ERROR: vSphere configuration $2 not found!"
          exit 1
       fi
-      source "$2"
+      VSPHERE_CONFIG_FILE="$2"
       shift
    elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
       DRY_RUN=1
@@ -253,6 +254,11 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
    BUILDER_VMSETUP="vsphere"
    NAME="vSphere"
    VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   if [ "${VSPHERE_CONFIG_FILE}" == "" ] ; then
+      echo >&2 "ERROR: No vSphere configuration file specified (--vsphere parameter)!"
+      exit 1
+   fi
+   source "${VSPHERE_CONFIG_FILE}"
 else
    echo >&2 "ERROR: Invalid hypervisor ${HYPERVISOR}!"
    exit 1
