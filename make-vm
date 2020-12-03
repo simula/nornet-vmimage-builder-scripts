@@ -278,6 +278,8 @@ fi
 
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    PROVISIONERS="${PROVISIONERS} install-virtualbox-guest-utils"
+elif [ "${HYPERVISOR}" == "vSphere" ] ; then
+   PROVISIONERS="${PROVISIONERS} install-vmware-guest-utils"
 fi
 PROVISIONERS="${PROVISIONERS} clean-up"
 NAME="${NAME}-${PROJECT}"
