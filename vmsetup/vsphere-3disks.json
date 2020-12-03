@@ -36,6 +36,7 @@
   "insecure_connection": true,
 
   "disk_controller_type": "pvscsi",
+  "cdrom_type": "sata",
   "storage": [
      {
         "disk_size": "{{user `vm_disk_root`}}",
