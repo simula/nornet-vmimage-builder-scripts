@@ -45,6 +45,11 @@ mkdir -p ~/src
 cd ~/src
 
 git clone https://dreibh@github.com/dreibh/fractgen.git
+git clone https://dreibh@github.com/dreibh/hipercontracer.git
 git clone https://dreibh@github.com/dreibh/netperfmeter.git
+git clone https://dreibh@github.com/dreibh/rsplib.git
 git clone https://dreibh@github.com/dreibh/subnetcalc.git
 git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+
+# HAW "Rechnernetze" exercise sources:
+git clone https://dreibh@bitbucket.org/dreibh/rn20.git rn20
