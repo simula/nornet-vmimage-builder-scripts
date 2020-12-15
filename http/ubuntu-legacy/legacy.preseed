@@ -178,6 +178,7 @@ d-i preseed/late_command                            string \
  in-target /usr/bin/apt-add-repository -y ppa:dreibh/ppa ; \
  in-target /usr/bin/apt-get update ; \
  in-target /usr/bin/apt-get dist-upgrade -y ; \
+ in-target /bin/bash -c -- 'if lspci | grep -q "VMware VMX" ; then /usr/bin/apt-get install -y open-vm-tools ; fi' ; \
  in-target /bin/sed -i "s/XKBMODEL=\"[a-z]*\"/XKBMODEL=\"pc105\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBLAYOUT=\"[a-z]*\"/XKBLAYOUT=\"de\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
