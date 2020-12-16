@@ -21,21 +21,25 @@
 # Bash options:
 set -ex
 
+UNAME="`uname`"
 
 # ====== Set timezone =======================================================
-if [ -x /usr/bin/timedatectl ] ; then
-   /usr/bin/timedatectl set-timezone Europe/Oslo
-else
-   # ------ Old Ubuntu (12.04 etc.) -----------------------
-   if [ ! -e /usr/bin/apt ] ; then
-      echo "Europe/Oslo" >/etc/timezone
-      dpkg-reconfigure -f noninteractive tzdata
+if [ "${UNAME}" == "Linux" ] ; then
+   if [ -x /usr/bin/timedatectl ] ; then
+      /usr/bin/timedatectl set-timezone Europe/Oslo
+   else
+      # ------ Old Ubuntu (12.04 etc.) -----------------------
+      if [ ! -e /usr/bin/apt ] ; then
+         echo "Europe/Oslo" >/etc/timezone
+         dpkg-reconfigure -f noninteractive tzdata
+      fi
    fi
 fi
 
 
 # ====== Set sysctls ========================================================
-cat >>/etc/sysctl.conf <<EOF
+if [ "${UNAME}" == "Linux" ] ; then
+   cat >>/etc/sysctl.conf <<EOF
 
 ###################################################################
 
@@ -62,6 +66,18 @@ net.ipv4.tcp_ecn=1
 # sysctl -w net.mptcp.mptcp_enabled=1
 # sysctl -w net.mptcp.mptcp_path_manager=fullmesh
 EOF
+
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   cat >>/etc/sysctl.conf <<EOF
+
+###################################################################
+
+# ------ Custom settings ------------------------------------------
+# Enable ECN:
+net.inet.tcp.ecn.enable=1
+EOF
+
+fi
 
 
 # ====== Make some additions to .bashrc =====================================
