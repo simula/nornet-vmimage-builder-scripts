@@ -68,6 +68,8 @@ export nonInteractive=YES
 
 #!/bin/sh
 
+set -e
+
 # !!!!!! TEST ONLY! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # echo "packer" | pw usermod root -h 0
 # echo "PermitRootLogin yes" >>/etc/ssh/sshd_config
@@ -89,7 +91,12 @@ chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 
 
 # ====== Basic packages =====================================================
-echo "nameserver 1.1.1.1" >/etc/resolv.conf
+# /etc/resolv.conf is not initialised here, since this code is called from
+# within the installer environment. Using OpenDNS servers here:
+(
+   echo "nameserver 208.67.222.222"
+   echo "nameserver 208.67.220.220"
+) >/etc/resolv.conf
 
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
 
@@ -100,10 +107,14 @@ FreeBSD: {
 }
 EOF
 
-pkg bootstrap -y
+
+# Initialise package database. pkg will ask whether to initialise,
+# ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!
+env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
+
+# Install some basic packages:
 pkg update
 pkg upgrade -y
-
 pkg install -y sudo bash joe
 
 

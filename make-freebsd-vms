@@ -31,7 +31,7 @@ PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.openstack"
 USER_NAME="nornetpp"
-USER_PASSWORD="!NorNetInst"
+USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
 CORES=4
