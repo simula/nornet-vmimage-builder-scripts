@@ -22,44 +22,54 @@
 set -ex
 
 
+UNAME="`uname`"
+
+
 # ====== NorNet configuration ===============================================
+if [ "${UNAME}" == "Linux" ] ; then
 
-# !!! Ensure that growpart and resizefs are enabled !!!!!!!!!!!!!!!!!!!!!!!!!
-# With new Ubuntu autoinstaller:
-# /etc/cloud/cloud.cfg.d/99-installer.cfg disables growpart and resizefs
-# => fixing this here:
-if [ -e /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
-   sed -e "s#growpart: {mode: 'off'}#growpart: {mode: 'auto'}#g" \
-       -e "s#resize_rootfs: false#resize_rootfs: true#g" \
-       -i /etc/cloud/cloud.cfg.d/99-installer.cfg
-fi
-
-
-# ------ Ubuntu -------------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
-   /usr/bin/apt-get update
-
-   packages="nornet-management td-system-configure-grub"
-
-   # Try 3 times, for the case of download issues:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
-
-   # The nornet-autoupdate package only exists for newer Ubuntu versions:
-   release="`lsb_release -c | cut -d':' -f2 | tr -d ' \t'`"
-   if [ "${release}" != "precise" ] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y nornet-autoupdate
+   # !!! Ensure that growpart and resizefs are enabled !!!!!!!!!!!!!!!!!!!!!!!!!
+   # With new Ubuntu autoinstaller:
+   # /etc/cloud/cloud.cfg.d/99-installer.cfg disables growpart and resizefs
+   # => fixing this here:
+   if [ -e /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
+      sed -e "s#growpart: {mode: 'off'}#growpart: {mode: 'auto'}#g" \
+          -e "s#resize_rootfs: false#resize_rootfs: true#g" \
+          -i /etc/cloud/cloud.cfg.d/99-installer.cfg
    fi
 
-# ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
-   /usr/bin/dnf install -y nornet-management nornet-autoupdate td-system-tools-configure-grub
+
+   # ------ Ubuntu ----------------------------------------------------------
+   if [ -e /usr/bin/apt-get ] ; then
+      /usr/bin/apt-get update
+
+      packages="nornet-management td-system-configure-grub"
+
+      # Try 3 times, for the case of download issues:
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+            sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
+      # The nornet-autoupdate package only exists for newer Ubuntu versions:
+      release="`lsb_release -c | cut -d':' -f2 | tr -d ' \t'`"
+      if [ "${release}" != "precise" ] ; then
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y nornet-autoupdate
+      fi
+
+   # ------ Fedora ----------------------------------------------------------
+   elif [ -e /usr/bin/dnf ] ; then
+      /usr/bin/dnf install -y nornet-management nornet-autoupdate td-system-tools-configure-grub
+   fi
+
+
+   # ====== Set configured screen resolution as fallback ====================
+   /usr/bin/configure-grub /etc/default/grub \
+      -V "auto,${VIDEO},1024x768" \
+      -T "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192" \
+      -o /etc/default/grub
+
+
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   true
+
 fi
-
-
-# ====== Set configured screen resolution as fallback =======================
-/usr/bin/configure-grub /etc/default/grub \
-   -V "auto,${VIDEO},1024x768" \
-   -T "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192" \
-   -o /etc/default/grub

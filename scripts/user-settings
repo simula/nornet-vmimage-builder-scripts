@@ -21,7 +21,9 @@
 # Bash options:
 set -ex
 
+
 UNAME="`uname`"
+
 
 # ====== Set timezone =======================================================
 if [ "${UNAME}" == "Linux" ] ; then
