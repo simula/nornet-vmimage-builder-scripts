@@ -28,13 +28,14 @@ set -ex
 if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
+   packages=""
    release=`lsb_release -cs`
    if [ "${release}" == "precise" -o "${release}" == "trusty" ] ; then
       # Package list for old Ubuntu releases:
-      packages="kdm plasma-desktop gtk2-engines-oxygen gtk3-engines-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme"
+      packages="${packages} kdm plasma-desktop gtk2-engines-oxygen gtk3-engines-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme"
    else
       # Package list for current Ubuntu releases:
-      packages="sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
+      packages="${packages} nornet-display sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
    fi
 
    # Try 3 times, for the case of download issues:
