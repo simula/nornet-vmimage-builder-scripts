@@ -33,7 +33,7 @@ USER_NAME="student"
 USER_PASSWORD="b00tloader"
 USER_REALNAME="HAW-Student"
 
-CORES=2
+# CORES=4
 # MEMORY=4096
 DISK_ROOT=32768
 DISK_HOME=65536
@@ -48,9 +48,11 @@ OPTIONS=""
 for project in ${PROJECTS} ; do
    if [ "${project}" == "HAW-Desktop" ] ; then
       HOSTNAME="baumwall.haw.nornet"
+      CORES=4
       MEMORY=4096
    else
       HOSTNAME="reeperbahn.haw.nornet"
+      CORES=2
       MEMORY=2048
    fi
    PROJECTS="${project}"
