@@ -24,17 +24,17 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Fedora-32 Fedora-33"
-# SYSTEMS="Ubuntu-20.04-LTS"
+SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="HAW-Desktop"
-HOSTNAME="baumwall.haw.nornet"
+PROJECTS="HAW-Router HAW-Desktop"
+# HOSTNAME="baumwall.haw.nornet"
 USER_NAME="student"
 USER_PASSWORD="b00tloader"
 USER_REALNAME="HAW-Student"
 
 CORES=4
-MEMORY=4096
+# MEMORY=4096
 DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048
@@ -45,4 +45,14 @@ BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Hambu
 OPTIONS=""
 # ---------------------------------------------------------
 
-build-defined-vms
+for project in ${PROJECTS} ; do
+   if [ "${project}" == "HAW-Desktop" ] ; then
+      HOSTNAME="baumwall.haw.nornet"
+      MEMORY=4096
+   else
+      HOSTNAME="reeperbahn.haw.nornet"
+      MEMORY=2048
+   fi
+   PROJECTS="${project}"
+   build-defined-vms
+done
