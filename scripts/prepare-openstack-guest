@@ -31,6 +31,9 @@ if [ -e /usr/bin/apt-get ] ; then
    # Install Cloud-Init:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
 
+   # Set user name in Cloud-Init's configuration file:
+   sed -e "s/name: ubuntu/name: nornetpp/g" -i /etc/cloud/cloud.cfg
+
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y cloud-init
