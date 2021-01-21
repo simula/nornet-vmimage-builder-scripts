@@ -32,7 +32,9 @@ if [ -e /usr/bin/apt-get ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
 
    # Set user name in Cloud-Init's configuration file:
-   sed -e "s/name: ubuntu/name: nornetpp/g" -i /etc/cloud/cloud.cfg
+   # !!! Something messes up the instance on nisse, but not on odin, when
+   # !!! the next line is active:
+   # !!! sed -e "s/name: ubuntu/name: nornetpp/g" -i /etc/cloud/cloud.cfg
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
