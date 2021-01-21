@@ -24,7 +24,7 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Fedora-32 Fedora-33"
-SYSTEMS="Ubuntu-20.04-LTS"
+# SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Router HAW-Desktop"
@@ -56,5 +56,6 @@ for project in ${PROJECTS} ; do
       MEMORY=2048
    fi
    PROJECTS="${project}"
-   build-defined-vms
+   build-defined-vms &
 done
+wait
