@@ -45,10 +45,12 @@ else
    echo "Running as $USER! SUDO_USER=$SUDO_USER"
 fi
 
-release=`lsb_release -cs`
-if [ "${release}" == "precise" ] ; then
-   echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
-   exit 0
+if [ -x /usr/bin/lsb_release ] ; then
+   release=`/usr/bin/lsb_release -cs`
+   if [ "${release}" == "precise" ] ; then
+      echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
+      exit 0
+   fi
 fi
 
 
