@@ -209,40 +209,47 @@ autoinstall:
     # (based on https://gist.github.com/wpbrown/b688a934339cb4228c3faf5b527fbe5b)
     - |
       set -ex
-      echo "X-1" >>/tmp/q0
+      echo "X-1" >>/target/q0
       EFI_DEV=$(awk '$2 == "/target/boot/efi" { print $1 }' /proc/mounts)
       ROOT_DEV=$(awk '$2 ~ "^/target$" { print $1 }' /proc/mounts)
-      ROOT_UUID=$(blkid -o value $ROOT_DEV | head -n 1)
-      echo "X-2" >>/tmp/q0
+      ROOT_UUID=$(blkid -o value $ROOT_DEV | head -n2 | tail -n1)
+      echo "X-2" >>/target/q0
       if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then
-         echo "X-3" >>/tmp/q0
+         echo "X-3a" >>/target/q0
+         df >>/target/q0
+         echo "X-3b" >>/target/q0
          HOME_DEV=$(awk '$2 ~ "^/target/home$" { print $1 }' /proc/mounts)
-         HOME_UUID=$(blkid -o value $HOME_DEV | head -n 1)
+         HOME_UUID=$(blkid -o value $HOME_DEV | head -n2 | tail -n1)
          btrfs subvolume snapshot /target/home /target/home/@home
+         echo "X-3c" >>/target/q0
+         ls -l /target/home >>/target/q0
       else
-         echo "X-4" >>/tmp/q0
+         echo "X-4" >>/target/q0
          HOME_DEV=""
          HOME_UUID=""
       fi
-      echo "X-5" >>/tmp/q0
-      awk '$2 ~ "^/target/" { print $2 }' /proc/mounts | xargs umount
+      echo "X=$EFI_DEV Y=$ROOT_DEV Z=$ROOT_UUID H=$HOME_UUID ($HOME_DEV)" >>/target/q0
+      echo "X-5a" >>/target/q0
+      awk '$2 ~ "^/target/" { print $2 }' /proc/mounts | xargs umount || true
+      echo "X-5b" >>/target/q0
       btrfs subvolume snapshot /target /target/@
-      echo "X-6" >>/tmp/q0
+      echo "X-6" >>/target/q0
       mkdir /mnt/rootfs
       mount -o subvol=@ $ROOT_DEV /mnt/rootfs
-      echo "X-7" >>/tmp/q0
+      echo "X-7" >>/target/q0
       if [ "$HOME_UUID" != "" ] ; then
-         echo "X-8" >>/tmp/q0
+         echo "X-8" >>/target/q0
          mount -o subvol=@home $HOME_DEV /mnt/rootfs/home
+         find /mnt/rootfs/home -mindepth 1 -maxdepth 1 -not -name @home -exec rm -rf '{}' \;
       fi
-      echo "X-9" >>/tmp/q0
+      echo "X-9" >>/target/q0
       mount $EFI_DEV /mnt/rootfs/boot/efi
       mount -o bind /dev  /mnt/rootfs/dev
       mount -o bind /sys  /mnt/rootfs/sys
       mount -o bind /proc /mnt/rootfs/proc
-      echo "X-10" >>/tmp/q0
+      echo "X-10" >>/target/q0
       sed -i "/$ROOT_UUID/s/defaults/defaults,subvol=@/" /mnt/rootfs/etc/fstab
-      echo "X-11" >>/tmp/q0
+      echo "X-11" >>/target/q0
       chroot /mnt/rootfs update-grub
       chroot /mnt/rootfs grub-install --efi-directory=/boot/efi
       find /target -mindepth 1 -maxdepth 1 -not -name @ -exec rm -rf '{}' \;
@@ -252,4 +259,4 @@ autoinstall:
          btrfs subvolume create /target/@home
          echo "/dev/disk/by-uuid/$ROOT_UUID /home btrfs defaults,subvol=@home 0 0" >> /mnt/rootfs/etc/fstab
       fi
-      echo "X-12" >>/tmp/q0
+      echo "X-12" >>/target/q0
