@@ -196,12 +196,49 @@ autoinstall:
 
   # ###### Post-Install Configuration #######################################
   late-commands:
-    # Add partition names:
+    # ====== Add partition names ============================================
     - sgdisk --change-name=1:EFI --change-name=2:Root /dev/<SET_DISK_PREFIX_HERE>a
     - if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; fi
     - if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/<SET_DISK_PREFIX_HERE>c ; fi
     # Add BIOS Grub partition, if not yet created, just to be sure:
-    ###- if ! sgdisk --print /dev/<SET_DISK_PREFIX_HERE>a | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/<SET_DISK_PREFIX_HERE>a ; fi
-    ###- sgdisk --change-name=1:GRUB /dev/<SET_DISK_PREFIX_HERE>a
-    # Generate additional locales:
+    # - if ! sgdisk --print /dev/<SET_DISK_PREFIX_HERE>a | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/<SET_DISK_PREFIX_HERE>a ; fi
+    # - sgdisk --change-name=1:GRUB /dev/<SET_DISK_PREFIX_HERE>a
+    # ====== Generate additional locales ====================================
     - chroot /target locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
+    # ====== BTRFS subvolume setup ==========================================
+    # (based on https://gist.github.com/wpbrown/b688a934339cb4228c3faf5b527fbe5b)
+    - |
+      set -ex
+      EFI_DEV=$(awk '$2 == "/target/boot/efi" { print $1 }' /proc/mounts)
+      ROOT_DEV=$(awk '$2 ~ "^/target$" { print $1 }' /proc/mounts)
+      ROOT_UUID=$(blkid -o value $ROOT_DEV | head -n2 | tail -n1)
+      if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then
+         HOME_DEV=$(awk '$2 ~ "^/target/home$" { print $1 }' /proc/mounts)
+         HOME_UUID=$(blkid -o value $HOME_DEV | head -n2 | tail -n1)
+         btrfs subvolume snapshot /target/home /target/home/@home
+      else
+         HOME_DEV=""
+         HOME_UUID=""
+      fi
+      awk '$2 ~ "^/target/" { print $2 }' /proc/mounts | xargs umount || true
+      btrfs subvolume snapshot /target /target/@
+      mkdir /mnt/rootfs
+      mount -o subvol=@ $ROOT_DEV /mnt/rootfs
+      if [ "$HOME_UUID" != "" ] ; then
+         mount -o subvol=@home $HOME_DEV /mnt/rootfs/home
+         find /mnt/rootfs/home -mindepth 1 -maxdepth 1 -not -name @home -exec rm -rf '{}' \;
+      fi
+      mount $EFI_DEV /mnt/rootfs/boot/efi
+      mount -o bind /dev  /mnt/rootfs/dev
+      mount -o bind /sys  /mnt/rootfs/sys
+      mount -o bind /proc /mnt/rootfs/proc
+      sed -i "/$ROOT_UUID/s/defaults/defaults,subvol=@/" /mnt/rootfs/etc/fstab
+      chroot /mnt/rootfs update-grub
+      chroot /mnt/rootfs grub-install --efi-directory=/boot/efi
+      find /target -mindepth 1 -maxdepth 1 -not -name @ -exec rm -rf '{}' \;
+      if [ "$HOME_UUID" != "" ] ; then
+         sed -i "/$HOME_UUID/s/defaults/defaults,subvol=@home/" /mnt/rootfs/etc/fstab
+      else
+         btrfs subvolume create /target/@home
+         echo "/dev/disk/by-uuid/$ROOT_UUID /home btrfs defaults,subvol=@home 0 0" >> /mnt/rootfs/etc/fstab
+      fi
