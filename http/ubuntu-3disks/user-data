@@ -234,18 +234,18 @@ autoinstall:
       if [ "$HOME_UUID" != "" ] ; then
          mount -o subvol=@home $HOME_DEV /mnt/rootfs/home
       fi
-      # ------ Update Grub configuration ------------------------------------
-      mount $EFI_DEV /mnt/rootfs/boot/efi
-      mount -o bind /dev  /mnt/rootfs/dev
-      mount -o bind /sys  /mnt/rootfs/sys
-      mount -o bind /proc /mnt/rootfs/proc
+      # ------ Update /etc/fstab --------------------------------------------
       sed -i "/$ROOT_UUID/s/defaults/defaults,subvol=@/" /mnt/rootfs/etc/fstab
-      chroot /mnt/rootfs update-grub
-      chroot /mnt/rootfs grub-install --efi-directory=/boot/efi
-      # ------ Update /etc/fstab for Home subvolume -------------------------
       if [ "$HOME_UUID" != "" ] ; then
          sed -i "/$HOME_UUID/s/defaults/defaults,subvol=@home/" /mnt/rootfs/etc/fstab
       else
          btrfs subvolume create /target/@home
          echo "/dev/disk/by-uuid/$ROOT_UUID /home btrfs defaults,subvol=@home 0 0" >> /mnt/rootfs/etc/fstab
       fi
+      # ------ Update Grub configuration ------------------------------------
+      mount $EFI_DEV /mnt/rootfs/boot/efi
+      mount -o bind /dev  /mnt/rootfs/dev
+      mount -o bind /sys  /mnt/rootfs/sys
+      mount -o bind /proc /mnt/rootfs/proc
+      chroot /mnt/rootfs update-grub
+      chroot /mnt/rootfs grub-install --efi-directory=/boot/efi
