@@ -221,8 +221,15 @@ autoinstall:
          HOME_UUID=""
       fi
       if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then
-         SWAP_DEV=$(awk '$1 ~ "^/dev/" { print $1 }' /proc/swaps)
+         SWAP_DEV="/dev/<SET_DISK_PREFIX_HERE>c1"
          SWAP_UUID=$(blkid -o value $SWAP_DEV | head -n2 | tail -n1)
+         echo "X-80 S=$SWAP_UUID D=$SWAP_DEV" >>/target/q0
+         cat /proc/swaps  >>/target/q0
+         echo "---" >>/target/q0
+         blkid $SWAP_DEV >>/target/q0
+         echo "---" >>/target/q0
+         blkid -o value $SWAP_DEV >>/target/q0
+         echo "+++" >>/target/q0
       else
          SWAP_DEV=""
          SWAP_UUID=""
@@ -249,9 +256,15 @@ autoinstall:
          btrfs subvolume create /target/@home
          echo "/dev/disk/by-uuid/$ROOT_UUID /home btrfs defaults,subvol=@home 0 0" >> /mnt/rootfs/etc/fstab
       fi
+      echo "X-90" >>/mnt/rootfs/q0
       if [ "$SWAP_UUID" != "" ] ; then
+         echo "X-91 S=$SWAP_UUID D=$SWAP_DEV" >>/mnt/rootfs/q0
+         cat /mnt/rootfs/etc/fstab >>/mnt/rootfs/q0
          sed -i "/$SWAP_UUID/s/ sw / sw,discard /" /mnt/rootfs/etc/fstab
+         echo "X-91" >>/mnt/rootfs/q0
+         cat /mnt/rootfs/etc/fstab >>/mnt/rootfs/q0
       fi
+      echo "X-91" >>/mnt/rootfs/q0
       # ------ Update Grub configuration ------------------------------------
       mount $EFI_DEV /mnt/rootfs/boot/efi
       mount -o bind /dev  /mnt/rootfs/dev
