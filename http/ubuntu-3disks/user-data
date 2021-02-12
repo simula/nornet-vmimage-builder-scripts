@@ -220,6 +220,13 @@ autoinstall:
          HOME_DEV=""
          HOME_UUID=""
       fi
+      if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then
+         SWAP_DEV=$(awk '$1 ~ "^/dev/" { print $1 }' /proc/swaps)
+         SWAP_UUID=$(blkid -o value $SWAP_DEV | head -n2 | tail -n1)
+      else
+         SWAP_DEV=""
+         SWAP_UUID=""
+      fi
       # ------ Create snapshots: @ for / and @home for /home ----------------
       btrfs subvolume snapshot /target /target/@
       if [ "$HOME_UUID" != "" ] ; then
@@ -241,6 +248,9 @@ autoinstall:
       else
          btrfs subvolume create /target/@home
          echo "/dev/disk/by-uuid/$ROOT_UUID /home btrfs defaults,subvol=@home 0 0" >> /mnt/rootfs/etc/fstab
+      fi
+      if [ "$SWAP_UUID" != "" ] ; then
+         sed -i "/$SWAP_UUID/s/ sw / sw,discard /" /mnt/rootfs/etc/fstab
       fi
       # ------ Update Grub configuration ------------------------------------
       mount $EFI_DEV /mnt/rootfs/boot/efi
