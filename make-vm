@@ -562,7 +562,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    if [ ${HYPERVISOR} == "VirtualBox" ] ; then
       echo "RESULT=`realpath --relative-to=. ${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}.ova`"
    elif [ ${HYPERVISOR} == "QEMU" ] ; then
-      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}"
    elif [ ${HYPERVISOR} == "vSphere" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
