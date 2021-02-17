@@ -35,7 +35,8 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
-  "hard_drive_interface": "sata",
+  "iso_interface": "virtio",
+  "hard_drive_interface": "virtio",
   "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
   "keep_registered": true,
@@ -59,14 +60,14 @@
     // [ "modifyvm", "{{.Name}}", "--uart1", "0x03f8", "4", "--uartmode1", "disconnected" ],
     // NIC uses virtio:
     [ "modifyvm", "{{.Name}}", "--nictype1", "virtio", "--nictype2", "virtio", "--nictype3", "virtio", "--nictype4", "virtio" ],
-    [ "storagectl", "{{.Name}}", "--name", "SATA Controller", "--hostiocache", "on" ],
+    [ "storagectl", "{{.Name}}", "--name", "VirtIO Controller", "--hostiocache", "on" ],
 
     // ====== Add additional disks ==========================================
     [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
     [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
-    [ "storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "1", "--type", "hdd",
+    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "2", "--type", "hdd",
       "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
-    [ "storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "hdd",
+    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "3", "--type", "hdd",
       "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
     // ======================================================================
   ]
