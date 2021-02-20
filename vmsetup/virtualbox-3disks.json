@@ -35,6 +35,11 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
+  "chipset": "ich9",
+  "firmware": "efi",
+  "nic_type": "virtio",
+  "gfx_controller": "vmsvga",
+  "audio_controller": "hda",
   "iso_interface": "virtio",
   "hard_drive_interface": "virtio",
   "hard_drive_discard": true,
@@ -47,19 +52,19 @@
   "sound": "pulse",
   "vboxmanage": [
     [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
-    [ "modifyvm", "{{.Name}}", "--chipset", "ICH9" ],
-    [ "modifyvm", "{{.Name}}", "--firmware", "EFI" ],
+// !!!    [ "modifyvm", "{{.Name}}", "--chipset", "ICH9" ],
+// !!!    [ "modifyvm", "{{.Name}}", "--firmware", "EFI" ],
     [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
     [ "modifyvm", "{{.Name}}", "--vram", "128" ],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-    [ "modifyvm", "{{.Name}}", "--audio", "pulse", "--audiocontroller", "hda" ],
-    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga", "--accelerate3d", "off" ],
+// !!!    [ "modifyvm", "{{.Name}}", "--audio", "pulse", "--audiocontroller", "hda" ],
+// !!!    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga", "--accelerate3d", "off" ],
     [ "setextradata", "global", "GUI/SuppressMessages", "all" ],
     [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ],
     // VirtualBox seems to hang when there is no serial port but a serial port console configured:
     // [ "modifyvm", "{{.Name}}", "--uart1", "0x03f8", "4", "--uartmode1", "disconnected" ],
     // NIC uses virtio:
-    [ "modifyvm", "{{.Name}}", "--nictype1", "virtio", "--nictype2", "virtio", "--nictype3", "virtio", "--nictype4", "virtio" ],
+//    [ "modifyvm", "{{.Name}}", "--nictype1", "virtio", "--nictype2", "virtio", "--nictype3", "virtio", "--nictype4", "virtio" ],
     [ "storagectl", "{{.Name}}", "--name", "VirtIO Controller", "--hostiocache", "on" ],
 
     // ====== Add additional disks ==========================================
