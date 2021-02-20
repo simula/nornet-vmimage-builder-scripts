@@ -22,6 +22,9 @@ set -e
 
 
 # ###### Defaults ###########################################################
+# PACKER="${HOME}/src/packer/bin/packer"
+PACKER="/usr/local/bin/packer"
+
 PROJECT="NorNet"
 HYPERVISOR="VirtualBox"
 DISTRIBUTION="Ubuntu"
@@ -199,6 +202,9 @@ while [ $# -gt 0 ] ; do
       fi
       VSPHERE_CONFIG_FILE="$2"
       shift
+   elif [ "$1" == "--packer" -o "$1" == "-K" ] ; then
+      PACKER="$2"
+      shift
    elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
       DRY_RUN=1
    elif [ "$1" == "--verbose" -o "$1" == "-x" ] ; then
@@ -232,6 +238,7 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--background-sddm|-BD image_file]"
       echo >&2 "   [--background-lockscreen|-BL image_file]"
       echo >&2 "   [--background-desktop|-BD image_file]"
+      echo >&2 "   [--packer|-K full_path_to_packer_executable]"
       echo >&2 "   [--dry-run|-n]"
       echo >&2 "   [--verbose|-x]"
       exit 1
@@ -241,6 +248,11 @@ done
 
 
 # ###### Get configuration ##################################################
+if [ ! -e "${PACKER}" ] ; then
+   echo >&2 "ERROR: Packer (${PACKER}) not found!"
+   exit 1
+fi
+
 NAME=""
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    BUILDER_VMSETUP="virtualbox"
@@ -522,7 +534,7 @@ fi
 echo "Running Packer:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
 rm -rf "${vm_name}"
-env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" packer build --force \
+env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" ${PACKER} build --force \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${NAME}" \
    -var "vm_name=${vm_name}"               \
    -var "vm_version=${vm_version}"         \
