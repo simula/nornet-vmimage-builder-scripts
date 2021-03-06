@@ -1,5 +1,5 @@
 // VirtualBox Configuration with Own Disks for Root, Home and Swap
-// Copyright (C) 2020 by Thomas Dreibholz
+// Copyright (C) 2020-2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
-//  "chipset": "ich9",
-//  "firmware": "efi",
-//  "nic_type": "virtio",
-//  "gfx_controller": "vmsvga",
-//  "audio_controller": "hda",
+  "chipset": "ich9",
+  "firmware": "efi",
+  "nic_type": "virtio",
+  "gfx_controller": "vmsvga",
+  "audio_controller": "hda",
   "iso_interface": "virtio",
   "hard_drive_interface": "virtio",
   "hard_drive_discard": true,
@@ -49,35 +49,28 @@
   "cpus": "{{user `vm_cores`}}",
   "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
-  "disk_additional_size": [
-    "{{user `vm_disk_home`}}",
-    "{{user `vm_disk_swap`}}"
-  ],
+  // !!! "disk_additional_size": [
+  // !!!   "{{user `vm_disk_home`}}",
+  // !!!   "{{user `vm_disk_swap`}}"
+  // !!! ],
   "sound": "pulse",
   "vboxmanage": [
     [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--chipset", "ICH9" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--firmware", "EFI" ],
     [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
     [ "modifyvm", "{{.Name}}", "--vram", "128" ],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--audio", "pulse", "--audiocontroller", "hda" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga", "--accelerate3d", "off" ],
+    [ "modifyvm", "{{.Name}}", "--accelerate3d", "off" ],
     [ "setextradata", "global", "GUI/SuppressMessages", "all" ],
-    [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ]
-    // VirtualBox seems to hang when there is no serial port but a serial port console configured:
-    // [ "modifyvm", "{{.Name}}", "--uart1", "0x03f8", "4", "--uartmode1", "disconnected" ],
-    // NIC uses virtio:
-//    [ "modifyvm", "{{.Name}}", "--nictype1", "virtio", "--nictype2", "virtio", "--nictype3", "virtio", "--nictype4", "virtio" ],
-//    [ "storagectl", "{{.Name}}", "--name", "VirtIO Controller", "--hostiocache", "on" ],
+    [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ],
 
     // ====== Add additional disks ==========================================
-//    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
-//    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
-//    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "2", "--type", "hdd",
-//      "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
-//    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "3", "--type", "hdd",
-//      "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
+    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
+    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
+    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "2", "--type", "hdd",
+      "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
+    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "3", "--type", "hdd",
+      "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
     // ======================================================================
+
   ]
 }
