@@ -22,7 +22,7 @@
   "type": "virtualbox-iso",
   "guest_additions_mode": "disable",
   "guest_os_type": "Ubuntu_64",
-  "headless": true,
+  "headless": false,
   "format": "ova",
   "export_opts": [
     "--ovf10",
@@ -37,8 +37,16 @@
   ],
   "chipset": "ich9",
   "firmware": "efi",
+  "nested_virt": false,
+  "rtc_time_base": "UTC",
   "nic_type": "virtio",
+
   "gfx_controller": "vmsvga",
+  "gfx_vram_size": 128,
+  "gfx_accelerate_3d": false,
+  "gfx_efi_resolution": "1920x1080",
+  // ??? "gfx_disable_vrde": true,
+
   "audio_controller": "hda",
   "iso_interface": "virtio",
   "hard_drive_interface": "virtio",
@@ -49,28 +57,13 @@
   "cpus": "{{user `vm_cores`}}",
   "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
-  // !!! "disk_additional_size": [
-  // !!!   "{{user `vm_disk_home`}}",
-  // !!!   "{{user `vm_disk_swap`}}"
-  // !!! ],
+  "disk_additional_size": [
+    "{{user `vm_disk_home`}}",
+    "{{user `vm_disk_swap`}}"
+  ],
   "sound": "pulse",
   "vboxmanage": [
-    [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
-    [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
-    [ "modifyvm", "{{.Name}}", "--vram", "128" ],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-    [ "modifyvm", "{{.Name}}", "--accelerate3d", "off" ],
-    [ "setextradata", "global", "GUI/SuppressMessages", "all" ],
-    [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ],
-
-    // ====== Add additional disks ==========================================
-    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
-    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
-    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "2", "--type", "hdd",
-      "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
-    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "3", "--type", "hdd",
-      "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
-    // ======================================================================
-
+    [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
   ]
 }
