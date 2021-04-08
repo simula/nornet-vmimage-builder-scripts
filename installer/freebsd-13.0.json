@@ -1,5 +1,5 @@
-// FreeBSD 12.1 with EFI Boot
-// Copyright (C) 2020 by Thomas Dreibholz
+// FreeBSD 13.0 with EFI Boot
+// Copyright (C) 2020-2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.0/FreeBSD-13.0-BETA2-amd64-disc1.iso",
-  "iso_checksum": "sha256:fe56c4f2e7684460c585761112e5b6c86c3dd2e1d7d6ecdee49010774664a3ec",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.0/FreeBSD-13.0-RC3-amd64-disc1.iso",
+  "iso_checksum": "sha256:45d44170a3079b813d8e0033e1a99f10d0e8ed0ac349aeaf25193a33553c9601",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,12 +28,28 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "30s",
+  // Oracle has messed up the EFI boot of FreeBSD in VirtualBox.
+  // Bug ticket: https://www.virtualbox.org/ticket/19910
+  // Since there seems to be no fix at any time soon, there is need for an
+  // ugly work-around:
+  // - Exit UEFI shell
+  // - Start Boot Maintenance Manager
+  // - Boot from file -> select bootx64.efi -> Boot
+  "boot_wait": "60s",
   "boot_command": [
-    "s<enter><wait>",
+    "exit<enter><wait1>",
+    "<down><down><down><enter><wait1>",
+    "<down><down><down><enter><wait1>",
+    "<down><enter><wait1>",
+    "<down><down><down><enter><wait1>",
+    "<down><down><down><down><down><enter><wait1>",
+    "<down><down><down><down><down><enter><wait1>",
+    "<wait10><wait10>",
+    "<enter><wait10><wait10><wait10><wait10>",
+    "s<wait10>",
     "cd /tmp && dhclient vtnet0 && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
     "bsdinstall script /tmp/installerconfig;<enter>"
     // ;  reboot<enter>
-   ]
+  ]
 }
