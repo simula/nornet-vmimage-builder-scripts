@@ -21,7 +21,7 @@
 set -e
 
 DESTINATIONS="nornetpp@nisse.simula.nornet:images/ nornetpp@odin.simula.nornet:images/"
-SSH_PROXY="oesthorn.nntb.no"
+SSH_PROXY="128.39.37.188"
 
 source ./directories.config
 
@@ -36,8 +36,8 @@ for vm in ${VMs} ; do
          image=`ls -S .`
          if [ -e "${image}" ] ; then
             for destination in ${DESTINATIONS} ; do
-               echo "rsync -e \"ssh -4J ${SSH_PROXY}\" -Pvz --partial `realpath ${image}` ${destination}${image}.qcow2"
-               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -Pvz --partial `realpath ${image}` ${destination}${image}.qcow2"
+               echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${destination}${image}.qcow2"
+               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${destination}${image}.qcow2"
             done
             imageFiles="${imageFiles} ${image}.qcow2"
          fi
