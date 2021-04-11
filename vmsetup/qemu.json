@@ -1,5 +1,5 @@
 // QEMU Configuration with Single Disk
-// Copyright (C) 2020 by Thomas Dreibholz
+// Copyright (C) 2020-2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
   "accelerator": "kvm",
   "headless": true,
   "format": "qcow2",
+
+  "firmware": "OVMF.fd",
   "disk_interface": "virtio",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
@@ -32,9 +34,10 @@
   "memory": "{{user `vm_memory`}}",
   "disk_size": "{{user `vm_disk_root`}}",
   // "disk_additional_size": [
+  //   "{{user `vm_disk_home`}}M",
+  //   "{{user `vm_disk_swap`}}M"
   // ],
   "qemuargs": [
-    [ "-bios", "OVMF.fd" ],
     [ "-vga", "qxl" ]
   ]
 }

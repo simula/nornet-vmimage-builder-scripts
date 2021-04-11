@@ -22,8 +22,8 @@ set -e
 
 
 # ###### Defaults ###########################################################
-# PACKER="${HOME}/src/packer/bin/packer"
-PACKER="/usr/local/bin/packer"
+PACKER="${HOME}/src/packer/bin/packer"
+# PACKER="/usr/local/bin/packer"
 
 PROJECT="NorNet"
 HYPERVISOR="VirtualBox"
@@ -359,6 +359,16 @@ fi
 USER_HASHED_PASSWORD=`echo "${USER_PASSWORD}" | mkpasswd -s -m sha-512`
 HOSTNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\1/g'`
 DOMAINNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g'`
+
+
+# ###### Check Packer version ###############################################
+packerVersion=`${PACKER} --version`
+requiredMinVersion="1.7.1~"
+check=`echo -e "${requiredMinVersion}\n${packerVersion}" | sort -V -r | head -n1`
+if [ "${check}" == "${requiredMinVersion}" ] ; then
+   echo >&2 "ERROR: Packer version ${packerVersion} is not suitable! Required is at least version ${requiredMinVersion}."
+   exit 1
+fi
 
 
 # ###### Write Packer configuration #########################################
