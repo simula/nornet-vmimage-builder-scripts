@@ -48,8 +48,8 @@
   // ??? "gfx_disable_vrde": true,
 
   "audio_controller": "hda",
-  "iso_interface": "virtio",
-  "hard_drive_interface": "virtio",
+  "iso_interface": "sata",
+  "hard_drive_interface": "sata",
   "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
   "keep_registered": true,
