@@ -34,7 +34,13 @@ if [ -e /usr/bin/apt-get ] ; then
    # Set user name in Cloud-Init's configuration file:
    # !!! Something messes up the instance on nisse, but not on odin, when
    # !!! the next line is active:
-   sed -e "s/name: ubuntu/name: nornetpp/g" -e "s/lock_passwd: True/lock_passwd: False/g" -i /etc/cloud/cloud.cfg
+   sed -e "s/name: ubuntu/name: ${USER_NAME}/g" -e "s/lock_passwd: True/lock_passwd: False/g" -i /etc/cloud/cloud.cfg
+
+   # Password-less "sudo" for the default user:
+   (
+      echo "# Allow password-less sudo for ${USER_NAME}:"
+      echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL"
+   ) >/etc/sudoers.d/99-${USER_NAME}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
