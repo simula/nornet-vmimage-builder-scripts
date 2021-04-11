@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/20210217/hirsute-live-server-amd64.iso",
-  "iso_checksum": "sha256:756d5c2e9bbfa1c2616d1c7932741945f3c9d18ffd30f5b66baf1d65c62393bf",
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/hirsute-live-server-amd64.iso",
+  "iso_checksum": "sha256:743013aaad2ed8e1a20cb810703ae1e21a517793efa05f0b1b8d7c3583202a7c",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

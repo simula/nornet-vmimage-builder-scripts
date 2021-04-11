@@ -1,5 +1,5 @@
 // VirtualBox Configuration with Own Disks for Root, Home and Swap
-// Copyright (C) 2020 by Thomas Dreibholz
+// Copyright (C) 2020-2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
   "type": "virtualbox-iso",
   "guest_additions_mode": "disable",
   "guest_os_type": "Ubuntu_64",
-  "headless": true,
+  "headless": false,
   "format": "ova",
   "export_opts": [
     "--ovf10",
@@ -35,13 +35,21 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
-//  "chipset": "ich9",
-//  "firmware": "efi",
-//  "nic_type": "virtio",
-//  "gfx_controller": "vmsvga",
-//  "audio_controller": "hda",
-  "iso_interface": "virtio",
-  "hard_drive_interface": "virtio",
+  "chipset": "ich9",
+  "firmware": "efi",
+  "nested_virt": false,
+  "rtc_time_base": "UTC",
+  "nic_type": "virtio",
+
+  "gfx_controller": "vmsvga",
+  "gfx_vram_size": 128,
+  "gfx_accelerate_3d": false,
+  "gfx_efi_resolution": "1920x1080",
+  // ??? "gfx_disable_vrde": true,
+
+  "audio_controller": "hda",
+  "iso_interface": "sata",
+  "hard_drive_interface": "sata",
   "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
   "keep_registered": true,
@@ -55,29 +63,7 @@
   ],
   "sound": "pulse",
   "vboxmanage": [
-    [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--chipset", "ICH9" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--firmware", "EFI" ],
-    [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
-    [ "modifyvm", "{{.Name}}", "--vram", "128" ],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--audio", "pulse", "--audiocontroller", "hda" ],
-// !!!    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga", "--accelerate3d", "off" ],
-    [ "setextradata", "global", "GUI/SuppressMessages", "all" ],
-    [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ]
-    // VirtualBox seems to hang when there is no serial port but a serial port console configured:
-    // [ "modifyvm", "{{.Name}}", "--uart1", "0x03f8", "4", "--uartmode1", "disconnected" ],
-    // NIC uses virtio:
-//    [ "modifyvm", "{{.Name}}", "--nictype1", "virtio", "--nictype2", "virtio", "--nictype3", "virtio", "--nictype4", "virtio" ],
-//    [ "storagectl", "{{.Name}}", "--name", "VirtIO Controller", "--hostiocache", "on" ],
-
-    // ====== Add additional disks ==========================================
-//    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_home`}}" ],
-//    [ "createhd", "--format", "VDI", "--filename", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--variant", "Standard", "--size", "{{user `vm_disk_swap`}}" ],
-//    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "2", "--type", "hdd",
-//      "--medium", "{{user `vm_directory`}}/{{.Name}}-Home.vdi", "--nonrotational", "on", "--discard", "on" ],
-//    [ "storageattach", "{{.Name}}", "--storagectl", "VirtIO Controller", "--port", "3", "--type", "hdd",
-//      "--medium", "{{user `vm_directory`}}/{{.Name}}-Swap.vdi", "--nonrotational", "on", "--discard", "on" ]
-    // ======================================================================
+    [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
   ]
 }

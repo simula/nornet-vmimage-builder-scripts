@@ -1,5 +1,5 @@
 // QEMU Configuration with Own Disks for Root, Home and Swap
-// Copyright (C) 2020 by Thomas Dreibholz
+// Copyright (C) 2020-2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
   "output_directory": "{{user `vm_name`}}",
   "type": "qemu",
   "accelerator": "kvm",
-  "headless": false,
+  "headless": true,
   "format": "qcow2",
 
   "firmware": "OVMF.fd",
@@ -38,7 +38,6 @@
     "{{user `vm_disk_swap`}}M"
   ],
   "qemuargs": [
-// !!!   [ "-bios", "OVMF.fd" ],
     [ "-vga", "qxl" ]
   ]
 }
