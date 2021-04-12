@@ -22,8 +22,8 @@ set -e
 
 
 # ###### Defaults ###########################################################
-PACKER="${HOME}/src/packer/bin/packer"
-# PACKER="/usr/local/bin/packer"
+# PACKER="${HOME}/src/packer/bin/packer"
+PACKER="/usr/local/bin/packer"
 
 PROJECT="NorNet"
 HYPERVISOR="VirtualBox"
