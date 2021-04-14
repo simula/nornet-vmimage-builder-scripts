@@ -258,3 +258,5 @@ autoinstall:
       mount -o bind /proc /mnt/rootfs/proc
       chroot /mnt/rootfs update-grub
       chroot /mnt/rootfs grub-install --efi-directory=/boot/efi
+      # ------ Remove snapd (can be installed explicitly later, if needed) --
+      chroot /mnt/rootfs apt-get autoremove -y --purge snapd
