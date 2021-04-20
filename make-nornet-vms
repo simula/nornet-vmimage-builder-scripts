@@ -23,8 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-31 Fedora-32 Fedora-33"
-SYSTEMS="Ubuntu-21.04"
+SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-21.04 Fedora-31 Fedora-32 Fedora-33"
+# SYSTEMS="Ubuntu-20.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="NorNet"
