@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.0/FreeBSD-13.0-RC3-amd64-disc1.iso",
-  "iso_checksum": "sha256:45d44170a3079b813d8e0033e1a99f10d0e8ed0ac349aeaf25193a33553c9601",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.0/FreeBSD-13.0-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha256:f78d4e5f53605592863852b39fa31a12f15893dc48cacecd875f2da72fa67ae5",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
