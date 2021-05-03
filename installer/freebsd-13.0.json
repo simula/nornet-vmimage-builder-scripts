@@ -28,28 +28,11 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  // Oracle has messed up the EFI boot of FreeBSD in VirtualBox.
-  // Bug ticket: https://www.virtualbox.org/ticket/19910
-  // Since there seems to be no fix at any time soon, there is need for an
-  // ugly work-around:
-  // - Exit UEFI shell
-  // - Start Boot Maintenance Manager
-  // - Boot from file -> select bootx64.efi -> Boot
-  "boot_wait": "60s",
+  "boot_wait": "30s",
   "boot_command": [
-    "exit<enter><wait1>",
-    "<down><down><down><enter><wait1>",
-    "<down><down><down><enter><wait1>",
-    "<down><enter><wait1>",
-    "<down><down><down><enter><wait1>",
-    "<down><down><down><down><down><enter><wait1>",
-    "<down><down><down><down><down><enter><wait1>",
-    "<wait10><wait10>",
-    "<enter><wait10><wait10><wait10><wait10>",
-    "s<wait10>",
+    "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
     "bsdinstall script /tmp/installerconfig;<enter>"
-    // ;  reboot<enter>
-  ]
+   ]
 }

@@ -33,6 +33,8 @@ USER_NAME="nornetpp"
 USER_PASSWORD="rserpool4me!"
 USER_REALNAME="NorNet Praesum Presum"
 
+CHIPSET=ich9
+FIRMWARE=efi
 CORES=6
 MEMORY=4096
 DISK_ROOT=32768

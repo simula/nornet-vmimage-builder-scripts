@@ -24,15 +24,17 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-21.04 Fedora-31 Fedora-32 Fedora-33"
-# SYSTEMS="Ubuntu-20.04"
+SYSTEMS="Ubuntu-16.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet"
+PROJECTS="NorNet-Desktop"
 HOSTNAME="akerbrygge.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
+CHIPSET=ich9
+FIRMWARE=efi
 CORES=4
 MEMORY=4096
 DISK_ROOT=16384

@@ -35,8 +35,8 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
-  "chipset": "ich9",
-  "firmware": "efi",
+  "chipset": "{{user `vm_chipset`}}",
+  "firmware": "{{user `vm_firmware`}}",
   "nested_virt": false,
   "rtc_time_base": "UTC",
   "nic_type": "virtio",
