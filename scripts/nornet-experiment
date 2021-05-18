@@ -22,12 +22,15 @@
 set -ex
 
 
+UNAME="`uname`"
+
+
 # ====== NorNet configuration ===============================================
 if [ "${UNAME}" == "Linux" ] ; then
 
    # Create experiment user:
-   sudo adduser experiment --disabled-password --gecos "NorNet Experiment User"
-   sudo usermod -a -G adm,sudo experiment
+   adduser experiment --disabled-password --gecos "NorNet Experiment User"
+   usermod -a -G adm,sudo experiment
 
    # ------ Ubuntu ----------------------------------------------------------
    if [ -e /usr/bin/apt-get ] ; then
