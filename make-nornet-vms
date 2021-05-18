@@ -23,11 +23,11 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-21.04 Fedora-31 Fedora-32 Fedora-33"
-SYSTEMS="Ubuntu-16.04-LTS"
+SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-21.04 Fedora-32 Fedora-33"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet-Desktop"
+PROJECTS="NorNet"
 HOSTNAME="akerbrygge.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
