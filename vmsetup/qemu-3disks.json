@@ -21,7 +21,7 @@
   "output_directory": "{{user `vm_name`}}",
   "type": "qemu",
   "accelerator": "kvm",
-  "headless": true,
+  "headless": false,
   "format": "qcow2",
 
   "firmware": "OVMF.fd",
