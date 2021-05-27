@@ -51,6 +51,8 @@ build-defined-vms ()
                      --project ${project} --distribution ${distribution} --release ${release} \
                      --hostname "${HOSTNAME}" \
                      --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+                     --chipset "${CHIPSET}" \
+                     --firmware "${FIRMWARE}" \
                      --cores ${CORES} --memory ${MEMORY} \
                      --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
                      --video "${VIDEO}" \

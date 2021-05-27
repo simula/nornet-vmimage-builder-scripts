@@ -22,28 +22,29 @@ set -e
 
 . ./vm-build-helper
 
-HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Fedora-32 Fedora-33"
-# SYSTEMS="Ubuntu-20.04-LTS"
+HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS"
+SYSTEMS="Ubuntu-16.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="SimulaMet-Desktop"
-HOSTNAME="pilestredet.simula.nornet"
+PROJECTS="NorNet-Experiment"
+
+HOSTNAME="experiment.hu.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
 CHIPSET=ich9
 FIRMWARE=efi
-CORES=6
+CORES=4
 MEMORY=4096
-DISK_ROOT=32768
+DISK_ROOT=16384
 DISK_HOME=65536
-DISK_SWAP=2048
-VIDEO="FHD"
-BACKGROUND_SDDM="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Oslo.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Lindøya.jpeg"
-BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Lindøya.jpeg"
+DISK_SWAP=4096
+VIDEO="HD+"
+BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
+BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 

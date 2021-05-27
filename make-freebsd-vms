@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-12.2"
+SYSTEMS="FreeBSD-13.0"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal KDE"
@@ -33,6 +33,13 @@ HOSTNAME="burgsteinfurt.openstack"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
+
+# Oracle has messed up the EFI boot of FreeBSD in VirtualBox.
+# Bug ticket: https://www.virtualbox.org/ticket/19910
+# Since there seems to be no fix at any time soon, there is
+# need for a work-around:
+CHIPSET=piix3   # ich9
+FIRMWARE=bios   # efi
 
 CORES=4
 MEMORY=4096

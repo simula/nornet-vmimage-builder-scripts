@@ -35,8 +35,8 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
-  "chipset": "ich9",
-  "firmware": "efi",
+  "chipset": "{{user `vm_chipset`}}",
+  "firmware": "{{user `vm_firmware`}}",
   "nic_type": "virtio",
   "gfx_controller": "vmsvga",
   "audio_controller": "hda",

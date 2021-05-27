@@ -184,6 +184,7 @@ d-i preseed/late_command                            string \
  in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBOPTIONS=\"[a-z]*\"/XKBOPTIONS=\"\"/g" /etc/default/keyboard ; \
  in-target /usr/sbin/dpkg-reconfigure -fnoninteractive keyboard-configuration ; \
+ in-target /usr/sbin/update-grub ; \
  in-target true # <SET_POSTINSTALL_COMMANDS_HERE>
 
 # NOTE: Setting up /etc/network/interfaces should not be necessary any more! Using Netplan instead.

@@ -1,3 +1,6 @@
 #!/bin/sh
 # qemu-system-x86_64-spice
-kvm-spice -name Test1 -cpu host -smp cores=4 -bios OVMF.fd -m 4096 -drive file=x.vdi,if=virtio
+kvm-spice -name Test1 -cpu host -smp cores=4 -bios OVMF.fd -m 4096 \
+   -drive file=/home/dreibh/src/nornet/vmimage-builder-scripts/QEMU-NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS,if=virtio \
+   -drive file=/home/dreibh/src/nornet/vmimage-builder-scripts/QEMU-NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS-1,if=virtio \
+   -drive file=/home/dreibh/src/nornet/vmimage-builder-scripts/QEMU-NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS/NorNet-Ubuntu-16.04-LTS-2,if=virtio
