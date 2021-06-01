@@ -50,10 +50,7 @@ if [ "${UNAME}" == "Linux" ] ; then
    cat <<EOF | tee -a /etc/multipath.conf
 
 blacklist {
-  device {
-    vendor "VBOX"
-    product "HARDDISK"
-  }
+  devnode "^sd[a-z]"
 }
 EOF
 
