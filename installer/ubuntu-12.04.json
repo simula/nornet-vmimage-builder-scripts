@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "http://old-releases.ubuntu.com/releases/12.04.4/ubuntu-12.04.4-server-amd64.iso",
-  "iso_checksum": "sha256:3aeb42816253355394897ae80d99a9ba56217c0e98e05294b51f0f5b13bceb54",
+  "iso_url": "http://old-releases.ubuntu.com/releases/12.04.5/ubuntu-12.04.5-server-amd64.iso",
+  "iso_checksum": "sha256:af224223de99e2a730b67d7785b657f549be0d63221188e105445f75fb8305c9",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
