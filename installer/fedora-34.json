@@ -32,7 +32,7 @@
   "boot_command": [
     "<esc><wait>",
     "<esc>c<wait>",
-    "linuxefi /images/pxeboot/vmlinuz --- text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
     "initrd /images/pxeboot/initrd.img<enter><wait>",
     "boot<enter>"
   ]
