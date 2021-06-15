@@ -27,7 +27,7 @@ SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubu
 # SYSTEMS="Fedora-34 Ubuntu-21.04"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"
+PROJECTS="NorNet"
 HOSTNAME="akerbrygge.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
