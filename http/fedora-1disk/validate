@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ ! -x /usr/bin/ksvalidator ] ; then
+   echo >&2 "ERROR: ksvalidator is not installed (Fedora: sudo dnf install pykickstart)!"
+   exit 1
+fi
+
+/usr/bin/ksvalidator ks.cfg
