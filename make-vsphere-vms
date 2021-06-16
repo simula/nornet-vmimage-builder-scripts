@@ -23,8 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="vSphere"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Ubuntu-21.04 Fedora-32 Fedora-33"
-SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-32 Fedora-33"
+SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Ubuntu-21.04 Fedora-33 Fedora-34"
+# SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-33 Fedora-34"
 # SYSTEMS="Ubuntu-20.04-LTS"
 
 # ------ Parameters ---------------------------------------
