@@ -1,9 +1,103 @@
-{
-    "type": "shell-local",
-    "inline_shebang": "/bin/bash -e",
-    "inline": [
-        "source scripts/setup-nbd",
-        "OUTPUT=${OUTPUT:-rootfs.tar.gz}",
-        "source scripts/tar-root"
-    ]
-}
+#!/usr/bin/env bash
+#
+# MAAS Image Builder Script
+# Copyright (C) 2017-2021 by Thomas Dreibholz <dreibh@simula.no>
+# Copyright (C) 2020 by Lee Trager <lee.trager@canonical.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+echo "T1"
+export
+echo "T2"
+
+# ====== Set up NBD =========================================================
+# Based on setup-nbd from  https://github.com/canonical/packer-maas
+
+if [ ${UID} -ne 0 ]; then
+    echo "ERROR: Must be run as root!" >&2
+    exit 1
+fi
+
+if [ ! -f ${OUTPUT} ]; then
+    echo "ERROR: Not in the same path as template!" >&2
+    exit
+fi
+
+echo 'Loading nbd ...'
+shopt -s extglob
+modprobe nbd
+for nbd in /sys/class/block/nbd+([0-9]); do
+   if [ "$(cat ${nbd}/size)" -eq 0 ]; then
+      nbd="/dev/$(basename ${nbd})"
+      echo "Using ${nbd}"
+      break
+   fi
+done
+
+if [ -z "${nbd}" ] || ! echo ${nbd} | grep -q "/dev"; then
+   echo "ERROR: Unable to find nbd device to mount image!" >&2
+   exit 1
+fi
+
+echo "Binding image to ${nbd} ..."
+qemu-nbd -d ${nbd}
+if [ -n "$IMG_FMT" ]; then
+   qemu-nbd -c ${nbd} -f "$IMG_FMT" -n ${OUTPUT}
+else
+   qemu-nbd -c ${nbd} -n ${OUTPUT}
+fi
+echo 'Waiting for partitions to be created ...'
+tries=0
+while [ ! -e "${nbd}p1" -a $tries -lt 60 ]; do
+    sleep 1
+    tries=$((tries+1))
+done
+
+
+# ====== Output name ========================================================
+OUTPUT="${OUTPUT:-rootfs.tar.gz}"
+
+
+# ====== Create tarball =====================================================
+# Based on tar-root from  https://github.com/canonical/packer-maas
+
+TMP_DIR=$(mktemp -d /tmp/maas-XXXXXXXXXX)
+
+echo 'Mounting root partition ...'
+mount "${nbd}p1" ${TMP_DIR}
+
+if [ -d curtin ] || [ -d "${CURTIN_HOOKS}" ]; then
+    echo 'Adding Curtin hooks ...'
+    cp -r ${CURTIN_HOOKS:-curtin} ${TMP_DIR}
+fi
+
+echo "Creating MAAS image ${OUTPUT} ..."
+tar -Sczpf ${OUTPUT} --acls --selinux --xattrs -C ${TMP_DIR} .
+
+if [ -n "$MANIFEST" ]; then
+    echo "Creating manifest ..."
+    # RPM on CentOS/RHEL 7 needs /dev mounted so it can use /dev/urandom
+    mount -o bind /dev ${TMP_DIR}/dev
+    chroot ${TMP_DIR} rpm -qa | sort -u -o $MANIFEST
+    umount ${TMP_DIR}/dev
+fi
+
+echo 'Unmounting image ...'
+umount ${TMP_DIR}
+qemu-nbd -d $nbd
+rmdir ${TMP_DIR}

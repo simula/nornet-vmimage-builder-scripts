@@ -473,22 +473,22 @@ for provisioner in ${PROVISIONERS} ; do
       echo "," >>${JSONTMP}
    fi
    cat >>${JSONTMP} <<EOF
-       {
-         "type": "shell",
-         "execute_command": "echo '${USER_PASSWORD}' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-         "script": "`realpath scripts/${provisioner}`",
-         "environment_vars": [ "VIDEO=${VIDEO}",
-                               "XKBMODEL=${XKBMODEL}",
-                               "XKBLAYOUT=${XKBLAYOUT}",
-                               "XKBVARIANT=${XKBVARIANT}",
-                               "XKBOPTIONS=${XKBOPTIONS}",
-                               "FQDN=${FQDN}",
-                               "USER_NAME=${USER_NAME}",
-                               "USER_REALNAME=${USER_REALNAME}",
-                               "BACKGROUND_SDDM=${BACKGROUND_SDDM}",
-                               "BACKGROUND_LOCKSCREEN=${BACKGROUND_LOCKSCREEN}",
-                               "BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}" ]
-       }
+      {
+        "type": "shell",
+        "execute_command": "echo '${USER_PASSWORD}' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+        "script": "`realpath scripts/${provisioner}`",
+        "environment_vars": [ "VIDEO=${VIDEO}",
+                              "XKBMODEL=${XKBMODEL}",
+                              "XKBLAYOUT=${XKBLAYOUT}",
+                              "XKBVARIANT=${XKBVARIANT}",
+                              "XKBOPTIONS=${XKBOPTIONS}",
+                              "FQDN=${FQDN}",
+                              "USER_NAME=${USER_NAME}",
+                              "USER_REALNAME=${USER_REALNAME}",
+                              "BACKGROUND_SDDM=${BACKGROUND_SDDM}",
+                              "BACKGROUND_LOCKSCREEN=${BACKGROUND_LOCKSCREEN}",
+                              "BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}" ]
+      }
 EOF
 done
 
@@ -511,7 +511,15 @@ for postprocessor in ${POSTPROCESSORS} ; do
    if [ $p -gt 1 ] ; then
       echo "," >>${JSONTMP}
    fi
-   cat post-processors/${postprocessor} >>${JSONTMP}
+   cat >>${JSONTMP} <<EOF
+      {
+        "type": "shell-local",
+        "inline_shebang": "/bin/bash -e",
+        "inline": [
+          "source `realpath post-processors/${postprocessor}`"
+        ]
+      }
+EOF
 done
 
 cat >>${JSONTMP} <<EOF
