@@ -21,9 +21,14 @@
 
 set -e
 
-echo "T1"
-export
-echo "T2"
+
+# ====== Output name ========================================================
+if [ ! -f "${OUTPUT}" ] ; then
+   echo "ERROR: \$OUTPUT has to be set to the output image name!"
+   exit 1
+fi
+export MAAS_OUTPUT="${OUTPUT}.tar.gz"
+
 
 # ====== Set up NBD =========================================================
 # Based on setup-nbd from  https://github.com/canonical/packer-maas
@@ -63,14 +68,10 @@ else
 fi
 echo 'Waiting for partitions to be created ...'
 tries=0
-while [ ! -e "${nbd}p1" -a $tries -lt 60 ]; do
+while [ ! -e "${nbd}p2" -a $tries -lt 60 ]; do
     sleep 1
     tries=$((tries+1))
 done
-
-
-# ====== Output name ========================================================
-OUTPUT="${OUTPUT:-rootfs.tar.gz}"
 
 
 # ====== Create tarball =====================================================
@@ -79,15 +80,21 @@ OUTPUT="${OUTPUT:-rootfs.tar.gz}"
 TMP_DIR=$(mktemp -d /tmp/maas-XXXXXXXXXX)
 
 echo 'Mounting root partition ...'
-mount "${nbd}p1" ${TMP_DIR}
+mount "${nbd}p2" ${TMP_DIR}
+if [ -e "${TMP_DIR}/@" -o -e "${TMP_DIR}/@home" ] ; then
+   # BTRFS: mount sub-volumes instead!
+   umount ${TMP_DIR}
+   mount -o subvol=@     "${nbd}p2" ${TMP_DIR}
+   mount -o subvol=@home "${nbd}p2" ${TMP_DIR}/home
+fi
 
 if [ -d curtin ] || [ -d "${CURTIN_HOOKS}" ]; then
     echo 'Adding Curtin hooks ...'
     cp -r ${CURTIN_HOOKS:-curtin} ${TMP_DIR}
 fi
 
-echo "Creating MAAS image ${OUTPUT} ..."
-tar -Sczpf ${OUTPUT} --acls --selinux --xattrs -C ${TMP_DIR} .
+echo "Creating MAAS image ${MAAS_OUTPUT} ..."
+tar -Sczpf ${MAAS_OUTPUT} --acls --selinux --xattrs -C ${TMP_DIR} .
 
 if [ -n "$MANIFEST" ]; then
     echo "Creating manifest ..."
