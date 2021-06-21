@@ -30,6 +30,7 @@ HYPERVISOR="VirtualBox"
 DISTRIBUTION="Ubuntu"
 RELEASE="20.04"
 PROVISIONERS="user-settings"   # NOTE: "clean-up" will be added later!
+POSTPROCESSORS=""
 
 DRY_RUN=0
 
@@ -489,6 +490,28 @@ for provisioner in ${PROVISIONERS} ; do
                                "BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}" ]
        }
 EOF
+done
+
+cat >>${JSONTMP} <<EOF
+  ],
+EOF
+
+# ====== Post-Processors ====================================================
+cat >>${JSONTMP} <<EOF
+  "post-processors": [
+EOF
+
+p=0
+for postprocessor in ${POSTPROCESSORS} ; do
+   if [ ! -e post-processors/${postprocessor} ] ; then
+      echo >&2 "ERROR: Definition file post-processors/${postprocessor} does not exist!"
+      exit 1
+   fi
+   let p=$p+1
+   if [ $p -gt 1 ] ; then
+      echo "," >>${JSONTMP}
+   fi
+   cat post-processors/${postprocessor} >>${JSONTMP}
 done
 
 cat >>${JSONTMP} <<EOF

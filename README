@@ -8,7 +8,7 @@ These scripts use Packer (https://www.packer.io/) to build VM images for differe
 - make-nornet-vms: NorNet Server VMs for VirtualBox
 (3-disk layout with separate Root, Home and Swap disk)
 - make-openstack-vms: OpenStack images for 5gVINNI VNF VDU instances
-(1-disk layout without Swap)
+(1-disk layout without Swap, as qcow2 image as well as tar.gz for MAAS)
 - make-simulamet-vms: SimulaMet desktop VMs
 (3-disk layout with separate Root, Home and Swap disk)
 - make-haw-vms: HAW desktop VMs
@@ -24,17 +24,17 @@ These scripts use Packer (https://www.packer.io/) to build VM images for differe
 
 2. REQUIREMENTS
 
-* Installation of Packer (tested with version 1.6.4 from the Packer website).
-The Ubuntu 20.04-provided version is *out of date*! Use the version from th
+* Installation of Packer (tested with version 1.7.3 from the Packer website).
+The Ubuntu 20.04-provided version is *out of date*! Use the version from the
 website instead, e.g. copy "packer" to /usr/local/bin.
 
 * Important note about VirtualBox:
 The Ubuntu-provided VirtualBox 6.1.10 had some issues with virtual serial ports!
-Tested with version 6.1.14 from the Oracle website. However, this version has an
+Tested with version 6.1.18 from the Oracle website. However, this version has an
 issue with EFI boot of FreeBSD and Ubuntu 12.10 beta! Bugs reported:
 * https://www.virtualbox.org/ticket/19910
 * https://www.virtualbox.org/ticket/19967
 
 
 
-19.10.2020 Thomas Dreibholz <dreibh@simula.no>
+21.06.2021 Thomas Dreibholz <dreibh@simula.no>

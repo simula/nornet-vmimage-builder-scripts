@@ -1,0 +1,9 @@
+{
+    "type": "shell-local",
+    "inline_shebang": "/bin/bash -e",
+    "inline": [
+        "source scripts/setup-nbd",
+        "OUTPUT=${OUTPUT:-rootfs.tar.gz}",
+        "source scripts/tar-root"
+    ]
+}
