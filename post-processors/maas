@@ -23,11 +23,14 @@ set -e
 
 
 # ====== Output name ========================================================
-if [ ! -f "${OUTPUT}" ] ; then
-   echo "ERROR: \$OUTPUT has to be set to the output image name!"
+BUILD_NAME=`realpath . --relative-base=.. | sed -e "s/^QEMU-//g"`
+DISK_IMAGE="`realpath ${BUILD_NAME}/${BUILD_NAME}`"
+if [ ! -f "${DISK_IMAGE}" ] ; then
+   echo "ERROR: \$DISK_IMAGE has to be set to the output image name!"
    exit 1
 fi
-export MAAS_OUTPUT="${OUTPUT}.tar.gz"
+PARTITION_ROOT="p2"   # Root partition is the second partition on the disk!
+MAAS_IMAGE="${DISK_IMAGE}.tar.gz"
 
 
 # ====== Set up NBD =========================================================
@@ -38,12 +41,7 @@ if [ ${UID} -ne 0 ]; then
     exit 1
 fi
 
-if [ ! -f ${OUTPUT} ]; then
-    echo "ERROR: Not in the same path as template!" >&2
-    exit
-fi
-
-echo 'Loading nbd ...'
+echo "Loading nbd ..."
 shopt -s extglob
 modprobe nbd
 for nbd in /sys/class/block/nbd+([0-9]); do
@@ -62,13 +60,13 @@ fi
 echo "Binding image to ${nbd} ..."
 qemu-nbd -d ${nbd}
 if [ -n "$IMG_FMT" ]; then
-   qemu-nbd -c ${nbd} -f "$IMG_FMT" -n ${OUTPUT}
+   qemu-nbd -c ${nbd} -f "$IMG_FMT" -n ${DISK_IMAGE}
 else
-   qemu-nbd -c ${nbd} -n ${OUTPUT}
+   qemu-nbd -c ${nbd} -n ${DISK_IMAGE}
 fi
-echo 'Waiting for partitions to be created ...'
+echo "Waiting for partitions to be created ..."
 tries=0
-while [ ! -e "${nbd}p2" -a $tries -lt 60 ]; do
+while [ ! -e "${nbd}${PARTITION_ROOT}" -a $tries -lt 60 ]; do
     sleep 1
     tries=$((tries+1))
 done
@@ -77,34 +75,37 @@ done
 # ====== Create tarball =====================================================
 # Based on tar-root from  https://github.com/canonical/packer-maas
 
-TMP_DIR=$(mktemp -d /tmp/maas-XXXXXXXXXX)
+DISK_MOUNTPOINT=$(mktemp -d /tmp/maas-XXXXXXXXXX)
 
-echo 'Mounting root partition ...'
-mount "${nbd}p2" ${TMP_DIR}
-if [ -e "${TMP_DIR}/@" -o -e "${TMP_DIR}/@home" ] ; then
+echo "Mounting root partition ..."
+mount "${nbd}${PARTITION_ROOT}" ${DISK_MOUNTPOINT}
+if [ -e "${DISK_MOUNTPOINT}/@" -o -e "${DISK_MOUNTPOINT}/@home" ] ; then
    # BTRFS: mount sub-volumes instead!
-   umount ${TMP_DIR}
-   mount -o subvol=@     "${nbd}p2" ${TMP_DIR}
-   mount -o subvol=@home "${nbd}p2" ${TMP_DIR}/home
+   umount ${DISK_MOUNTPOINT}
+   mount -o subvol=@     "${nbd}${PARTITION_ROOT}" ${DISK_MOUNTPOINT}
+   mount -o subvol=@home "${nbd}${PARTITION_ROOT}" ${DISK_MOUNTPOINT}/home
 fi
 
 if [ -d curtin ] || [ -d "${CURTIN_HOOKS}" ]; then
-    echo 'Adding Curtin hooks ...'
-    cp -r ${CURTIN_HOOKS:-curtin} ${TMP_DIR}
+    echo "Adding Curtin hooks ..."
+    cp -r ${CURTIN_HOOKS:-curtin} ${DISK_MOUNTPOINT}
 fi
 
-echo "Creating MAAS image ${MAAS_OUTPUT} ..."
-tar -Sczpf ${MAAS_OUTPUT} --acls --selinux --xattrs -C ${TMP_DIR} .
+echo "Creating MAAS image ${MAAS_IMAGE} ..."
+tar -Sczpf ${MAAS_IMAGE} --acls --selinux --xattrs -C ${DISK_MOUNTPOINT} .
 
-if [ -n "$MANIFEST" ]; then
+if [ -n "${MANIFEST}" ]; then
     echo "Creating manifest ..."
     # RPM on CentOS/RHEL 7 needs /dev mounted so it can use /dev/urandom
-    mount -o bind /dev ${TMP_DIR}/dev
-    chroot ${TMP_DIR} rpm -qa | sort -u -o $MANIFEST
-    umount ${TMP_DIR}/dev
+    mount -o bind /dev ${DISK_MOUNTPOINT}/dev
+    chroot ${DISK_MOUNTPOINT} rpm -qa | sort -u -o ${MANIFEST}
+    umount ${DISK_MOUNTPOINT}/dev
 fi
 
-echo 'Unmounting image ...'
-umount ${TMP_DIR}
+echo "Unmounting image ..."
+umount ${DISK_MOUNTPOINT}/home 2>/dev/null || true
+umount ${DISK_MOUNTPOINT}
 qemu-nbd -d $nbd
-rmdir ${TMP_DIR}
+rmdir ${DISK_MOUNTPOINT}
+
+echo "Done!"
