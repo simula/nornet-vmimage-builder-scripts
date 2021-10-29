@@ -18,7 +18,7 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://releases.ubuntu.com/21.10/ubuntu-21.10-beta-live-server-amd64.iso",
+  "iso_url": "https://releases.ubuntu.com/21.10/ubuntu-21.10-live-server-amd64.iso",
   "iso_checksum": "sha256:e84f546dfc6743f24e8b1e15db9cc2d2c698ec57d9adfb852971772d1ce692d4",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
