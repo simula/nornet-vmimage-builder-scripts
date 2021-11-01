@@ -20,7 +20,7 @@
 
 set -e
 
-DESTINATIONS="nornetpp@nisse.simula.nornet:images/ nornetpp@odin.simula.nornet:images/"
+DESTINATIONS="nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
 SSH_PROXY="128.39.37.188"
 
 source ./directories.config
@@ -45,6 +45,7 @@ for vm in ${VMs} ; do
       fi
    fi
    popd >/dev/null
+   sleep 1
 done
 wait
 
