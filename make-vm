@@ -348,7 +348,7 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
    fi
 elif [ "${DISTRIBUTION}" == "Debian" ] ; then
    BUILDER_INSTALL="debian-${RELEASE}"
-   NAME="${NAME}-Ubuntu-${RELEASE}"
+   NAME="${NAME}-Debian-${RELEASE}"
    HTTP_DIRECTORY="http/debian"
    if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}

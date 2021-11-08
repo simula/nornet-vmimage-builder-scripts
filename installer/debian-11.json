@@ -1,4 +1,4 @@
-// Debian 10 "Buster" with EFI Boot
+// Debian 11 "Bullseye" with EFI Boot
 // Copyright (C) 2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/10.11.0/amd64/iso-cd/debian-10.11.0-amd64-netinst.iso",
-  "iso_checksum": "sha256:133430141272d8bf96cfb10b6bfd1c945f5a59ea0efc2bcb56d1033c7f2866ea",
+  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/iso-cd/debian-11.0.0-amd64-netinst.iso",
+  "iso_checksum": "sha256:ae6d563d2444665316901fe7091059ac34b8f67ba30f9159f7cef7d2fdc5bf8a",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
