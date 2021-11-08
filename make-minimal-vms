@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Debian-10 Debian-11 Ubuntu-22.04"
+SYSTEMS="Debian-10 Debian-11 Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"

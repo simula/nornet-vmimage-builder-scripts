@@ -143,10 +143,8 @@ d-i pkgsel/include                                  string acpid bash-completion
 
 # ====== Post-Install =======================================================
 # The following tasks are performed:
-# * Old releases: fix package sources to "old-releases.ubuntu.com"
 # * Handle 3-disk layout (separate disks for root, home, swap)
 # * Rewrite /etc/network/interfaces (usage of ifupdown instead of netplan)
-# * Add PPA
 # * Set the keyboard layout (buggy installer does not set it!)
 d-i preseed/late_command                            string \
  in-target apt-get update ; \
@@ -155,19 +153,19 @@ d-i preseed/late_command                            string \
  in-target /bin/bash -c -- 'if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; partprobe ; mkfs.btrfs -L Home /dev/<SET_DISK_PREFIX_HERE>b1 ; fi' ; \
  in-target /bin/bash -c -- 'if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8200 --change-name=1:Swap /dev/<SET_DISK_PREFIX_HERE>c ; partprobe ; mkswap -L Swap /dev/<SET_DISK_PREFIX_HERE>c1 ; fi' ; \
  if [ -e /dev/<SET_DISK_PREFIX_HERE>b -a -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then \
-    mkdir -p /tmp/old ; \
-    mkdir -p /tmp/new ; \
-    mount /dev/<SET_DISK_PREFIX_HERE>a2 /tmp/old ; \
-    btrfs subvolume snapshot /tmp/old/@home /tmp/old/@home_ro ; \
-    mount /dev/<SET_DISK_PREFIX_HERE>b1 /tmp/new ; \
-    btrfs subvolume create /tmp/new/@home ; \
-    cp -a /tmp/old/@home_ro/* /tmp/new/@home/ ; \
-    btrfs subvolume delete /tmp/old/@home_ro /tmp/old/@home ; \
-    umount /tmp/old ; \
-    umount /tmp/new ; \
-    umount /target/home ; \
-    mount -o subvol=@home /dev/<SET_DISK_PREFIX_HERE>b1 /target/home ; \
-    in-target /bin/bash -c -- '( cat /etc/fstab | grep -v "/home" | grep -v "/swapfile" ; echo "UUID=`blkid /dev/<SET_DISK_PREFIX_HERE>b1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` /home           btrfs   defaults,subvol=@home 0       2" ; echo "UUID=`blkid /dev/<SET_DISK_PREFIX_HERE>c1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` none            swap    sw              0       0") >/etc/fstab.new' ; \
+    mkdir -p /tmp/old && \
+    mkdir -p /tmp/new && \
+    mount /dev/<SET_DISK_PREFIX_HERE>a2 /tmp/old && \
+    btrfs subvolume snapshot /tmp/old/@home /tmp/old/@home_ro && \
+    mount /dev/<SET_DISK_PREFIX_HERE>b1 /tmp/new && \
+    btrfs subvolume create /tmp/new/@home && \
+    cp -a /tmp/old/@home_ro/* /tmp/new/@home/ && \
+    btrfs subvolume delete /tmp/old/@home_ro /tmp/old/@home && \
+    umount /tmp/old && \
+    umount /tmp/new && \
+    umount /target/home && \
+    mount -o subvol=@home /dev/<SET_DISK_PREFIX_HERE>b1 /target/home && \
+    in-target /bin/bash -c -- '( cat /etc/fstab | grep -v "/home" | grep -v "/swapfile" ; echo "UUID=`blkid /dev/<SET_DISK_PREFIX_HERE>b1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` /home           btrfs   defaults,subvol=@home 0       2" ; echo "UUID=`blkid /dev/<SET_DISK_PREFIX_HERE>c1 | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//"` none            swap    sw              0       0") >/etc/fstab.new' && \
     in-target mv /etc/fstab.new /etc/fstab ; \
  fi ; \
  in-target /bin/bash -c -- 'if lspci | grep -q "VMware VMX" ; then /usr/bin/apt-get install -y open-vm-tools ; fi' ; \
