@@ -1,0 +1,48 @@
+// Debian 10 "Buster" with EFI Boot
+// Copyright (C) 2021 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: dreibh@simula.no
+
+{
+  // ====== ISO settings ====================================================
+  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/10.10.0/amd64/iso-cd/debian-10.10.0-amd64-netinst.iso",
+  "iso_checksum": "sha256:c433254a7c5b5b9e6a05f9e1379a0bd6ab3323f89b56537b684b6d1bd1f8b6ad",
+  "ssh_username": "{{user `user_name`}}",
+  "ssh_password": "{{user `user_password`}}",
+  "ssh_pty": true,
+  "ssh_timeout": "60m",
+  "ssh_handshake_attempts": "1024",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
+
+  // ====== Boot into installer =============================================
+  "boot_wait": "10s",
+  "guest_os_type": "Debian_64",
+  "boot_command": [
+    "e<down><down><down><end>priority=critical",
+    " auto=true",
+    " debconf/frontend=noninteractive",
+    " console-setup/ask_detect=false",
+    " debian-installer=en_US",
+    " kbd-chooser/method=us",
+    " keyboard-configuration/layout=USA",
+    " keyboard-configuration/variant=USA",
+    " locale=en_US",
+    " netcfg/get_domain={{user `host_domain`}}",
+    " netcfg/get_hostname={{user `host_name`}}",
+    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian.preseed",
+    "<wait><leftCtrlOn>x<leftCtrlOff>"
+   ]
+}

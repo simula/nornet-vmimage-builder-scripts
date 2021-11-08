@@ -346,6 +346,16 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
       echo >&2 "ERROR: Invalid Ubuntu release ${RELEASE}!"
       exit 1
    fi
+elif [ "${DISTRIBUTION}" == "Debian" ] ; then
+   BUILDER_INSTALL="debian-${RELEASE}"
+   NAME="${NAME}-Ubuntu-${RELEASE}"
+   HTTP_DIRECTORY="http/debian"
+   if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
+      RELEASE=${BASH_REMATCH[1]}
+   else
+      echo >&2 "ERROR: Invalid Debian release ${RELEASE}!"
+      exit 1
+   fi
 elif [ "${DISTRIBUTION}" == "Fedora" ] ; then
    BUILDER_INSTALL="fedora-${RELEASE}"
    NAME="${NAME}-Fedora-${RELEASE}"
@@ -366,7 +376,7 @@ else
    exit 1
 fi
 
-if [ "${HTTP_DIRECTORY}" != "http/ubuntu-legacy" ] ; then
+if [ "${HTTP_DIRECTORY}" != "http/ubuntu-legacy" -a  "${HTTP_DIRECTORY}" != "http/debian" ] ; then
    if [ ${USE_SEPARATE_DISKS} -eq 0 ] ; then
       HTTP_DIRECTORY="${HTTP_DIRECTORY}-1disk"
    else
