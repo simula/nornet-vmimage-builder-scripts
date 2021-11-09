@@ -352,6 +352,8 @@ elif [ "${DISTRIBUTION}" == "Debian" ] ; then
    HTTP_DIRECTORY="http/debian"
    if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
+   elif [[ "${RELEASE}" =~ ^Testing$ ]] ; then
+      RELEASE="Testing"
    else
       echo >&2 "ERROR: Invalid Debian release ${RELEASE}!"
       exit 1
