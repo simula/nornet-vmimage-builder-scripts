@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2021 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+. ./vm-build-helper
+
+HYPERVISOR="Docker"
+SYSTEMS="Ubuntu-22.04-LTS"
+
+# ------ Parameters ---------------------------------------
+PROJECTS="Minimal"
+HOSTNAME="gummersbach.simula.nornet"
+USER_NAME="nornetpp"
+USER_PASSWORD="!NorNetInst!"
+USER_REALNAME="NorNet Praesum Presum"
+
+# These settings do not apply for containers:
+CHIPSET="NA"
+FIRMWARE="NA"
+CORES="NA"
+MEMORY="NA"
+DISK_ROOT="NA"
+DISK_HOME="NA"
+DISK_SWAP="NA"
+VIDEO="NA"
+
+BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
+BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+OPTIONS="-1"
+# ---------------------------------------------------------
+
+build-defined-vms
