@@ -63,11 +63,12 @@ if [ "${UNAME}" == "Linux" ] ; then
 
 
    # ====== Set configured screen resolution as fallback ====================
-   /usr/bin/configure-grub /etc/default/grub \
-      -V "auto,${VIDEO},1024x768" \
-      -T "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192" \
-      -o /etc/default/grub
-
+   if [ -e /etc/default/grub ] ; then
+      /usr/bin/configure-grub /etc/default/grub \
+         -V "auto,${VIDEO},1024x768" \
+         -T "20000 584 144 736 48 1048 288 984 96 784 63 0 1 656 64 880 63 0 1 1176 192" \
+         -o /etc/default/grub
+   fi
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    true

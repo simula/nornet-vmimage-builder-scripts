@@ -26,7 +26,7 @@ HYPERVISOR="Docker"
 SYSTEMS="Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"
+PROJECTS="NorNet"   # Minimal
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
