@@ -75,6 +75,8 @@ VSPHERE_DATASTORE="MY-VSPHERE-DATASTORE"
 VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
 VSPHERE_HTTP_IP="MY-VSPHERE-HTTP-IP"
 
+DOCKER_REPOSITORY="dreibh"
+DOCKER_TAG=""
 
 
 # ###### Handle command-line parameters #####################################
@@ -314,6 +316,9 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="Docker"
+   release="${RELEASE/-LTS/}"
+   DOCKER_REPOSITORY="${DOCKER_REPOSITORY}/${PROJECT,,}-${DISTRIBUTION,,}"
+   DOCKER_TAG="${release,,}"
 else
    echo >&2 "ERROR: Invalid hypervisor ${HYPERVISOR}!"
    exit 1
@@ -561,6 +566,27 @@ done
 
 cat >>${JSONTMP} <<EOF
   ]
+EOF
+
+
+# ====== Post-processors ====================================================
+if [ "${HYPERVISOR}" == "Docker" ] ; then
+   cat >>${JSONTMP} <<EOF
+  ,
+  "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "${DOCKER_REPOSITORY}",
+        "tags": [ "${DOCKER_TAG}" ]
+      }
+    ]
+  ]
+EOF
+fi
+
+
+cat >>${JSONTMP} <<EOF
 }
 EOF
 

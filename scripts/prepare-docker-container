@@ -49,3 +49,7 @@ env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y tzdata
 rm -f /etc/localtime
 ln -snf /usr/share/zoneinfo/UTC /etc/localtime
 dpkg-reconfigure -f noninteractive tzdata
+
+# ------ Install "systemd" --------------------------------------------------
+env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+   systemd systemd-sysv
