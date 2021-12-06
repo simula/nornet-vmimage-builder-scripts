@@ -67,7 +67,7 @@ build-defined-vms ()
                   result="FAILED!"
                fi
                finishTime=`date`
-               echo "${startTime}: Finished to build ${name} - ${result} -> ${logfile}"
+               echo "${finishTime}: Finished to build ${name} - ${result} -> ${logfile}"
             else
                echo "${name} is already there -> ${logfile}"
             fi
