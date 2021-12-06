@@ -204,7 +204,7 @@ autoinstall:
     # - if ! sgdisk --print /dev/<SET_DISK_PREFIX_HERE>a | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/<SET_DISK_PREFIX_HERE>a ; fi
     # - sgdisk --change-name=1:GRUB /dev/<SET_DISK_PREFIX_HERE>a
     # ====== Generate additional locales ====================================
-    - chroot /target locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
+    - chroot /target locale-gen en_US.UTF-8 en_IE.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
     # ====== BTRFS subvolume setup ==========================================
     - |
       set -ex
