@@ -30,15 +30,15 @@ env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y sudo
 
 # ------ Create user --------------------------------------------------------
 mkdir -p /home/${USER_NAME}
+groupadd -r ${USER_NAME}
 useradd -s /bin/bash \
    -c "${USER_REALNAME}" \
+   -g "${USER_NAME}" \
    -d "/home/${USER_NAME}" \
    -p "${USER_PASSWORD}" \
    ${USER_NAME}
 chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
 usermod -aG sudo ${USER_NAME}
-
-ls -al /home/nornetpp
 
 # ------ Create loacles -----------------------------------------------------
 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y locales
