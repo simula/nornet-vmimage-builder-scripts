@@ -1,5 +1,5 @@
-// Ubuntu Server 22.04 "Jammy Jellyfish" with EFI Boot
-// Copyright (C) 2022 by Thomas Dreibholz
+// Ubuntu Server 22.04 "Jammy Jellyfish"
+// Copyright (C) 2021 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Contact: dreibh@simula.no
-
 
 {
   "type": "docker",

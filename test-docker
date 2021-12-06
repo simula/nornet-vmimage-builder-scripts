@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+
+docker run -it \
+   dreibh/minimal-ubuntu:22.04 \
+   /bin/bash
