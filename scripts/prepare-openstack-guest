@@ -29,7 +29,7 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    # Install Cloud-Init:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y cloud-init
 
    # Set user name in Cloud-Init's configuration file:
    # !!! Something messes up the instance on nisse, but not on odin, when
