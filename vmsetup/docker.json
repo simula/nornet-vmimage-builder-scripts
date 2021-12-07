@@ -21,6 +21,6 @@
   // "output_directory": "{{user `vm_directory`}}",
   "type": "docker",
   "changes": [
-    "ENTRYPOINT /bin/bash"
+    "CMD /bin/bash"
   ]
 }
