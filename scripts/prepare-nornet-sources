@@ -36,13 +36,13 @@ if [ $(id -u) -eq 0 ] ; then
    fi
 else
    # Echo running as user
-   echo "Running as $USER! SUDO_USER=${SUDO_USER} USER_NAME=${USER_NAME}"
+   echo "Running as ${USER}! SUDO_USER=${SUDO_USER} USER_NAME=${USER_NAME}"
 fi
 
 
 # ====== Prepare source repositories ========================================
-mkdir -p ~/src
-cd ~/src
+mkdir -p ~${USER}/src
+cd ~${USER}/src
 
 # NOTE: The repositories are not cloned here!
 
@@ -52,5 +52,5 @@ git init
 git remote add origin https://github.com/simula/nornet-control.git
 popd
 
-cd ~
+cd ~${USER}
 ln -s src/nornet-control/src ctrl
