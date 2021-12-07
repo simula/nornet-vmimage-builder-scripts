@@ -24,6 +24,10 @@ set -ex
 
 # ====== Install "sudo" =====================================================
 if [ -e /usr/bin/apt-get ] ; then
+   # apt-show-versions does not work with compressed indices:
+   # https://askubuntu.com/questions/916199/install-apt-show-versions-inside-an-ubuntu-docker-container
+   rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
+
    /usr/bin/apt-get update -qq
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y sudo
 elif [ -e /usr/bin/dnf ] ; then
@@ -53,7 +57,7 @@ locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF
 
 # ====== Install "systemctl" ================================================
 if [ -e /usr/bin/apt-get ] ; then
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl || true
 elif [ -e /usr/bin/dnf ] ; then
    dnf install -y systemctl
 fi
