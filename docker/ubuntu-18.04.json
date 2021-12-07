@@ -17,8 +17,5 @@
 // Contact: dreibh@simula.no
 
 {
-  "type": "docker",
-  "image": "ubuntu:18.04",
-  "pull": "true",
-  "commit": "true"
+  "image": "ubuntu:18.04"
 }

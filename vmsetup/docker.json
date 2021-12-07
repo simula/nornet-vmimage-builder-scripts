@@ -17,10 +17,15 @@
 // Contact: dreibh@simula.no
 
 {
-  // "vm_name": "{{user `vm_name`}}",
-  // "output_directory": "{{user `vm_directory`}}",
   "type": "docker",
+  "pull": "true",
+  "commit": "true",
   "changes": [
-    "CMD /bin/bash"
+    // docker inspect ubuntu:22.04 --format "{{ .Config.Entrypoint }}"
+    // []
+    // docker inspect ubuntu:22.04 --format "{{ .Config.Cmd }}"
+    // [bash]
+    "ENTRYPOINT [\"\"]",
+    "CMD [\"/bin/bash\"]"
   ]
 }
