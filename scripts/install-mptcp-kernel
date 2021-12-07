@@ -42,7 +42,7 @@ if [ -e /usr/bin/apt-get ] ; then
    echo "MPTCP kernel image package: ${mptcpKernelImagePackage}"
    echo "MPTCP kernel headers package: ${mptcpKernelHeadersPackage}"
 
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y \
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
       ${mptcpKernelImagePackage} ${mptcpKernelHeadersPackage}
 
 
@@ -83,7 +83,7 @@ BEGIN {
 
    # ====== DKMS ============================================================
    if dpkg-query -W virtualbox-guest-dkms >/dev/null 2>&1 ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  --no-install-recommends -y --reinstall virtualbox-guest-dkms
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  -y --reinstall virtualbox-guest-dkms
    fi
 
 

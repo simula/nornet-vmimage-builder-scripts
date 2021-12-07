@@ -31,10 +31,10 @@ if [ "${UNAME}" == "Linux" ] ; then
    # ------ Ubuntu ----------------------------------------------------------
    if [ -e /usr/bin/apt-get ] ; then
       /usr/bin/apt-get update
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y open-vm-tools
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y open-vm-tools
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y open-vm-tools-desktop || true
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y open-vm-tools-desktop || true
       fi
 
    # ------ Fedora ----------------------------------------------------------
