@@ -60,7 +60,7 @@ fi
 
 # ====== Add PPA dreibh/ppa =================================================
 if [ -e /usr/bin/apt-get ] ; then
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y gpg-agent || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y apt-utils gpg-agent dirmngr || true
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y software-properties-common
    /usr/bin/apt-add-repository -y ppa:dreibh/ppa
 elif [ -e /usr/bin/dnf ] ; then
