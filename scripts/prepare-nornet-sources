@@ -53,4 +53,4 @@ git remote add origin https://github.com/simula/nornet-control.git
 popd
 
 cd /home/${USER}
-ln -s src/nornet-control/src ctrl
+ln -s src/nornet-control ctrl
