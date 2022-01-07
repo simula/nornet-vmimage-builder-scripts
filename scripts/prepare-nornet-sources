@@ -41,8 +41,8 @@ fi
 
 
 # ====== Prepare source repositories ========================================
-mkdir -p ~${USER}/src
-cd ~${USER}/src
+mkdir -p /home/${USER}/src
+cd /home/${USER}/src
 
 # NOTE: The repositories are not cloned here!
 
@@ -52,5 +52,5 @@ git init
 git remote add origin https://github.com/simula/nornet-control.git
 popd
 
-cd ~${USER}
+cd /home/${USER}
 ln -s src/nornet-control/src ctrl
