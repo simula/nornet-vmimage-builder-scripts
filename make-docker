@@ -23,10 +23,10 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Docker"
-SYSTEMS="Ubuntu-22.04-LTS"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet"   # Minimal
+PROJECTS="Minimal NorNet"   # Minimal
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
