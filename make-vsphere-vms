@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Template VM Image Builder
-# Copyright (C) 2017-2021 by Thomas Dreibholz
+# Copyright (C) 2017-2022 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,13 +23,12 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="vSphere"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-20.10 Ubuntu-21.04 Fedora-33 Fedora-34"
-# SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Fedora-33 Fedora-34"
-# SYSTEMS="Ubuntu-20.04-LTS"
+# SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Fedora-34 Fedora-35"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Fedora-34 Fedora-35"
+# SYSTEMS="Ubuntu-16.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal NorNet NorNet-Desktop"
-PROJECTS="NorNet"
+PROJECTS="Minimal NorNet"   # NorNet-Desktop
 
 HOSTNAME="tjuvholmen.simula.nornet"
 USER_NAME="nornetpp"
