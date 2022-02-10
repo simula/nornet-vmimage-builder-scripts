@@ -19,7 +19,7 @@
 {
   // ====== ISO settings ====================================================
   "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/jammy-live-server-amd64.iso",
-  "iso_checksum": "sha256:fd166ff5e32657ab91ceeddf2263b15b2b0cca339592e9ee60d9dce597ad3f86",
+  "iso_checksum": "sha256:084f1ffa3c8928207e7c7dd12d6ac08e7855f038b473dc92f7b2359bcae63d81",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
