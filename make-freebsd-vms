@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-13.0"
+SYSTEMS="FreeBSD-14.0"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal KDE"
@@ -38,8 +38,8 @@ USER_REALNAME="NorNet Praesum Presum"
 # Bug ticket: https://www.virtualbox.org/ticket/19910
 # Since there seems to be no fix at any time soon, there is
 # need for a work-around:
-CHIPSET=piix3   # ich9
-FIRMWARE=bios   # efi
+CHIPSET=ich9
+FIRMWARE=efi
 
 CORES=4
 MEMORY=4096
