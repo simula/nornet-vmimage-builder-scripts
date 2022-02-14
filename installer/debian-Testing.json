@@ -1,4 +1,4 @@
-// Debian 12 "Bookworm" with EFI Boot
+// Debian "Testing" with EFI Boot
 // Copyright (C) 2019-2022 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 {
   // ====== ISO settings ====================================================
   "iso_url": "https://cdimage.debian.org/cdimage/daily-builds/daily/arch-latest/amd64/iso-cd/debian-testing-amd64-netinst.iso",
-  "iso_checksum": "sha256:0827e36833096c62061e51291eafb348b938f71c22d72c8cc4dd593aa29d1c31",
+  "iso_checksum": "none",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
