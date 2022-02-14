@@ -45,8 +45,8 @@
     "<tab><wait>",
     "<tab><wait>",
     "<esc><wait>",
-    "linux /casper/vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
-    "initrd /casper/initrd<enter><wait>",
+    "linux /casper/hwe-vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
+    "initrd /casper/hwe-initrd<enter><wait>",
     "boot<enter>"
   ]
 }
