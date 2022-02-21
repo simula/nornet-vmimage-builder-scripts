@@ -36,7 +36,7 @@ fi
 
 # ====== Create user ========================================================
 mkdir -p /home/${USER_NAME}
-groupadd -r ${USER_NAME}
+groupadd ${USER_NAME}
 useradd -s /bin/bash \
    -c "${USER_REALNAME}" \
    -g "${USER_NAME}" \
