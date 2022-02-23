@@ -20,8 +20,9 @@
 
 set -e
 
-DESTINATIONS="nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
 SSH_PROXY="128.39.37.188"
+DESTINATIONS="nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
+WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 
 source ./directories.config
 
@@ -35,17 +36,25 @@ for vm in ${VMs} ; do
          pushd ${imageDirectory} >/dev/null
          image=`ls -S .`
          if [ -e "${image}" ] ; then
+            vmDate=`date -r "${image}" +"%Y-%m-%d"`
+            imageFiles="${imageFiles} ${image}.qcow2"
+
+            # ====== Copy to OpenStack Controllers ==========================
             for destination in ${DESTINATIONS} ; do
                echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${destination}${image}.qcow2"
                sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${destination}${image}.qcow2" &
             done
-            imageFiles="${imageFiles} ${image}.qcow2"
+
+            # ====== Copy to web server =====================================
+            echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${WEBSERVER}${vmDate}/"
+            sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -vz --partial --info=progress2 `realpath ${image}` ${WEBSERVER}${vmDate}/" &
+
          fi
          popd >/dev/null
       fi
    fi
    popd >/dev/null
-   sleep 1
+#    sleep 1
 done
 wait
 
