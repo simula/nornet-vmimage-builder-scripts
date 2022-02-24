@@ -27,7 +27,7 @@ WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 source ./directories.config
 
 
-readmeFile=`realpath files/README.html`
+readmeFile=`realpath files/5gVINNI/README.html`
 
 imageFiles=""
 VMs=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*"`
@@ -37,7 +37,7 @@ for vm in ${VMs} ; do
       imageDirectory=`find . -mindepth 1 -maxdepth 1 -type d -name "*OpenStack*"`
       if [ -d "${imageDirectory}" ] ; then
          pushd ${imageDirectory} >/dev/null
-         imageFile=`find . -name "*.qcow2"`
+         imageFile=`find . -name "*.qcow2" -printf "%f"`
          if [ -e "${imageFile}" ] ; then
             vmDate=`date -r "${imageFile}" +"%Y-%m-%d"`
             imageFiles="${imageFiles} ${imageFile}"
@@ -45,7 +45,7 @@ for vm in ${VMs} ; do
             # ====== Copy to OpenStack Controllers ==========================
             for destination in ${DESTINATIONS} ; do
                echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
-               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}" &
+               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
             done
 
             # ====== Copy to web server =====================================
@@ -54,7 +54,7 @@ for vm in ${VMs} ; do
                   gpg -sab "${imageFile}.xz"
                fi
                echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
-               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/" &
+               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
             fi
 
          fi
@@ -62,7 +62,7 @@ for vm in ${VMs} ; do
       fi
    fi
    popd >/dev/null
-#    sleep 1
+   # sleep 1
 done
 wait
 
