@@ -700,7 +700,11 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    if [ ${HYPERVISOR} == "VirtualBox" ] ; then
       echo "RESULT=`realpath --relative-to=. ${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}.ova`"
    elif [ ${HYPERVISOR} == "QEMU" ] ; then
-      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}"
+      # Rename QEMU image to have qcow2 extension!
+      mv ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name} ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
+      # Create a compressed version as well:
+      nice xz -T0 -k ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
    elif [ ${HYPERVISOR} == "vSphere" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
