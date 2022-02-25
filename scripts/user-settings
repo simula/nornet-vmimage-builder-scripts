@@ -123,9 +123,10 @@ sudo -u ${USER_NAME} chmod 600 /home/${USER_NAME}/.ssh/authorized_keys
 # Thomas Dreibholz's public keys for verifying package and Git signatures:
 sudo -u ${USER_NAME} gpg \
    --homedir /home/${USER_NAME}/.gnupg \
-   --keyserver hkp://keyserver.ubuntu.com --recv-keys \
-   21412672518D8B2D1862EFEF5CD5D12AA0877B49 \
-   7266D8CDA688C4D51F362A62DF605BB0760F2D65
+   --keyserver hkp://keyserver.ubuntu.com \
+   --recv-keys \
+      21412672518D8B2D1862EFEF5CD5D12AA0877B49 \
+      7266D8CDA688C4D51F362A62DF605BB0760F2D65
 
 
 # ====== Renew SSH keys and enforce strong cipher configurations ============
