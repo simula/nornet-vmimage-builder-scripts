@@ -40,6 +40,14 @@ build-defined-vms ()
       for system in ${SYSTEMS} ; do
          distribution=`echo "${system}" | sed -e "s/-.*$//g"`
          release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
+
+         # ====== Filter out unsupported combinations =======================
+         if [ "${project}" == "NorNet" -a "${distribution}" == "Debian" ] ; then
+            echo "${project}/${distribution}-${release} is not supported (yet)"
+            continue
+         fi
+
+         # ====== Build VM ==================================================
          (
             name="${HYPERVISOR}-${project}-${distribution}-${release}"
             logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
@@ -72,7 +80,10 @@ build-defined-vms ()
                echo "${name} is already there -> ${logfile}"
             fi
          ) &
+
       done
    done
+
+   # ====== Wait for completion of all parallel builds ======================
    wait
 }
