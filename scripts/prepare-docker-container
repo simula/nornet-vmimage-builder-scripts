@@ -45,29 +45,43 @@ useradd -s /bin/bash \
    ${USER_NAME}
 echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd
 chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
-usermod -aG sudo ${USER_NAME}
+if [ ! -e /usr/bin/dnf ] ; then
+   # Debian/Ubuntu:
+   usermod -aG sudo ${USER_NAME}
+else
+   # Fedora:
+   usermod -aG wheel ${USER_NAME}
+fi
 
 # ====== Create locales and time zone data ==================================
 if [ -e /usr/bin/apt-get ] ; then
+   # Debian/Ubuntu:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y locales tzdata
+   locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
 elif [ -e /usr/bin/dnf ] ; then
-   dnf install -y locales tzdata
+   # Fedora:
+   dnf install -y glibc-locale-source
+   localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 || true
 fi
-locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
 
 # ====== Install "systemctl" ================================================
 if [ -e /usr/bin/apt-get ] ; then
+   # Debian/Ubuntu:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl || true
 elif [ -e /usr/bin/dnf ] ; then
-   dnf install -y systemctl
+   # Fedora:
+   dnf install -y systemd
 fi
 
 # ====== Add PPA dreibh/ppa =================================================
 if [ -e /usr/bin/apt-get ] ; then
+   # Debian/Ubuntu:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y apt-utils gpg-agent dirmngr || true
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y software-properties-common
    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
    apt-add-repository -y ppa:dreibh/ppa
 elif [ -e /usr/bin/dnf ] ; then
+   # Fedora:
+   dnf install -y 'dnf-command(copr)'
    dnf copr enable -y dreibh/ppa
 fi
