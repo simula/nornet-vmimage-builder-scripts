@@ -49,38 +49,38 @@ fi
 if [ "${UNAME}" == "Linux" ] ; then
    cat >>/etc/sysctl.conf <<EOF
 
-###################################################################
+#############################################################################
 
-# ------ Custom settings ------------------------------------------
+# ------ Custom settings ----------------------------------------------------
 # Enable ECN:
 net.ipv4.tcp_ecn=1
 
-# ------ TCP settings ---------------------------------------------
+# ------ TCP settings -------------------------------------------------------
 # Turn off auto-tuning of the TCP receive buffer size:
-# sysctl -w net.ipv4.tcp_moderate_rcvbuf=0
-# sysctl -w net.netfilter.nf_conntrack_icmp_timeout=60
+# net.ipv4.tcp_moderate_rcvbuf=0
+# net.netfilter.nf_conntrack_icmp_timeout=60
 
-# sysctl -w net.core.rmem_default=212992
-# sysctl -w net.core.rmem_max=134217728
-# sysctl -w net.core.wmem_default=212992
-# sysctl -w net.core.wmem_max=134217728
-# sysctl -w net.ipv4.tcp_rmem='4096 87380 134217728'
-# sysctl -w net.ipv4.tcp_wmem='4096 16384 134217728'
-# sysctl -w net.ipv4.tcp_mem='134217728 134217728 134217728'
-# sysctl -w net.ipv4.route.flush=1
-# sysctl -w net.ipv6.route.flush=1
+# net.core.rmem_default=212992
+# net.core.rmem_max=134217728
+# net.core.wmem_default=212992
+# net.core.wmem_max=134217728
+# net.ipv4.tcp_rmem='4096 87380 134217728'
+# net.ipv4.tcp_wmem='4096 16384 134217728'
+# net.ipv4.tcp_mem='134217728 134217728 134217728'
+# net.ipv4.route.flush=1
+# net.ipv6.route.flush=1
 
 # ----- MPTCP settings ------------------------------------------------------
-# sysctl -w net.mptcp.mptcp_enabled=1
-# sysctl -w net.mptcp.mptcp_path_manager=fullmesh
+# net.mptcp.mptcp_enabled=1
+# net.mptcp.mptcp_path_manager=fullmesh
 EOF
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    cat >>/etc/sysctl.conf <<EOF
 
-###################################################################
+#############################################################################
 
-# ------ Custom settings ------------------------------------------
+# ------ Custom settings ----------------------------------------------------
 # Enable ECN:
 net.inet.tcp.ecn.enable=1
 EOF
