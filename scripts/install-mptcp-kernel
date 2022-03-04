@@ -33,7 +33,7 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    # ====== Install MPTCP kernel packages ===================================
-   mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image" | grep -- '-mptcp$' | sort --version-sort --field-separator=- -r | head -n1`
+   mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image-" | grep -- '-mptcp' | sort --version-sort --field-separator=- -r | head -n1`
    if [ "${mptcpKernelImagePackage}" == "" ] ; then
       echo >&2 "ERROR: No suitable MPTCP kernel package found!"
       exit 1
