@@ -33,7 +33,7 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    # ====== Install MPTCP kernel packages ===================================
-   mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image-" | grep -- '-mptcp' | sort --version-sort --field-separator=- -r | head -n1`
+   mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image-" | grep -- '-mptcp' | grep -v -- '-dbg$' | sort --version-sort --field-separator=- -r | head -n1`
    if [ "${mptcpKernelImagePackage}" == "" ] ; then
       echo >&2 "ERROR: No suitable MPTCP kernel package found!"
       exit 1
@@ -89,7 +89,7 @@ BEGIN {
 
    # ====== Remove all other kernels ========================================
    kernelType="mptcp"
-   kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType} | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}//")
+   kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType}-* | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}-.*$//")
 
    echo "Kernel Type:         ${kernelType}"
    echo "Kernel Disk Version: ${kernelDiskVersion}"
