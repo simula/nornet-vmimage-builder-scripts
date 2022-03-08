@@ -24,7 +24,7 @@
   "headless": false,
   "format": "qcow2",
 
-  "firmware": "OVMF.fd",
+  "firmware": "/usr/share/qemu/OVMF.fd",
   "disk_interface": "virtio",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
