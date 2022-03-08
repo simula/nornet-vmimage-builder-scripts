@@ -422,7 +422,7 @@ DOMAINNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g
 
 
 # ###### Check Packer version ###############################################
-packerVersion=`${PACKER} --version`
+packerVersion=`${PACKER} version`
 requiredMinVersion="1.7.1~"
 check=`echo -e "${requiredMinVersion}\n${packerVersion}" | sort -V -r | head -n1`
 if [ "${check}" == "${requiredMinVersion}" ] ; then
@@ -709,6 +709,3 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
 ) >successfully-built.txt
-
-reset -I
-echo ""

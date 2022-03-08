@@ -53,7 +53,7 @@ build-defined-vms ()
             logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
             if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
                startTime=`date`
-               echo "${startTime}: Starting to build ${name} ..."
+               echo "${startTime}: Starting to build ${name}, logfile is ${logfile} ..."
                mkdir -p "${OUTPUT_DIRECTORY}/${name}"
                if ./make-vm -H ${HYPERVISOR} \
                      --project ${project} --distribution ${distribution} --release ${release} \
@@ -86,4 +86,5 @@ build-defined-vms ()
 
    # ====== Wait for completion of all parallel builds ======================
    wait
+   reset -I
 }
