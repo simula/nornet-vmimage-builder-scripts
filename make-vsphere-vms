@@ -23,12 +23,11 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="vSphere"
-# SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Fedora-34 Fedora-35"
-SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Fedora-34 Fedora-35"
-# SYSTEMS="Ubuntu-16.04-LTS"
+SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Fedora-34 Fedora-35   Debian-10 Debian-11 Debian-Testing"
+# SYSTEMS="Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal NorNet NorNet-Desktop"   # NorNet-Desktop
+PROJECTS="Minimal NorNet"   # NorNet-Desktop
 
 HOSTNAME="tjuvholmen.simula.nornet"
 USER_NAME="nornetpp"

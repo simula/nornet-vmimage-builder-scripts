@@ -42,7 +42,8 @@ build-defined-vms ()
          release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
 
          # ====== Filter out unsupported combinations =======================
-         if [ "${project}" == "NorNet" -a "${distribution}" == "Debian" ] ; then
+         if [ "${project}" == "NorNet"         -a "${distribution}" == "Debian" -o \
+              "${project}" == "NorNet-Desktop" -a "${distribution}" == "Debian" ] ; then
             echo "${project}/${distribution}-${release} is not supported (yet)"
             continue
          fi
