@@ -29,7 +29,6 @@
 
   // ====== Boot into installer =============================================
   "boot_wait": "10s",
-  "guest_os_type": "Debian_64",
   "boot_command": [
     "e<down><down><down><end>priority=critical",
     " auto=true",
