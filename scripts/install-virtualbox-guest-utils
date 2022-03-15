@@ -33,6 +33,9 @@ if [ -e /usr/bin/apt-get ] ; then
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  -y virtualbox-guest-x11 || true
    fi
 
+   # # No need for firmware blobs in VM:
+   # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge linux-firmware || true
+
    # # cloud-init is not useful for VirtualBox VMs:
    # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y cloud-init || true
 
