@@ -73,10 +73,6 @@ location=0
 plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
-[Containments][1][ConfigDialog]
-DialogHeight=540
-DialogWidth=720
-
 [Containments][1][Configuration]
 PreloadWeight=10
 
@@ -177,10 +173,6 @@ plugin=org.kde.plasma.minimizeall
 [Containments][2][Applets][9][Configuration]
 PreloadWeight=10
 
-[Containments][2][ConfigDialog]
-DialogHeight=84
-DialogWidth=1920
-
 [Containments][2][Configuration]
 PreloadWeight=10
 
@@ -273,12 +265,18 @@ plugin=org.kde.plasma.battery
 [Containments][7][Applets][20][Configuration]
 PreloadWeight=10
 
+[Containments][7][Applets][21][Configuration]
+PreloadWeight=42
+
+[Containments][7][Applets][21][Configuration][General]
+showFlag=true
+
 [Containments][7][Configuration]
 PreloadWeight=10
 
 [Containments][7][General]
-extraItems=org.kde.plasma.bluetooth,org.kde.kdeconnect,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.mediacontroller,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.vault,org.kde.plasma.keyboardindicator,org.kde.plasma.nightcolorcontrol,org.kde.plasma.printmanager,org.kde.plasma.networkmanagement
-knownItems=org.kde.plasma.bluetooth,org.kde.kdeconnect,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.mediacontroller,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.vault,org.kde.plasma.keyboardindicator,org.kde.plasma.nightcolorcontrol,org.kde.plasma.printmanager,org.kde.plasma.networkmanagement
+extraItems=org.kde.plasma.bluetooth,org.kde.kdeconnect,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.mediacontroller,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.vault,org.kde.plasma.keyboardindicator,org.kde.plasma.nightcolorcontrol,org.kde.plasma.printmanager,org.kde.plasma.networkmanagement,org.kde.plasma.keyboardlayout
+knownItems=org.kde.plasma.bluetooth,org.kde.kdeconnect,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.mediacontroller,org.kde.plasma.notifications,org.kde.plasma.volume,org.kde.plasma.vault,org.kde.plasma.keyboardindicator,org.kde.plasma.nightcolorcontrol,org.kde.plasma.printmanager,org.kde.plasma.networkmanagement,org.kde.plasma.keyboardlayout
 
 [ScreenMapping]
 itemsOnDisabledScreens=
