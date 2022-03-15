@@ -166,6 +166,9 @@ plugin=org.kde.plasma.digitalclock
 [Containments][2][Applets][8][Configuration]
 PreloadWeight=10
 
+[Containments][2][Applets][8][Configuration][Appearance]
+showDate=false
+
 [Containments][2][Applets][9]
 immutability=1
 plugin=org.kde.plasma.minimizeall
@@ -264,6 +267,10 @@ plugin=org.kde.plasma.battery
 
 [Containments][7][Applets][20][Configuration]
 PreloadWeight=10
+
+[Containments][7][Applets][21]
+immutability=1
+plugin=org.kde.plasma.keyboardlayout
 
 [Containments][7][Applets][21][Configuration]
 PreloadWeight=42
