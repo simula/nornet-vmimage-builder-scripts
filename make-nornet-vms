@@ -27,7 +27,7 @@ SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Fed
 # SYSTEMS="Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet"   #  NorNet-Desktop"
+PROJECTS="NorNet NorNet-Desktop"
 HOSTNAME="akerbrygge.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
