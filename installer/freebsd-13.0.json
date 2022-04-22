@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/snapshots/amd64/amd64/ISO-IMAGES/13.0/FreeBSD-13.0-STABLE-amd64-20220210-c437ff145cb-249403-bootonly.iso",
-  "iso_checksum": "sha512:db1e8a2d280548905fa9ea41aa873175312c9d461c350727dde62da6b483acf050d091d12d62a52f725442b937cd7a18cf2459bec39073d28ae12cdabf0e52a7",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.0/FreeBSD-13.0-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha512:8f58360e4259a04a262bc345e6c16708331bec40ec2d596a5b60d53f05d566a13ccf1e322df92be61c040261230df2f41d311aac174d5820828322dbca904a8e",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

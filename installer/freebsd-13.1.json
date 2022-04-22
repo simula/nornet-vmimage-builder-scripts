@@ -1,5 +1,5 @@
-// FreeBSD 12.1 with EFI Boot
-// Copyright (C) 2019-2022 by Thomas Dreibholz
+// FreeBSD 13.1 with EFI Boot
+// Copyright (C) 2020-2022 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/12.2/FreeBSD-12.2-RELEASE-amd64-disc1.iso",
-  "iso_checksum": "sha256:289522e2f4e1260859505adab6d7b54ab83d19aeb147388ff7e28019984da5dc",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.1/FreeBSD-13.1-RC4-amd64-disc1.iso",
+  "iso_checksum": "sha512:3e1cf42f6262965df41dda72c72b00415d183676e5492ec44f0af1ef67327b052ac89c242659e2cdae6463f647809587d544839fbad55de24e3c528911440841",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -34,6 +34,5 @@
     "cd /tmp && dhclient vtnet0 && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
     "bsdinstall script /tmp/installerconfig;<enter>"
-    // ;  reboot<enter>
    ]
 }
