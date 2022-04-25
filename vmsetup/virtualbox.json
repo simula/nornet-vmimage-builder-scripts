@@ -35,11 +35,20 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
+
   "chipset": "{{user `vm_chipset`}}",
   "firmware": "{{user `vm_firmware`}}",
+  "nested_virt": false,
+  "rtc_time_base": "UTC",
   "nic_type": "virtio",
+
   "gfx_controller": "vmsvga",
+  "gfx_vram_size": 128,
+  "gfx_accelerate_3d": false,
+  "gfx_efi_resolution": "1920x1080",
+
   "audio_controller": "hda",
+
   "iso_interface": "sata",
   "hard_drive_interface": "sata",
   "hard_drive_discard": true,
@@ -55,12 +64,7 @@
   // ],
   "sound": "pulse",
   "vboxmanage": [
-    [ "modifyvm", "{{.Name}}", "--nested-hw-virt", "off" ],
-    [ "modifyvm", "{{.Name}}", "--rtcuseutc", "on" ],
-    [ "modifyvm", "{{.Name}}", "--vram", "128" ],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-    [ "modifyvm", "{{.Name}}", "--accelerate3d", "off" ],
-    [ "setextradata", "global", "GUI/SuppressMessages", "all" ],
-    [ "setextradata", "{{.Name}}", "VBoxInternal2/EfiGraphicsResolution", "{{user `vm_video`}}" ]
+    [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
   ]
 }

@@ -35,6 +35,7 @@
     "--product",     "{{user `vm_product`}}",
     "--producturl",  "{{user `vm_producturl`}}"
   ],
+
   "chipset": "{{user `vm_chipset`}}",
   "firmware": "{{user `vm_firmware`}}",
   "nested_virt": false,
@@ -45,9 +46,9 @@
   "gfx_vram_size": 128,
   "gfx_accelerate_3d": false,
   "gfx_efi_resolution": "1920x1080",
-  // ??? "gfx_disable_vrde": true,
 
   "audio_controller": "hda",
+
   "iso_interface": "sata",
   "hard_drive_interface": "sata",
   "hard_drive_discard": true,
