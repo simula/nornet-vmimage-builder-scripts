@@ -41,22 +41,19 @@ if [ -e /usr/bin/apt-get ] ; then
    # ------ Get Firefox from PPA, not via Snap ------------------------------
    releaseVersion=`lsb_release -rs`
    if [[ "${releaseVersion}" > "21.10" ]] ; then
-      cat >/etc/apt/preferences.d/nosnap.pref <<EOF
-# Prevent installation of snapd!
-Package: snapd
-Pin: release a=*
-Pin-Priority: -10
+      cat >/etc/apt/preferences.d/firefox.pref <<EOF
+# Use Firefox from PPA, instead of installing it via Snap!
+Package: firefox
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1024
 EOF
       sudo add-apt-repository -sy ppa:mozillateam/ppa
-      targetRelease="o=LP-PPA-mozillateam"
-   else
-      targetRelease=""
    fi
 
    # Try 3 times, for the case of download issues:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease}  ${packages} || \
-      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease} ${packages} || \
-         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease} ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
