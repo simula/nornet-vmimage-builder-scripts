@@ -29,8 +29,8 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    packages="nornet-display"
-   release=`lsb_release -cs`
-   if [ "${release}" == "precise" -o "${release}" == "trusty" ] ; then
+   releaseName=`lsb_release -cs`
+   if [ "${releaseName}" == "precise" -o "${releaseName}" == "trusty" ] ; then
       # Package list for old Ubuntu releases:
       packages="${packages} kdm plasma-desktop gtk2-engines-oxygen gtk3-engines-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme"
    else
@@ -38,10 +38,25 @@ if [ -e /usr/bin/apt-get ] ; then
       packages="${packages} nornet-display sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
    fi
 
+   # ------ Get Firefox from PPA, not via Snap ------------------------------
+   releaseVersion=`lsb_release -rs`
+   if [[ "${releaseVersion}" > "21.10" ]] ; then
+      cat >/etc/apt/preferences.d/nosnap.pref <<EOF
+# Prevent installation of snapd!
+Package: snapd
+Pin: release a=*
+Pin-Priority: -10
+EOF
+      sudo add-apt-repository -sy ppa:mozillateam/ppa
+      targetRelease="o=LP-PPA-mozillateam"
+   else
+      targetRelease=""
+   fi
+
    # Try 3 times, for the case of download issues:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease}  ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease} ${packages} || \
+         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --target-release ${targetRelease} ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
