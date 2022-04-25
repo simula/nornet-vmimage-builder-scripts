@@ -91,6 +91,7 @@ Basic NorNet VMs for general-purpose desktop usage. They base on the NorNet imag
 * Configured switchable keyboard layout (DE, NO, US).
 * Configured 4 virtual desktops.
 * Configured Firefox with enhanced privacy settings (delete cookies and history on close, "phone-home" anti-features disabled, etc.) as well as NoScript and uBlock Origin add-ons.
+* Ubuntu 22.04+: Firefox is installed from PPA mozillateam/ppa (<https://launchpad.net/~mozillateam/+archive/ubuntu/ppa/+packages>), instead of using the Snap package.
 
 ## NEAT
 
