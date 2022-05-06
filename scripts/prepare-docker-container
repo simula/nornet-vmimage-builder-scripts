@@ -29,7 +29,7 @@ if [ -e /usr/bin/apt-get ] ; then
    rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
 
    /usr/bin/apt-get update -qq
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y sudo
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y sudo
 elif [ -e /usr/bin/dnf ] ; then
    dnf install -y sudo
 fi
@@ -56,7 +56,7 @@ fi
 # ====== Create locales and time zone data ==================================
 if [ -e /usr/bin/apt-get ] ; then
    # Debian/Ubuntu:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y locales tzdata
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y locales tzdata
    locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
 elif [ -e /usr/bin/dnf ] ; then
    # Fedora:
@@ -67,7 +67,7 @@ fi
 # ====== Install "systemctl" ================================================
 if [ -e /usr/bin/apt-get ] ; then
    # Debian/Ubuntu:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y systemctl || true
 elif [ -e /usr/bin/dnf ] ; then
    # Fedora:
    dnf install -y systemd
@@ -76,8 +76,8 @@ fi
 # ====== Add PPA dreibh/ppa =================================================
 if [ -e /usr/bin/apt-get ] ; then
    # Debian/Ubuntu:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y apt-utils gpg-agent dirmngr || true
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y software-properties-common
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y apt-utils gpg-agent dirmngr || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y software-properties-common
 
    # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
    sudo -u ${USER_NAME} gpg \

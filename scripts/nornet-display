@@ -32,10 +32,10 @@ if [ -e /usr/bin/apt-get ] ; then
    releaseName=`lsb_release -cs`
    if [ "${releaseName}" == "precise" -o "${releaseName}" == "trusty" ] ; then
       # Package list for old Ubuntu releases:
-      packages="${packages} kdm plasma-desktop gtk2-engines-oxygen gtk3-engines-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme"
+      packages="${packages} kdm plasma-desktop gtk2-engines-oxygen gtk3-engines-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme wireshark"
    else
       # Package list for current Ubuntu releases:
-      packages="${packages} nornet-display sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
+      packages="${packages} nornet-display sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds wireshark"
    fi
 
    # ------ Get Firefox from PPA, not via Snap ------------------------------
