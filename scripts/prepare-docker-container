@@ -76,8 +76,10 @@ fi
 # ====== Add PPA dreibh/ppa =================================================
 if [ -e /usr/bin/apt-get ] ; then
    # Debian/Ubuntu:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y apt-utils gpg-agent dirmngr || true
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y software-properties-common
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+      apt-utils gpg-agent dirmngr || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+      software-properties-common gnupg
 
    # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
    sudo -u ${USER_NAME} gpg \
