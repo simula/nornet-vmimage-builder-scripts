@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/test/36_Beta/Server/x86_64/iso/Fedora-Server-netinst-x86_64-36_Beta-1.4.iso",
-  "iso_checksum": "none",
+  "iso_url": "https://mirrors.xtom.de/fedora/releases/36/Server/x86_64/iso/Fedora-Server-netinst-x86_64-36-1.5.iso",
+  "iso_checksum": "sha256:421c4c6e23d72e4669a55e7710562287ecd9308b3d314329960f586b89ccca19",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
