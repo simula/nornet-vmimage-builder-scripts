@@ -48,7 +48,7 @@ if [ "${UNAME}" == "Linux" ] ; then
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y \
          cron-apt autofs
 
-      packages="nornet-management td-system-configure-grub"
+      packages="nornet-management td-system-configure-grub tshark"
 
       # Try 3 times, for the case of download issues:
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
