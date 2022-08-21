@@ -43,3 +43,6 @@ elif [ -e /usr/bin/dnf ] ; then
    systemctl start sddm.service
    systemctl set-default graphical.target
 fi
+
+# Add demo scenario icon to desktop:
+ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml .
