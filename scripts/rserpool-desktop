@@ -45,4 +45,4 @@ elif [ -e /usr/bin/dnf ] ; then
 fi
 
 # Add demo scenario icon to desktop:
-ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml .
+sudo -u ${USER_NAME} ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml /home/${USER_NAME}/Desktop
