@@ -49,10 +49,3 @@ git clone https://dreibh@github.com/dreibh/rserpooldemo
 git clone https://dreibh@github.com/dreibh/sctplib
 git clone https://dreibh@github.com/dreibh/socketapi
 git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
-
-packages="rsplib rserpooldemo"
-
-# Try 3 times, for the case of download issues:
-env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
-   sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
-   sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}

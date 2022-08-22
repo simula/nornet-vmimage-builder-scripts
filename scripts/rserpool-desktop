@@ -35,6 +35,13 @@ if [ -e /usr/bin/apt-get ] ; then
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
+   packages="rsplib rserpooldemo"
+
+   # Try 3 times, for the case of download issues:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}
+
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y rserpooldemo-desktop rserpooldemo-development rserpooldemo-tool dia fractgen wireshark
@@ -45,4 +52,5 @@ elif [ -e /usr/bin/dnf ] ; then
 fi
 
 # Add demo scenario icon to desktop:
-sudo -u ${USER_NAME} ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml /home/${USER_NAME}/Desktop
+sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/Desktop
+sudo -u ${USER_NAME} ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml /home/${USER_NAME}/Desktop/
