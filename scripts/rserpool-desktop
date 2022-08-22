@@ -35,12 +35,12 @@ if [ -e /usr/bin/apt-get ] ; then
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
-   packages="rsplib rserpooldemo"
-
-   # Try 3 times, for the case of download issues:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
-      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
-      sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}
+   # packages="rsplib rserpooldemo"
+   #
+   # # Try 3 times, for the case of download issues:
+   # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+   #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+   #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
