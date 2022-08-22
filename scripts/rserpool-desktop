@@ -49,6 +49,12 @@ elif [ -e /usr/bin/dnf ] ; then
    systemctl enable sddm.service
    systemctl start sddm.service
    systemctl set-default graphical.target
+
+   cat >/etc/modules-load.d/sctp.conf <<EOF
+sctp
+EOF
+   rm -f /etc/modprobe.d/sctp-blacklist.conf
+
 fi
 
 # Add demo scenario icon to desktop:
