@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Docker"
-SYSTEMS="Debian-10 Debian-11 Debian-Testing   Fedora-34 Fedora-35   Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS"
+SYSTEMS="Debian-10 Debian-11 Debian-Testing   Fedora-35 Fedora-36   Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS"
 # SYSTEMS="Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
