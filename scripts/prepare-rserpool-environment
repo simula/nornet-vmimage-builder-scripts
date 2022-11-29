@@ -48,3 +48,4 @@ git clone https://dreibh@github.com/dreibh/rsplib
 git clone https://dreibh@github.com/dreibh/rserpooldemo
 git clone https://dreibh@github.com/dreibh/sctplib
 git clone https://dreibh@github.com/dreibh/socketapi
+git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts

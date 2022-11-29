@@ -35,6 +35,13 @@ if [ -e /usr/bin/apt-get ] ; then
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install --no-install-recommends -y ${packages}
 
+   # packages="rsplib rserpooldemo"
+   #
+   # # Try 3 times, for the case of download issues:
+   # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+   #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
+   #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}
+
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y rserpooldemo-desktop rserpooldemo-development rserpooldemo-tool dia fractgen wireshark
@@ -42,4 +49,14 @@ elif [ -e /usr/bin/dnf ] ; then
    systemctl enable sddm.service
    systemctl start sddm.service
    systemctl set-default graphical.target
+
+   cat >/etc/modules-load.d/sctp.conf <<EOF
+sctp
+EOF
+   rm -f /etc/modprobe.d/sctp-blacklist.conf
+
 fi
+
+# Add demo scenario icon to desktop:
+sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/Desktop
+sudo -u ${USER_NAME} ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml /home/${USER_NAME}/Desktop/

@@ -1,4 +1,4 @@
-// Ubuntu Server 22.04 "Jammy Jellyfish" with EFI Boot
+// Fedora 37 Server with EFI Boot
 // Copyright (C) 2019-2022 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://releases.ubuntu.com/jammy/ubuntu-22.04.1-live-server-amd64.iso",
-  "iso_checksum": "sha256:10f19c5b2b8d6db711582e0e27f5116296c34fe4b313ba45f9b201a5007056cb",
+  "iso_url": "https://mirrors.xtom.de/fedora/releases/37/Server/x86_64/iso/Fedora-Server-netinst-x86_64-37-1.7.iso",
+  "iso_checksum": "sha256:149d4bae999022b07bd40f8272f6208bc28884dad5110c63e915d37458e6abc0",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,25 +28,12 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "1s",
-  // VirtualBox and QEMU take different times to start booting. Ubuntu 20.04's
-  // GRUB configuration has a timeout of 5s. Typing ESC to early leads into
-  // the EFI firmware's setup. Typing <tab> is ignored by the firmware, and it
-  // stops GRUB's countdown.
+  "boot_wait": "3s",
   "boot_command": [
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
+    "<esc><wait>",
     "<esc>c<wait>",
-    "linux /casper/vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
-    "initrd /casper/initrd<enter><wait>",
+    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+    "initrd /images/pxeboot/initrd.img<enter><wait>",
     "boot<enter>"
   ]
 }
