@@ -252,8 +252,8 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo 'user_pref("app.normandy.first_run", false);'
 
       # ------ Set own homepage ---------------------------------------------
-      echo 'user_pref("browser.startup.homepage", "https://www.uni-due.de/~be0001/");'
-      echo 'user_pref("startup.homepage_welcome_url", "https://www.uni-due.de/~be0001/");'
+      echo 'user_pref("browser.startup.homepage", "https://www.nntb.no/~dreibh/");'
+      echo 'user_pref("startup.homepage_welcome_url", "https://www.nntb.no/~dreibh/");'
 
    ) | tee -a ${profilePath}/user.js
 done

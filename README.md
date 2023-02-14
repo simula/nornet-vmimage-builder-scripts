@@ -80,8 +80,8 @@ Basic minimal installation.
 Basic for general-purpose server usage, particularly for working with NorNet <https://www.nntb.no> purposes. Features (see also directory [user-settings](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/user-settings)):
 * OpenSSH installed.
 * Joe editor installed.
-* [System-Tools](https://www.uni-due.de/~be0001/system-tools/) installed.
-* NorNet tools, particularly also including up-to-date [NetPerfMeter](https://www.uni-due.de/~be0001/netperfmeter/), [HiPerConTracer](https://www.uni-due.de/~be0001/hipercontracer/index.html), [SubNetCalc](https://www.uni-due.de/~be0001/subnetcalc/index.html), installed.
+* [System-Tools](https://www.nntb.no/~dreibh/system-tools/) installed.
+* NorNet tools, particularly also including up-to-date [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/), [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/index.html), [SubNetCalc](https://www.nntb.no/~dreibh/subnetcalc/index.html), installed.
 * Localisation files for some English variants, German, Norwegian and Chinese installed.
 * Sysctl: Explicit Congestion Notification (ECN) enabled.
 
@@ -101,9 +101,9 @@ Basic for general-purpose desktop usage, particularly for working with NEAT <htt
 
 ## RSerPoolDemo
 
-Basic for general-purpose desktop usage, particularly for working with RSerPool <https://www.uni-due.de/~be0001/rserpool/>. They base on the NorNet-Desktop images, with RSPLIB packages and build environment. Features (see also directory [user-settings](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/user-settings)):
-* [RSPLIB](https://www.uni-due.de/~be0001/rserpool/index.html#Download) installed.
-* [RSerPoolDemo-Tool](https://www.uni-due.de/~be0001/rserpool/index.html#DemoTool) installed.
+Basic for general-purpose desktop usage, particularly for working with RSerPool <https://www.nntb.no/~dreibh/rserpool/>. They base on the NorNet-Desktop images, with RSPLIB packages and build environment. Features (see also directory [user-settings](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/user-settings)):
+* [RSPLIB](https://www.nntb.no/~dreibh/rserpool/index.html#Download) installed.
+* [RSerPoolDemo-Tool](https://www.nntb.no/~dreibh/rserpool/index.html#DemoTool) installed.
 * Source repositories cloned under ~/src. Build dependencies are already installed.
 
 ## SimulaMet-Desktop
