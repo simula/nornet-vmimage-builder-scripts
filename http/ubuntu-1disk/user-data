@@ -251,6 +251,9 @@ autoinstall:
       if [ "$SWAP_UUID" != "" ] ; then
          sed -i "/$SWAP_UUID/s/ sw / sw,discard /" /mnt/rootfs/etc/fstab
       fi
+      # ------ Update /target -----------------------------------------------
+      umount /target
+      mount --bind /mnt/rootfs /target
       # ------ Update Grub configuration ------------------------------------
       mount $EFI_DEV /mnt/rootfs/boot/efi
       mount -o bind /dev  /mnt/rootfs/dev
