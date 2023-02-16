@@ -23,7 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-22.10   Debian-10 Debian-11 Debian-Testing   Fedora-35 Fedora-36 Fedora-37"
+SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS  Ubuntu-22.10   Debian-10 Debian-11   Fedora-36 Fedora-37"
+# Ubuntu-23.04   Debian-Testing
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"
