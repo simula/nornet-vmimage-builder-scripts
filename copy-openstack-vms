@@ -20,7 +20,7 @@
 
 set -e
 
-SSH_PROXY="128.39.37.188"
+SSH_PROXY="oesthorn.nntb.no"
 DESTINATIONS="nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
 WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 
@@ -44,8 +44,8 @@ for vm in ${VMs} ; do
 
             # ====== Copy to OpenStack Controllers ==========================
             for destination in ${DESTINATIONS} ; do
-               echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
-               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
+               echo  "rsync -e \"ssh -J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
+               sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" -z --archive --partial --info=progress2 `realpath ${imageFile}` ${destination}${imageFile}"
             done
 
             # ====== Copy to web server =====================================
@@ -53,8 +53,8 @@ for vm in ${VMs} ; do
                if [ ! -e "${imageFile}.xz".asc ] ; then
                   gpg -sab "${imageFile}.xz"
                fi
-               echo  "rsync -e \"ssh -4J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
-               sh -c "rsync -e \"ssh -4J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
+               echo  "rsync -e \"ssh -J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
+               sh -c "rsync -e \"ssh -J ${SSH_PROXY}\" --archive --partial --info=progress2 `realpath ${imageFile}.xz` `realpath ${imageFile}.xz.asc` ${readmeFile} ${WEBSERVER}${vmDate}/"
             fi
 
          fi
