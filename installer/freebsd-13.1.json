@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.1/FreeBSD-13.1-RC4-amd64-disc1.iso",
-  "iso_checksum": "sha512:3e1cf42f6262965df41dda72c72b00415d183676e5492ec44f0af1ef67327b052ac89c242659e2cdae6463f647809587d544839fbad55de24e3c528911440841",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.1/FreeBSD-13.1-RELEASE-amd64-bootonly.iso",
+  "iso_checksum": "sha512:20749fd0f2c93fa70913a08370c5c571565527883e246815bad1bff81b07abcdaf95b8774de544c2175e66a018291be9034c71fba9949a9c3b611e6303b4a132",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,7 +28,7 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "30s",
+  "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",

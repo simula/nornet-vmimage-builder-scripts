@@ -28,7 +28,7 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "30s",
+  "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
