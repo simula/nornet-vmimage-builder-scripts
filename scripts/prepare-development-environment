@@ -22,6 +22,29 @@
 set -ex
 
 
+# ====== Import public keys =================================================
+# Thomas Dreibholz's public keys for verifying package and Git signatures:
+KEYS="21412672518D8B2D1862EFEF5CD5D12AA0877B49"
+KEYSERVERS="keyserver.ubuntu.com 162.213.33.8 162.213.33.9"
+for key in ${KEYS} ; do
+   foundKey=0
+   for keyServer in ${KEYSERVERS} ; do
+      if sudo -u ${USER_NAME} gpg \
+            --homedir /home/${USER_NAME}/.gnupg \
+            --keyserver hkp://${keyServer} \
+            --recv-keys ${key} ; then
+         echo "Got ${key} from ${keyServer}!"
+         foundKey=1
+         break
+      fi
+   done
+   if [ ${foundKey} -eq 0 ] ; then
+      echo >&2 "ERROR: Unable to fetch key ${key}!"
+      exit 1
+   fi
+done
+
+
 # ====== Development configuration ==========================================
 
 # ------ Ubuntu -------------------------------------------------------------
@@ -51,21 +74,16 @@ if [ -e /etc/apt/sources.list ] ; then
       echo ""
       echo "# Thomas Dreibholz's MPTCP kernel repository:"
 
-      echo "# To install the key: gpg --no-default-keyring --keyring /etc/apt/trusted.gpg.d/dreibh-nornet-kernel.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 21412672518D8B2D1862EFEF5CD5D12AA0877B49"
+      echo "# To install the key: gpg --no-default-keyring --keyring /etc/apt/trusted.gpg.d/dreibh-nornet-kernel.gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 21412672518D8B2D1862EFEF5CD5D12AA0877B49"
       echo "# deb [arch=amd64] https://packages.nntb.no/nornet-kernel/ubuntu/ ${codename} main"
       echo "# deb-src [arch=amd64] https://packages.nntb.no/nornet-kernel/ubuntu/ ${codename} main"
    ) >>/etc/apt/sources.list
 
-   # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 21412672518D8B2D1862EFEF5CD5D12AA0877B49 || true
-   sudo -u ${USER_NAME} gpg \
-      --homedir /home/${USER_NAME}/.gnupg \
-      --keyserver hkp://keyserver.ubuntu.com \
-      --recv-keys \
-         21412672518D8B2D1862EFEF5CD5D12AA0877B49
+   KEY="21412672518D8B2D1862EFEF5CD5D12AA0877B49"
    sudo -u ${USER_NAME} gpg \
       --homedir /home/${USER_NAME}/.gnupg \
       --armor \
-      --export 21412672518D8B2D1862EFEF5CD5D12AA0877B49 | apt-key add -
+      --export ${KEY} | apt-key add -
 
    # Clean up old installer files:
    rm -f /etc/apt/sources.list.curtin.old /etc/apt/sources.list.save
