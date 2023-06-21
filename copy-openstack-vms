@@ -20,8 +20,8 @@
 
 set -e
 
-SSH_PROXY="oesthorn.nntb.no"
-DESTINATIONS="nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
+SSH_PROXY="10.1.1.51"
+DESTINATIONS="nornetpp@10.132.11.8:images/"   # "nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
 WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 
 source ./directories.config
