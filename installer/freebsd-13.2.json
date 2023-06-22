@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-bootonly.iso",
-  "iso_checksum": "sha512:f30ac967e32f008265e140d7cbbc4f29a2955d4984d53c8e6ee004d60d34eae54599ce93812ad5094e40b434b485568b4e3fdd62a8a71c0a09529acf6ad0331a",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha512:cd773814a95405868f31be40e44739a497043601e668b82bc54f73e9e5252743ec75fdbc884e903ffd9d511495a7205f5e5fada4333852b3e16407ff77cb63d0",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

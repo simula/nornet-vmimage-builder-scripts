@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/snapshots/amd64/amd64/ISO-IMAGES/14.0/FreeBSD-14.0-CURRENT-amd64-20220210-8dc42f98047-253065-bootonly.iso",
-  "iso_checksum": "sha512:446dc808800c7520bb8649adf6c67fa2afb5c67ed5c5b114f0aeb6e91097c9704f8366c14c1062dc4d01022df78c8149d9ec822bbde59021cfb19ad263186ba1",
+  "iso_url": "https://download.freebsd.org/snapshots/amd64/amd64/ISO-IMAGES/14.0/FreeBSD-14.0-CURRENT-amd64-20230615-456c1199d3b3-263574-disc1.iso",
+  "iso_checksum": "sha512:fe42c47c80207f6a0616b8ae09fff62455da18d3abe9162bbbd541757afb7bf149e4653f4489e372fe77cdfc38a1738f59ca54bbf1635411d845a31a7ef09d4c",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,7 +28,7 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "30s",
+  "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
