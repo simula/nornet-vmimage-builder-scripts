@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-12.3"
+SYSTEMS="FreeBSD-14.0"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal KDE"
