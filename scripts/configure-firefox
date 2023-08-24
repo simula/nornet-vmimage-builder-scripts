@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -e
 
 
 # Documentation:
@@ -71,7 +71,7 @@ function get-xpi-uid ()
    [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"id\"" | head -n 1 | cut -d'"' -f4)
 
    # if extension UID not found, get it from key "name" in manifest.json ("name": "extension name")
-   [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"name\"" | head -n 1 | cut -d'"' -f4 | tr ' ' '-')}
+   [ "${LOC_UID}" = "" ] && LOC_UID=$(unzip -qq -p "${LOC_XPI}" manifest.json 2>/dev/null | grep "\"name\"" | head -n 1 | cut -d'"' -f4 | tr ' ' '-')
 
    # display extension UID
    echo "${LOC_UID}"
@@ -105,11 +105,13 @@ function install-xpi ()
    local number="$1"
    local profilePaths="$2"
 
-   URL="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
+   URL1="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
+   URL2="https://addons.mozilla.org/firefox/downloads/file/${number}/"
+
    echo "Processing ${URL} ..."
 
    MY_XPI=`mktemp`
-   wget --quiet -O ${MY_XPI} "${URL}"
+   wget --quiet -O ${MY_XPI} "${URL1}" || wget --quiet -O ${MY_XPI} "${URL2}"
 
    MY_UID=`get-xpi-uid ${MY_XPI}`
    MY_NAME=`get-xpi-name ${MY_XPI}`
@@ -145,10 +147,19 @@ function run-firefox-headless ()
 # ###### Main program #######################################################
 
 # ====== Create initial profile, if none is existing ========================
-if [ ! -d "$HOME/.mozilla/firefox" ] ; then
+if [ ! -x /snap/bin/firefox ] ; then
+   # Firefox as regular package
+   FIREFOX_CONFIGDIR="$HOME/.mozilla/firefox"
+else
+   # Firefox as Snap
+   FIREFOX_CONFIGDIR="$HOME/snap/firefox/common/.mozilla/firefox"
+fi
+echo "Firefox configuration directory is $FIREFOX_CONFIGDIR"
+
+if [ ! -d "$FIREFOX_CONFIGDIR" ] ; then
    echo "###### Creating new profile setup! ######"
-   mkdir -p "$HOME/.mozilla/firefox"
-   pushd "$HOME/.mozilla/firefox" >/dev/null
+   mkdir -p "$FIREFOX_CONFIGDIR"
+   pushd "$FIREFOX_CONFIGDIR" >/dev/null
 
    profileName="profile-`dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"'`"
    mkdir "${profileName}"
@@ -171,11 +182,11 @@ fi
 
 # ====== Install extensions =================================================
 PROFILE_PATHS=""
-if [ -e "$HOME/.mozilla/firefox/profiles.ini" ] ; then
-   profilePaths=`grep "^Path=" "$HOME/.mozilla/firefox/profiles.ini" | sed -e "s/^Path=//g"`
+if [ -e "$FIREFOX_CONFIGDIR/profiles.ini" ] ; then
+   profilePaths=`grep "^Path=" "$FIREFOX_CONFIGDIR/profiles.ini" | sed -e "s/^Path=//g"`
    for profilePath in ${profilePaths} ; do
-      if [ -d "$HOME/.mozilla/firefox/${profilePath}/extensions/" ] ; then
-         PROFILE_PATHS="${PROFILE_PATHS} $HOME/.mozilla/firefox/${profilePath}"
+      if [ -d "$FIREFOX_CONFIGDIR/${profilePath}/extensions/" ] ; then
+         PROFILE_PATHS="${PROFILE_PATHS} $FIREFOX_CONFIGDIR/${profilePath}"
       fi
    done
 fi
@@ -190,7 +201,8 @@ EXTENSIONS="${EXTENSIONS=} 607454"   # uBlock Origin
 EXTENSIONS="${EXTENSIONS=} 722"      # NoScript
 EXTENSIONS="${EXTENSIONS=} 5791"     # FlagFox
 EXTENSIONS="${EXTENSIONS=} 6822"     # Binnen-I be gone
-
+EXTENSIONS="${EXTENSIONS=} 4069651"  # I still don't care about cookies
+EXTENSIONS="${EXTENSIONS=} 4040738"  # Cookie AutoDelete
 
 for extension in ${EXTENSIONS} ; do
    install-xpi ${extension} "${PROFILE_PATHS}"
