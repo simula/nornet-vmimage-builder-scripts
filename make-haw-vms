@@ -23,8 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Ubuntu-23.04   Fedora-36 Fedora-37"
-# SYSTEMS="Ubuntu-22.04-LTS"
+SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Ubuntu-23.04 Ubuntu-23.10   Fedora-37 Fedora-38"
+# SYSTEMS="Ubuntu-23.10"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Router HAW-Desktop"
