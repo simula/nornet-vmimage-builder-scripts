@@ -1,4 +1,4 @@
-// Debian 11 "Bullseye" with EFI Boot
+// Debian 12 "Bookworm" with EFI Boot
 // Copyright (C) 2019-2023 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/11.8.0/amd64/iso-cd/debian-11.8.0-amd64-netinst.iso",
-  "iso_checksum": "sha256:d7a74813a734083df30c8d35784926deaa36bc41e5c0766388e9f591ab056b72",
+  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/12.1.0/amd64/iso-cd/debian-12.1.0-amd64-netinst.iso",
+  "iso_checksum": "sha256:9f181ae12b25840a508786b1756c6352a0e58484998669288c4eec2ab16b8559",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
