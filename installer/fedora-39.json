@@ -1,4 +1,4 @@
-// Debian 12 "Bookworm" with EFI Boot
+// Fedora 39 Server with EFI Boot
 // Copyright (C) 2019-2023 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/12.1.0/amd64/iso-cd/debian-12.1.0-amd64-netinst.iso",
-  "iso_checksum": "sha256:9f181ae12b25840a508786b1756c6352a0e58484998669288c4eec2ab16b8559",
+  "iso_url": "https://mirrors.xtom.de/fedora/releases/39/Server/x86_64/iso/Fedora-Server-netinst-x86_64-39-1.5.iso",
+  "iso_checksum": "sha256:61576ae7170e35210f03aae3102048f0a9e0df7868ac726908669b4ef9cc22e9",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,21 +28,12 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "10s",
+  "boot_wait": "3s",
   "boot_command": [
-    "e<down><down><down><end>priority=critical",
-    " fb=false",
-    " auto=true",
-    " debconf/frontend=noninteractive",
-    " console-setup/ask_detect=false",
-    " debian-installer=en_US",
-    " kbd-chooser/method=us",
-    " keyboard-configuration/layout=USA",
-    " keyboard-configuration/variant=USA",
-    " locale=en_US",
-    " netcfg/get_domain={{user `host_domain`}}",
-    " netcfg/get_hostname={{user `host_name`}}",
-    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian.preseed",
-    "<wait><leftCtrlOn>x<leftCtrlOff>"
-   ]
+    "<esc><wait>",
+    "<esc>c<wait>",
+    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+    "initrd /images/pxeboot/initrd.img<enter><wait>",
+    "boot<enter>"
+  ]
 }

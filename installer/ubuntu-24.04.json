@@ -18,7 +18,7 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/?????",
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/noble-live-server-amd64.iso",
   "iso_checksum": "none",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
