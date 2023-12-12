@@ -123,11 +123,40 @@ sudo -u ${USER_NAME} chmod 600 /home/${USER_NAME}/.ssh/authorized_keys
 
 # ====== Import public keys =================================================
 # Thomas Dreibholz's public keys for verifying package and Git signatures:
-sudo -u ${USER_NAME} gpg \
-   --homedir /home/${USER_NAME}/.gnupg \
-   --keyserver hkp://keyserver.ubuntu.com \
-   --recv-keys \
-      21412672518D8B2D1862EFEF5CD5D12AA0877B49
+KEYS="21412672518D8B2D1862EFEF5CD5D12AA0877B49"
+KEYSERVERS="keyserver.ubuntu.com 162.213.33.8 162.213.33.9"
+for key in ${KEYS} ; do
+   foundKey=0
+   # ------ First, try to fetch the key from a key server -------------------
+   # GnuPG is picky with the DNS server response, and OsloMet has a lot of
+   # obscure firewall rules as well => this may fail here!
+   for keyServer in ${KEYSERVERS} ; do
+      if sudo -u ${USER_NAME} gpg \
+            --homedir /home/${USER_NAME}/.gnupg \
+            --keyserver hkp://${keyServer} \
+            --recv-keys ${key} ; then
+         echo "Got ${key} from ${keyServer}!"
+         foundKey=1
+         break
+      fi
+   done
+   # ------ If this fails, try to fetch the key from the NNTB server --------
+   if [ ${foundKey} -eq 0 ] ; then
+      curl "https://www.nntb.no/~dreibh/${key}.asc" >/tmp/${key}.asc
+      if sudo -u ${USER_NAME} gpg \
+            --homedir /home/${USER_NAME}/.gnupg \
+            --import /tmp/${key}.asc ; then
+         echo "Got ${key} from NNTB web server!"
+         foundKey=1
+         break
+      fi
+   fi
+   # ------ Check for success -----------------------------------------------
+   if [ ${foundKey} -eq 0 ] ; then
+      echo >&2 "ERROR: Unable to fetch key ${key}!"
+      exit 1
+   fi
+done
 
 
 # ====== Renew SSH keys and enforce strong cipher configurations ============

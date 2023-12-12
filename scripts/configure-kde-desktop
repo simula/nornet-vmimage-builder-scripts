@@ -564,6 +564,7 @@ cat >/home/${USER_NAME}/.local/share/kxmlgui5/konsole/konsoleui.rc <<EOF
   <Action name="clone-tab" shortcut=""/>
   <Action name="help_contents" shortcut=""/>
   <Action name="options_configure" shortcut=""/>
+  <Action name="options_configure_keybinding" shortcut=""/>
  </ActionProperties>
 </kpartgui>
 EOF

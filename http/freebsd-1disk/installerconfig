@@ -63,7 +63,7 @@ ZFSBOOT_DATASETS="
  /var/tmp setuid=off
 " # END-QUOTE
 
-export nonInteractive=YES
+export nonInteractive="YES"
 
 
 #!/bin/sh
@@ -75,22 +75,9 @@ set -e
 # echo "PermitRootLogin yes" >>/etc/ssh/sshd_config
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-sysrc sshd_enable="YES"
-interface="`ifconfig -l | cut -d' ' -f1`"
-sysrc ifconfig_$interface="dhcp"
 
-echo 'autoboot_delay="5"' >>/boot/loader.conf
+# ====== Basic configuration ================================================
 
-
-# ====== User ===============================================================
-echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
-
-mkdir -p /usr/local/etc/sudoers.d
-echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
-chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
-
-
-# ====== Basic packages =====================================================
 # /etc/resolv.conf is not initialised here, since this code is called from
 # within the installer environment. Using OpenDNS servers here:
 (
@@ -98,24 +85,11 @@ chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
    echo "nameserver 208.67.220.220"
 ) >/etc/resolv.conf
 
-env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
+sysrc sshd_enable="YES"
+interface="`ifconfig -l | cut -d' ' -f1`"
+sysrc ifconfig_$interface="dhcp"
 
-mkdir -p /usr/local/etc/pkg/repos
-cat <<'EOF' >/usr/local/etc/pkg/repos/FreeBSD.conf
-FreeBSD: {
- url: "pkg+https://pkg.FreeBSD.org/${ABI}/latest",
-}
-EOF
-
-
-# Initialise package database. pkg will ask whether to initialise,
-# ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!
-env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
-
-# Install some basic packages:
-pkg update
-pkg upgrade -y
-pkg install -y sudo bash joe
+echo 'autoboot_delay="5"' >>/boot/loader.conf
 
 
 # ====== Keymap =============================================================
@@ -133,7 +107,6 @@ pkg install -y sudo bash joe
 
 
 # ====== UTF-8 ==============================================================
-
 # Enable Newcons:
 echo 'kern.vty=vt' >>/boot/loader.conf
 
@@ -142,4 +115,40 @@ sed -e $'s#default:\\\\#default:\\\\\\\n\\\t:charset=UTF-8:\\\\\\\n\\\t:lang=C.U
 mv /etc/login.conf.new /etc/login.conf
 cap_mkdb /etc/login.conf
 
+
+# ====== User ===============================================================
+echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
+
+mkdir -p /usr/local/etc/sudoers.d
+echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+
+
+# ====== Basic packages =====================================================
+mkdir -p /usr/local/etc/pkg/repos
+cat <<'EOF' >/usr/local/etc/pkg/repos/FreeBSD.conf
+FreeBSD: {
+ url: "pkg+https://pkg.FreeBSD.org/${ABI}/latest",
+}
+EOF
+
+# Run freebsd-update:
+env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
+
+# Initialise package database. pkg will ask whether to initialise,
+# ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!
+env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
+
+# Install some basic packages:
+pkg update
+pkg upgrade -y
+pkg install -y sudo bash joe
+
+
+# ====== Reboot =============================================================
+
+# Set boot order to boot from HDD, not from installer CD-ROM:
+efibootmgr -o 0002,0001,0003,0004
+
+# Reboot into the freshly installed system:
 reboot
