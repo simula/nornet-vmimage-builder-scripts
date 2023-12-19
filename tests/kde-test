@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo USER_NAME=nornetpp BACKGROUND_SDDM=/usr/share/simulamet/Desktop-with-Logo/1920x1080/mosaic/Gressholmen.jpeg BACKGROUND_LOCKSCREEN=/usr/share/simulamet/Desktop-with-Logo/1920x1080/mosaic/Lindøya.jpeg BACKGROUND_DESKTOP=/usr/share/simulamet/Desktop-with-Logo/1920x1080/plain/Lindøya.jpeg ./configure-kde-desktop#
