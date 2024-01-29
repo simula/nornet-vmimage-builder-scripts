@@ -142,7 +142,11 @@ for key in ${KEYS} ; do
    done
    # ------ If this fails, try to fetch the key from the NNTB server --------
    if [ ${foundKey} -eq 0 ] ; then
-      wget "https://www.nntb.no/~dreibh/${key}.asc" -O /tmp/${key}.asc
+      if [ -x /usr/bin/wget ] ; then
+         wget "https://www.nntb.no/~dreibh/${key}.asc" -O /tmp/${key}.asc
+      else
+         curl "https://www.nntb.no/~dreibh/${key}.asc" >/tmp/${key}.asc
+      fi
       if sudo -u ${USER_NAME} gpg \
             --homedir /home/${USER_NAME}/.gnupg \
             --import /tmp/${key}.asc ; then
