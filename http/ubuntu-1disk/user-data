@@ -198,11 +198,9 @@ autoinstall:
   late-commands:
     # ====== Add partition names ============================================
     - sgdisk --change-name=1:EFI --change-name=2:Root /dev/<SET_DISK_PREFIX_HERE>a
-    - if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; fi
-    - if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/<SET_DISK_PREFIX_HERE>c ; fi
-    # Add BIOS Grub partition, if not yet created, just to be sure:
-    # - if ! sgdisk --print /dev/<SET_DISK_PREFIX_HERE>a | grep EF02 ; then sgdisk --set-alignment=1 --new=128:34:2047 --typecode=128:EF02 --sort /dev/<SET_DISK_PREFIX_HERE>a ; fi
-    # - sgdisk --change-name=1:GRUB /dev/<SET_DISK_PREFIX_HERE>a
+    # NOTE: Commented out for 1-disk installation!
+    # - if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; fi
+    # - if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/<SET_DISK_PREFIX_HERE>c ; fi
     # ====== Generate additional locales ====================================
     - chroot /target locale-gen en_US.UTF-8 en_IE.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
     # ====== BTRFS subvolume setup ==========================================
@@ -212,20 +210,19 @@ autoinstall:
       EFI_DEV=$(awk '$2 == "/target/boot/efi" { print $1 }' /proc/mounts)
       ROOT_DEV=$(awk '$2 ~ "^/target$" { print $1 }' /proc/mounts)
       ROOT_UUID=$(blkid -o value $ROOT_DEV | head -n2 | tail -n1)
-      if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then
-         HOME_DEV=$(awk '$2 ~ "^/target/home$" { print $1 }' /proc/mounts)
-         HOME_UUID=$(blkid -o value $HOME_DEV | head -n2 | tail -n1)
-      else
-         HOME_DEV=""
-         HOME_UUID=""
-      fi
-      if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then
-         SWAP_DEV="/dev/<SET_DISK_PREFIX_HERE>c1"
-         SWAP_UUID=$(blkid -o value $SWAP_DEV | head -n2 | tail -n1)
-      else
-         SWAP_DEV=""
-         SWAP_UUID=""
-      fi
+      HOME_DEV=""
+      HOME_UUID=""
+      SWAP_DEV=""
+      SWAP_UUID=""
+      # NOTE: Commented out for 1-disk installation!
+      # if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then
+      #    HOME_DEV=$(awk '$2 ~ "^/target/home$" { print $1 }' /proc/mounts)
+      #    HOME_UUID=$(blkid -o value $HOME_DEV | head -n2 | tail -n1)
+      # fi
+      # if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then
+      #    SWAP_DEV="/dev/<SET_DISK_PREFIX_HERE>c1"
+      #    SWAP_UUID=$(blkid -o value $SWAP_DEV | head -n2 | tail -n1)
+      # fi
       # ------ Create snapshots: @ for / and @home for /home ----------------
       btrfs subvolume snapshot /target /target/@
       if [ "$HOME_UUID" != "" ] ; then
