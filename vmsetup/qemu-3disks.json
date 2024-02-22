@@ -21,10 +21,11 @@
   "output_directory": "{{user `vm_name`}}",
   "type": "qemu",
   "accelerator": "kvm",
-  "headless": false,
+  "headless": true,
   "format": "qcow2",
 
   "firmware": "/usr/share/qemu/OVMF.fd",
+  "cdrom_interface": "virtio",
   "disk_interface": "virtio",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
@@ -38,6 +39,7 @@
     "{{user `vm_disk_swap`}}M"
   ],
   "qemuargs": [
+    [ "-machine", "type=q35,accel=kvm" ] ,
     [ "-vga", "qxl" ]
   ]
 }
