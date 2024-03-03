@@ -43,7 +43,10 @@ fi
 # ====== Update "locate" database ===========================================
 if [ -x /usr/bin/updatedb ] ; then
    /usr/bin/updatedb
+elif [ "$(uname)" == "FreeBSD" ] ; then
+   /etc/periodic/weekly/310.locate
 fi
+
 
 # ====== Run fstrim =========================================================
 if [ -x /usr/bin/fstrim ] ; then

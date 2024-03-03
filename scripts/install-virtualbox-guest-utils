@@ -27,19 +27,23 @@ set -ex
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  -y virtualbox-guest-utils virtualbox-guest-dkms || true
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-utils virtualbox-guest-dkms || true
    if [ -e /usr/lib/systemd/system/sddm.service ] ; then
       # System has X11 -> also install X11 utilities as well:
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  -y virtualbox-guest-x11 || true
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y virtualbox-guest-x11 || true
    fi
 
    # # No need for firmware blobs in VM:
    # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge linux-firmware || true
 
-   # # cloud-init is not useful for VirtualBox VMs:
-   # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y cloud-init || true
-
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y virtualbox-guest-additions
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "$(uname)" == "FreeBSD" ] ; then
+   /usr/sbin/pkg install -y virtualbox-ose-additions
+
+   sysrc vboxguest_enable="YES"   && service vboxguest   start || true
+   sysrc vboxservice_enable="YES" && service vboxservice start || true
 fi

@@ -83,6 +83,8 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
 # ------ Custom settings ----------------------------------------------------
 # Enable ECN:
 net.inet.tcp.ecn.enable=1
+# Make sure power off works with EFI:
+hw.efi.poweroff=0
 EOF
 
 fi
@@ -112,7 +114,9 @@ EOF
 
 # ====== Make some directories ==============================================
 sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/src
-sudo -u ${USER_NAME} chattr +c /home/${USER_NAME}/src || true
+if [ -x /usr/bin/chattr ] ; then
+   sudo -u ${USER_NAME} /usr/bin/chattr +c /home/${USER_NAME}/src || true
+fi
 sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/tmp
 
 sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/.ssh

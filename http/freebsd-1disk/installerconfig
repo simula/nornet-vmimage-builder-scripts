@@ -102,13 +102,16 @@ echo 'autoboot_delay="5"' >>/boot/loader.conf
    echo 'powerd_enable="YES"'
    echo 'ntpd_enable="YES"'
    echo 'hald_enable="YES"'
-   echo 'dbus_enable="YES"'
+   echo ''
 ) >>/etc/rc.conf
 
 
 # ====== UTF-8 ==============================================================
 # Enable Newcons:
 echo 'kern.vty=vt' >>/boot/loader.conf
+
+# Enable SCTP support:
+echo 'sctp_load="YES"' >>/boot/loader.conf
 
 # Enable UTF-8:
 sed -e $'s#default:\\\\#default:\\\\\\\n\\\t:charset=UTF-8:\\\\\\\n\\\t:lang=C.UTF-8:\\\\#g' </etc/login.conf >/etc/login.conf.new
@@ -125,12 +128,6 @@ chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 
 
 # ====== Basic packages =====================================================
-mkdir -p /usr/local/etc/pkg/repos
-cat <<'EOF' >/usr/local/etc/pkg/repos/FreeBSD.conf
-FreeBSD: {
- url: "pkg+https://pkg.FreeBSD.org/${ABI}/latest",
-}
-EOF
 
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
@@ -142,7 +139,7 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # Install some basic packages:
 pkg update
 pkg upgrade -y
-pkg install -y sudo bash joe
+pkg install -y autoconf automake bash curl bwm-ng cmake gcc gmake gnupg git hipercontracer htop joe libtool netperfmeter python subnetcalc sudo td-system-tools wget
 
 
 # ====== Reboot =============================================================
