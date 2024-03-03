@@ -44,6 +44,6 @@ elif [ -e /usr/bin/dnf ] ; then
 elif [ "$(uname)" == "FreeBSD" ] ; then
    /usr/sbin/pkg install -y virtualbox-ose-additions
 
-   sysrc vboxguest_enable="YES"   && service vboxguest   start || true
-   sysrc vboxservice_enable="YES" && service vboxservice start || true
+   sysrc vboxguest_enable="YES"   ; service vboxguest   start || true
+   sysrc vboxservice_enable="YES" ; service vboxservice start || true
 fi

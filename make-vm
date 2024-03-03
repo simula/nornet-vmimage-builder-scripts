@@ -536,15 +536,45 @@ else
 fi
 
 for provisioner in ${PROVISIONERS} ; do
-   if [ ! -e scripts/${provisioner} ] ; then
-      echo >&2 "ERROR: Provisioner scripts/${provisioner} does not exist!"
-      exit 1
+   found=0
+
+   # ------ File provisioner ------------------------------------------------
+   if [ -e files/${provisioner} ] ; then
+      found=1
+      let p=$p+1
+
+      cat files/${provisioner} | while read s destination ; do
+         if [[ ! "${s}" =~ ^([ \t]*#) ]] ; then
+            source="$(realpath files/${s})"
+            if [ ! -e "${source}" ] ; then
+               echo >&2 "ERROR: Cannot find source file ${source}!"
+               exit 1
+            fi
+
+            echo "S=${source}"
+            if [ $p -gt 1 ] ; then
+               echo "," >>${JSONTMP}
+            fi
+            cat >>${JSONTMP} <<EOF
+       {
+         "type": "file",
+         "source": "${source}",
+         "destination": "${destination}"
+       }
+EOF
+
+         fi
+      done
    fi
-   let p=$p+1
-   if [ $p -gt 1 ] ; then
-      echo "," >>${JSONTMP}
-   fi
-   cat >>${JSONTMP} <<EOF
+
+   # ------ Script provisioner ----------------------------------------------
+   if [ -e scripts/${provisioner} ] ; then
+      found=1
+      let p=$p+1
+      if [ $p -gt 1 ] ; then
+         echo "," >>${JSONTMP}
+      fi
+      cat >>${JSONTMP} <<EOF
        {
          "type": "shell",
          "execute_command": "echo '${USER_PASSWORD}' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
@@ -562,7 +592,13 @@ for provisioner in ${PROVISIONERS} ; do
                                "BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}" ]
        }
 EOF
+   fi
 done
+
+   if [ ${found} -eq 0 ] ; then
+      echo >&2 "ERROR: Did not found provisioner ${provisioner}!"
+      exit 1
+   fi
 
 cat >>${JSONTMP} <<EOF
   ]
@@ -653,7 +689,6 @@ elif [ ${HYPERVISOR} == "QEMU" ] ; then
       sudo service vboxdrv stop || true
    fi
 fi
-
 
 echo "Running Packer:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"

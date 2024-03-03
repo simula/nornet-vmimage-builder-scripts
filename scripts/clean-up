@@ -22,33 +22,44 @@
 set -ex
 
 
+UNAME="$(uname)"
+
+
 # ====== Clean up packages  =================================================
 
-# ------ Ubuntu -------------------------------------------------------------
-if [ -x /usr/bin/apt-get ] ; then
-   /usr/bin/apt-get update
-   if [ -x /usr/bin/apt-file ] ; then
-      /usr/bin/apt-file update
-   fi
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge
-   /usr/bin/apt-get clean
+if [ "${UNAME}" == "Linux" ] ; then
+   # ------ Ubuntu -------------------------------------------------------------
+   if [ -x /usr/bin/apt-get ] ; then
+      /usr/bin/apt-get update
+      if [ -x /usr/bin/apt-file ] ; then
+         /usr/bin/apt-file update
+      fi
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge
+      /usr/bin/apt-get clean
 
-# ------ Fedora -------------------------------------------------------------
-elif [ -x /usr/bin/dnf ] ; then
-   /usr/bin/dnf clean all
+   # ------ Fedora -------------------------------------------------------------
+   elif [ -x /usr/bin/dnf ] ; then
+      /usr/bin/dnf clean all
+   fi
 fi
 
 
 # ====== Update "locate" database ===========================================
-if [ -x /usr/bin/updatedb ] ; then
-   /usr/bin/updatedb
-elif [ "$(uname)" == "FreeBSD" ] ; then
+if [ "${UNAME}" == "Linux" ] ; then
+   if [ -x /usr/bin/updatedb ] ; then
+      /usr/bin/updatedb
+   fi
+elif [ "${UNAME}" == "FreeBSD" ] ; then
    /etc/periodic/weekly/310.locate
 fi
 
 
 # ====== Run fstrim =========================================================
-if [ -x /usr/bin/fstrim ] ; then
-   /usr/bin/fstrim -av
+if [ "${UNAME}" == "Linux" ] ; then
+   if [ -x /usr/bin/fstrim ] ; then
+      /usr/bin/fstrim -av
+   fi
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   sudo zpool trim zroot
 fi

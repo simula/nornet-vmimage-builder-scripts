@@ -22,7 +22,7 @@
 set -ex
 
 
-UNAME="`uname`"
+UNAME="$(uname)"
 
 
 # ====== Install VMware guest utilities =====================================

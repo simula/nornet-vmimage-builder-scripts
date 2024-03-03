@@ -42,9 +42,9 @@ DISK_ROOT=16384
 DISK_HOME=0   # Just one disk -> not used here!
 DISK_SWAP=0   # Just one disk -> not used here!
 VIDEO="1920x1080"
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 OPTIONS="-1"   # Just one disk!
 # ---------------------------------------------------------
 
