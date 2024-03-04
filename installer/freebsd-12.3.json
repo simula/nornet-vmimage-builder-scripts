@@ -36,6 +36,6 @@
     "bsdinstall script /tmp/installerconfig;<enter>"
    ],
    "vboxmanage": [
-      [ "modifyvm", "{{.Name}}", "graphicscontroller", "vboxsvga" ]
+      [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ]
    ]
 }
