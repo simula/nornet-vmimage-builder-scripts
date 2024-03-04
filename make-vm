@@ -396,7 +396,7 @@ elif [ "${DISTRIBUTION}" == "FreeBSD" ] ; then
    BUILDER_INSTALL="freebsd-${RELEASE}"
    NAME="${NAME}-FreeBSD-${RELEASE}"
    HTTP_DIRECTORY="http/freebsd"
-   if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)-(RELEASE|STABLE|CURRENT)$ ]] ; then
       major=${BASH_REMATCH[1]}
       minor=${BASH_REMATCH[2]}
    else

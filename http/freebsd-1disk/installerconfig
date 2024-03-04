@@ -119,14 +119,6 @@ mv /etc/login.conf.new /etc/login.conf
 cap_mkdb /etc/login.conf
 
 
-# ====== User ===============================================================
-echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
-
-mkdir -p /usr/local/etc/sudoers.d
-echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
-chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
-
-
 # ====== Basic packages =====================================================
 
 # Run freebsd-update:
@@ -140,6 +132,15 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 pkg update
 pkg upgrade -y
 pkg install -y autoconf automake bash curl bwm-ng cmake gcc gmake gnupg git hipercontracer htop joe libtool netperfmeter python subnetcalc sudo td-system-tools wget
+
+
+# ====== User ===============================================================
+echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
+
+mkdir -p /usr/local/etc/sudoers.d
+echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
 
 
 # ====== Reboot =============================================================
