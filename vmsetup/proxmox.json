@@ -32,13 +32,15 @@
   "insecure_skip_tls_verify": true,
   "http_bind_address": "{{user `proxmox_http_ip`}}",
 
+  "bios": "ovmf",
   "efi_config": {
     "efi_storage_pool": "local-lvm",
     "efi_type": "4m"
   },
 
   "iso_storage_pool": "local",
-  "iso_download_pve": false,
+  "iso_download_pve": true,
+  "unmount_iso": true,
 
   "scsi_controller": "virtio-scsi-pci",
   "disks": [
@@ -69,10 +71,11 @@
 
   "machine": "q35",
   "cpu_type": "host",
+  "sockets": 1,
   "cores": "{{user `vm_cores`}}",
   "memory": "{{user `vm_memory`}}",
   "vga": {
-     "type": "vmware",
+     "type": "qxl",
      "memory": 16
    }
 }
