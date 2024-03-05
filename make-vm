@@ -54,9 +54,9 @@ USER_NAME="nornetpp"
 USER_REALNAME="NorNet Praesum Presum"
 USER_PASSWORD="!NorNetInst!"
 
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 
 OUTPUT_DIRECTORY="."
 CACHE_DIRECTORY="cache"
@@ -74,6 +74,17 @@ VSPHERE_HOST="MY-VSPHERE-HOST"
 VSPHERE_DATASTORE="MY-VSPHERE-DATASTORE"
 VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
 VSPHERE_HTTP_IP="MY-VSPHERE-HTTP-IP"
+
+PROXMOX_USERNAME="MY-PROXMOX-USERNAME"
+PROXMOX_PASSWORD="MY-PROXMOX-PASSWORD"
+PROXMOX_URL="MY-PROXMOX-URL"
+PROXMOX_NODE="MY-PROXMOX-NODE"
+PROXMOX_POOL="MY-PROXMOX-POOL"
+PROXMOX_BRIDGE="vmbr0"
+PROXMOX_VLAN_ID=""
+PROXMOX_HTTP_IP="MY-PROXMOX-HTTP-IP"
+
+PROXMOX_CONFIG_FILE=""
 
 DOCKER_REPOSITORY="dreibh"
 DOCKER_TAG=""
@@ -242,6 +253,13 @@ while [ $# -gt 0 ] ; do
       fi
       VSPHERE_CONFIG_FILE="$2"
       shift
+   elif [ "$1" == "--proxmox" -o "$1" == "-PC" ] ; then
+      if [ ! -e "$2" ] ; then
+         echo "ERROR: Proxmox configuration $2 not found!"
+         exit 1
+      fi
+      PROXMOX_CONFIG_FILE="$2"
+      shift
    elif [ "$1" == "--packer" -o "$1" == "-K" ] ; then
       PACKER="$2"
       shift
@@ -313,6 +331,15 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
       exit 1
    fi
    source "${VSPHERE_CONFIG_FILE}"
+elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
+   BUILDER_VMSETUP="proxmox"
+   NAME="Proxmox"
+   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   if [ "${PROXMOX_CONFIG_FILE}" == "" ] ; then
+      echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
+      exit 1
+   fi
+   source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="Docker"
@@ -628,7 +655,12 @@ EOF
 
 
 # ###### Clean up and check #################################################
-jq . <${JSONTMP} >${JSON}
+if [ ${HYPERVISOR} != "Proxmox" ] ; then
+   jq . <${JSONTMP} >${JSON}
+else
+   # Proxmox has no shutdown_command!
+   jq . <${JSONTMP} | sed -e '/[ \t]*"shutdown_command":/d' >${JSON}
+fi
 rm -f ${JSONTMP}
 
 
@@ -690,10 +722,13 @@ elif [ ${HYPERVISOR} == "QEMU" ] ; then
    fi
 fi
 
-echo "Running Packer:"
+echo "Running Packer for ${JSON}:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
 rm -rf "${vm_name}"
 env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" ${PACKER} build --force \
+   -warn-on-undeclared-var \
+   -timestamp-ui \
+   -parallel-builds=0 \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${NAME}" \
    -var "vm_name=${vm_name}"               \
    -var "vm_version=${vm_version}"         \
@@ -727,6 +762,15 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vsphere_datastore=${VSPHERE_DATASTORE}"   \
    -var "vsphere_network=${VSPHERE_NETWORK}"       \
    -var "vsphere_http_ip=${VSPHERE_HTTP_IP}"       \
+   -var "proxmox_username=${PROXMOX_USERNAME}"     \
+   -var "proxmox_password=${PROXMOX_PASSWORD}"     \
+   -var "proxmox_url=${PROXMOX_URL}"               \
+   -var "proxmox_node=${PROXMOX_NODE}"             \
+   -var "proxmox_pool=${PROXMOX_POOL}"             \
+   -var "proxmox_bridge=${PROXMOX_BRIDGE}"         \
+   -var "proxmox_vlanID=${PROXMOX_VLAN_ID}"        \
+   -var "proxmox_bridge=${PROXMOX_HTTP_IP}"        \
+   -var "proxmox_http_ip=${PROXMOX_HTTP_IP}"       \
    -on-error=abort                                 \
    ${JSON}
 
@@ -741,6 +785,8 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
       nice xz -T0 -k ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
    elif [ ${HYPERVISOR} == "vSphere" ] ; then
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
+   elif [ ${HYPERVISOR} == "Proxmox" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
 ) >successfully-built.txt
