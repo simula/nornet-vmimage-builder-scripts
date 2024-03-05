@@ -46,17 +46,17 @@
         "type": "scsi",
         "disk_size": "{{user `vm_disk_root`}}",
         "storage_pool": "local-lvm"
-     },
-     {
-        "type": "scsi",
-        "disk_size": "{{user `vm_disk_home`}}",
-        "storage_pool": "local-lvm"
-     },
-     {
-        "type": "scsi",
-        "disk_size": "{{user `vm_disk_swap`}}",
-        "storage_pool": "local-lvm"
      }
+     // {
+     //    "type": "scsi",
+     //    "disk_size": "{{user `vm_disk_home`}}",
+     //    "storage_pool": "local-lvm"
+     // },
+     // {
+     //    "type": "scsi",
+     //    "disk_size": "{{user `vm_disk_swap`}}",
+     //    "storage_pool": "local-lvm"
+     // }
   ],
   "network_adapters": [
      {
