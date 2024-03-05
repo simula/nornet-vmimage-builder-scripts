@@ -681,7 +681,19 @@ if [ ${HYPERVISOR} == "VirtualBox" ] ; then
       sudo service virtualbox start || true
       sudo service vboxdrv start || true
    fi
+
+   # Power off the VM, if it exists
+   timeout --kill-after=30 15 vboxmanage controlvm ${vm_name} poweroff || true
+   pid=$(ps ax | grep VBoxHeadless | grep -- " --comment ${vm_name} " | awk '{ print $1 }')
+   if [ "${pid}" != "" ] ; then
+      echo "VM is still running (PID ${pid}) -> sending SIGKILL!"
+      kill -KILL ${pid}
+      sleep 5
+   fi
+
+   # Delete VM, if it exists
    vboxmanage unregistervm ${vm_name} --delete || true
+
 elif [ ${HYPERVISOR} == "QEMU" ] ; then
    if [ "`lsmod|grep "^vboxdrv"`" != "" ] ; then
       echo "Need to unload vboxdrv ..."
