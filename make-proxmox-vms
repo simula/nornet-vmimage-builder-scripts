@@ -25,7 +25,7 @@ set -e
 HYPERVISOR="Proxmox"
 SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-11 Debian-12 Debian-Testing   Fedora-38 Fedora-39"
 # SYSTEMS="Ubuntu-22.04-LTS"
-SYSTEMS="FreeBSD-14.0-RELEASE"
+SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"
@@ -49,6 +49,7 @@ CHIPSET=ich9
 FIRMWARE=efi
 CORES=1
 MEMORY=4096
+VM_BALLOON=2048
 DISK_ROOT=65536
 DISK_HOME=0   # Just one disk -> not used here!
 DISK_SWAP=0   # Just one disk -> not used here!
