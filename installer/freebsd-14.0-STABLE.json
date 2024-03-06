@@ -29,7 +29,7 @@
 
   // ====== Boot into installer =============================================
   "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
-  "boot_wait": "90s",
+  "boot_wait": "180s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
