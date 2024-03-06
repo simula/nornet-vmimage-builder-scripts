@@ -65,6 +65,7 @@
   "sound": "pulse",
   "vboxmanage": [
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
+    [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
     [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
   ]
 }

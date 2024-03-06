@@ -47,17 +47,20 @@
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_root`}}",
-        "storage_pool": "local-lvm"
+        "storage_pool": "local-lvm",
+        "discard": "true"
      },
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_home`}}",
-        "storage_pool": "local-lvm"
+        "storage_pool": "local-lvm",
+        "discard": "true"
      },
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_swap`}}",
-        "storage_pool": "local-lvm"
+        "storage_pool": "local-lvm",
+        "discard": "true"
      }
   ],
   "network_adapters": [
@@ -74,6 +77,7 @@
   "sockets": 1,
   "cores": "{{user `vm_cores`}}",
   "memory": "{{user `vm_memory`}}",
+  "ballooning_minimum": "{{user `vm_balloon_min`}}",
   "vga": {
      "type": "qxl",
      "memory": 16
