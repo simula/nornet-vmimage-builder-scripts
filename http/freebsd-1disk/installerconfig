@@ -70,12 +70,6 @@ export nonInteractive="YES"
 
 set -e
 
-# !!!!!! TEST ONLY! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# echo "packer" | pw usermod root -h 0
-# echo "PermitRootLogin yes" >>/etc/ssh/sshd_config
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 # ====== Basic configuration ================================================
 
 # /etc/resolv.conf is not initialised here, since this code is called from
@@ -131,7 +125,13 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # Install some basic packages:
 pkg update
 pkg upgrade -y
-pkg install -y autoconf automake bash curl bwm-ng cmake gcc gmake gnupg git hipercontracer htop joe libtool netperfmeter python subnetcalc sudo td-system-tools wget
+pkg install -y autoconf automake bash curl bwm-ng cmake gcc gmake gnupg git hipercontracer htop joe libtool netperfmeter python subnetcalc sudo td-system-tools virt-what wget
+
+# QEMU installs already need qemu-guest-agent before first boot:
+if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
+   pkg install -y qemu-guest-agent
+   sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
+fi
 
 
 # ====== User ===============================================================

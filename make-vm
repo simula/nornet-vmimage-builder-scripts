@@ -657,11 +657,14 @@ EOF
 
 
 # ###### Clean up and check #################################################
-if [ ${HYPERVISOR} != "Proxmox" ] ; then
-   jq . <${JSONTMP} >${JSON}
+if [ ${HYPERVISOR} == "QEMU" ] ; then
+   # QEMU has no vboxmanage!
+   jq "del(.builders[].vboxmanage)" <${JSONTMP} >${JSON}
+elif [ ${HYPERVISOR} == "Proxmox" ] ; then
+   # Proxmox has no shutdown_command/vboxmanage!
+   jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <${JSONTMP} >${JSON}
 else
-   # Proxmox has no shutdown_command!
-   jq . <${JSONTMP} | sed -e '/[ \t]*"shutdown_command":/d' >${JSON}
+   jq . <${JSONTMP} >${JSON}
 fi
 rm -f ${JSONTMP}
 

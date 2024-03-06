@@ -24,8 +24,7 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Fedora-38 Fedora-39"
-# SYSTEMS="Ubuntu-24.04-LTS Fedora-39"
-SYSTEMS="Fedora-39"
+SYSTEMS="Ubuntu-22.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="NorNet"   # NorNet-Desktop"

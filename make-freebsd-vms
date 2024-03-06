@@ -23,10 +23,10 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"
+SYSTEMS="FreeBSD-14.0-RELEASE" # FreeBSD-14.0-STABLE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"
+PROJECTS="Minimal" # KDE"
 # PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.openstack"
