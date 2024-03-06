@@ -34,12 +34,12 @@
 
   "bios": "ovmf",
   "efi_config": {
-    "efi_storage_pool": "local-lvm",
+    "efi_storage_pool": "{{user `proxmox_disk_storage`}}",
     "efi_type": "4m"
   },
 
-  "iso_storage_pool": "local",
-  "iso_download_pve": true,
+  "iso_storage_pool": "{{user `proxmox_iso_storage`}}",
+  "iso_download_pve": false,
   "unmount_iso": true,
 
   "scsi_controller": "virtio-scsi-pci",
@@ -47,19 +47,19 @@
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_root`}}",
-        "storage_pool": "local-lvm",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      }
      // {
      //    "type": "scsi",
      //    "disk_size": "{{user `vm_disk_home`}}",
-     //    "storage_pool": "local-lvm",
+     //    "storage_pool": "{{user `proxmox_disk_storage`}}",
      //    "discard": "true"
      // },
      // {
      //    "type": "scsi",
      //    "disk_size": "{{user `vm_disk_swap`}}",
-     //    "storage_pool": "local-lvm",
+     //    "storage_pool": "{{user `proxmox_disk_storage`}}",
      //    "discard": "true"
      // }
   ],
