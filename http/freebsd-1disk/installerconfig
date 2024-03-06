@@ -72,17 +72,15 @@ set -e
 
 # ====== Basic configuration ================================================
 
-# /etc/resolv.conf is not initialised here, since this code is called from
-# within the installer environment. Using OpenDNS servers here:
-(
-   echo "nameserver 208.67.222.222"
-   echo "nameserver 208.67.220.220"
-) >/etc/resolv.conf
-
-sysrc sshd_enable="YES"
+# Initialise network:
 interface="`ifconfig -l | cut -d' ' -f1`"
 sysrc ifconfig_$interface="dhcp"
+dhclient $interface
 
+# Enable SSH daemon:
+sysrc sshd_enable="YES"
+
+# Set autoboot delay:
 echo 'autoboot_delay="5"' >>/boot/loader.conf
 
 
