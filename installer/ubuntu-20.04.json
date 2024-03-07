@@ -31,19 +31,19 @@
   "boot_wait": "5s",
   // VirtualBox and QEMU take different times to start booting. Ubuntu 20.04's
   // GRUB configuration has a timeout of 5s. Typing ESC to early leads into
-  // the EFI firmware's setup. Typing <tab> is ignored by the firmware, and it
+  // the EFI firmware's setup. Typing <left> is ignored by the firmware, and it
   // stops GRUB's countdown.
   "boot_command": [
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
-    "<tab><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
     "<esc><wait>",
     "linux /casper/hwe-vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
     "initrd /casper/hwe-initrd<enter><wait>",
