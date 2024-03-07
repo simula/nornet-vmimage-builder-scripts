@@ -19,6 +19,7 @@
 {
   "vm_name": "{{user `vm_name`}}",
   "type": "proxmox-iso",
+  "task_timeout": "10m",
   "boot_keygroup_interval": "500ms",
   "os": "l26",
   "template_name": "{{user `vm_name`}}",
