@@ -47,19 +47,19 @@
   "disks": [
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_root`}}",
+        "disk_size": "{{user `vm_disk_root`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      }
      // {
      //    "type": "scsi",
-     //    "disk_size": "{{user `vm_disk_home`}}",
+     //    "disk_size": "{{user `vm_disk_home`}}M",
      //    "storage_pool": "{{user `proxmox_disk_storage`}}",
      //    "discard": "true"
      // },
      // {
      //    "type": "scsi",
-     //    "disk_size": "{{user `vm_disk_swap`}}",
+     //    "disk_size": "{{user `vm_disk_swap`}}M",
      //    "storage_pool": "{{user `proxmox_disk_storage`}}",
      //    "discard": "true"
      // }
