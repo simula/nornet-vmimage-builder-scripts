@@ -30,7 +30,16 @@
   // ====== Boot into installer =============================================
   "boot_wait": "3s",
   "boot_command": [
-    "<esc><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
     "<esc>c<wait>",
     "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
     "initrd /images/pxeboot/initrd.img<enter><wait>",
