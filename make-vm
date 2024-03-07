@@ -795,7 +795,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "proxmox_disk_storage=${PROXMOX_DISK_STORAGE}" \
    -var "proxmox_iso_storage=${PROXMOX_ISO_STORAGE}"   \
    -var "proxmox_bridge=${PROXMOX_BRIDGE}"             \
-   -var "proxmox_vlanID=${PROXMOX_VLAN_ID}"            \
+   -var "proxmox_vlan_id=${PROXMOX_VLAN_ID}"           \
    -var "proxmox_http_ip=${PROXMOX_HTTP_IP}"           \
    -on-error=abort                                     \
    ${JSON}
