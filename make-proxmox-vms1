@@ -23,9 +23,9 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-11 Debian-12 Debian-Testing   Fedora-38 Fedora-39"
-# SYSTEMS="Ubuntu-22.04-LTS"
-SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-11 Debian-12   Fedora-38 Fedora-39"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Ubuntu-23.10   Debian-11 Debian-12   Fedora-38 Fedora-39"
+# SYSTEMS="Fedora-39"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"
@@ -35,30 +35,19 @@ USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
 
-# CHIPSET=ich9
-# FIRMWARE=efi
-# CORES=1
-# MEMORY=2048
-# DISK_ROOT=16384
-# DISK_HOME=8192
-# DISK_SWAP=2048
-# VIDEO="HD+"
-# OPTIONS="--proxmox $HOME/.config/proxmox.config"
-
 CHIPSET=ich9
 FIRMWARE=efi
-CORES=1
-MEMORY=4096
-VM_BALLOON=2048
-DISK_ROOT=65536
-DISK_HOME=0   # Just one disk -> not used here!
-DISK_SWAP=0   # Just one disk -> not used here!
+CORES=4
+MEMORY=2048
+DISK_ROOT=16384
+DISK_HOME=8192
+DISK_SWAP=2048
 VIDEO="HD+"
-OPTIONS="-1 --proxmox $HOME/.config/proxmox.config"   # Just one disk!
+OPTIONS="--proxmox $HOME/.config/proxmox.config"
 
-BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
-BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
+# BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+# BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+# BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 # ---------------------------------------------------------
 
 build-defined-vms

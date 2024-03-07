@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2023 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+. ./vm-build-helper
+
+HYPERVISOR="Proxmox"
+SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-13.3-RELEASE" #  FreeBSD-14.0-STABLE"
+
+# ------ Parameters ---------------------------------------
+PROJECTS="Minimal KDE"
+
+HOSTNAME="gressholmen.simula.nornet"
+USER_NAME="nornetpp"
+USER_PASSWORD="!NorNetInst!"
+USER_REALNAME="NorNet Praesum Presum"
+
+# CHIPSET=ich9
+# FIRMWARE=efi
+# CORES=1
+# MEMORY=2048
+# DISK_ROOT=16384
+# DISK_HOME=8192
+# DISK_SWAP=2048
+# VIDEO="HD+"
+# OPTIONS="--proxmox $HOME/.config/proxmox.config"
+
+CHIPSET=ich9
+FIRMWARE=efi
+CORES=4
+MEMORY=4096
+VM_BALLOON=2048
+DISK_ROOT=65536
+DISK_HOME=0   # Just one disk -> not used here!
+DISK_SWAP=0   # Just one disk -> not used here!
+VIDEO="HD+"
+OPTIONS="-1 --proxmox $HOME/.config/proxmox.config"   # Just one disk!
+
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
+# ---------------------------------------------------------
+
+build-defined-vms
