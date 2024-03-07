@@ -1,5 +1,5 @@
-// FreeBSD 13.2 with EFI Boot
-// Copyright (C) 2020-2023 by Thomas Dreibholz
+// FreeBSD 12.3 with EFI Boot
+// Copyright (C) 2019-2023 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-disc1.iso",
-  "iso_checksum": "sha512:cd773814a95405868f31be40e44739a497043601e668b82bc54f73e9e5252743ec75fdbc884e903ffd9d511495a7205f5e5fada4333852b3e16407ff77cb63d0",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/12.4/FreeBSD-12.4-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha512:14f21f31f3bdb7ac593cb8c859cb5f1857cba0c5f0b92c081b0ee7b34d1d0d28cc3dd5e7c38e22a0176a902397afb3dce461bafd2673011efaa7c4f63dcd5db8",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -29,7 +29,7 @@
 
   // ====== Boot into installer =============================================
   "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
-  "boot_wait": "180s",
+  "boot_wait": "120s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
