@@ -148,7 +148,7 @@ d-i pkgsel/include                                  string acpid bash-completion
 # * Set the keyboard layout (buggy installer does not set it!)
 d-i preseed/late_command                            string \
  in-target apt-get update ; \
- in-target apt-get install -y cloud-init gdisk gnupg joe  ; \
+ in-target apt-get install -y cloud-init gdisk gnupg joe qemu-guest-agent virt-what ; \
  in-target sgdisk --change-name=1:EFI --change-name=2:Root /dev/<SET_DISK_PREFIX_HERE>a ; \
  in-target /bin/bash -c -- 'if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; partprobe ; mkfs.btrfs -L Home /dev/<SET_DISK_PREFIX_HERE>b1 ; fi' ; \
  in-target /bin/bash -c -- 'if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --zap-all -g --new 1:0:0 --typecode 1:8200 --change-name=1:Swap /dev/<SET_DISK_PREFIX_HERE>c ; partprobe ; mkswap -L Swap /dev/<SET_DISK_PREFIX_HERE>c1 ; fi' ; \
