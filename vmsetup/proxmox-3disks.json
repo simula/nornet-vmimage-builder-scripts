@@ -40,27 +40,27 @@
   },
 
   "iso_storage_pool": "{{user `proxmox_iso_storage`}}",
-  "iso_download_pve": false,
+  "iso_download_pve": true,
   "unmount_iso": true,
 
   "scsi_controller": "virtio-scsi-pci",
   "disks": [
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_root`}}",
-        "storage_pool": "{{user `proxmox_disk_storage`}}M",
+        "disk_size": "{{user `vm_disk_root`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      },
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_home`}}",
-        "storage_pool": "{{user `proxmox_disk_storage`}}M",
+        "disk_size": "{{user `vm_disk_home`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      },
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_swap`}}",
-        "storage_pool": "{{user `proxmox_disk_storage`}}M",
+        "disk_size": "{{user `vm_disk_swap`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      }
   ],

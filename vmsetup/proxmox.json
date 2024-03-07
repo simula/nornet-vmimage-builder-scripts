@@ -40,7 +40,7 @@
   },
 
   "iso_storage_pool": "{{user `proxmox_iso_storage`}}",
-  "iso_download_pve": false,
+  "iso_download_pve": true,
   "unmount_iso": true,
 
   "scsi_controller": "virtio-scsi-pci",
