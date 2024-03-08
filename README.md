@@ -20,11 +20,15 @@ The QEMU images use optimised settings for display, network and storage. Two dis
 
 ## Docker
 
-TBD.
+Containers for usage in Docker.
 
 ## vSphere
 
-TBD.
+VMs for usage in vSphere. They are basically like the VirtualBox variant, with the Open VM Tools installed.
+
+## Proxmox
+
+VMs for usage in Proxmox. They are basically like the VirtualBox variant, with the QEMU Guest Agent installed.
 
 
 # Systems
