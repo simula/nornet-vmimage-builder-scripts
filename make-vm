@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Template VM Image Builder
-# Copyright (C) 2017-2023 by Thomas Dreibholz
+# Copyright (C) 2017-2024 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ VM_CHIPSET=ich9
 VM_FIRMWARE=efi
 VM_CORES=4
 VM_MEMORY=4096
+VM_BALLOON=0
 
 USE_SEPARATE_DISKS=1
 VM_DISK_ROOT=32768
@@ -54,9 +55,9 @@ USER_NAME="nornetpp"
 USER_REALNAME="NorNet Praesum Presum"
 USER_PASSWORD="!NorNetInst!"
 
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 
 OUTPUT_DIRECTORY="."
 CACHE_DIRECTORY="cache"
@@ -74,6 +75,19 @@ VSPHERE_HOST="MY-VSPHERE-HOST"
 VSPHERE_DATASTORE="MY-VSPHERE-DATASTORE"
 VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
 VSPHERE_HTTP_IP="MY-VSPHERE-HTTP-IP"
+
+PROXMOX_USERNAME="MY-PROXMOX-USERNAME"
+PROXMOX_PASSWORD="MY-PROXMOX-PASSWORD"
+PROXMOX_URL="MY-PROXMOX-URL"
+PROXMOX_NODE="MY-PROXMOX-NODE"
+PROXMOX_POOL="MY-PROXMOX-POOL"
+PROXMOX_ISO_STORAGE="MY-PROXMOX-ISO-STORAGE"
+PROXMOX_DISK_STORAGE="MY-PROXMOX-DISK-STORAGE"
+PROXMOX_BRIDGE="vmbr0"
+PROXMOX_VLAN_ID=""
+PROXMOX_HTTP_IP="MY-PROXMOX-HTTP-IP"
+
+PROXMOX_CONFIG_FILE=""
 
 DOCKER_REPOSITORY="dreibh"
 DOCKER_TAG=""
@@ -140,6 +154,13 @@ while [ $# -gt 0 ] ; do
          if [ ${VM_MEMORY} -lt 64 ] ; then
             VM_MEMORY=64
          fi
+      fi
+      shift
+   elif [ "$1" == "--balloon" -o "$1" == "-b" ] ; then
+      VM_BALLOON="$2"
+      if [[ ! "${VM_BALLOON}" =~ ^[0-9]*$|^NA$ ]] ; then
+         echo >&2 "ERROR: Bad size for memory balloon: ${VM_BALLOON} MiB"
+         exit 1
       fi
       shift
    elif [ "$1" == "--root" -o "$1" == "-r" ] ; then
@@ -242,6 +263,13 @@ while [ $# -gt 0 ] ; do
       fi
       VSPHERE_CONFIG_FILE="$2"
       shift
+   elif [ "$1" == "--proxmox" -o "$1" == "-PC" ] ; then
+      if [ ! -e "$2" ] ; then
+         echo "ERROR: Proxmox configuration $2 not found!"
+         exit 1
+      fi
+      PROXMOX_CONFIG_FILE="$2"
+      shift
    elif [ "$1" == "--packer" -o "$1" == "-K" ] ; then
       PACKER="$2"
       shift
@@ -264,6 +292,7 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--firmware|-F efi|bios]"
       echo >&2 "   [--cores|-c cores]"
       echo >&2 "   [--memory|-m MiB]"
+      echo >&2 "   [--balloon|-b MiB]"
       echo >&2 "   [--root|-r MiB]"
       echo >&2 "   [--home|-h MiB]"
       echo >&2 "   [--swap|-s MiB]"
@@ -313,6 +342,15 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
       exit 1
    fi
    source "${VSPHERE_CONFIG_FILE}"
+elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
+   BUILDER_VMSETUP="proxmox"
+   NAME="Proxmox"
+   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   if [ "${PROXMOX_CONFIG_FILE}" == "" ] ; then
+      echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
+      exit 1
+   fi
+   source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="Docker"
@@ -337,7 +375,9 @@ fi
 
 
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
-   PROVISIONERS="${PROVISIONERS} install-virtualbox-guest-utils"
+   PROVISIONERS="install-virtualbox-guest-utils ${PROVISIONERS}"
+elif [ "${HYPERVISOR}" == "Proxmox" ] || [ "${HYPERVISOR}" == "Proxmox" ] ; then
+   PROVISIONERS="install-qemu-agent ${PROVISIONERS}"
 elif [ "${HYPERVISOR}" == "vSphere" ] ; then
    PROVISIONERS="${PROVISIONERS} install-vmware-guest-utils"
 fi
@@ -419,6 +459,12 @@ fi
 USER_HASHED_PASSWORD=`echo "${USER_PASSWORD}" | mkpasswd -s -m sha-512`
 HOSTNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\1/g'`
 DOMAINNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g'`
+
+let VM_BALLOON_MIN=${VM_MEMORY}-${VM_BALLOON}
+if [ ${VM_BALLOON_MIN} -lt 0 ] ; then
+   echo >&2 "ERROR: Bad memory settings: VM_MEMORY=${VM_MEMORY}, VM_BALLOON=${VM_BALLOON} => ${VM_BALLOON_MIN}"
+   exit 1
+fi
 
 
 # ###### Check Packer version ###############################################
@@ -628,7 +674,15 @@ EOF
 
 
 # ###### Clean up and check #################################################
-jq . <${JSONTMP} >${JSON}
+if [ ${HYPERVISOR} == "QEMU" ] ; then
+   # QEMU has no vboxmanage!
+   jq "del(.builders[].vboxmanage)" <${JSONTMP} >${JSON}
+elif [ ${HYPERVISOR} == "Proxmox" ] ; then
+   # Proxmox has no shutdown_command/vboxmanage!
+   jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <${JSONTMP} >${JSON}
+else
+   jq . <${JSONTMP} >${JSON}
+fi
 rm -f ${JSONTMP}
 
 
@@ -655,6 +709,7 @@ echo " - VM_CHIPSET=${VM_CHIPSET}"
 echo " - VM_FIRMWARE=${VM_FIRMWARE}"
 echo " - VM_CORES=${VM_CORES}"
 echo " - VM_MEMORY=${VM_MEMORY} (MiB)"
+echo " - VM_BALLOON=${VM_BALLOON} (MiB)"
 echo " - VM_DISK_PREFIX=${VM_DISK_PREFIX}"
 echo " - VM_DISK_ROOT=${VM_DISK_ROOT} (MiB)"
 if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
@@ -702,44 +757,59 @@ elif [ ${HYPERVISOR} == "QEMU" ] ; then
    fi
 fi
 
-echo "Running Packer:"
+echo "Running Packer for ${JSON}:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
 rm -rf "${vm_name}"
 env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" ${PACKER} build --force \
+   -warn-on-undeclared-var \
+   -timestamp-ui \
+   -parallel-builds=0 \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${NAME}" \
-   -var "vm_name=${vm_name}"               \
-   -var "vm_version=${vm_version}"         \
-   -var "vm_version=${vm_version}"         \
-   -var "vm_chipset=${VM_CHIPSET}"         \
-   -var "vm_firmware=${VM_FIRMWARE}"       \
-   -var "vm_cores=${VM_CORES}"             \
-   -var "vm_memory=${VM_MEMORY}"           \
-   -var "vm_disk_prefix=${VM_DISK_PREFIX}" \
-   -var "vm_disk_root=${VM_DISK_ROOT}"     \
-   -var "vm_disk_home=${VM_DISK_HOME}"     \
-   -var "vm_disk_swap=${VM_DISK_SWAP}"     \
-   -var "vm_video=${VIDEO}"                \
-   -var "vm_vendor=${vm_vendor}"           \
-   -var "vm_vendorurl=${vm_vendorurl}"     \
-   -var "vm_product=${vm_product}"         \
-   -var "vm_producturl=${vm_producturl}"   \
-   -var "host_name=${HOSTNAME}"            \
-   -var "host_domain=${DOMAINNAME}"        \
-   -var "user_name=${USER_NAME}"           \
-   -var "user_realname=${USER_REALNAME}"   \
-   -var "user_password=${USER_PASSWORD}"   \
-   -var "vsphere_version=${VSPHERE_VERSION}"       \
-   -var "vsphere_username=${VSPHERE_USERNAME}"     \
-   -var "vsphere_password=${VSPHERE_PASSWORD}"     \
-   -var "vsphere_server=${VSPHERE_SERVER}"         \
-   -var "vsphere_datacenter=${VSPHERE_DATACENTER}" \
-   -var "vsphere_cluster=${VSPHERE_CLUSTER}"       \
-   -var "vsphere_folder=${VSPHERE_FOLDER}"         \
-   -var "vsphere_host=${VSPHERE_HOST}"             \
-   -var "vsphere_datastore=${VSPHERE_DATASTORE}"   \
-   -var "vsphere_network=${VSPHERE_NETWORK}"       \
-   -var "vsphere_http_ip=${VSPHERE_HTTP_IP}"       \
-   -on-error=abort                                 \
+   -var "vm_name=${vm_name}"                           \
+   -var "vm_version=${vm_version}"                     \
+   -var "vm_version=${vm_version}"                     \
+   -var "vm_chipset=${VM_CHIPSET}"                     \
+   -var "vm_firmware=${VM_FIRMWARE}"                   \
+   -var "vm_cores=${VM_CORES}"                         \
+   -var "vm_memory=${VM_MEMORY}"                       \
+   -var "vm_balloon=${VM_BALLOON}"                     \
+   -var "vm_balloon_min=${VM_BALLOON_MIN}"             \
+   -var "vm_disk_prefix=${VM_DISK_PREFIX}"             \
+   -var "vm_disk_root=${VM_DISK_ROOT}"                 \
+   -var "vm_disk_home=${VM_DISK_HOME}"                 \
+   -var "vm_disk_swap=${VM_DISK_SWAP}"                 \
+   -var "vm_video=${VIDEO}"                            \
+   -var "vm_vendor=${vm_vendor}"                       \
+   -var "vm_vendorurl=${vm_vendorurl}"                 \
+   -var "vm_product=${vm_product}"                     \
+   -var "vm_producturl=${vm_producturl}"               \
+   -var "host_name=${HOSTNAME}"                        \
+   -var "host_domain=${DOMAINNAME}"                    \
+   -var "user_name=${USER_NAME}"                       \
+   -var "user_realname=${USER_REALNAME}"               \
+   -var "user_password=${USER_PASSWORD}"               \
+   -var "vsphere_version=${VSPHERE_VERSION}"           \
+   -var "vsphere_username=${VSPHERE_USERNAME}"         \
+   -var "vsphere_password=${VSPHERE_PASSWORD}"         \
+   -var "vsphere_server=${VSPHERE_SERVER}"             \
+   -var "vsphere_datacenter=${VSPHERE_DATACENTER}"     \
+   -var "vsphere_cluster=${VSPHERE_CLUSTER}"           \
+   -var "vsphere_folder=${VSPHERE_FOLDER}"             \
+   -var "vsphere_host=${VSPHERE_HOST}"                 \
+   -var "vsphere_datastore=${VSPHERE_DATASTORE}"       \
+   -var "vsphere_network=${VSPHERE_NETWORK}"           \
+   -var "vsphere_http_ip=${VSPHERE_HTTP_IP}"           \
+   -var "proxmox_username=${PROXMOX_USERNAME}"         \
+   -var "proxmox_password=${PROXMOX_PASSWORD}"         \
+   -var "proxmox_url=${PROXMOX_URL}"                   \
+   -var "proxmox_node=${PROXMOX_NODE}"                 \
+   -var "proxmox_pool=${PROXMOX_POOL}"                 \
+   -var "proxmox_disk_storage=${PROXMOX_DISK_STORAGE}" \
+   -var "proxmox_iso_storage=${PROXMOX_ISO_STORAGE}"   \
+   -var "proxmox_bridge=${PROXMOX_BRIDGE}"             \
+   -var "proxmox_vlan_id=${PROXMOX_VLAN_ID}"           \
+   -var "proxmox_http_ip=${PROXMOX_HTTP_IP}"           \
+   -on-error=abort                                     \
    ${JSON}
 
 (
@@ -753,6 +823,8 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
       nice xz -T0 -k ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
    elif [ ${HYPERVISOR} == "vSphere" ] ; then
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
+   elif [ ${HYPERVISOR} == "Proxmox" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
 ) >successfully-built.txt

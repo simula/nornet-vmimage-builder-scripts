@@ -1,5 +1,5 @@
-// Fedora 32 Server with EFI Boot
-// Copyright (C) 2019-2023 by Thomas Dreibholz
+// FreeBSD 13.2 with EFI Boot
+// Copyright (C) 2020-2024 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,22 +18,22 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/32/Server/x86_64/iso/Fedora-Server-netinst-x86_64-32-1.6.iso",
-  "iso_checksum": "sha256:7f4afd2a26c718f9f15e4bbfd9c2e8849f81036d2a82a4e81fa4a313a833da9c",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.3/FreeBSD-13.3-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha512:e793c20a14cd91e09d4e81dc545f377219de851b5c6ff69851f279e51dad7d67a4ac3fc8e7eaa5f8ecf7164188c098ab2ad6c23878ac404d4d4653d16d4ed2b0",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "3s",
+  "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
+  "boot_wait": "120s",
   "boot_command": [
-    "<esc><wait>",
-    "<esc>c<wait>",
-    "linuxefi /images/pxeboot/vmlinuz --- text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
-    "initrd /images/pxeboot/initrd.img<enter><wait>",
-    "boot<enter>"
-  ]
+    "s<enter><wait>",
+    "cd /tmp && dhclient vtnet0 && ",
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
+    "bsdinstall script /tmp/installerconfig;<enter>"
+   ]
 }

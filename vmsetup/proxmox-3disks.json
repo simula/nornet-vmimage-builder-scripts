@@ -1,0 +1,86 @@
+// Proxmox Configuration with Own Disks for Root, Home and Swap
+// Copyright (C) 2019-2024 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: dreibh@simula.no
+
+{
+  "vm_name": "{{user `vm_name`}}",
+  "type": "proxmox-iso",
+  "task_timeout": "10m",
+  "boot_keygroup_interval": "500ms",
+  "os": "l26",
+  "template_name": "{{user `vm_name`}}",
+  "template_description": "{{user `vm_description`}}",
+
+  "username": "{{user `proxmox_username`}}",
+  "password": "{{user `proxmox_password`}}",
+  "proxmox_url": "{{user `proxmox_url`}}",
+  "node": "{{user `proxmox_node`}}",
+  "pool": "{{user `proxmox_pool`}}",
+  "insecure_skip_tls_verify": true,
+  "http_bind_address": "{{user `proxmox_http_ip`}}",
+
+  "bios": "ovmf",
+  "efi_config": {
+    "efi_storage_pool": "{{user `proxmox_disk_storage`}}",
+    "efi_type": "4m"
+  },
+
+  "iso_storage_pool": "{{user `proxmox_iso_storage`}}",
+  "iso_download_pve": true,
+  "unmount_iso": true,
+
+  "scsi_controller": "virtio-scsi-pci",
+  "disks": [
+     {
+        "type": "scsi",
+        "disk_size": "{{user `vm_disk_root`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
+        "discard": "true"
+     },
+     {
+        "type": "scsi",
+        "disk_size": "{{user `vm_disk_home`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
+        "discard": "true"
+     },
+     {
+        "type": "scsi",
+        "disk_size": "{{user `vm_disk_swap`}}M",
+        "storage_pool": "{{user `proxmox_disk_storage`}}",
+        "discard": "true"
+     }
+  ],
+  "network_adapters": [
+     {
+        "model": "virtio",
+        "bridge": "{{user `proxmox_bridge`}}",
+        "vlan_tag": "{{user `proxmox_vlan_id`}}",
+        "firewall": true
+     }
+  ],
+
+  "machine": "q35",
+  "cpu_type": "host",
+  "sockets": 1,
+  "cores": "{{user `vm_cores`}}",
+  "memory": "{{user `vm_memory`}}",
+  "ballooning_minimum": "{{user `vm_balloon_min`}}",
+  "vga": {
+     "type": "qxl",
+     "memory": 16
+   }
+}

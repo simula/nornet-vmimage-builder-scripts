@@ -22,32 +22,41 @@ set -e
 
 . ./vm-build-helper
 
-HYPERVISOR="QEMU"   # "VirtualBox" "QEMU"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10"
-# SYSTEMS="Ubuntu-22.04-LTS"
+HYPERVISOR="Proxmox"
+SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-13.3-RELEASE" #  FreeBSD-14.0-STABLE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal 5gVINNI-OpenStack"
-# PROJECTS="5gVINNI-OpenStack-Development"
-# PROJECTS="5gVINNI-OpenStack-Development 5gVINNI-OpenStack"
+PROJECTS="Minimal KDE"
 
-HOSTNAME="albacete.openstack"
+HOSTNAME="gressholmen.simula.nornet"
 USER_NAME="nornetpp"
-USER_PASSWORD="osm4us"
+USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
+
+# CHIPSET=ich9
+# FIRMWARE=efi
+# CORES=1
+# MEMORY=2048
+# DISK_ROOT=16384
+# DISK_HOME=8192
+# DISK_SWAP=2048
+# VIDEO="HD+"
+# OPTIONS="--proxmox $HOME/.config/proxmox.config"
 
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
 MEMORY=4096
-DISK_ROOT=12288
+VM_BALLOON=2048
+DISK_ROOT=65536
 DISK_HOME=0   # Just one disk -> not used here!
 DISK_SWAP=0   # Just one disk -> not used here!
 VIDEO="HD+"
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
-OPTIONS="-1"   # Just one disk!
+OPTIONS="-1 --proxmox $HOME/.config/proxmox.config"   # Just one disk!
+
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 # ---------------------------------------------------------
 
 build-defined-vms

@@ -1,5 +1,5 @@
 // Fedora 37 Server with EFI Boot
-// Copyright (C) 2019-2023 by Thomas Dreibholz
+// Copyright (C) 2019-2024 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,16 @@
   // ====== Boot into installer =============================================
   "boot_wait": "3s",
   "boot_command": [
-    "<esc><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
     "<esc>c<wait>",
     "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
     "initrd /images/pxeboot/initrd.img<enter><wait>",
