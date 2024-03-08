@@ -5,7 +5,7 @@ VM Image Builder Scripts
 
 # Introduction
 
-This repository contains VM image building scripts, to automatically generate fresh VM images for different projects. The scripts use Packer (<https://www.packer.io>).
+This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
 
 
 # VM Types
