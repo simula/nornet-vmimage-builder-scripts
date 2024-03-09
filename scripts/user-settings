@@ -162,7 +162,10 @@ ICAuIC91c3Ivc2hhcmUvYmFzaC1jb21wbGV0aW9uL2Jhc2hfY29tcGxldGlvbgogIGVsaWYgWyAt
 ZiAvZXRjL2Jhc2hfY29tcGxldGlvbiBdOyB0aGVuCiAgICAuIC9ldGMvYmFzaF9jb21wbGV0aW9u
 CiAgZmkKZmkK
 EOF
-   # sudo chsh -s /usr/local/bin/bash ${USER_NAME}
+
+   cat >/home/${USER_NAME}/.bash_profile <<EOF
+test -f ~/.bashrc && source ~/.bashrc
+EOF
 fi
 
 
