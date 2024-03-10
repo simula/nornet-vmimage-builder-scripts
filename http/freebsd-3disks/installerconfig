@@ -76,15 +76,15 @@ cap_mkdb /etc/login.conf
 
 # ====== Basic packages =====================================================
 
+# Get latest updates, instead of quarterly updates:
+sed -e $'s#\\(url:.*".*\\)\\(/quarterly\\)"#\\1/latest"#g' </etc/pkg/FreeBSD.conf >/etc/pkg/FreeBSD.conf.updated && mv /etc/pkg/FreeBSD.conf.updated /etc/pkg/FreeBSD.conf
+
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
 
 # Initialise package database. pkg will ask whether to initialise,
 # ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!
 env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
-
-# Get latest updates, instead of quarterly updates:
-sed -e $'s#\\(url:.*".*\\)\\(/quarterly\\)"#\\1/latest"#g' </etc/pkg/FreeBSD.conf >/etc/pkg/FreeBSD.conf.updated && mv /etc/pkg/FreeBSD.conf.updated /etc/pkg/FreeBSD.conf
 
 # Install some basic packages:
 pkg update
