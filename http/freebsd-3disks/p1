@@ -49,20 +49,28 @@ gpart delete -i 1 $DISK_ROOT 2>/dev/null || true
 gpart destroy -F $DISK_ROOT  2>/dev/null || true
 
 gpart create -s gpt $DISK_ROOT
-gpart add -a 4k -s 64M -t efi $DISK_ROOT
+gpart add -a 4k -s 64M -t efi  -l EFI  $DISK_ROOT
+gnop create -S 4096 /dev/gpt/EFI
 gpart add -a 4k -t freebsd-zfs -l Root $DISK_ROOT
 gnop create -S 4096 /dev/gpt/Root
 
-zpool create -f -o altroot=/mnt -o cachefile=/var/tmp/zpool.cache zrootXXXX /dev/gpt/Root.nop
-# zpool export zrootXXXX
-# gnop destroy /dev/gpt/Root.nop
+# ------ Create EFI Boot ----------------------------------------------------
+newfs_msdos -F 32 -c 1 /dev/gpt/EFI
+mount -t msdosfs -o longnames /dev/gpt/EFI /mnt
+mkdir -p /mnt/EFI/BOOT
+cp /boot/loader.efi /mnt/EFI/BOOT/BOOTX64.efi
 
-# ------ Configure root -----------------------------------------------------
+# ------ Create ZFS Root ----------------------------------------------------
+zpool create -f -o altroot=/mnt -o cachefile=/var/tmp/zpool.cache zrootXXXX /dev/gpt/Root.nop
+
+# ------ Configure ZFS Root -------------------------------------------------
 # -> https://wiki.freebsd.org/RootOnZFS/GPTZFSBoot
 zfs set compress=on                                            zrootXXXX
 
 zfs create -o mountpoint=none                                  zrootXXXX/ROOT
 zfs create -o mountpoint=none                                  zrootXXXX/ROOT/default
+mount -t tmpfs tmpfs /mnt
+mount -t zfs zrootXXXX/ROOT/default /mnt
 
 zfs create -o mountpoint=/tmp  -o exec=on      -o setuid=off   zrootXXXX/tmp
 zfs create -o canmount=off -o mountpoint=/usr                  zrootXXXX/usr
@@ -79,11 +87,15 @@ zfs create                     -o exec=off     -o setuid=off   zrootXXXX/var/log
 zfs create -o atime=on         -o exec=off     -o setuid=off   zrootXXXX/var/mail
 zfs create                     -o exec=on      -o setuid=off   zrootXXXX/var/tmp
 
+ln -s /usr/home /mnt/home
+chmod 1777 /mnt/var/tmp
+chmod 1777 /mnt/tmp
+
 zpool set bootfs=zrootXXXX/ROOT/default zrootXXXX
 
 
 # ====== Prepare home disk ==================================================
-zpool destroy zhome 2>/dev/null || true
+zpool destroy zhomeYYYY 2>/dev/null || true
 gpart delete -i 1 $DISK_HOME 2>/dev/null || true
 gpart destroy -F $DISK_HOME  2>/dev/null || true
 
@@ -91,18 +103,16 @@ gpart create -s gpt $DISK_HOME
 gpart add -a 4k -t freebsd-zfs -l Home $DISK_HOME
 gnop create -S 4096 /dev/gpt/Home
 
-zpool create -f -o altroot=/mnt/home -o cachefile=/var/tmp/zpool.cache zhome /dev/gpt/Home.nop
-# zpool export zhome
-# gnop destroy /dev/gpt/Home.nop
+zpool create -f -o altroot=/mnt/usr/home -o cachefile=/var/tmp/zpool.cache zhomeYYYY /dev/gpt/Home.nop
 
 # ------ Configure home -----------------------------------------------------
 # -> https://wiki.freebsd.org/RootOnZFS/GPTZFSBoot
-zfs set compress=on                                            zhome
+zfs set compress=on                                            zhomeYYYY
 
-zfs create -o mountpoint=none                                  zhome/HOME
-zfs create -o mountpoint=none                                  zhome/HOME/default
+zfs create -o mountpoint=none                                  zhomeYYYY/HOME
+zfs create -o mountpoint=none                                  zhomeYYYY/HOME/default
 
-zfs create                                                     zhome/usr/home
+zfs create                                                     zhomeYYYY/home
 
 
 # ====== Prepare swap disk ==================================================
@@ -113,6 +123,12 @@ gpart create -s gpt $DISK_SWAP
 gpart add -a 4k -t freebsd-swap -l Swap $DISK_SWAP
 gnop create -S 4096 /dev/gpt/Swap
 
+
+# ====== Create fstab =======================================================
+cat <<EOF >/tmp/bsdinstall_etc/fstab
+# Device          Mountpoint     FStype    Options     Dump     Pass#
+/dev/gpt/Swap     none           swap      sw          0        0
+EOF
 
 # ====== Checks =============================================================
 camcontrol devlist
