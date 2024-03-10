@@ -37,6 +37,6 @@
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot && ",
     "chmod +x installer zfsboot && ",
-    "echo ./installer script /tmp/installerconfig;<enter>"
+    "./installer script /tmp/installerconfig<enter>"
    ]
 }
