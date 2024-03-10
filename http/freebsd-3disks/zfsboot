@@ -93,6 +93,7 @@ newfs_msdos -F 16 -c 1 /dev/gpt/EFI
 mount -t msdosfs -o longnames /dev/gpt/EFI /mnt
 mkdir -p /mnt/EFI/BOOT
 cp /boot/loader.efi /mnt/EFI/BOOT/BOOTX64.efi
+umount /mnt
 
 # ------ Create ZFS Root ----------------------------------------------------
 zpool create -f -o altroot=/mnt -o cachefile=/var/tmp/zpool.cache $zfsRootPool /dev/gpt/Root.nop
@@ -158,7 +159,7 @@ chroot /mnt zpool import $zfsHomePool
 # ====== Create fstab =======================================================
 cat <<EOF >/tmp/bsdinstall_etc/fstab
 # Device          Mountpoint     FStype      Options     Dump     Pass#
-/dev/gpt/EFI      /boot/efi      msdosfs     rw          2        2
+# /dev/gpt/EFI      /boot/efi      msdosfs     rw          2        2
 /dev/gpt/Swap     none           swap        sw          0        0
 EOF
 
