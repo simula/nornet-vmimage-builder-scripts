@@ -113,4 +113,4 @@ chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
 efibootmgr -o 0002,0001,0003,0004
 
 # Reboot into the freshly installed system:
-# reboot
+reboot

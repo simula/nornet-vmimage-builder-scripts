@@ -68,14 +68,20 @@ echo "root=$DISK_ROOT home=$DISK_HOME swap=$DISK_SWAP"
 umount /mnt/usr/home/$zfsRootPool/home /mnt/usr/home/$zfsHomePool
 while umount /mnt ; do true ; done
 
-
-# ====== Prepare root disk ==================================================
 zpool destroy $zfsRootPool 2>/dev/null || true
 gpart delete -i 2 $DISK_ROOT 2>/dev/null || true
 gpart delete -i 1 $DISK_ROOT 2>/dev/null || true
 gpart destroy -F $DISK_ROOT  2>/dev/null || true
 
-gpart destroy $DISK_ROOT 2>/dev/null || true
+zpool destroy $zfsHomePool 2>/dev/null || true
+gpart delete -i 1 $DISK_HOME 2>/dev/null || true
+gpart destroy -F $DISK_HOME  2>/dev/null || true
+
+gpart delete -i 1 $DISK_SWAP 2>/dev/null || true
+gpart destroy -F $DISK_SWAP  2>/dev/null || true
+
+
+# ====== Prepare root disk ==================================================
 gpart create -s gpt $DISK_ROOT
 gpart add -a 4k -s 32M -t efi  -l EFI  $DISK_ROOT
 gnop create -S 4096 /dev/gpt/EFI
@@ -123,42 +129,37 @@ zpool set bootfs=$zfsRootPool/ROOT/default $zfsRootPool
 
 
 # ====== Prepare home disk ==================================================
-zpool destroy $zfsHomePool 2>/dev/null || true
-gpart delete -i 1 $DISK_HOME 2>/dev/null || true
-gpart destroy -F $DISK_HOME  2>/dev/null || true
-
-gpart destroy $DISK_HOME 2>/dev/null || true
 gpart create -s gpt $DISK_HOME
 gpart add -a 4k -t freebsd-zfs -l Home $DISK_HOME
 gnop create -S 4096 /dev/gpt/Home
 
-zpool create -f -o altroot=/mnt/usr/home -o cachefile=/var/tmp/zpool.cache $zfsHomePool /dev/gpt/Home.nop
+zpool create -f -o altroot=/mnt -o cachefile=/var/tmp/zpool.cache $zfsHomePool /dev/gpt/Home.nop
 
 # ------ Configure home -----------------------------------------------------
 # -> https://wiki.freebsd.org/RootOnZFS/GPTZFSBoot
 zfs set compress=on                                            $zfsHomePool
 
 zfs create -o mountpoint=none                                  $zfsHomePool/HOME
-zfs create -o mountpoint=none                                  $zfsHomePool/HOME/default
+zfs create -o mountpoint=/usr/home                             $zfsHomePool/HOME/default
 mount -t zfs $zfsHomePool/HOME/default /mnt/usr/home
-
-zfs create -o canmount=off -o mountpoint=/usr/home             $zfsHomePool/home
 
 
 # ====== Prepare swap disk ==================================================
-gpart delete -i 1 $DISK_SWAP 2>/dev/null || true
-gpart destroy -F $DISK_SWAP  2>/dev/null || true
-
-gpart destroy $DISK_SWAP 2>/dev/null || true
 gpart create -s gpt $DISK_SWAP
 gpart add -a 4k -t freebsd-swap -l Swap $DISK_SWAP
 gnop create -S 4096 /dev/gpt/Swap
 
 
+# ====== Make ZFS Home pool available in new system =========================
+zpool export $zfsHomePool
+chroot /mnt zpool import $zfsHomePool
+
+
 # ====== Create fstab =======================================================
 cat <<EOF >/tmp/bsdinstall_etc/fstab
-# Device          Mountpoint     FStype    Options     Dump     Pass#
-/dev/gpt/Swap     none           swap      sw          0        0
+# Device          Mountpoint     FStype      Options     Dump     Pass#
+/dev/gpt/EFI      /boot/efi      msdosfs     rw          2        2
+/dev/gpt/Swap     none           swap        sw          0        0
 EOF
 
 # ====== Checks =============================================================
