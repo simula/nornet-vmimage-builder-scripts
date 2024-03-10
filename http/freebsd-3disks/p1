@@ -63,7 +63,7 @@ gpart destroy -F $DISK_ROOT  2>/dev/null || true
 
 gpart destroy $DISK_ROOT 2>/dev/null || true
 gpart create -s gpt $DISK_ROOT
-gpart add -a 4k -s 64M -t efi  -l EFI  $DISK_ROOT
+gpart add -a 4k -s 32M -t efi  -l EFI  $DISK_ROOT
 gnop create -S 4096 /dev/gpt/EFI
 gpart add -a 4k -t freebsd-zfs -l Root $DISK_ROOT
 gnop create -S 4096 /dev/gpt/Root
@@ -126,8 +126,9 @@ zfs set compress=on                                            $zfsHomePool
 
 zfs create -o mountpoint=none                                  $zfsHomePool/HOME
 zfs create -o mountpoint=none                                  $zfsHomePool/HOME/default
+mount -t zfs $zfsHomePool/HOME/default /mnt/usr/home
 
-zfs create                                                     $zfsHomePool/home
+zfs create -o canmount=off -o mountpoint=/usr/home             $zfsHomePool/home
 
 
 # ====== Prepare swap disk ==================================================
