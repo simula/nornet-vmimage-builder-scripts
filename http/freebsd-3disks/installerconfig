@@ -107,14 +107,20 @@ chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
 
 
+# ====== Reimport ZFS pools =================================================
+zpool list -Ho name | while read poolName ; do
+   if [ "$poolName" != "zroot" ] ; then
+      zpool export $poolName || true
+      zpool import $poolName || true
+   fi
+done
+zpool list
+
+
 # ====== Reboot =============================================================
 
 # Set boot order to boot from HDD, not from installer CD-ROM:
 efibootmgr -o 0002,0001,0003,0004
 
-zpool export zhome
-zpool import zhome
-zpool list
-
 # Reboot into the freshly installed system:
-# reboot
+reboot

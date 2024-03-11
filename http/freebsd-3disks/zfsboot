@@ -144,18 +144,14 @@ zfs set compress=on                                            $zfsHomePool
 
 zfs create -o mountpoint=none                                  $zfsHomePool/HOME
 zfs create -o mountpoint=/usr/home                             $zfsHomePool/HOME/default
-# mount -t zfs $zfsHomePool/HOME/default /mnt/usr/home
+
+zpool import $zfsHomePool -o altroot=/mnt
 
 
 # ====== Prepare swap disk ==================================================
 gpart create -s gpt $DISK_SWAP
 gpart add -a 4k -t freebsd-swap -l Swap $DISK_SWAP
 gnop create -S 4096 /dev/gpt/Swap
-
-
-# ====== Make ZFS Home pool available in new system =========================
-# zpool export $zfsHomePool
-zpool import $zfsHomePool -o altroot=/mnt
 
 
 # ====== Create fstab =======================================================
