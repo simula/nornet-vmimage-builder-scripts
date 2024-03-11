@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 # FreeBSD Autoinstall Configuration
 # Copyright (C) 2024 by Thomas Dreibholz
 #
@@ -16,6 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: dreibh@simula.no
+
+set -ex
 
 # NOTE:
 # This script is a simple work-around to customise the partitioning in

@@ -31,7 +31,7 @@ export nonInteractive="YES"
 
 #!/bin/sh
 
-set -e
+set -ex
 
 # ====== Basic configuration ================================================
 
@@ -112,5 +112,9 @@ chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
 # Set boot order to boot from HDD, not from installer CD-ROM:
 efibootmgr -o 0002,0001,0003,0004
 
+zpool export zhome
+zpool import zhome
+zpool list
+
 # Reboot into the freshly installed system:
-reboot
+# reboot
