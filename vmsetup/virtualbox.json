@@ -45,7 +45,7 @@
   "gfx_controller": "vmsvga",
   "gfx_vram_size": 128,
   "gfx_accelerate_3d": false,
-  "gfx_efi_resolution": "1920x1080",
+  "gfx_efi_resolution": "{{user `vm_video`}}",
 
   "audio_controller": "hda",
 
