@@ -62,7 +62,7 @@ build-defined-vms ()
                      --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
                      --chipset "${CHIPSET}" \
                      --firmware "${FIRMWARE}" \
-                     --cores ${CORES} --memory ${MEMORY} \
+                     --cores ${CORES} --memory ${MEMORY} --balloon ${BALLOON} \
                      --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
                      --video "${VIDEO}" \
                      --background-sddm "${BACKGROUND_SDDM}" \
