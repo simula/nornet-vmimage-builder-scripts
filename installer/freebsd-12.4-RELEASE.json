@@ -25,15 +25,18 @@
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
+  // No shutdown_command needed!
 
   // ====== Boot into installer =============================================
-  "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
-  "boot_wait": "120s",
+  // "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
+  "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
-    "bsdinstall script /tmp/installerconfig;<enter>"
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot && ",
+    "chmod +x installer zfsboot && ",
+    "./installer script /tmp/installerconfig<enter>"
    ]
 }

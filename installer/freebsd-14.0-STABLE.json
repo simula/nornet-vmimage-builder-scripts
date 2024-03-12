@@ -25,10 +25,10 @@
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
+  // No shutdown_command needed!
 
   // ====== Boot into installer =============================================
-  "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
+  // "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
   "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
