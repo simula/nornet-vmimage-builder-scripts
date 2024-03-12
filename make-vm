@@ -95,43 +95,45 @@ DOCKER_TAG=""
 
 # ###### Handle command-line parameters #####################################
 while [ $# -gt 0 ] ; do
-   if [ "$1" == "--output-directory" -o "$1" == "-O" ] ; then
+   if [ "$1" == "--output-directory" ] || [ "$1" == "-O" ] ; then
       OUTPUT_DIRECTORY="$2"
       shift
-   elif [ "$1" == "--cache-directory" -o "$1" == "-C" ] ; then
+   elif [ "$1" == "--cache-directory" ] || [ "$1" == "-C" ] ; then
       CACHE_DIRECTORY="$2"
       shift
-   elif [ "$1" == "--hypervisor" -o "$1" == "-H" ] ; then
+   elif [ "$1" == "--hypervisor" ] || [ "$1" == "-H" ] ; then
       HYPERVISOR="$2"
       shift
-   elif [ "$1" == "--project" -o "$1" == "-P" ] ; then
+   elif [ "$1" == "--project" ] || [ "$1" == "-P" ] ; then
       PROJECT="$2"
       shift
-   elif [ "$1" == "--distribution" -o "$1" == "-D" ] ; then
+   elif [ "$1" == "--distribution" ] || [ "$1" == "-D" ] ; then
       DISTRIBUTION="$2"
       shift
-   elif [ "$1" == "--release" -o "$1" == "-R" ] ; then
+   elif [ "$1" == "--release" ] || [ "$1" == "-R" ] ; then
       RELEASE="$2"
       shift
-   elif [ "$1" == "--system" -o "$1" == "-S" ] ; then
-      DISTRIBUTION=`echo "$2" | sed -e "s/-.*$//g"`
-      RELEASE=`echo "$2" | sed -e "s/^[^\-]*-//g"`
+   elif [ "$1" == "--system" ] || [ "$1" == "-S" ] ; then
+      # shellcheck disable=SC2001
+      DISTRIBUTION=$(echo "$2" | sed -e "s/-.*$//g")
+      # shellcheck disable=SC2001
+      RELEASE=$(echo "$2" | sed -e "s/^[^\-]*-//g")
       shift
-   elif [ "$1" == "--chipset" -o "$1" == "-I" ] ; then
+   elif [ "$1" == "--chipset" ] || [ "$1" == "-I" ] ; then
       VM_CHIPSET="$2"
       if [[ ! "${VM_CHIPSET}" =~ ^ich9$|^piix3$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad chipset setting: ${VM_CHIPSET}"
          exit 1
       fi
       shift
-   elif [ "$1" == "--firmware" -o "$1" == "-F" ] ; then
+   elif [ "$1" == "--firmware" ] || [ "$1" == "-F" ] ; then
       VM_FIRMWARE="$2"
       if [[ ! "${VM_FIRMWARE}" =~ ^efi$|^bios$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad firmware setting: ${VM_FIRMWARE}"
          exit 1
       fi
       shift
-   elif [ "$1" == "--cores" -o "$1" == "-c" ] ; then
+   elif [ "$1" == "--cores" ] || [ "$1" == "-c" ] ; then
       VM_CORES="$2"
       if [[ ! "${VM_CORES}" =~ ^[0-9]*|NA$ ]] ; then
          echo >&2 "ERROR: Bad value for cores: ${VM_CORES}"
@@ -144,64 +146,64 @@ while [ $# -gt 0 ] ; do
          VM_CORES=1
       fi
       shift
-   elif [ "$1" == "--memory" -o "$1" == "-m" ] ; then
+   elif [ "$1" == "--memory" ] || [ "$1" == "-m" ] ; then
       VM_MEMORY="$2"
       if [[ ! "${VM_MEMORY}" =~ ^[0-9]*$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for memory: ${VM_MEMORY} MiB"
          exit 1
       fi
-      if [ ${VM_MEMORY} != "NA" ] ; then
-         if [ ${VM_MEMORY} -lt 64 ] ; then
+      if [ "${VM_MEMORY}" != "NA" ] ; then
+         if [ "${VM_MEMORY}" -lt 64 ] ; then
             VM_MEMORY=64
          fi
       fi
       shift
-   elif [ "$1" == "--balloon" -o "$1" == "-b" ] ; then
+   elif [ "$1" == "--balloon" ] || [ "$1" == "-b" ] ; then
       VM_BALLOON="$2"
       if [[ ! "${VM_BALLOON}" =~ ^[0-9]*$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for memory balloon: ${VM_BALLOON} MiB"
          exit 1
       fi
       shift
-   elif [ "$1" == "--root" -o "$1" == "-r" ] ; then
+   elif [ "$1" == "--root" ] || [ "$1" == "-r" ] ; then
       VM_DISK_ROOT="$2"
       if [[ ! "${VM_DISK_ROOT}" =~ ^[0-9]*$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for root: ${VM_DISK_ROOT} MiB"
          exit 1
       fi
-      if [ ${VM_DISK_ROOT} != "NA" ] ; then
-         if [ ${VM_DISK_ROOT} -lt 64 ] ; then
+      if [ "${VM_DISK_ROOT}" != "NA" ] ; then
+         if [ "${VM_DISK_ROOT}" -lt 64 ] ; then
             VM_DISK_ROOT=64
          fi
       fi
       shift
-   elif [ "$1" == "--home" -o "$1" == "-r" ] ; then
+   elif [ "$1" == "--home" ] || [ "$1" == "-r" ] ; then
       VM_DISK_HOME="$2"
       if [[ ! "${VM_DISK_HOME}" =~ ^[0-9]*$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for home: ${VM_DISK_HOME} MiB"
          exit 1
       fi
-      if [ ${VM_DISK_HOME} != "NA" ] ; then
-         if [ ${VM_DISK_HOME} -lt 64 ] ; then
+      if [ "${VM_DISK_HOME}" != "NA" ] ; then
+         if [ "${VM_DISK_HOME}" -lt 64 ] ; then
             VM_DISK_HOME=64
          fi
       fi
       shift
-   elif [ "$1" == "--swap" -o "$1" == "-r" ] ; then
+   elif [ "$1" == "--swap" ] || [ "$1" == "-r" ] ; then
       VM_DISK_SWAP="$2"
       if [[ ! "${VM_DISK_SWAP}" =~ ^[0-9]*$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for swap: ${VM_DISK_SWAP} MiB"
          exit 1
       fi
-      if [ ${VM_DISK_SWAP} != "NA" ] ; then
-         if [ ${VM_DISK_SWAP} -lt 0 ] ; then
+      if [ "${VM_DISK_SWAP}" != "NA" ] ; then
+         if [ "${VM_DISK_SWAP}" -lt 0 ] ; then
             VM_DISK_SWAP=0
          fi
       fi
       shift
-   elif [ "$1" == "--one-disk-only" -o "$1" == "-1" ] ; then
+   elif [ "$1" == "--one-disk-only" ] || [ "$1" == "-1" ] ; then
       USE_SEPARATE_DISKS=0
-   elif [ "$1" == "--video" -o "$1" == "-V" ] ; then
+   elif [ "$1" == "--video" ] || [ "$1" == "-V" ] ; then
       VIDEO="$2"
       if [ "${VIDEO}" == "XGA" ] ; then
          VIDEO="1024x768"   # Standard, 4:3
@@ -223,59 +225,59 @@ while [ $# -gt 0 ] ; do
          fi
       fi
       shift
-   elif [ "$1" == "--keyboard-model" -o "$1" == "-m" ] ; then
+   elif [ "$1" == "--keyboard-model" ] || [ "$1" == "-m" ] ; then
       XKBMODEL="$2"
       shift
-   elif [ "$1" == "--keyboard-layout" -o "$1" == "-l" ] ; then
+   elif [ "$1" == "--keyboard-layout" ] || [ "$1" == "-l" ] ; then
       XKBLAYOUT="$2"
       shift
-   elif [ "$1" == "--keyboard-variant" -o "$1" == "-v" ] ; then
+   elif [ "$1" == "--keyboard-variant" ] || [ "$1" == "-v" ] ; then
       XKBVARIANT="$2"
       shift
-   elif [ "$1" == "--keyboard-options" -o "$1" == "-o" ] ; then
+   elif [ "$1" == "--keyboard-options" ] || [ "$1" == "-o" ] ; then
       XKBOPTIONS="$2"
       shift
-   elif [ "$1" == "--hostname" -o "$1" == "-h" ] ; then
+   elif [ "$1" == "--hostname" ] || [ "$1" == "-h" ] ; then
       FQDN="$2"
       shift
-   elif [ "$1" == "--username" -o "$1" == "-u" ] ; then
+   elif [ "$1" == "--username" ] || [ "$1" == "-u" ] ; then
       USER_NAME="$2"
       shift
-   elif [ "$1" == "--realname" -o "$1" == "-r" ] ; then
+   elif [ "$1" == "--realname" ] || [ "$1" == "-r" ] ; then
       USER_REALNAME="$2"
       shift
-   elif [ "$1" == "--password" -o "$1" == "-p" ] ; then
+   elif [ "$1" == "--password" ] || [ "$1" == "-p" ] ; then
       USER_PASSWORD="$2"
       shift
-   elif [ "$1" == "--background-sddm" -o "$1" == "-BS" ] ; then
+   elif [ "$1" == "--background-sddm" ] || [ "$1" == "-BS" ] ; then
       BACKGROUND_SDDM="$2"
       shift
-   elif [ "$1" == "--background-lockscreen" -o "$1" == "-BL" ] ; then
+   elif [ "$1" == "--background-lockscreen" ] || [ "$1" == "-BL" ] ; then
       BACKGROUND_LOCKSCREEN="$2"
       shift
-   elif [ "$1" == "--background-desktop" -o "$1" == "-BD" ] ; then
+   elif [ "$1" == "--background-desktop" ] || [ "$1" == "-BD" ] ; then
       BACKGROUND_DESKTOP="$2"
       shift
-   elif [ "$1" == "--vsphere" -o "$1" == "-VC" ] ; then
+   elif [ "$1" == "--vsphere" ] || [ "$1" == "-VC" ] ; then
       if [ ! -e "$2" ] ; then
          echo "ERROR: vSphere configuration $2 not found!"
          exit 1
       fi
       VSPHERE_CONFIG_FILE="$2"
       shift
-   elif [ "$1" == "--proxmox" -o "$1" == "-PC" ] ; then
+   elif [ "$1" == "--proxmox" ] || [ "$1" == "-PC" ] ; then
       if [ ! -e "$2" ] ; then
          echo "ERROR: Proxmox configuration $2 not found!"
          exit 1
       fi
       PROXMOX_CONFIG_FILE="$2"
       shift
-   elif [ "$1" == "--packer" -o "$1" == "-K" ] ; then
+   elif [ "$1" == "--packer" ] || [ "$1" == "-K" ] ; then
       PACKER="$2"
       shift
-   elif [ "$1" == "--dry-run" -o "$1" == "-n" ] ; then
+   elif [ "$1" == "--dry-run" ] || [ "$1" == "-n" ] ; then
       DRY_RUN=1
-   elif [ "$1" == "--verbose" -o "$1" == "-x" ] ; then
+   elif [ "$1" == "--verbose" ] || [ "$1" == "-x" ] ; then
       PACKER_LOG=1
    else
       echo >&2 "ERROR: Unknown option $1!"
@@ -341,6 +343,7 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
       echo >&2 "ERROR: No vSphere configuration file specified (--vsphere parameter)!"
       exit 1
    fi
+   # shellcheck disable=SC1090
    source "${VSPHERE_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    BUILDER_VMSETUP="proxmox"
@@ -350,6 +353,7 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
       echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
       exit 1
    fi
+   # shellcheck disable=SC1090
    source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
@@ -371,6 +375,7 @@ if [ ! -e "${projectConfiguration}" ] ; then
    echo >&2 "ERROR: Configuration ${projectConfiguration} does not exist!"
    exit 1
 fi
+# shellcheck disable=SC1090
 . "${projectConfiguration}"
 
 # Finally, add guest utilities and clean-up scripts:
@@ -378,7 +383,7 @@ PROVISIONERS="${PROVISIONERS} install-guest-utils clean-up"
 NAME="${NAME}-${PROJECT}"
 
 
-if [ "`echo "${PROVISIONERS}" | xargs -n1 | sort`" !=  "`echo "${PROVISIONERS}" | xargs -n1 | sort -u`" ] ; then
+if [ "$(echo "${PROVISIONERS}" | xargs -n1 | sort)" !=  "$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)" ] ; then
    echo >&2 "ERROR: Some provisioners seem to be listed twice!"
    echo >&2 "PROVISIONERS=${PROVISIONERS}"
    exit 1
@@ -397,12 +402,12 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
    if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
       y=${BASH_REMATCH[1]}
       m=${BASH_REMATCH[2]}
-      let isNonLTSYear=($y%2) || true
-      if [ ${isNonLTSYear} -eq 0 -a $m -eq 4 ] ; then
+      isNonLTSYear=$(( y%2 ))
+      if [ ${isNonLTSYear} -eq 0 ] && [ "$m" -eq 4 ] ; then
          NAME="${NAME}-LTS"
          RELEASE="${RELEASE} LTS"
       fi
-      if [ $y -lt 20 ] ; then
+      if [ "$y" -lt 20 ] ; then
          HTTP_DIRECTORY="${HTTP_DIRECTORY}-legacy"
       fi
    else
@@ -429,10 +434,7 @@ elif [ "${DISTRIBUTION}" == "FreeBSD" ] ; then
    BUILDER_INSTALL="freebsd-${RELEASE}"
    NAME="${NAME}-FreeBSD-${RELEASE}"
    HTTP_DIRECTORY="http/freebsd"
-   if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)-(RELEASE|STABLE|CURRENT)$ ]] ; then
-      major=${BASH_REMATCH[1]}
-      minor=${BASH_REMATCH[2]}
-   else
+   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)-(RELEASE|STABLE|CURRENT)$ ]] ; then
       echo >&2 "ERROR: Invalid FreeBSD release ${RELEASE}!"
       exit 1
    fi
@@ -441,7 +443,7 @@ else
    exit 1
 fi
 
-if [ "${HTTP_DIRECTORY}" != "http/ubuntu-legacy" -a  "${HTTP_DIRECTORY}" != "http/debian" ] ; then
+if [ "${HTTP_DIRECTORY}" != "http/ubuntu-legacy" ] && [ "${HTTP_DIRECTORY}" != "http/debian" ] ; then
    if [ ${USE_SEPARATE_DISKS} -eq 0 ] ; then
       HTTP_DIRECTORY="${HTTP_DIRECTORY}-1disk"
    else
@@ -449,11 +451,13 @@ if [ "${HTTP_DIRECTORY}" != "http/ubuntu-legacy" -a  "${HTTP_DIRECTORY}" != "htt
    fi
 fi
 
-USER_HASHED_PASSWORD=`echo "${USER_PASSWORD}" | mkpasswd -s -m sha-512`
-HOSTNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\1/g'`
-DOMAINNAME=`echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g'`
+USER_HASHED_PASSWORD=$(echo "${USER_PASSWORD}" | mkpasswd -s -m sha-512)
+# shellcheck disable=SC2001
+HOSTNAME=$(echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\1/g')
+# shellcheck disable=SC2001
+DOMAINNAME=$(echo "${FQDN}" | sed -e 's/\([a-zA-Z0-9]*\)\.\([a-zA-Z0-9\.]*\)/\2/g')
 
-let VM_BALLOON_MIN=${VM_MEMORY}-${VM_BALLOON}
+VM_BALLOON_MIN=$(( VM_MEMORY-VM_BALLOON ))
 if [ ${VM_BALLOON_MIN} -lt 0 ] ; then
    echo >&2 "ERROR: Bad memory settings: VM_MEMORY=${VM_MEMORY}, VM_BALLOON=${VM_BALLOON} => ${VM_BALLOON_MIN}"
    exit 1
@@ -461,9 +465,9 @@ fi
 
 
 # ###### Check Packer version ###############################################
-packerVersion=`${PACKER} version`
+packerVersion=$(${PACKER} version)
 requiredMinVersion="1.7.1~"
-check=`echo -e "${requiredMinVersion}\n${packerVersion}" | sort -V -r | head -n1`
+check=$(echo -e "${requiredMinVersion}\n${packerVersion}" | sort -V -r | head -n1)
 if [ "${check}" == "${requiredMinVersion}" ] ; then
    echo >&2 "ERROR: Packer version ${packerVersion} is not suitable! Required is at least version ${requiredMinVersion}."
    exit 1
@@ -471,11 +475,11 @@ fi
 
 
 # ###### Write Packer configuration #########################################
-CACHE_DIRECTORY="`realpath "${CACHE_DIRECTORY}"`"
+CACHE_DIRECTORY="$(realpath "${CACHE_DIRECTORY}")"
 mkdir -p "${CACHE_DIRECTORY}"
 
 mkdir -p "${OUTPUT_DIRECTORY}/${NAME}"
-JSON="`realpath ${OUTPUT_DIRECTORY}/${NAME}`/${NAME}.json"
+JSON="$(realpath "${OUTPUT_DIRECTORY}"/"${NAME}")/${NAME}.json"
 JSONTMP="${JSON}.tmp"
 
 
@@ -487,8 +491,8 @@ insert-json()
 }
 
 # ====== Variables ==========================================================
-rm -f ${JSONTMP}
-cat >>${JSONTMP} <<EOF
+rm -f "${JSONTMP}"
+cat >>"${JSONTMP}" <<EOF
 {
   "variables": {
     "version": ""
@@ -496,7 +500,7 @@ cat >>${JSONTMP} <<EOF
 EOF
 
 # ====== Builders ===========================================================
-cat >>${JSONTMP} <<EOF
+cat >>"${JSONTMP}" <<EOF
   "builders": [
     {
 EOF
@@ -507,9 +511,10 @@ fi
 
 # Copy all files from HTTP directory and replace placeholders:
 mkdir -p "${OUTPUT_DIRECTORY}/${NAME}/http"
-httpFiles=`find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*"`
+httpFiles=$(find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*")
 for httpFile in ${httpFiles} ; do
-   echo "Processing: ${httpFile} -> ${NAME}/http/`basename ${httpFile}`"
+   echo "Processing: ${httpFile} -> ${NAME}/http/$(basename "${httpFile}")"
+   # shellcheck disable=SC2094
    sed -e "s/<SET_DISK_PREFIX_HERE>/${VM_DISK_PREFIX}/g" \
        -e "s/<SET_XKBMODEL_HERE>/${XKBMODEL}/g" \
        -e "s/<SET_XKBLAYOUT_HERE>/${XKBLAYOUT}/g" \
@@ -522,7 +527,7 @@ for httpFile in ${httpFiles} ; do
        -e "s/<SET_REALNAME_HERE>/${USER_REALNAME}/g" \
        -e "s/<SET_PASSWORD_HERE>/${USER_PASSWORD}/g" \
        -e "s#<SET_HASHED_PASSWORD_HERE>#${USER_HASHED_PASSWORD}#g" \
-       <${httpFile} >"${OUTPUT_DIRECTORY}/${NAME}/http/`basename ${httpFile}`"
+       <"${httpFile}" >"${OUTPUT_DIRECTORY}/${NAME}/http/$(basename "${httpFile}")"
 done
 
 # Configure HTTP directory:
@@ -546,23 +551,23 @@ fi
       echo "\"http_directory\": \"http\","
    fi
    insert-json ${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json
-) >>${JSONTMP}
-cat >>${JSONTMP} <<EOF
+cat <<EOF
     }
   ],
 EOF
+) >>"${JSONTMP}"
 
 # ====== Provisioners =======================================================
-cat >>${JSONTMP} <<EOF
+cat >>"${JSONTMP}" <<EOF
   "provisioners": [
 EOF
 
 if [ "${HYPERVISOR}" == "Docker" ] ; then
-   cat >>${JSONTMP} <<EOF
+   cat >>"${JSONTMP}" <<EOF
        {
          "type": "shell",
          "execute_command": "{{.Vars}} bash '{{.Path}}'",
-         "script": "`realpath scripts/prepare-docker-container`",
+         "script": "$(realpath scripts/prepare-docker-container)",
          "environment_vars": [ "FQDN=${FQDN}",
                                "USER_NAME=${USER_NAME}",
                                "USER_PASSWORD=${USER_PASSWORD}",
@@ -578,13 +583,13 @@ for provisioner in ${PROVISIONERS} ; do
    found=0
 
    # ------ File provisioner ------------------------------------------------
-   if [ -e files/${provisioner} ] ; then
+   if [ -e files/"${provisioner}" ] ; then
       found=1
-      let p=$p+1
+      p=$(( p+1 ))
 
-      cat files/${provisioner} | while read s destination ; do
+      while read -r s destination ; do
          if [[ ! "${s}" =~ ^([ \t]*#) ]] ; then
-            source="$(realpath files/${s})"
+            source="$(realpath files/"${s}")"
             if [ ! -e "${source}" ] ; then
                echo >&2 "ERROR: Cannot find source file ${source}!"
                exit 1
@@ -592,9 +597,9 @@ for provisioner in ${PROVISIONERS} ; do
 
             echo "S=${source}"
             if [ $p -gt 1 ] ; then
-               echo "," >>${JSONTMP}
+               echo "," >>"${JSONTMP}"
             fi
-            cat >>${JSONTMP} <<EOF
+            cat >>"${JSONTMP}" <<EOF
        {
          "type": "file",
          "source": "${source}",
@@ -603,21 +608,21 @@ for provisioner in ${PROVISIONERS} ; do
 EOF
 
          fi
-      done
+      done <files/"${provisioner}"
    fi
 
    # ------ Script provisioner ----------------------------------------------
-   if [ -e scripts/${provisioner} ] ; then
+   if [ -e scripts/"${provisioner}" ] ; then
       found=1
-      let p=$p+1
+      p=$(( p+1 ))
       if [ $p -gt 1 ] ; then
-         echo "," >>${JSONTMP}
+         echo "," >>"${JSONTMP}"
       fi
-      cat >>${JSONTMP} <<EOF
+      cat >>"${JSONTMP}" <<EOF
        {
          "type": "shell",
          "execute_command": "echo '${USER_PASSWORD}' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
-         "script": "`realpath scripts/${provisioner}`",
+         "script": "$(realpath scripts/"${provisioner}")",
          "environment_vars": [ "VIDEO=${VIDEO}",
                                "XKBMODEL=${XKBMODEL}",
                                "XKBLAYOUT=${XKBLAYOUT}",
@@ -639,14 +644,14 @@ done
       exit 1
    fi
 
-cat >>${JSONTMP} <<EOF
+cat >>"${JSONTMP}" <<EOF
   ]
 EOF
 
 
 # ====== Post-processors ====================================================
 if [ "${HYPERVISOR}" == "Docker" ] ; then
-   cat >>${JSONTMP} <<EOF
+   cat >>"${JSONTMP}" <<EOF
   ,
   "post-processors": [
     [
@@ -661,27 +666,27 @@ EOF
 fi
 
 
-cat >>${JSONTMP} <<EOF
+cat >>"${JSONTMP}" <<EOF
 }
 EOF
 
 
 # ###### Clean up and check #################################################
-if [ ${HYPERVISOR} == "QEMU" ] ; then
+if [ "${HYPERVISOR}" == "QEMU" ] ; then
    # QEMU has no vboxmanage!
-   jq "del(.builders[].vboxmanage)" <${JSONTMP} >${JSON}
-elif [ ${HYPERVISOR} == "Proxmox" ] ; then
+   jq "del(.builders[].vboxmanage)" <"${JSONTMP}" >"${JSON}"
+elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
-   jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <${JSONTMP} >${JSON}
+   jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <"${JSONTMP}" >"${JSON}"
 else
-   jq . <${JSONTMP} >${JSON}
+   jq . <"${JSONTMP}" >"${JSON}"
 fi
-rm -f ${JSONTMP}
+rm -f "${JSONTMP}"
 
 
 # ###### Run Packer #########################################################
 vm_name="${NAME/${HYPERVISOR}-/}"
-vm_version=`date +"%Y.%m.%d-%H%M%S"`
+vm_version=$(date +"%Y.%m.%d-%H%M%S")
 vm_product="${HYPERVISOR} ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE}"
 vm_producturl="https://www.nntb.no"
 vm_vendor="Simula Research Laboratory"
@@ -723,27 +728,27 @@ if [ ${DRY_RUN} -ne 0 ] ; then
    exit
 fi
 
-if [ ${HYPERVISOR} == "VirtualBox" ] ; then
-   if [ "`lsmod|grep "^vboxdrv"`" == "" ] ; then
+if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+   if [ "$(lsmod|grep "^vboxdrv")" == "" ] ; then
       echo "Need to load vboxdrv ..."
       sudo service virtualbox start || true
       sudo service vboxdrv start || true
    fi
 
    # Power off the VM, if it exists
-   timeout --kill-after=30 15 vboxmanage controlvm ${vm_name} poweroff || true
+   timeout --kill-after=30 15 vboxmanage controlvm "${vm_name}" poweroff || true
    pid=$(ps ax | grep VBoxHeadless | grep -- " --comment ${vm_name} " | awk '{ print $1 }')
    if [ "${pid}" != "" ] ; then
       echo "VM is still running (PID ${pid}) -> sending SIGKILL!"
-      kill -KILL ${pid}
+      kill -KILL "${pid}"
       sleep 5
    fi
 
    # Delete VM, if it exists
-   vboxmanage unregistervm ${vm_name} --delete || true
+   vboxmanage unregistervm "${vm_name}" --delete || true
 
-elif [ ${HYPERVISOR} == "QEMU" ] ; then
-   if [ "`lsmod|grep "^vboxdrv"`" != "" ] ; then
+elif [ "${HYPERVISOR}" == "QEMU" ] ; then
+   if [ "$(lsmod|grep "^vboxdrv")" != "" ] ; then
       echo "Need to unload vboxdrv ..."
       sudo service virtualbox stop || true
       sudo service vboxdrv stop || true
@@ -753,7 +758,7 @@ fi
 echo "Running Packer for ${JSON}:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
 rm -rf "${vm_name}"
-env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" ${PACKER} build --force \
+env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" "${PACKER}" build --force \
    -warn-on-undeclared-var \
    -timestamp-ui \
    -parallel-builds=0 \
@@ -776,6 +781,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vm_vendorurl=${vm_vendorurl}"                 \
    -var "vm_product=${vm_product}"                     \
    -var "vm_producturl=${vm_producturl}"               \
+   -var "vm_description=${vm_description}"             \
    -var "host_name=${HOSTNAME}"                        \
    -var "host_domain=${DOMAINNAME}"                    \
    -var "user_name=${USER_NAME}"                       \
@@ -803,21 +809,21 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "proxmox_vlan_id=${PROXMOX_VLAN_ID}"           \
    -var "proxmox_http_ip=${PROXMOX_HTTP_IP}"           \
    -on-error=abort                                     \
-   ${JSON}
+   "${JSON}"
 
 (
-   echo "TIMESTAMP=`env LANG=C date +"%Y/%m/%d-%H:%M:%S"`"
-   if [ ${HYPERVISOR} == "VirtualBox" ] ; then
-      echo "RESULT=`realpath --relative-to=. ${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}.ova`"
-   elif [ ${HYPERVISOR} == "QEMU" ] ; then
+   echo "TIMESTAMP=$(env LANG=C date +"%Y/%m/%d-%H:%M:%S")"
+   if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+      echo "RESULT=$(realpath --relative-to=. "${OUTPUT_DIRECTORY}"/"${NAME}"/"${NAME}"/"${vm_name}".ova)"
+   elif [ "${HYPERVISOR}" == "QEMU" ] ; then
       # Rename QEMU image to have qcow2 extension!
-      mv ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name} ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
+      mv "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}" "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}".qcow2
       # Create a compressed version as well:
-      nice xz -T0 -k ${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2
+      nice xz -T0 -k "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}".qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
-   elif [ ${HYPERVISOR} == "vSphere" ] ; then
+   elif [ "${HYPERVISOR}" == "vSphere" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
-   elif [ ${HYPERVISOR} == "Proxmox" ] ; then
+   elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
    fi
 ) >successfully-built.txt
