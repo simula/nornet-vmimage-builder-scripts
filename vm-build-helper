@@ -38,12 +38,14 @@ build-defined-vms ()
 {
    for project in ${PROJECTS} ; do
       for system in ${SYSTEMS} ; do
-         distribution=`echo "${system}" | sed -e "s/-.*$//g"`
-         release=`echo "${system}" | sed -e "s/^[^\-]*-//g"`
+         # shellcheck disable=SC2001
+         distribution=$(echo "${system}" | sed -e "s/-.*$//g")
+         # shellcheck disable=SC2001
+         release=$(echo "${system}" | sed -e "s/^[^\-]*-//g")
 
          # ====== Filter out unsupported combinations =======================
-         if [ "${project}" == "NorNet"         -a "${distribution}" == "Debian" -o \
-              "${project}" == "NorNet-Desktop" -a "${distribution}" == "Debian" ] ; then
+         if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
+            [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
             echo "${project}/${distribution}-${release} is not supported (yet)"
             continue
          fi
@@ -53,29 +55,30 @@ build-defined-vms ()
             name="${HYPERVISOR}-${project}-${distribution}-${release}"
             logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
             if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
-               startTime=`date`
+               startTime=$(date)
                echo "${startTime}: Starting to build ${name}, logfile is ${logfile} ..."
                mkdir -p "${OUTPUT_DIRECTORY}/${name}"
-               if ./make-vm -H ${HYPERVISOR} \
-                     --project ${project} --distribution ${distribution} --release ${release} \
+               # shellcheck disable=SC2086
+               if ./make-vm -H "${HYPERVISOR}" \
+                     --project "${project}" --distribution "${distribution}" --release "${release}" \
                      --hostname "${HOSTNAME}" \
                      --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
                      --chipset "${CHIPSET}" \
                      --firmware "${FIRMWARE}" \
-                     --cores ${CORES} --memory ${MEMORY} --balloon ${BALLOON} \
-                     --root ${DISK_ROOT} --home ${DISK_HOME} --swap ${DISK_SWAP} \
+                     --cores "${CORES}" --memory "${MEMORY}" --balloon "${BALLOON}" \
+                     --root "${DISK_ROOT}" --home "${DISK_HOME}" --swap "${DISK_SWAP}" \
                      --video "${VIDEO}" \
                      --background-sddm "${BACKGROUND_SDDM}" \
                      --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
                      --background-desktop "${BACKGROUND_DESKTOP}" \
                      --cache-directory "${CACHE_DIRECTORY}" \
                      --output-directory "${OUTPUT_DIRECTORY}" \
-                     ${OPTIONS}  >${logfile} 2>&1 ; then
+                     ${OPTIONS}  >"${logfile}" 2>&1 ; then
                   result="OK"
                else
                   result="FAILED!"
                fi
-               finishTime=`date`
+               finishTime=$(date)
                echo "${finishTime}: Finished to build ${name} - ${result} -> ${logfile}"
             else
                echo "${name} is already there -> ${logfile}"
