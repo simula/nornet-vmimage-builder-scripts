@@ -22,15 +22,15 @@ set -e
 
 source ./directories.config
 
-CONTAINERS=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "Docker*"`
+CONTAINERS=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "Docker*")
 for container in ${CONTAINERS} ; do
-   json=`find ${container} -mindepth 1 -maxdepth 1 -type f -name "*.json"`
+   json=$(find "${container}" -mindepth 1 -maxdepth 1 -type f -name "*.json")
    if [ "${json}" != "" ] ; then
-      REPOSITORY="`jq '."post-processors"[0]' ${json} | jq '.[0].repository' | tr -d '"'`"
-      TAG="`jq '."post-processors"[0]' ${json} | jq '.[0].tags[0]' | tr -d '"'`"
-      if [ "${REPOSITORY}" != "" -a "${TAG}" != "" ] ; then
+      REPOSITORY="$(jq '."post-processors"[0]' "${json}" | jq '.[0].repository' | tr -d '"')"
+      TAG="$(jq '."post-processors"[0]' "${json}" | jq '.[0].tags[0]' | tr -d '"')"
+      if [ "${REPOSITORY}" != "" ] && [ "${TAG}" != "" ] ; then
          echo "Pushing ${REPOSITORY}:${TAG} ..."
-         docker push ${REPOSITORY}:${TAG}
+         docker push "${REPOSITORY}":"${TAG}"
       fi
    fi
 done
