@@ -88,20 +88,22 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      /usr/bin/dnf install -y virtualbox-guest-additions
+      /usr/sbin/pkg install -y virtualbox-ose-additions
+      sysrc vboxguest_enable="YES"   ; service vboxguest   start || true
+      sysrc vboxservice_enable="YES" ; service vboxservice start || true
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
-      /usr/bin/dnf install -y open-vm-tools
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
-         /usr/bin/dnf install -y open-vm-tools-desktop
+         /usr/sbin/pkg install -y open-vm-tools
+      else
+         /usr/sbin/pkg install -y open-vm-tools-nox11
       fi
+      sysrc vmware_guestd_enable="YES" ; service vmware-guestd start || true
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
       /usr/sbin/pkg install -y qemu-guest-agent
       sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
-   elif [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
-      /usr/sbin/pkg remove -y qemu-guest-agent || true
    fi
 
 fi
