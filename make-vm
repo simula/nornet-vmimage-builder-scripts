@@ -373,15 +373,8 @@ if [ ! -e "${projectConfiguration}" ] ; then
 fi
 . "${projectConfiguration}"
 
-
-if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
-   PROVISIONERS="install-virtualbox-guest-utils ${PROVISIONERS}"
-elif [ "${HYPERVISOR}" == "Proxmox" ] || [ "${HYPERVISOR}" == "Proxmox" ] ; then
-   PROVISIONERS="install-qemu-agent ${PROVISIONERS}"
-elif [ "${HYPERVISOR}" == "vSphere" ] ; then
-   PROVISIONERS="${PROVISIONERS} install-vmware-guest-utils"
-fi
-PROVISIONERS="${PROVISIONERS} clean-up"
+# Finally, add guest utilities and clean-up scripts:
+PROVISIONERS="${PROVISIONERS} install-guest-utils clean-up"
 NAME="${NAME}-${PROJECT}"
 
 

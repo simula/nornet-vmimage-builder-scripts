@@ -43,8 +43,8 @@ dhclient $interface
 # Enable basic daemons:
 sysrc zfs_enable="YES"
 sysrc sshd_enable="YES"
-sysrc powerd_enable="YES"
 sysrc ntpd_enable="YES"
+# sysrc powerd_enable="YES"
 
 # Set autoboot delay:
 echo 'autoboot_delay="5"' >>/boot/loader.conf
