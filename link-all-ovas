@@ -25,12 +25,12 @@ source ./directories.config
 mkdir -p links/
 rm -f links/*
 
-VMs=`find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-*"`
+VMs=$(find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-*")
 for vm in ${VMs} ; do
    if [ -e "${vm}/successfully-built.txt" ] ; then
-      image=`find ${vm} -mindepth 2 -maxdepth 2 -name "*.ova"`
+      image=$(find "${vm}" -mindepth 2 -maxdepth 2 -name "*.ova")
       if [ -e "${image}" ] ; then
-         ls -l ${image}
+         ls -l "${image}"
          ln -s "${image}" links/
          # cp -a "${image}" links/
       fi
