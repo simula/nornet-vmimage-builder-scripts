@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/20240311/noble-live-server-amd64.iso",
-  "iso_checksum": "sha256:bb2f815b9df58bf262fbb7d4690066b41e0ea1a631b2ef618bae75a4b302f066",
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/20240312/noble-live-server-amd64.iso",
+  "iso_checksum": "sha256:2ed368bf928b7a5469cb292716af03dbbad931b0cba2433ac9bbaec061ccef5b",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
