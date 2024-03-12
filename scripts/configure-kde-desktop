@@ -43,29 +43,29 @@ fi
 # If the background image files are not at their location, try to move them
 # from tmp/. They should have been placed there by the file provisioner.
 if [ ! -e "${BACKGROUND_SDDM}" ] ; then
-   dir="$(dirname ${BACKGROUND_SDDM})"
+   dir="$(dirname "${BACKGROUND_SDDM}")"
    sudo mkdir -p "${dir}/"
-   sudo mv tmp/$(basename ${BACKGROUND_SDDM}) "${dir}/"
+   sudo mv tmp/$(basename "${BACKGROUND_SDDM}") "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_LOCKSCREEN}" ] ; then
-   dir="$(dirname ${BACKGROUND_LOCKSCREEN})"
+   dir="$(dirname "${BACKGROUND_LOCKSCREEN}")"
    sudo mkdir -p "${dir}/"
-   sudo mv tmp/$(basename ${BACKGROUND_LOCKSCREEN}) "${dir}/"
+   sudo mv tmp/$(basename "${BACKGROUND_LOCKSCREEN}") "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_DESKTOP}" ] ; then
-   dir="$(dirname ${BACKGROUND_DESKTOP})"
+   dir="$(dirname "${BACKGROUND_DESKTOP}")"
    sudo mkdir -p "${dir}/"
-   sudo mv tmp/$(basename ${BACKGROUND_DESKTOP}) "${dir}/"
+   sudo mv tmp/$(basename "${BACKGROUND_DESKTOP}") "${dir}/"
 fi
 
 
 # ====== Make directories ===================================================
-mkdir -p /home/${USER_NAME}/.config
-mkdir -p /home/${USER_NAME}/.local
+mkdir -p /home/"${USER_NAME}"/.config
+mkdir -p /home/"${USER_NAME}"/.local
 
 
 # ====== Desktop configuration ==============================================
-cat >/home/${USER_NAME}/.config/kscreenlockerrc <<EOF
+cat >/home/"${USER_NAME}"/.config/kscreenlockerrc <<EOF
 [\$Version]
 update_info=kscreenlocker.upd:0.1-autolock
 
@@ -74,7 +74,7 @@ Image=file://${BACKGROUND_LOCKSCREEN}
 EOF
 
 
-cat >/home/${USER_NAME}/.config/kactivitymanagerdrc <<EOF
+cat >/home/"${USER_NAME}"/.config/kactivitymanagerdrc <<EOF
 [activities]
 6ef93fb7-d7a8-49cb-a444-4fa9ec9d9788=Default
 
@@ -83,7 +83,7 @@ currentActivity=6ef93fb7-d7a8-49cb-a444-4fa9ec9d9788
 EOF
 
 
-cat >/home/${USER_NAME}/.config/plasma-org.kde.plasma.desktop-appletsrc <<EOF
+cat >/home/"${USER_NAME}"/.config/plasma-org.kde.plasma.desktop-appletsrc <<EOF
 [ActionPlugins][0]
 MidButton;NoModifier=org.kde.paste
 RightButton;NoModifier=org.kde.contextmenu
@@ -322,7 +322,7 @@ EOF
 # ====== Window Manager configuration =======================================
 
 # ------ Set global theme ---------------------------------------------------
-cat >/home/${USER_NAME}/.config/kwinrc <<EOF
+cat >/home/"${USER_NAME}"/.config/kwinrc <<EOF
 [TabBox]
 DesktopLayout=org.kde.breeze.desktop
 DesktopListLayout=org.kde.breeze.desktop
@@ -339,14 +339,14 @@ EOF
 
 
 # ------ Set Plasma style ---------------------------------------------------
-cat >/home/${USER_NAME}/.config/plasmarc <<EOF
+cat >/home/"${USER_NAME}"/.config/plasmarc <<EOF
 [Theme]
 name=air
 EOF
 
 
 # ------ Set KSplash theme --------------------------------------------------
-cat >/home/${USER_NAME}/.config/ksplashrc <<EOF
+cat >/home/"${USER_NAME}"/.config/ksplashrc <<EOF
 [KSplash]
 Engine=KSplashQML
 Theme=org.kde.breeze.desktop
@@ -354,7 +354,7 @@ EOF
 
 
 # ------ Set mouse cursor theme ---------------------------------------------
-cat >/home/${USER_NAME}/.config/kcminputrc <<EOF
+cat >/home/"${USER_NAME}"/.config/kcminputrc <<EOF
 [Mouse]
 cursorTheme=breeze_cursors
 EOF
@@ -362,7 +362,7 @@ EOF
 
 # ------ Set global KDE settings --------------------------------------------
 # Includes: icons theme and colours
-cat >/home/${USER_NAME}/.config/kdeglobals <<EOF
+cat >/home/"${USER_NAME}"/.config/kdeglobals <<EOF
 [\$Version]
 update_info=filepicker.upd:filepicker-remove-old-previews-entry,fonts_global.upd:Fonts_Global,fonts_global_toolbar.upd:Fonts_Global_Toolbar,icons_remove_effects.upd:IconsRemoveEffects,kwin.upd:animation-speed
 
@@ -517,7 +517,7 @@ EOF
 
 
 # ====== Keyboard configuration =============================================
-cat >/home/${USER_NAME}/.config/kxkbrc <<EOF
+cat >/home/"${USER_NAME}"/.config/kxkbrc <<EOF
 [Layout]
 DisplayNames=,,
 LayoutList=de(nodeadkeys),no,us
@@ -534,9 +534,9 @@ EOF
 
 
 # ====== Konsole configuration ==============================================
-mkdir -p /home/${USER_NAME}/.local/share/kxmlgui5/konsole
+mkdir -p /home/"${USER_NAME}"/.local/share/kxmlgui5/konsole
 
-cat >/home/${USER_NAME}/.local/share/kxmlgui5/konsole/konsoleui.rc <<EOF
+cat >/home/"${USER_NAME}"/.local/share/kxmlgui5/konsole/konsoleui.rc <<EOF
 <!DOCTYPE kpartgui>
 <kpartgui name="konsole" version="11">
  <MenuBar>
@@ -599,7 +599,7 @@ cat >/home/${USER_NAME}/.local/share/kxmlgui5/konsole/konsoleui.rc <<EOF
 EOF
 
 
-cat >/home/${USER_NAME}/.local/share/kxmlgui5/konsole/sessionui.rc <<EOF
+cat >/home/"${USER_NAME}"/.local/share/kxmlgui5/konsole/sessionui.rc <<EOF
 <!DOCTYPE kpartgui>
 <kpartgui name="session" version="27">
  <MenuBar>
@@ -667,9 +667,9 @@ cat >/home/${USER_NAME}/.local/share/kxmlgui5/konsole/sessionui.rc <<EOF
 EOF
 
 
-mkdir -p /home/${USER_NAME}/.local/share/konsole
+mkdir -p /home/"${USER_NAME}"/.local/share/konsole
 
-cat >/home/${USER_NAME}/.local/share/konsole/Profile\ 1.profile <<EOF
+cat >/home/"${USER_NAME}"/.local/share/konsole/Profile\ 1.profile <<EOF
 [Appearance]
 ColorScheme=BlackOnLightYellow
 
@@ -679,13 +679,13 @@ Parent=FALLBACK/
 EOF
 
 
-cat >/home/${USER_NAME}/.config/konsolerc <<EOF
+cat >/home/"${USER_NAME}"/.config/konsolerc <<EOF
 [Desktop Entry]
 DefaultProfile=Profile 1.profile
 EOF
 
 
-cat >/home/${USER_NAME}/.config/katerc <<EOF
+cat >/home/"${USER_NAME}"/.config/katerc <<EOF
 [General]
 Close After Last=false
 Config Revision=10
@@ -836,5 +836,5 @@ EOF
 
 
 # ====== Fix permissions ====================================================
-chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.config
-chown -R ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.local
+chown -R "${USER_NAME}":"${USER_NAME}" /home/"${USER_NAME}"/.config
+chown -R "${USER_NAME}":"${USER_NAME}" /home/"${USER_NAME}"/.local

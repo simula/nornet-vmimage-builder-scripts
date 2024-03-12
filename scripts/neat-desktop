@@ -31,6 +31,7 @@ if [ -e /usr/bin/apt-get ] ; then
    packages="neat-desktop neat-development sddm kde-style-oxygen-qt5 gtk2-engines-oxygen plasma-theme-oxygen oxygen-cursor-theme oxygen-cursor-theme-extra oxygen-icon-theme oxygen-sounds"
 
    # Try 3 times, for the case of download issues:
+   # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}

@@ -218,7 +218,7 @@ for profilePath in ${PROFILE_PATHS} ; do
    xpis=`find ${profilePath}/extensions -mindepth 1 -maxdepth 1 -name "*.xpi"`
    uids=""
    for xpi in ${xpis}; do
-      uid=`get-xpi-uid ${xpi}`
+      uid=`get-xpi-uid "${xpi}"`
       uids="${uids} ${uid}"
    done
 
@@ -269,7 +269,7 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo "user_pref(\"browser.startup.homepage\", \"${HOMEPAGE}\");"
       echo "user_pref(\"startup.homepage_welcome_url\", \"${HOMEPAGE}\");"
 
-   ) | tee -a ${profilePath}/user.js
+   ) | tee -a "${profilePath}"/user.js
 done
 
 
@@ -278,25 +278,25 @@ for profilePath in ${PROFILE_PATHS} ; do
 
    run-firefox-headless
 
-   du -schk ${profilePath}
+   du -schk "${profilePath}"
    # cp ${profilePath}/prefs.js ${profilePath}/prefs.js.original
 
 
    # ------ Activate the newly installed extensions -------------------------
    echo "Updating ${profilePath}/extensions.json ..."
-   jq . <${profilePath}/extensions.json >${profilePath}/extensions.json.old
-   cp ${profilePath}/extensions.json ${profilePath}/extensions.json.work
+   jq . <"${profilePath}"/extensions.json >"${profilePath}"/extensions.json.old
+   cp "${profilePath}"/extensions.json "${profilePath}"/extensions.json.work
    for uid in ${uids} ; do
       echo "Activating extension ${uid} ..."
-      cat ${profilePath}/extensions.json.work | jq \
+      cat "${profilePath}"/extensions.json.work | jq \
          "(.addons[] | select(.id == \"${uid}\") | .active) |= true" | \
          jq \
             "(.addons[] | select(.id == \"${uid}\") | .userDisabled) |= false" \
-            >${profilePath}/extensions.json.new
-      mv ${profilePath}/extensions.json.new ${profilePath}/extensions.json.work
+            >"${profilePath}"/extensions.json.new
+      mv "${profilePath}"/extensions.json.new "${profilePath}"/extensions.json.work
    done
-   diff ${profilePath}/extensions.json.old ${profilePath}/extensions.json.work || true
-   mv ${profilePath}/extensions.json.work ${profilePath}/extensions.json
+   diff "${profilePath}"/extensions.json.old "${profilePath}"/extensions.json.work || true
+   mv "${profilePath}"/extensions.json.work "${profilePath}"/extensions.json
    echo "Updated ${profilePath}/extensions.json"
 
 done

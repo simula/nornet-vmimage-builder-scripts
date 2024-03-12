@@ -22,7 +22,7 @@
 set -ex
 
 
-UNAME="`uname`"
+UNAME="$(uname)"
 
 
 # ====== NorNet configuration ===============================================
@@ -51,12 +51,13 @@ if [ "${UNAME}" == "Linux" ] ; then
       packages="nornet-management td-system-configure-grub tshark"
 
       # Try 3 times, for the case of download issues:
+      # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
             sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
       # The nornet-autoupdate package only exists for newer Ubuntu versions:
-      release="`lsb_release -c | cut -d':' -f2 | tr -d ' \t'`"
+      release="$(lsb_release -c | cut -d':' -f2 | tr -d ' \t')"
       if [ "${release}" != "precise" ] ; then
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install  -y \
             nornet-autoupdate
