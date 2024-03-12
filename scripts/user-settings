@@ -93,7 +93,7 @@ fi
 # ====== Initial .bashrc ====================================================
 if [ "${UNAME}" == "FreeBSD" ] ; then
    # This is "base64 /etc/skel/.bashrc" on Ubuntu 22.04 LTS.
-   base64 -d >/home/${USER_NAME}/.bashrc <<EOF
+   base64 -d >/home/"${USER_NAME}"/.bashrc <<EOF
 IyB+Ly5iYXNocmM6IGV4ZWN1dGVkIGJ5IGJhc2goMSkgZm9yIG5vbi1sb2dpbiBzaGVsbHMuCiMg
 c2VlIC91c3Ivc2hhcmUvZG9jL2Jhc2gvZXhhbXBsZXMvc3RhcnR1cC1maWxlcyAoaW4gdGhlIHBh
 Y2thZ2UgYmFzaC1kb2MpCiMgZm9yIGV4YW1wbGVzCgojIElmIG5vdCBydW5uaW5nIGludGVyYWN0
@@ -163,14 +163,14 @@ ZiAvZXRjL2Jhc2hfY29tcGxldGlvbiBdOyB0aGVuCiAgICAuIC9ldGMvYmFzaF9jb21wbGV0aW9u
 CiAgZmkKZmkK
 EOF
 
-   cat >/home/${USER_NAME}/.bash_profile <<EOF
+   cat >/home/"${USER_NAME}"/.bash_profile <<EOF
 test -f ~/.bashrc && source ~/.bashrc
 EOF
 fi
 
 
 # ====== Make some additions to .bashrc =====================================
-cat >>/home/${USER_NAME}/.bashrc <<EOF
+cat >>/home/"${USER_NAME}"/.bashrc <<EOF
 
 
 # ---------------------------------------------------------------------------
@@ -189,20 +189,20 @@ if [ \$cores -gt 1 ] ; then
    export MAKEFLAGS=-j\${cores}
 fi
 EOF
-sudo chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}/.bashrc
+sudo chown "${USER_NAME}":"${USER_NAME}" /home/"${USER_NAME}"/.bashrc
 
 
 # ====== Make some directories ==============================================
-sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/src
+sudo -u "${USER_NAME}" mkdir -p /home/"${USER_NAME}"/src
 if [ -x /usr/bin/chattr ] ; then
-   sudo -u ${USER_NAME} /usr/bin/chattr +c /home/${USER_NAME}/src || true
+   sudo -u "${USER_NAME}" /usr/bin/chattr +c /home/"${USER_NAME}"/src || true
 fi
-sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/tmp
+sudo -u "${USER_NAME}" mkdir -p /home/"${USER_NAME}"/tmp
 
-sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/.ssh
-sudo -u ${USER_NAME} chmod 700 /home/${USER_NAME}/.ssh
-sudo -u ${USER_NAME} touch /home/${USER_NAME}/.ssh/authorized_keys
-sudo -u ${USER_NAME} chmod 600 /home/${USER_NAME}/.ssh/authorized_keys
+sudo -u "${USER_NAME}" mkdir -p /home/"${USER_NAME}"/.ssh
+sudo -u "${USER_NAME}" chmod 700 /home/"${USER_NAME}"/.ssh
+sudo -u "${USER_NAME}" touch /home/"${USER_NAME}"/.ssh/authorized_keys
+sudo -u "${USER_NAME}" chmod 600 /home/"${USER_NAME}"/.ssh/authorized_keys
 
 
 # ====== Import public keys =================================================
@@ -215,9 +215,9 @@ for key in ${KEYS} ; do
    # GnuPG is picky with the DNS server response, and OsloMet has a lot of
    # obscure firewall rules as well => this may fail here!
    for keyServer in ${KEYSERVERS} ; do
-      if sudo -u ${USER_NAME} gpg \
-            --homedir /home/${USER_NAME}/.gnupg \
-            --keyserver hkp://${keyServer} \
+      if sudo -u "${USER_NAME}" gpg \
+            --homedir /home/"${USER_NAME}"/.gnupg \
+            --keyserver hkp://"${keyServer}" \
             --recv-keys ${key} ; then
          echo "Got ${key} from ${keyServer}!"
          foundKey=1
@@ -231,8 +231,8 @@ for key in ${KEYS} ; do
       else
          curl "https://www.nntb.no/~dreibh/${key}.asc" >/tmp/${key}.asc
       fi
-      if sudo -u ${USER_NAME} gpg \
-            --homedir /home/${USER_NAME}/.gnupg \
+      if sudo -u "${USER_NAME}" gpg \
+            --homedir /home/"${USER_NAME}"/.gnupg \
             --import /tmp/${key}.asc ; then
          echo "Got ${key} from NNTB web server!"
          foundKey=1
