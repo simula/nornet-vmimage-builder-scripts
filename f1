@@ -26,10 +26,10 @@ HYPERVISOR="VirtualBox"
 SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"   # FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"   # KDE"
+PROJECTS="Minimal KDE"   # KDE"
 # PROJECTS="Minimal"
 
-HOSTNAME="burgsteinfurt.openstack"
+HOSTNAME="burgsteinfurt.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"

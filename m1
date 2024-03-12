@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-22.04-LTS"
+SYSTEMS="Ubuntu-22.04-LTS Fedora-39 Debian-12 Ubuntu-18.04-LTS Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"
@@ -36,13 +36,14 @@ CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
 MEMORY=4096
+BALLOON=2048
 DISK_ROOT=16384
 DISK_HOME=8192
 DISK_SWAP=2048
 VIDEO="HD+"
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 
