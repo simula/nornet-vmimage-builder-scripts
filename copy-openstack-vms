@@ -27,7 +27,7 @@ WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 source ./directories.config
 
 
-readmeFile=$(realpath files/5gVINNI/README.html)
+readmeFile=$(realpath web/${PROJECT}/README.html)
 
 imageFiles=""
 VMs=$(find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*")

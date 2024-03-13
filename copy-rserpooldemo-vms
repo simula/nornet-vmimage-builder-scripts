@@ -25,7 +25,7 @@ PROJECT=RSerPoolDemo
 TARGET=rserpooldemo
 
 
-readmeFile=$(realpath files/${PROJECT}/README.html)
+readmeFile=$(realpath web/${PROJECT}/README.html)
 
 VMs=$(find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-${PROJECT}*")
 latest=""
