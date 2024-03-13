@@ -28,7 +28,7 @@
   // No shutdown_command needed!
 
   // ====== Boot into installer =============================================
-  // "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
+  "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
   "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
