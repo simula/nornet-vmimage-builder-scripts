@@ -585,7 +585,6 @@ for provisioner in ${PROVISIONERS} ; do
    # ------ File provisioner ------------------------------------------------
    if [ -e files/"${provisioner}" ] ; then
       found=1
-      p=$(( p+1 ))
 
       while read -r s destination ; do
          if [[ ! "${s}" =~ ^([ \t]*#) ]] ; then
@@ -595,7 +594,7 @@ for provisioner in ${PROVISIONERS} ; do
                exit 1
             fi
 
-            echo "S=${source}"
+            p=$(( p+1 ))
             if [ $p -gt 1 ] ; then
                echo "," >>"${JSONTMP}"
             fi
