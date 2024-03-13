@@ -205,6 +205,14 @@ sudo -u "${USER_NAME}" touch /home/"${USER_NAME}"/.ssh/authorized_keys
 sudo -u "${USER_NAME}" chmod 600 /home/"${USER_NAME}"/.ssh/authorized_keys
 
 
+# ====== User icon ==========================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   sudo -u "${USER_NAME}" cp /tmp/Face-Tux.png /home/"${USER_NAME}"/.face.icon
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   sudo -u "${USER_NAME}" cp /tmp/Face-Beastie.png /home/"${USER_NAME}"/.face.icon
+fi
+
+
 # ====== Import public keys =================================================
 # Thomas Dreibholz's public keys for verifying package and Git signatures:
 KEYS="21412672518D8B2D1862EFEF5CD5D12AA0877B49"

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+function make-icon ()
+{
+   convert "$1" -thumbnail 200x200 -gravity center -extent 256x256 "$2"
+}
+
+make-icon Beastie.png Face-Beastie.png
+make-icon Tux.svg     Face-Tux.png
+
