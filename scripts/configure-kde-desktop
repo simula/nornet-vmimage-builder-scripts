@@ -65,6 +65,12 @@ mkdir -p /home/"${USER_NAME}"/.local
 
 
 # ====== Desktop configuration ==============================================
+if [ "$(uname)" == "FreeBSD" ] ; then
+   usrPrefix="/usr/local"
+else
+   usrPrefix="/usr"
+fi
+
 cat >/home/"${USER_NAME}"/.config/kscreenlockerrc <<EOF
 [\$Version]
 update_info=kscreenlocker.upd:0.1-autolock
@@ -135,7 +141,7 @@ plugin=org.kde.plasma.icon
 [Containments][2][Applets][22][Configuration]
 PreloadWeight=42
 localPath=/home/${USER_NAME}/.local/share/plasma_icons/firefox.desktop
-url=file:///usr/share/applications/firefox.desktop
+url=file://${usrPrefix}/applications/firefox.desktop
 
 [Containments][2][Applets][23]
 immutability=1
@@ -144,7 +150,7 @@ plugin=org.kde.plasma.icon
 [Containments][2][Applets][23][Configuration]
 PreloadWeight=42
 localPath=/home/${USER_NAME}/.local/share/plasma_icons/org.kde.konsole.desktop
-url=file:///usr/share/applications/org.kde.konsole.desktop
+url=file://${usrPrefix}/applications/org.kde.konsole.desktop
 
 [Containments][2][Applets][3]
 immutability=1
@@ -821,11 +827,7 @@ MinimumUid=1000
 EOF
 
 
-if [ "$(uname)" == "FreeBSD" ] ; then
-   sddmThemeConfig="/usr/local/share/sddm/themes/breeze/theme.conf"
-else
-   sddmThemeConfig="/usr/share/sddm/themes/breeze/theme.conf.user"
-fi
+sddmThemeConfig="${usrPrefix}/share/sddm/themes/breeze/theme.conf"
 mkdir -p $(dirname ${sddmThemeConfig})
 
 cat >${sddmThemeConfig} <<EOF
