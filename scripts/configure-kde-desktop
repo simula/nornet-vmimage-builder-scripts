@@ -141,7 +141,7 @@ plugin=org.kde.plasma.icon
 [Containments][2][Applets][22][Configuration]
 PreloadWeight=42
 localPath=/home/${USER_NAME}/.local/share/plasma_icons/firefox.desktop
-url=file://${usrPrefix}/applications/firefox.desktop
+url=file://${usrPrefix}/share/applications/firefox.desktop
 
 [Containments][2][Applets][23]
 immutability=1
@@ -150,7 +150,7 @@ plugin=org.kde.plasma.icon
 [Containments][2][Applets][23][Configuration]
 PreloadWeight=42
 localPath=/home/${USER_NAME}/.local/share/plasma_icons/org.kde.konsole.desktop
-url=file://${usrPrefix}/applications/org.kde.konsole.desktop
+url=file://${usrPrefix}/share/applications/org.kde.konsole.desktop
 
 [Containments][2][Applets][3]
 immutability=1
