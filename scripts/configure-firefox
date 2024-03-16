@@ -23,19 +23,24 @@ set -ex
 
 
 # Documentation:
-# - https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/A_brief_guide_to_Mozilla_preferences
-# - https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
-# - https://superuser.com/questions/373276/how-to-enable-extension-when-running-firefox-for-the-first-time
+# * https://developer.mozilla.org/en-US/docs/Mozilla/Preferences/A_brief_guide_to_Mozilla_preferences
+# * https://github.com/NicolasBernaerts/ubuntu-scripts/blob/master/mozilla/mozilla-extension-manager
+# * https://superuser.com/questions/373276/how-to-enable-extension-when-running-firefox-for-the-first-time
+# * https://gist.github.com/0XDE57/fbd302cef7693e62c769
+# * https://support.mozilla.org/en-US/questions/1197144
+# * https://github.com/K3V1991/Disable-Firefox-Telemetry-and-Data-Collection
+
 
 HOMEPAGE="https://www.nntb.no/~dreibh"
 
 
 # ====== Ensure that script is ran by user account to provision =============
-if [ $(id -u) -eq 0 ] ; then
+if [ "$(id -u)" -eq 0 ] ; then
    # Running by configuring sudo root. Run script again, but as user!
-   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
-   if [ "$SUDO_USER" != "root" ] ; then
-      sudo -u $SUDO_USER $0 $@ && exit 0
+   echo "Running as ROOT! SUDO_USER=${SUDO_USER}"
+   if [ "${SUDO_USER}" != "root" ] ; then
+      # shellcheck disable=SC2068
+      sudo -u "${SUDO_USER}" "$0" $@ && exit 0
       exit 1
    else
       # Prevent recursive invocation as "root" user:
@@ -44,11 +49,11 @@ if [ $(id -u) -eq 0 ] ; then
    fi
 else
    # Echo running as user
-   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+   echo "Running as ${USER}! SUDO_USER=${SUDO_USER}"
 fi
 
 if [ -x /usr/bin/lsb_release ] ; then
-   release=`/usr/bin/lsb_release -cs`
+   release=$(/usr/bin/lsb_release -cs)
    if [ "${release}" == "precise" ] ; then
       echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
       exit 0
@@ -110,18 +115,18 @@ function install-xpi ()
    URL1="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
    URL2="https://addons.mozilla.org/firefox/downloads/file/${number}/"
 
-   echo "Processing ${URL} ..."
+   echo "Processing ${URL1} ..."
 
-   MY_XPI=`mktemp`
-   wget --quiet -O ${MY_XPI} "${URL1}" || wget --quiet -O ${MY_XPI} "${URL2}"
+   MY_XPI=$(mktemp)
+   wget --quiet -O "${MY_XPI}" "${URL1}" || wget --quiet -O "${MY_XPI}" "${URL2}"
 
-   MY_UID=`get-xpi-uid ${MY_XPI}`
-   MY_NAME=`get-xpi-name ${MY_XPI}`
+   MY_UID=$(get-xpi-uid "${MY_XPI}")
+   MY_NAME=$(get-xpi-name "${MY_XPI}")
    echo " * Name: ${MY_NAME}"
    echo " * UID:  ${MY_UID}"
 
    for profilePath in ${profilePaths} ; do
-      cp ${MY_XPI} "${profilePath}/extensions/${MY_UID}.xpi"
+      cp "${MY_XPI}" "${profilePath}/extensions/${MY_UID}.xpi"
    done
 }
 
@@ -131,7 +136,7 @@ function run-firefox-headless ()
 {
    # ------ Initialise profile by a short Firefox run in headless mode ------
    echo "Starting Firefox in headless mode ..."
-   du -schk ${profilePath}
+   du -schk "${profilePath}"
 
    firefox -P default-release --headless --no-remote &
    pid=$!
@@ -163,7 +168,7 @@ if [ ! -d "$FIREFOX_CONFIGDIR" ] ; then
    mkdir -p "$FIREFOX_CONFIGDIR"
    pushd "$FIREFOX_CONFIGDIR" >/dev/null
 
-   profileName="profile-`dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"'`"
+   profileName="profile-$(dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"')"
    mkdir "${profileName}"
    mkdir "${profileName}/extensions"
    cat >profiles.ini <<EOF
@@ -185,7 +190,7 @@ fi
 # ====== Install extensions =================================================
 PROFILE_PATHS=""
 if [ -e "$FIREFOX_CONFIGDIR/profiles.ini" ] ; then
-   profilePaths=`grep "^Path=" "$FIREFOX_CONFIGDIR/profiles.ini" | sed -e "s/^Path=//g"`
+   profilePaths=$(grep "^Path=" "$FIREFOX_CONFIGDIR/profiles.ini" | sed -e "s/^Path=//g")
    for profilePath in ${profilePaths} ; do
       if [ -d "$FIREFOX_CONFIGDIR/${profilePath}/extensions/" ] ; then
          PROFILE_PATHS="${PROFILE_PATHS} $FIREFOX_CONFIGDIR/${profilePath}"
@@ -207,18 +212,17 @@ EXTENSIONS="${EXTENSIONS=} 4069651"  # I still don't care about cookies
 EXTENSIONS="${EXTENSIONS=} 4040738"  # Cookie AutoDelete
 
 for extension in ${EXTENSIONS} ; do
-   install-xpi ${extension} "${PROFILE_PATHS}"
+   install-xpi "${extension}" "${PROFILE_PATHS}"
 done
 
 
 # ====== Enhance settings ===================================================
 for profilePath in ${PROFILE_PATHS} ; do
 
-   installedExtensionUIDs=""
-   xpis=`find ${profilePath}/extensions -mindepth 1 -maxdepth 1 -name "*.xpi"`
+   xpis=$(find "${profilePath}"/extensions -mindepth 1 -maxdepth 1 -name "*.xpi")
    uids=""
    for xpi in ${xpis}; do
-      uid=`get-xpi-uid "${xpi}"`
+      uid=$(get-xpi-uid "${xpi}")
       uids="${uids} ${uid}"
    done
 
@@ -228,16 +232,20 @@ for profilePath in ${PROFILE_PATHS} ; do
 
       echo 'user_pref("extensions.pendingOperations", true);'
 
+      echo 'user_pref("accessibility.force_disabled", 1);'
       echo 'user_pref("browser.contentblocking.category", "custom");'
       echo 'user_pref("browser.privatebrowsing.autostart", false);'
-      echo 'user_pref("browser.safebrowsing.malware.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.phishing.enabled", false);'
-      echo 'user_pref("accessibility.force_disabled", 1);'
 
       # ------ Privacy settings ---------------------------------------------
-      # Further documentation: https://gist.github.com/0XDE57/fbd302cef7693e62c769
+      # Further documentation:
+      # https://gist.github.com/0XDE57/fbd302cef7693e62c769
       echo 'user_pref("network.cookie.cookieBehavior", 1);'
       echo 'user_pref("network.cookie.lifetimePolicy", 2);'
+
+      echo 'user_pref("network.http.sendRefererHeader", 0);'
+      echo 'user_pref("network.http.sendSecureXSiteReferrer", false);'
+      echo 'user_pref("network.http.referer.spoofSource", true);'
+      echo 'user_pref("network.predictor.enabled", false);'
 
       echo 'user_pref("privacy.donottrackheader.enabled", true);'
       echo 'user_pref("privacy.history.custom", true);'
@@ -245,21 +253,80 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo 'user_pref("privacy.trackingprotection.enabled", true);'
       echo 'user_pref("privacy.trackingprotection.socialtracking.enabled", true);'
 
-      # ------ Turn off all telemetry ---------------------------------------
-      # From: https://support.mozilla.org/en-US/questions/1197144
-      echo 'user_pref("toolkit.telemetry.archive.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.rejected", true);'
-      echo 'user_pref("toolkit.telemetry.server", "");'
-      echo 'user_pref("toolkit.telemetry.unified", false);'
-      echo 'user_pref("toolkit.telemetry.unifiedIsOptIn", false);'
-      echo 'user_pref("toolkit.telemetry.prompted",2);'
-      echo 'user_pref("toolkit.telemetry.rejected",true);'
-      echo 'user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);'
+      echo 'user_pref("browser.send_pings", false);'
+      echo 'user_pref("browser.send_pings.require_same_host", true);'
 
-      echo 'user_pref("datareporting.policy.dataSubmissionEnabled", false);'
+      echo 'user_pref("browser.safebrowsing.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.malware.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.phishing.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.downloads.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.blockedURIs.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.downloads.remote.enabled", false);'
+
+      echo 'user_pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);'
+      echo 'user_pref("browser.safebrowsing.provider.google4.advisoryURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.dataSharingURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.gethashURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.reportMalwareMistakeURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.reportPhishMistakeURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.reportURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google4.updateURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.advisoryURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.dataSharingURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.gethashURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.reportMalwareMistakeURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.reportPhishMistakeURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.reportURL", "");'
+      echo 'user_pref("browser.safebrowsing.provider.google.updateURL", "");'
+      # echo 'user_pref("", "");'
+
+      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);'
+      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", false);'
+      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);'
+
+      echo 'user_pref("dom.battery.enabled", false);'
+
+      echo 'user_pref("browser.cache.disk.enable", false);'
+      echo 'user_pref("browser.cache.disk_cache_ssl", false);'
+      echo 'user_pref("browser.cache.offline.enable", false);'
+
+      echo 'user_pref("loop.enabled", false);'
+      echo 'user_pref("extensions.pocket.enabled", false);'
+
+      echo 'user_pref("browser.selfsupport.url", "");'
+      echo 'user_pref("browser.aboutHomeSnippets.updateUrL", "");'
+      echo 'user_pref("browser.startup.homepage_override.mstone", "");'
+      echo 'user_pref("browser.startup.homepage_override.buildID", "");'
+      echo 'user_pref("startup.homepage_welcome_url", "");'
+      echo 'user_pref("startup.homepage_welcome_url.additional", "");'
+      echo 'user_pref("startup.homepage_override_url", "");'
+
+      # ------ Turn off all telemetry ---------------------------------------
+      # Further documentation:
+      # * https://support.mozilla.org/en-US/questions/1197144
+      # * https://github.com/K3V1991/Disable-Firefox-Telemetry-and-Data-Collection
+      echo 'user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);'
+      echo 'user_pref("browser.newtabpage.activity-stream.telemetry", false);'
+      echo 'user_pref("browser.ping-centre.telemetry", false);'
       echo 'user_pref("datareporting.healthreport.service.enabled", false);'
       echo 'user_pref("datareporting.healthreport.uploadEnabled", false);'
+      echo 'user_pref("datareporting.policy.dataSubmissionEnabled", false);'
+      echo 'user_pref("datareporting.sessions.current.clean", true);'
+      echo 'user_pref("devtools.onboarding.telemetry.logged", false);'
+      echo 'user_pref("toolkit.telemetry.archive.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.bhrPing.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.firstShutdownPing.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.hybridContent.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.newProfilePing.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.prompted", 2);'
+      echo 'user_pref("toolkit.telemetry.rejected", true);'
+      echo 'user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);'
+      echo 'user_pref("toolkit.telemetry.server", "");'
+      echo 'user_pref("toolkit.telemetry.shutdownPingSender.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.unified", false);'
+      echo 'user_pref("toolkit.telemetry.unifiedIsOptIn", false);'
+      echo 'user_pref("toolkit.telemetry.updatePing.enabled", false);'
 
       # ------ Other "phone home" stuff -------------------------------------
       echo 'user_pref("app.shield.optoutstudies.enabled", false);'
@@ -267,7 +334,6 @@ for profilePath in ${PROFILE_PATHS} ; do
 
       # ------ Set own homepage ---------------------------------------------
       echo "user_pref(\"browser.startup.homepage\", \"${HOMEPAGE}\");"
-      echo "user_pref(\"startup.homepage_welcome_url\", \"${HOMEPAGE}\");"
 
    ) | tee -a "${profilePath}"/user.js
 done
@@ -279,7 +345,13 @@ for profilePath in ${PROFILE_PATHS} ; do
    run-firefox-headless
 
    du -schk "${profilePath}"
-   # cp ${profilePath}/prefs.js ${profilePath}/prefs.js.original
+
+   # The user.js has run (via run-firefox-headless) -> move it away, to avoid
+   # reapplying everything each time Firefox gets started:
+   mv "${profilePath}/user.js"  "${profilePath}/user.js-configure-firefox"
+
+   # Make a backup of prefs.js:
+   cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
 
 
    # ------ Activate the newly installed extensions -------------------------
@@ -288,7 +360,8 @@ for profilePath in ${PROFILE_PATHS} ; do
    cp "${profilePath}"/extensions.json "${profilePath}"/extensions.json.work
    for uid in ${uids} ; do
       echo "Activating extension ${uid} ..."
-      cat "${profilePath}"/extensions.json.work | jq \
+      # shellcheck disable=SC2002
+      cat "${profilePath}/extensions.json.work" | jq \
          "(.addons[] | select(.id == \"${uid}\") | .active) |= true" | \
          jq \
             "(.addons[] | select(.id == \"${uid}\") | .userDisabled) |= false" \
@@ -297,6 +370,9 @@ for profilePath in ${PROFILE_PATHS} ; do
    done
    diff "${profilePath}"/extensions.json.old "${profilePath}"/extensions.json.work || true
    mv "${profilePath}"/extensions.json.work "${profilePath}"/extensions.json
+   (
+      echo 'user_pref("extensions.pendingOperations", true);'
+   ) | tee -a "${profilePath}"/user.js
    echo "Updated ${profilePath}/extensions.json"
 
 done
