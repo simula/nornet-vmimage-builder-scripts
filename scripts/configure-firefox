@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -e
 
 
 # Documentation:
@@ -315,10 +315,12 @@ for profilePath in ${PROFILE_PATHS} ; do
       echo 'user_pref("devtools.onboarding.telemetry.logged", false);'
       echo 'user_pref("toolkit.telemetry.archive.enabled", false);'
       echo 'user_pref("toolkit.telemetry.bhrPing.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.cachedClientID", "");'
       echo 'user_pref("toolkit.telemetry.enabled", false);'
       echo 'user_pref("toolkit.telemetry.firstShutdownPing.enabled", false);'
       echo 'user_pref("toolkit.telemetry.hybridContent.enabled", false);'
       echo 'user_pref("toolkit.telemetry.newProfilePing.enabled", false);'
+      echo 'user_pref("toolkit.telemetry.pioneer-new-studies-available", false);'
       echo 'user_pref("toolkit.telemetry.prompted", 2);'
       echo 'user_pref("toolkit.telemetry.rejected", true);'
       echo 'user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);'
@@ -342,14 +344,13 @@ done
 # ====== Run Firefox to initialise ==========================================
 for profilePath in ${PROFILE_PATHS} ; do
 
+   # ------ Run Firefox in headless mode, to initialise the profile ---------
    run-firefox-headless
 
    du -schk "${profilePath}"
-
    # The user.js has run (via run-firefox-headless) -> move it away, to avoid
    # reapplying everything each time Firefox gets started:
    mv "${profilePath}/user.js"  "${profilePath}/user.js-configure-firefox"
-
    # Make a backup of prefs.js:
    cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
 
@@ -370,10 +371,18 @@ for profilePath in ${PROFILE_PATHS} ; do
    done
    diff "${profilePath}"/extensions.json.old "${profilePath}"/extensions.json.work || true
    mv "${profilePath}"/extensions.json.work "${profilePath}"/extensions.json
+   echo "Updated ${profilePath}/extensions.json"
+
+   # user.js now has to tell Firefox to perform the initialisation of the add-ons:
    (
       echo 'user_pref("extensions.pendingOperations", true);'
    ) | tee -a "${profilePath}"/user.js
-   echo "Updated ${profilePath}/extensions.json"
+
+   # ------ Run Firefox in headless mode again, to initialise the add-ons ---
+   run-firefox-headless
+
+   # Remove user.js
+   rm "${profilePath}/user.js"
 
 done
 
