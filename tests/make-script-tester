@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -d ~/src/vmimage-builder-scripts ] ; then
+   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts ~/src/vmimage-builder-scripts
+   cd ~/src/vmimage-builder-scripts
+fi
+if [ ! -e ~/.gitconfig ] ; then
+   cat >~/.gitconfig <<EOF
+[user]
+        name = Thomas Dreibholz
+        email = dreibh@simula.no
+[push]
+        default = simple
+[color]
+        ui = auto   
+EOF
+fi
