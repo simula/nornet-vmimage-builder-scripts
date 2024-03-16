@@ -31,6 +31,7 @@ if [ -e /usr/bin/apt-get ] ; then
    packages="simulamet-management tshark"
 
    # Try 3 times, for the case of download issues:
+   # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
       sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
          sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}

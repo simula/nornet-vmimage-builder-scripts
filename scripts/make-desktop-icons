@@ -27,7 +27,7 @@ if [ $(id -u) -eq 0 ] ; then
    # Running by configuring sudo root. Run script again, but as user!
    echo "Running as ROOT! SUDO_USER=$SUDO_USER"
    if [ "$SUDO_USER" != "root" ] ; then
-      sudo -u $SUDO_USER $0 $@ && exit 0
+      sudo -u "$SUDO_USER" "$0" $@ && exit 0
       exit 1
    else
       # Prevent recursive invocation as "root" user:
@@ -72,29 +72,29 @@ fi
 mkdir -p "${DESKTOP_DIRECTORY}"
 
 
-# ====== Create directorys for directories ==================================
+# ====== Create links for directories =======================================
 for directory in ${DIRECTORIES} ; do
-   basename=`basename ${directory}`
+   basename=$(basename "${directory}")
    if [ "${basename}" == "/" ] ; then
       basename="root"
    fi
    if [ ! -e "${DESKTOP_DIRECTORY}/${basename}" ] ; then
       echo "Creating desktop link for directory ${directory} as ${basename} ..."
-      ln -s ${directory} "${DESKTOP_DIRECTORY}/${basename}"
+      ln -s "${directory}" "${DESKTOP_DIRECTORY}/${basename}"
    fi
 done
 
 
 # ====== Create directorys for applications =================================
-if [ `uname` == "FreeBSD" ] ; then
-   source=" /usr/local/share/applications/"
+if [ "$(uname)" == "FreeBSD" ] ; then
+   source=" /usr/local/share/applications"
 else
-   source=" /usr/share/applications/"
+   source=" /usr/share/applications"
 fi
 for application in ${APPLICATIONS} ; do
    if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
       echo "Creating desktop link for application ${application} ..."
-      ln -s ${source}/${application}.desktop "${DESKTOP_DIRECTORY}/" || true
+      ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
    fi
 done
 

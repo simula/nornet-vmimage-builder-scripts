@@ -39,6 +39,7 @@ if [ -e /usr/bin/apt-get ] ; then
    # packages="rsplib rserpooldemo"
    #
    # # Try 3 times, for the case of download issues:
+   # # shellcheck disable=SC2086
    # env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
    #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages} || \
    #    sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y ${packages}
@@ -59,5 +60,5 @@ EOF
 fi
 
 # Add demo scenario icon to desktop:
-sudo -u ${USER_NAME} mkdir -p /home/${USER_NAME}/Desktop
-sudo -u ${USER_NAME} ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml /home/${USER_NAME}/Desktop/
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
+sudo -u "${USER_NAME}" ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/"
