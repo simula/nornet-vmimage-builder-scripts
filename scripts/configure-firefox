@@ -219,19 +219,17 @@ done
 # ====== Enhance settings ===================================================
 for profilePath in ${PROFILE_PATHS} ; do
 
-   xpis=$(find "${profilePath}"/extensions -mindepth 1 -maxdepth 1 -name "*.xpi")
+   xpis=$(find "${profilePath}/extensions" -mindepth 1 -maxdepth 1 -name "*.xpi")
    uids=""
    for xpi in ${xpis}; do
       uid=$(get-xpi-uid "${xpi}")
       uids="${uids} ${uid}"
    done
 
+   # ======= Make settings in user.js =======================================
+   # Firefox runs user.js on startup. These have to be applied only on the
+   # first run, so the file will get removed later in this script!
    (
-      echo ''
-      echo '// Settings to change on next run:'
-
-      echo 'user_pref("extensions.pendingOperations", true);'
-
       echo 'user_pref("accessibility.force_disabled", 1);'
       echo 'user_pref("browser.contentblocking.category", "custom");'
       echo 'user_pref("browser.privatebrowsing.autostart", false);'
@@ -337,7 +335,20 @@ for profilePath in ${PROFILE_PATHS} ; do
       # ------ Set own homepage ---------------------------------------------
       echo "user_pref(\"browser.startup.homepage\", \"${HOMEPAGE}\");"
 
-   ) | tee -a "${profilePath}"/user.js
+   ) | tee -a "${profilePath}/user.js"
+
+   # ======= Make settings in xulstore.json =================================
+   # The following setting makes the menu bar always visible:
+   cat >"${profilePath}/xulstore.json" <<EOF
+{
+  "chrome://browser/content/browser.xhtml": {
+    "toolbar-menubar": {
+      "autohide": "false"
+    }
+  }
+}
+EOF
+
 done
 
 
@@ -354,11 +365,10 @@ for profilePath in ${PROFILE_PATHS} ; do
    # Make a backup of prefs.js:
    cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
 
-
    # ------ Activate the newly installed extensions -------------------------
    echo "Updating ${profilePath}/extensions.json ..."
-   jq . <"${profilePath}"/extensions.json >"${profilePath}"/extensions.json.old
-   cp "${profilePath}"/extensions.json "${profilePath}"/extensions.json.work
+   jq . <"${profilePath}/extensions.json" >"${profilePath}/extensions.json.old"
+   cp "${profilePath}/extensions.json" "${profilePath}/extensions.json.work"
    for uid in ${uids} ; do
       echo "Activating extension ${uid} ..."
       # shellcheck disable=SC2002
@@ -366,17 +376,18 @@ for profilePath in ${PROFILE_PATHS} ; do
          "(.addons[] | select(.id == \"${uid}\") | .active) |= true" | \
          jq \
             "(.addons[] | select(.id == \"${uid}\") | .userDisabled) |= false" \
-            >"${profilePath}"/extensions.json.new
-      mv "${profilePath}"/extensions.json.new "${profilePath}"/extensions.json.work
+            >"${profilePath}/extensions.json.new"
+      mv "${profilePath}/extensions.json.new" "${profilePath}/extensions.json.work"
    done
-   diff "${profilePath}"/extensions.json.old "${profilePath}"/extensions.json.work || true
-   mv "${profilePath}"/extensions.json.work "${profilePath}"/extensions.json
+   diff "${profilePath}/extensions.json.old" "${profilePath}/extensions.json.work" || true
+   mv "${profilePath}/extensions.json.work" "${profilePath}/extensions.json"
    echo "Updated ${profilePath}/extensions.json"
 
    # user.js now has to tell Firefox to perform the initialisation of the add-ons:
    (
+      echo '// Install extensions on the next run of Firefox:'
       echo 'user_pref("extensions.pendingOperations", true);'
-   ) | tee -a "${profilePath}"/user.js
+   ) | tee -a "${profilePath}/user.js"
 
    # ------ Run Firefox in headless mode again, to initialise the add-ons ---
    run-firefox-headless
