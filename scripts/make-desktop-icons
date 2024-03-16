@@ -88,9 +88,9 @@ done
 
 # ====== Create directorys for applications =================================
 if [ "$(uname)" == "FreeBSD" ] ; then
-   source=" /usr/local/share/applications"
+   source="/usr/local/share/applications"
 else
-   source=" /usr/share/applications"
+   source="/usr/share/applications"
 fi
 for application in ${APPLICATIONS} ; do
    if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
