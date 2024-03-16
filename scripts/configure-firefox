@@ -229,113 +229,111 @@ for profilePath in ${PROFILE_PATHS} ; do
    # ======= Make settings in user.js =======================================
    # Firefox runs user.js on startup. These have to be applied only on the
    # first run, so the file will get removed later in this script!
-   (
-      echo 'user_pref("accessibility.force_disabled", 1);'
-      echo 'user_pref("browser.contentblocking.category", "custom");'
-      echo 'user_pref("browser.privatebrowsing.autostart", false);'
+   cat >"${profilePath}/user.js" <<EOF
+user_pref("accessibility.force_disabled", 1);
+user_pref("browser.contentblocking.category", "custom");
+user_pref("browser.privatebrowsing.autostart", false);
 
-      # ------ Privacy settings ---------------------------------------------
-      # Further documentation:
-      # https://gist.github.com/0XDE57/fbd302cef7693e62c769
-      echo 'user_pref("network.cookie.cookieBehavior", 1);'
-      echo 'user_pref("network.cookie.lifetimePolicy", 2);'
+// ------ Privacy settings --------------------------------------------------
+// Further documentation:
+// https://gist.github.com/0XDE57/fbd302cef7693e62c769
+user_pref("network.cookie.cookieBehavior", 1);
+user_pref("network.cookie.lifetimePolicy", 2);
 
-      echo 'user_pref("network.http.sendRefererHeader", 0);'
-      echo 'user_pref("network.http.sendSecureXSiteReferrer", false);'
-      echo 'user_pref("network.http.referer.spoofSource", true);'
-      echo 'user_pref("network.predictor.enabled", false);'
+user_pref("network.http.sendRefererHeader", 0);
+user_pref("network.http.sendSecureXSiteReferrer", false);
+user_pref("network.http.referer.spoofSource", true);
+user_pref("network.predictor.enabled", false);
 
-      echo 'user_pref("privacy.donottrackheader.enabled", true);'
-      echo 'user_pref("privacy.history.custom", true);'
-      echo 'user_pref("browser.formfill.enable", false);'
-      echo 'user_pref("privacy.trackingprotection.enabled", true);'
-      echo 'user_pref("privacy.trackingprotection.socialtracking.enabled", true);'
+user_pref("privacy.donottrackheader.enabled", true);
+user_pref("privacy.history.custom", true);
+user_pref("browser.formfill.enable", false);
+user_pref("privacy.trackingprotection.enabled", true);
+user_pref("privacy.trackingprotection.socialtracking.enabled", true);
 
-      echo 'user_pref("browser.send_pings", false);'
-      echo 'user_pref("browser.send_pings.require_same_host", true);'
+user_pref("browser.send_pings", false);
+user_pref("browser.send_pings.require_same_host", true);
 
-      echo 'user_pref("browser.safebrowsing.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.malware.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.phishing.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.downloads.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.blockedURIs.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.downloads.remote.enabled", false);'
+user_pref("browser.safebrowsing.enabled", false);
+user_pref("browser.safebrowsing.malware.enabled", false);
+user_pref("browser.safebrowsing.phishing.enabled", false);
+user_pref("browser.safebrowsing.downloads.enabled", false);
+user_pref("browser.safebrowsing.blockedURIs.enabled", false);
+user_pref("browser.safebrowsing.downloads.remote.enabled", false);
 
-      echo 'user_pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);'
-      echo 'user_pref("browser.safebrowsing.provider.google4.advisoryURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.dataSharingURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.gethashURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.reportMalwareMistakeURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.reportPhishMistakeURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.reportURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google4.updateURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.advisoryURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.dataSharingURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.gethashURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.reportMalwareMistakeURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.reportPhishMistakeURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.reportURL", "");'
-      echo 'user_pref("browser.safebrowsing.provider.google.updateURL", "");'
-      # echo 'user_pref("", "");'
+user_pref("browser.safebrowsing.provider.google4.dataSharing.enabled", false);
+user_pref("browser.safebrowsing.provider.google4.advisoryURL", "");
+user_pref("browser.safebrowsing.provider.google4.dataSharingURL", "");
+user_pref("browser.safebrowsing.provider.google4.gethashURL", "");
+user_pref("browser.safebrowsing.provider.google4.reportMalwareMistakeURL", "");
+user_pref("browser.safebrowsing.provider.google4.reportPhishMistakeURL", "");
+user_pref("browser.safebrowsing.provider.google4.reportURL", "");
+user_pref("browser.safebrowsing.provider.google4.updateURL", "");
+user_pref("browser.safebrowsing.provider.google.advisoryURL", "");
+user_pref("browser.safebrowsing.provider.google.dataSharingURL", "");
+user_pref("browser.safebrowsing.provider.google.gethashURL", "");
+user_pref("browser.safebrowsing.provider.google.reportMalwareMistakeURL", "");
+user_pref("browser.safebrowsing.provider.google.reportPhishMistakeURL", "");
+user_pref("browser.safebrowsing.provider.google.reportURL", "");
+user_pref("browser.safebrowsing.provider.google.updateURL", "");
 
-      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);'
-      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", false);'
-      echo 'user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);'
+user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);
+user_pref("services.sync.prefs.sync.browser.safebrowsing.malware.enabled", false);
+user_pref("services.sync.prefs.sync.browser.safebrowsing.downloads.enabled", false);
 
-      echo 'user_pref("dom.battery.enabled", false);'
+user_pref("dom.battery.enabled", false);
 
-      echo 'user_pref("browser.cache.disk.enable", false);'
-      echo 'user_pref("browser.cache.disk_cache_ssl", false);'
-      echo 'user_pref("browser.cache.offline.enable", false);'
+user_pref("browser.cache.disk.enable", false);
+user_pref("browser.cache.disk_cache_ssl", false);
+user_pref("browser.cache.offline.enable", false);
 
-      echo 'user_pref("loop.enabled", false);'
-      echo 'user_pref("extensions.pocket.enabled", false);'
+user_pref("loop.enabled", false);
+user_pref("extensions.pocket.enabled", false);
 
-      echo 'user_pref("browser.selfsupport.url", "");'
-      echo 'user_pref("browser.aboutHomeSnippets.updateUrL", "");'
-      echo 'user_pref("browser.startup.homepage_override.mstone", "");'
-      echo 'user_pref("browser.startup.homepage_override.buildID", "");'
-      echo 'user_pref("startup.homepage_welcome_url", "");'
-      echo 'user_pref("startup.homepage_welcome_url.additional", "");'
-      echo 'user_pref("startup.homepage_override_url", "");'
+user_pref("browser.selfsupport.url", "");
+user_pref("browser.aboutHomeSnippets.updateUrL", "");
+user_pref("browser.startup.homepage_override.mstone", "");
+user_pref("browser.startup.homepage_override.buildID", "");
+user_pref("startup.homepage_welcome_url", "");
+user_pref("startup.homepage_welcome_url.additional", "");
+user_pref("startup.homepage_override_url", "");
 
-      # ------ Turn off all telemetry ---------------------------------------
-      # Further documentation:
-      # * https://support.mozilla.org/en-US/questions/1197144
-      # * https://github.com/K3V1991/Disable-Firefox-Telemetry-and-Data-Collection
-      echo 'user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);'
-      echo 'user_pref("browser.newtabpage.activity-stream.telemetry", false);'
-      echo 'user_pref("browser.ping-centre.telemetry", false);'
-      echo 'user_pref("datareporting.healthreport.service.enabled", false);'
-      echo 'user_pref("datareporting.healthreport.uploadEnabled", false);'
-      echo 'user_pref("datareporting.policy.dataSubmissionEnabled", false);'
-      echo 'user_pref("datareporting.sessions.current.clean", true);'
-      echo 'user_pref("devtools.onboarding.telemetry.logged", false);'
-      echo 'user_pref("toolkit.telemetry.archive.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.bhrPing.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.cachedClientID", "");'
-      echo 'user_pref("toolkit.telemetry.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.firstShutdownPing.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.hybridContent.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.newProfilePing.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.pioneer-new-studies-available", false);'
-      echo 'user_pref("toolkit.telemetry.prompted", 2);'
-      echo 'user_pref("toolkit.telemetry.rejected", true);'
-      echo 'user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);'
-      echo 'user_pref("toolkit.telemetry.server", "");'
-      echo 'user_pref("toolkit.telemetry.shutdownPingSender.enabled", false);'
-      echo 'user_pref("toolkit.telemetry.unified", false);'
-      echo 'user_pref("toolkit.telemetry.unifiedIsOptIn", false);'
-      echo 'user_pref("toolkit.telemetry.updatePing.enabled", false);'
+// ------ Turn off all telemetry --------------------------------------------
+// Further documentation:
+// * https://support.mozilla.org/en-US/questions/1197144
+// * https://github.com/K3V1991/Disable-Firefox-Telemetry-and-Data-Collection
+user_pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
+user_pref("browser.newtabpage.activity-stream.telemetry", false);
+user_pref("browser.ping-centre.telemetry", false);
+user_pref("datareporting.healthreport.service.enabled", false);
+user_pref("datareporting.healthreport.uploadEnabled", false);
+user_pref("datareporting.policy.dataSubmissionEnabled", false);
+user_pref("datareporting.sessions.current.clean", true);
+user_pref("devtools.onboarding.telemetry.logged", false);
+user_pref("toolkit.telemetry.archive.enabled", false);
+user_pref("toolkit.telemetry.bhrPing.enabled", false);
+user_pref("toolkit.telemetry.cachedClientID", "");
+user_pref("toolkit.telemetry.enabled", false);
+user_pref("toolkit.telemetry.firstShutdownPing.enabled", false);
+user_pref("toolkit.telemetry.hybridContent.enabled", false);
+user_pref("toolkit.telemetry.newProfilePing.enabled", false);
+user_pref("toolkit.telemetry.pioneer-new-studies-available", false);
+user_pref("toolkit.telemetry.prompted", 2);
+user_pref("toolkit.telemetry.rejected", true);
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+user_pref("toolkit.telemetry.server", "");
+user_pref("toolkit.telemetry.shutdownPingSender.enabled", false);
+user_pref("toolkit.telemetry.unified", false);
+user_pref("toolkit.telemetry.unifiedIsOptIn", false);
+user_pref("toolkit.telemetry.updatePing.enabled", false);
 
-      # ------ Other "phone home" stuff -------------------------------------
-      echo 'user_pref("app.shield.optoutstudies.enabled", false);'
-      echo 'user_pref("app.normandy.first_run", false);'
+// ------ Other "phone home" stuff ------------------------------------------
+user_pref("app.shield.optoutstudies.enabled", false);
+user_pref("app.normandy.first_run", false);
 
-      # ------ Set own homepage ---------------------------------------------
-      echo "user_pref(\"browser.startup.homepage\", \"${HOMEPAGE}\");"
-
-   ) | tee -a "${profilePath}/user.js"
+// ------ Set own homepage --------------------------------------------------
+user_pref("browser.startup.homepage", "${HOMEPAGE}");
+EOF
 
    # ======= Make settings in xulstore.json =================================
    # The following setting makes the menu bar always visible:
@@ -384,10 +382,10 @@ for profilePath in ${PROFILE_PATHS} ; do
    echo "Updated ${profilePath}/extensions.json"
 
    # user.js now has to tell Firefox to perform the initialisation of the add-ons:
-   (
-      echo '// Install extensions on the next run of Firefox:'
-      echo 'user_pref("extensions.pendingOperations", true);'
-   ) | tee -a "${profilePath}/user.js"
+   cat >"${profilePath}/user.js" <<EOF
+// Install extensions on the next run of Firefox:
+user_pref("extensions.pendingOperations", true);
+EOF
 
    # ------ Run Firefox in headless mode again, to initialise the add-ons ---
    run-firefox-headless
