@@ -3,6 +3,7 @@
 if [ ! -d ~/src/vmimage-builder-scripts ] ; then
    git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts ~/src/vmimage-builder-scripts
    cd ~/src/vmimage-builder-scripts
+   git config pull.rebase true
 fi
 if [ ! -e ~/.gitconfig ] ; then
    cat >~/.gitconfig <<EOF
