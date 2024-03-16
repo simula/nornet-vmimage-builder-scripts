@@ -156,17 +156,17 @@ function run-firefox-headless ()
 # ====== Create initial profile, if none is existing ========================
 if [ ! -x /snap/bin/firefox ] ; then
    # Firefox as regular package
-   FIREFOX_CONFIGDIR="$HOME/.mozilla/firefox"
+   FIREFOX_CONFIGDIR="${HOME}/.mozilla/firefox"
 else
    # Firefox as Snap
-   FIREFOX_CONFIGDIR="$HOME/snap/firefox/common/.mozilla/firefox"
+   FIREFOX_CONFIGDIR="${HOME}/snap/firefox/common/.mozilla/firefox"
 fi
-echo "Firefox configuration directory is $FIREFOX_CONFIGDIR"
+echo "Firefox configuration directory is ${FIREFOX_CONFIGDIR}"
 
-if [ ! -d "$FIREFOX_CONFIGDIR" ] ; then
+if [ ! -d "${FIREFOX_CONFIGDIR}" ] ; then
    echo "###### Creating new profile setup! ######"
-   mkdir -p "$FIREFOX_CONFIGDIR"
-   pushd "$FIREFOX_CONFIGDIR" >/dev/null
+   mkdir -p "${FIREFOX_CONFIGDIR}"
+   pushd "${FIREFOX_CONFIGDIR}" >/dev/null
 
    profileName="profile-$(dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"')"
    mkdir "${profileName}"
@@ -189,11 +189,11 @@ fi
 
 # ====== Install extensions =================================================
 PROFILE_PATHS=""
-if [ -e "$FIREFOX_CONFIGDIR/profiles.ini" ] ; then
-   profilePaths=$(grep "^Path=" "$FIREFOX_CONFIGDIR/profiles.ini" | sed -e "s/^Path=//g")
+if [ -e "${FIREFOX_CONFIGDIR}/profiles.ini" ] ; then
+   profilePaths=$(grep "^Path=" "${FIREFOX_CONFIGDIR}/profiles.ini" | sed -e "s/^Path=//g")
    for profilePath in ${profilePaths} ; do
-      if [ -d "$FIREFOX_CONFIGDIR/${profilePath}/extensions/" ] ; then
-         PROFILE_PATHS="${PROFILE_PATHS} $FIREFOX_CONFIGDIR/${profilePath}"
+      if [ -d "${FIREFOX_CONFIGDIR}/${profilePath}/extensions/" ] ; then
+         PROFILE_PATHS="${PROFILE_PATHS} ${FIREFOX_CONFIGDIR}/${profilePath}"
       fi
    done
 fi
@@ -210,6 +210,7 @@ EXTENSIONS="${EXTENSIONS=} 5791"     # FlagFox
 EXTENSIONS="${EXTENSIONS=} 6822"     # Binnen-I be gone
 EXTENSIONS="${EXTENSIONS=} 4069651"  # I still don't care about cookies
 EXTENSIONS="${EXTENSIONS=} 4040738"  # Cookie AutoDelete
+EXTENSIONS="${EXTENSIONS=} 3859385"  # KDE Plasma Integration
 
 for extension in ${EXTENSIONS} ; do
    install-xpi "${extension}" "${PROFILE_PATHS}"
