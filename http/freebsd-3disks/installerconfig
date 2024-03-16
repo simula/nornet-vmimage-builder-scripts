@@ -101,6 +101,19 @@ if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
 fi
 
 
+# ====== Prepare FreeBSD Ports Collection ===================================
+# See: https://wiki.freebsd.org/Ports/GitQuickStart
+cd /usr/ports
+git init -b main
+git remote add freebsd https://git.freebsd.org/ports.git
+git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
+git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
+git config pull.rebase true
+# Not running this here:
+# git fetch freebsd
+# git checkout main
+
+
 # ====== User ===============================================================
 echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
 
