@@ -63,10 +63,6 @@ APPLICATIONS="
    org.kde.okular
    org.wireshark.Wireshark
 "
-if [ ! -e /etc/fedora-release ] ; then
-   # An R.desktop file is not available under Fedora, yet.
-   APPLICATIONS="${APPLICATIONS} R"
-fi
 
 
 # ====== Create Desktop directory ===========================================
