@@ -68,20 +68,32 @@ export nonInteractive="YES"
 
 #!/bin/sh
 
-set -e
+set -ex
 
 # ====== Basic configuration ================================================
 
-# Initialise network:
+# Initialise IPv4 and IPv6 networking:
 interface="`ifconfig -l | cut -d' ' -f1`"
 sysrc ifconfig_$interface="dhcp"
+sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
+sysrc ipv6_activate_all_interfaces="YES"
+sysrc ipv6_privacy="YES"
 dhclient $interface
 
-# Enable SSH daemon:
+# Enable basic daemons:
+sysrc zfs_enable="YES"
 sysrc sshd_enable="YES"
+sysrc ntpd_enable="YES"
+# sysrc powerd_enable="YES"
 
 # Set autoboot delay:
 echo 'autoboot_delay="5"' >>/boot/loader.conf
+
+# Enable Newcons:
+echo 'kern.vty=vt' >>/boot/loader.conf
+
+# Enable SCTP support:
+echo 'sctp_load="YES"' >>/boot/loader.conf
 
 
 # ====== Keymap =============================================================
@@ -91,19 +103,10 @@ echo 'autoboot_delay="5"' >>/boot/loader.conf
    echo 'moused_enable="YES"'
    echo 'allscreens_flags="-m on"'
    echo ''
-   echo 'powerd_enable="YES"'
-   echo 'ntpd_enable="YES"'
-   echo 'hald_enable="YES"'
-   echo ''
 ) >>/etc/rc.conf
 
 
 # ====== UTF-8 ==============================================================
-# Enable Newcons:
-echo 'kern.vty=vt' >>/boot/loader.conf
-
-# Enable SCTP support:
-echo 'sctp_load="YES"' >>/boot/loader.conf
 
 # Enable UTF-8:
 sed -e $'s#default:\\\\#default:\\\\\\\n\\\t:charset=UTF-8:\\\\\\\n\\\t:lang=C.UTF-8:\\\\#g' </etc/login.conf >/etc/login.conf.new
@@ -112,6 +115,9 @@ cap_mkdb /etc/login.conf
 
 
 # ====== Basic packages =====================================================
+
+# Get latest updates, instead of quarterly updates:
+sed -e $'s#\\(url:.*".*\\)\\(/quarterly\\)"#\\1/latest"#g' </etc/pkg/FreeBSD.conf >/etc/pkg/FreeBSD.conf.updated && mv /etc/pkg/FreeBSD.conf.updated /etc/pkg/FreeBSD.conf
 
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
@@ -139,6 +145,16 @@ mkdir -p /usr/local/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
+
+
+# ====== Reimport ZFS pools =================================================
+zpool list -Ho name | while read poolName ; do
+   if [ "$poolName" != "zroot" ] ; then
+      zpool export $poolName || true
+      zpool import $poolName || true
+   fi
+done
+zpool list
 
 
 # ====== Reboot =============================================================

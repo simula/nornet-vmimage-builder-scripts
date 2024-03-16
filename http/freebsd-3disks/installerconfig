@@ -35,9 +35,12 @@ set -ex
 
 # ====== Basic configuration ================================================
 
-# Initialise network:
+# Initialise IPv4 and IPv6 networking:
 interface="`ifconfig -l | cut -d' ' -f1`"
 sysrc ifconfig_$interface="dhcp"
+sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
+sysrc ipv6_activate_all_interfaces="YES"
+sysrc ipv6_privacy="YES"
 dhclient $interface
 
 # Enable basic daemons:
