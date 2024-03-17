@@ -53,6 +53,18 @@ set -e
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
+   # ------ Work-around for missing System-Tools in Debian ------------------
+   if [ -e /etc/os-release ] ; then
+      . /etc/os-release
+      if [ "${ID}" == "debian" ] ; then
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y wget
+         cd /tmp
+         wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
+         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" | xargs env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y
+      fi
+   fi
+   # ------------------------------------------------------------------------
+
    packages="
       autoconf
       automake
@@ -101,6 +113,7 @@ elif [ -e /usr/bin/dnf ] ; then
       htop
       iputils
       joe
+      libtool
       make
       netperfmeter
       net-tools
