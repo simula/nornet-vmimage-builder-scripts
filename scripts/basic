@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# ###########################################################################
+# The "Basic" installation must contain the following packages:
+# - Autoconf/Automake/Libtool (basic build tools)
+# - Base64 (base64 tool)
+# - Ping, Traceroute, ifconfig (basic networking tools)
+# - BWM-NG (simple bandwidth monitor)
+# - cURL (download tool)
+# - GDisk (GPT partitioning tool)
+# - Git (revision management)
+# - GNU gcc/g++, GNU Make (GNU C/C++ compilers and make tool)
+# - GnuPG (cryptography for signature checks)
+# - GNU Wget (download tool)
+# - HiPerConTracer
+# - HTop (process monitor)
+# - Joe (editor)
+# - NetPerfMeter (network performance metering tool)
+# - PLocate ("locate" command for finding files)
+# - Python (Python 3 interpreter)
+# - SubNetCalc (address calculator)
+# - Sudo
+# - System-Tools (system information on login)
+# - T-Shark (CLI-version for Wireshark)
+# - Virt-What (identification of virtualisation environment)
+# ###########################################################################
+
+
+# ====== Basic package installation =========================================
+
+# ------ Ubuntu -------------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+
+   packages="
+      autoconf
+      automake
+      bwm-ng
+      cmake
+      curl
+      g++
+      gcc
+      gdisk
+      gpg
+      hipercontracer
+      htop
+      iputils-ping
+      joe
+      libtool-bin
+      make
+      netperfmeter
+      net-tools
+      plocate
+      python3
+      subnetcalc
+      td-system-tools
+      traceroute
+      tshark
+      virt-what
+      wget
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+
+   packages="
+      autoconf
+      automake
+      bwm-ng
+      cmake
+      curl
+      g++
+      gcc
+      gdisk
+      gpg
+      hipercontracer
+      htop
+      iputils
+      joe
+      make
+      netperfmeter
+      net-tools
+      plocate
+      python3
+      subnetcalc
+      td-system-tools
+      traceroute
+      virt-what
+      wget
+      wireshark-cli
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y sddm ${packages}
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ -e /usr/sbin/pkg ] ; then
+   packages="
+      autoconf
+      automake
+      base64
+      bwm-ng
+      cmake
+      curl
+      gcc
+      gdisk
+      gmake
+      gnupg
+      hipercontracer
+      htop
+      joe
+      libtool
+      netperfmeter
+      plocate
+      python3
+      subnetcalc
+      td-system-tools
+      virt-what
+      wget
+      wireshark-nox11
+   "
+
+   # shellcheck disable=SC2086
+   /usr/sbin/pkg install -y ${packages}
+fi
+
+
+# ====== Verify command availability ========================================
+echo "Verifying command availability:"
+errors=0
+for command in autoconf automake base64 bwm-ng cmake curl g++ gcc gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
+   echo -n "${command}: "
+   if which ${command} >/dev/null ; then
+      echo "OK"
+   else
+      echo "FAILED!"
+      errors=$((errors+1))
+   fi
+done
+if [ ${errors} -gt 0 ] ; then
+   echo "ERROR: ${errors} packages are missing!"
+   exit 1
+fi

@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# ###########################################################################
+# The Minimal installation only contains the default packages of the
+# distribution's installer, as well as tools needed for the basic system
+# installation:
+# - Ping (network connectivity check)
+# - cURL (download tool)
+# ###########################################################################
+
+
+# ====== Basic package installation =========================================
+
+# ------ Ubuntu -------------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+
+   # Just ensure the package database is up-to-date
+   /usr/bin/apt-get update
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+
+   # Nothing to do here!
+   true
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ -e /usr/sbin/pkg ] ; then
+
+   # Nothing to do here!
+   true
+
+fi
+
+
+# ====== Verify command availability ========================================
+echo "Verifying command availability:"
+errors=0
+for command in ping curl ; do
+   echo -n "${command}: "
+   if which ${command} >/dev/null ; then
+      echo "OK"
+   else
+      echo "FAILED!"
+      errors=$((errors+1))
+   fi
+done
+if [ ${errors} -gt 0 ] ; then
+   echo "ERROR: ${errors} packages are missing!"
+   exit 1
+fi
