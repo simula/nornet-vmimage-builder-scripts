@@ -65,6 +65,11 @@ if [ -e /usr/bin/apt-get ] ; then
    fi
    # ------------------------------------------------------------------------
 
+   # PLocate is the successor of findutils, both providing a "locate" command.
+   # Try PLocate first, then findutils:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y plocate || \
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y findutils
+
    packages="
       autoconf
       automake
@@ -83,7 +88,6 @@ if [ -e /usr/bin/apt-get ] ; then
       make
       netperfmeter
       net-tools
-      plocate
       python3
       subnetcalc
       td-system-tools
@@ -95,6 +99,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
@@ -165,7 +170,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake base64 bwm-ng cmake curl g++ gcc gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
+for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
