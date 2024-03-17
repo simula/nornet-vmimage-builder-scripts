@@ -94,6 +94,14 @@ pkg update
 pkg upgrade -y
 pkg install -y base64 bash curl git gnupg joe sudo td-system-tools virt-what
 
+# ====== Bash profile link ==================================================
+# Bash does not use /etc/profile, only /usr/local/etc/profile
+# => create symlink, to ensure that Bash processes system-wide shell profile.
+# See: https://forums.freebsd.org/threads/what-happened-to-etc-profile.78406/
+ln -s /etc/profile /usr/local/etc/
+
+
+# ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
 if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
    pkg install -y qemu-guest-agent
@@ -120,6 +128,7 @@ echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /
 mkdir -p /usr/local/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
 chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+
 chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
 
 
