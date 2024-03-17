@@ -687,8 +687,8 @@ rm -f "${JSONTMP}"
 vm_name="${NAME/${HYPERVISOR}-/}"
 vm_version=$(date +"%Y.%m.%d-%H%M%S")
 vm_product="${HYPERVISOR} ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE}"
-vm_producturl="https://www.nntb.no"
-vm_vendor="Simula Research Laboratory"
+vm_producturl="https://github.com/simula/nornet-vmimage-builder-scripts"
+vm_vendor="Simula Metropolitan Centre for Digital Engineering"
 vm_vendorurl="https://www.simula.no/people/dreibh"
 vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HYPERVISOR}."
 
