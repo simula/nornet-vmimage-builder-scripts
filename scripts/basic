@@ -40,6 +40,7 @@ set -e
 # - NetPerfMeter (network performance metering tool)
 # - PLocate ("locate" command for finding files)
 # - Python (Python 3 interpreter)
+# - PwGen (password generator)
 # - SubNetCalc (address calculator)
 # - Sudo
 # - System-Tools (system information on login)
@@ -88,6 +89,7 @@ if [ -e /usr/bin/apt-get ] ; then
       make
       netperfmeter
       net-tools
+      pwgen
       python3
       subnetcalc
       td-system-tools
@@ -124,6 +126,7 @@ elif [ -e /usr/bin/dnf ] ; then
       net-tools
       plocate
       python3
+      pwgen
       subnetcalc
       td-system-tools
       traceroute
@@ -155,6 +158,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       netperfmeter
       plocate
       python3
+      pwgen
       subnetcalc
       td-system-tools
       virt-what
@@ -170,7 +174,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
+for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
