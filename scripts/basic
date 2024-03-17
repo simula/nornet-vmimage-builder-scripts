@@ -45,6 +45,7 @@ set -e
 # - Sudo
 # - System-Tools (system information on login)
 # - T-Shark (CLI-version for Wireshark)
+# - Tree (tree view of directory hierachy)
 # - Virt-What (identification of virtualisation environment)
 # ###########################################################################
 
@@ -72,6 +73,7 @@ if [ -e /usr/bin/apt-get ] ; then
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y findutils
 
    packages="
+      apt-file
       autoconf
       automake
       bwm-ng
@@ -80,6 +82,7 @@ if [ -e /usr/bin/apt-get ] ; then
       g++
       gcc
       gdisk
+      git
       gpg
       hipercontracer
       htop
@@ -94,6 +97,7 @@ if [ -e /usr/bin/apt-get ] ; then
       subnetcalc
       td-system-tools
       traceroute
+      tree
       tshark
       virt-what
       wget
@@ -115,6 +119,7 @@ elif [ -e /usr/bin/dnf ] ; then
       g++
       gcc
       gdisk
+      git
       gpg
       hipercontracer
       htop
@@ -130,6 +135,7 @@ elif [ -e /usr/bin/dnf ] ; then
       subnetcalc
       td-system-tools
       traceroute
+      tree
       virt-what
       wget
       wireshark-cli
@@ -149,6 +155,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       curl
       gcc
       gdisk
+      git
       gmake
       gnupg
       hipercontracer
@@ -161,6 +168,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       pwgen
       subnetcalc
       td-system-tools
+      tree
       virt-what
       wget
       wireshark-nox11
@@ -174,7 +182,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tshark virt-what wget ; do
+for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tree tshark virt-what wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
