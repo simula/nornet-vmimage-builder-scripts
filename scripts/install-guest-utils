@@ -33,8 +33,9 @@ if [ "${UNAME}" == "Linux" ] ; then
 
       # ------ VirtualBox ---------------------------------------------------
       if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+         # NOTE: virtualbox-guest-dkms is obsolete now!
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
-            virtualbox-guest-utils virtualbox-guest-dkms || true
+            virtualbox-guest-utils || true
          if [ -e /usr/lib/systemd/system/sddm.service ] ; then
             # System has X11 -> also install X11 utilities as well:
             env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
