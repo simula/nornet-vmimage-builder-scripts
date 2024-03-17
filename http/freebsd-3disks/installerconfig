@@ -92,7 +92,7 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # Install some basic packages:
 pkg update
 pkg upgrade -y
-pkg install -y autoconf automake base64 bash curl bwm-ng cmake gcc gmake gnupg git hipercontracer htop joe libtool netperfmeter python subnetcalc sudo td-system-tools virt-what wget
+pkg install -y base64 bash curl git gnupg joe sudo td-system-tools virt-what
 
 # QEMU installs already need qemu-guest-agent before first boot:
 if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
