@@ -62,6 +62,7 @@ APPLICATIONS="
    org.kde.konsole
    org.kde.okular
    org.wireshark.Wireshark
+   R
 "
 
 
@@ -91,7 +92,11 @@ fi
 for application in ${APPLICATIONS} ; do
    if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
       echo "Creating desktop link for application ${application} ..."
-      ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
+      if [ -e "${source}/${application}.desktop" ] ; then
+         ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
+      else
+         echo "WARNING: ${source}/${application}.desktop does not exist!"
+      fi
    fi
 done
 

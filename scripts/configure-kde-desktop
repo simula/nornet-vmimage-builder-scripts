@@ -45,17 +45,17 @@ fi
 if [ ! -e "${BACKGROUND_SDDM}" ] ; then
    dir="$(dirname "${BACKGROUND_SDDM}")"
    sudo mkdir -p "${dir}/"
-   sudo mv "tmp/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
+   sudo mv "/tmp/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_LOCKSCREEN}" ] ; then
    dir="$(dirname "${BACKGROUND_LOCKSCREEN}")"
    sudo mkdir -p "${dir}/"
-   sudo mv "tmp/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
+   sudo mv "/tmp/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_DESKTOP}" ] ; then
    dir="$(dirname "${BACKGROUND_DESKTOP}")"
    sudo mkdir -p "${dir}/"
-   sudo mv "tmp/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
+   sudo mv "/tmp/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
 fi
 
 

@@ -1,9 +1,9 @@
 # Copy background images:
-kde.files/Flåm-3840x2160-mosaic.jpeg          tmp/
-kde.files/Flåm-3840x2160-plain.jpeg           tmp/
-kde.files/Gressholmen-3840x2160-mosaic.jpeg   tmp/
-kde.files/Gressholmen-3840x2160-plain.jpeg    tmp/
-kde.files/Lindøya-3840x2160-mosaic.jpeg       tmp/
-kde.files/Lindøya-3840x2160-plain.jpeg        tmp/
-kde.files/Nordmarka-3840x2160-mosaic.jpeg     tmp/
-kde.files/Nordmarka-3840x2160-plain.jpeg      tmp/
+kde.files/Flåm-3840x2160-mosaic.jpeg          /tmp/
+kde.files/Flåm-3840x2160-plain.jpeg           /tmp/
+kde.files/Gressholmen-3840x2160-mosaic.jpeg   /tmp/
+kde.files/Gressholmen-3840x2160-plain.jpeg    /tmp/
+kde.files/Lindøya-3840x2160-mosaic.jpeg       /tmp/
+kde.files/Lindøya-3840x2160-plain.jpeg        /tmp/
+kde.files/Nordmarka-3840x2160-mosaic.jpeg     /tmp/
+kde.files/Nordmarka-3840x2160-plain.jpeg      /tmp/
