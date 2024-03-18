@@ -29,7 +29,7 @@ debconf debconf/priority                select critical
 d-i debian-installer/country            string NO
 d-i debian-installer/language           string en_IE:en
 d-i debian-installer/locale             string en_IE.UTF-8
-d-i localechooser/supported-locales     multiselect en_US.UTF-8, en_GB.UTF-8, en_AU.UTF-8, no_NB.UTF-8, de_DE.UTF-8, zh_CN.UTF-8
+d-i localechooser/supported-locales     multiselect en_US.UTF-8, en_GB.UTF-8, en_AU.UTF-8, nb_NO.UTF-8, nn_NO.UTF-8, de_AT.UTF-8, de_DE.UTF-8, de_CH.UTF-8, zh_CN.UTF-8
 
 # !!! These lines have no effect -> bug #1553147 !!!
 # Need to set keyboard layout by late_command ...
