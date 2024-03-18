@@ -40,12 +40,29 @@ if [ -e /usr/bin/apt-get ] ; then
       sddm
       wireshark
    "
+
+   # ------ Add Firefox package ---------------------------------------------
    if [ -e /etc/os-release ] ; then
       . /etc/os-release
       if [ "${ID}" == "debian" ] ; then
+         # Debian: firefox-esr instead of firefox!
          packages="${packages} firefox-esr"
       else
          packages="${packages} firefox"
+      fi
+
+      # ------ Ubuntu: Get Firefox from PPA, not via Snap -------------------
+      if [ "${ID}" == "ubuntu" ] ; then
+         # shellcheck disable=SC2072
+         if [[ "${VERSION_ID}" > "21.10" ]] ; then
+            cat >/etc/apt/preferences.d/firefox.pref <<EOF
+# Use Firefox from PPA, instead of installing it via Snap!
+Package: firefox
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1024
+EOF
+            sudo add-apt-repository -sy ppa:mozillateam/ppa
+         fi
       fi
    fi
 
