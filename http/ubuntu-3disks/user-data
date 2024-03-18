@@ -36,7 +36,7 @@ autoinstall:
 
   # ###### Locale and Keyboard Configuration ################################
   # Using Irish locale (€, metric units, etc.), but late-commands sets British
-  # time format (24-hour clock). Also install locales for NO, DE, CN:
+  # time format (24-hour clock). Other locales are added in late-command!
   locale: en_IE.UTF-8
   keyboard:
     layout: <SET_XKBLAYOUT_HERE>
@@ -216,7 +216,7 @@ autoinstall:
     - if [ -e /dev/<SET_DISK_PREFIX_HERE>b ] ; then sgdisk --change-name=1:Home /dev/<SET_DISK_PREFIX_HERE>b ; fi
     - if [ -e /dev/<SET_DISK_PREFIX_HERE>c ] ; then sgdisk --change-name=1:Swap --typecode=1:8200 /dev/<SET_DISK_PREFIX_HERE>c ; fi
     # ====== Generate additional locales ====================================
-    - chroot /target locale-gen en_US.UTF-8 en_IE.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
+    - chroot /target locale-gen --keep-existing en_US.UTF-8 en_IE.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 nn_NO.UTF-8 de_AT.UTF-8 de_DE.UTF-8 de_CH.UTF-8 zh_CN.UTF-8
     # ====== BTRFS subvolume setup ==========================================
     - |
       set -ex
