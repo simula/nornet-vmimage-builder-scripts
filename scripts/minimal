@@ -36,8 +36,11 @@ set -e
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
+   echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
+
    # Just ensure the package database is up-to-date
    /usr/bin/apt-get update
+
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then

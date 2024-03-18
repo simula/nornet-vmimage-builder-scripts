@@ -54,6 +54,7 @@ DIRECTORIES="
 APPLICATIONS="
    dia
    firefox
+   firefox-esr
    fractgen
    gimp
    libreoffice-startcenter
