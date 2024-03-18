@@ -22,6 +22,23 @@
 set -ex
 
 
+# ###########################################################################
+# The "KDE" installation must contain the following packages:
+# - The KDE Plasma Desktop with Oxygen theme and SDDM
+# - Dia
+# - Firefox
+# - FractGen
+# - LibreOffice
+# - Gimp
+# - Kate
+# - Kile
+# - Konsole
+# - Okular
+# - R
+# - Wireshark
+# ###########################################################################
+
+
 # ====== NorNet Desktop package installation ================================
 
 # ------ Ubuntu -------------------------------------------------------------
@@ -30,6 +47,7 @@ if [ -e /usr/bin/apt-get ] ; then
    packages="
       dia
       fractgen
+      kde-plasma-desktop
       gimp
       kate
       kile
@@ -41,9 +59,18 @@ if [ -e /usr/bin/apt-get ] ; then
       wireshark
    "
 
-   # ------ Add Firefox package ---------------------------------------------
    if [ -e /etc/os-release ] ; then
       . /etc/os-release
+
+      # ------ Distribution-specific KDE meta package -----------------------
+      # if [ "${ID}" == "debian" ] ; then
+      #    # See also: https://wiki.debian.org/KDE
+      #    packages="${packages} kde-standard"
+      # else
+      #    packages="${packages} kubuntu-desktop"
+      # fi
+
+      # ------ Add Firefox package ------------------------------------------
       if [ "${ID}" == "debian" ] ; then
          # Debian: firefox-esr instead of firefox!
          packages="${packages} firefox-esr"
