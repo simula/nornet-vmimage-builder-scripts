@@ -37,6 +37,7 @@ set -e
 # - HiPerConTracer
 # - HTop (process monitor)
 # - Joe (editor)
+# - JQ (JSON editing tool)
 # - NetPerfMeter (network performance metering tool)
 # - PLocate ("locate" command for finding files)
 # - Python (Python 3 interpreter)
@@ -88,6 +89,7 @@ if [ -e /usr/bin/apt-get ] ; then
       htop
       iputils-ping
       joe
+      jq
       libtool-bin
       make
       netperfmeter
@@ -125,6 +127,7 @@ elif [ -e /usr/bin/dnf ] ; then
       htop
       iputils
       joe
+      jq
       libtool
       make
       netperfmeter
@@ -161,6 +164,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       hipercontracer
       htop
       joe
+      jq
       libtool
       netperfmeter
       plocate
