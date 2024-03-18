@@ -1,9 +1,21 @@
-#!/bin/sh
+#!/bin/bash
 
+set -ex
+
+
+if [ $# -lt 1 ] ; then
+   echo >&2 "Usage: $0 vm_address"
+   exit 1
+fi
+address="$1"
+
+ssh-copy-id nornetpp@${address}
+ssh -t nornetpp@${address} '
 if [ ! -d ~/src/vmimage-builder-scripts ] ; then
    git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts ~/src/vmimage-builder-scripts
    cd ~/src/vmimage-builder-scripts
    git config pull.rebase true
+   git checkout dreibh/freebsd
 fi
 if [ ! -e ~/.gitconfig ] ; then
    cat >~/.gitconfig <<EOF
@@ -13,6 +25,9 @@ if [ ! -e ~/.gitconfig ] ; then
 [push]
         default = simple
 [color]
-        ui = auto   
+        ui = auto
 EOF
 fi
+'
+
+ssh nornetpp@${address}
