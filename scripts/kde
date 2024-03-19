@@ -48,14 +48,17 @@ if [ -e /usr/bin/apt-get ] ; then
       dia
       fractgen
       kde-plasma-desktop
+      kde-style-oxygen-qt5
       gimp
       kate
       kile
       konsole
       libreoffice
       okular
+      oxygen-icon-theme
       plasma-theme-oxygen
       sddm
+      sddm-theme-breeze
       wireshark
    "
 
@@ -98,7 +101,32 @@ EOF
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
-   /usr/bin/dnf install -y sddm @KDE qt5-style-oxygen oxygen-gtk2 plasma-oxygen oxygen-icon-theme oxygen-cursor-themes oxygen-sound-theme oxygen-fonts firefox
+
+   packages="
+      dia
+      firefox
+      fractgen
+      gimp
+      kate
+      @KDE
+      kile
+      konsole
+      libreoffice
+      okular
+      oxygen-fonts
+      oxygen-icon-theme
+      plasma-oxygen
+      qt5-style-oxygen
+      wireshark
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y ${packages}
+
+   # FIXME!
+   # 2024/03: Wayland is still completely unusable in VirtualBox!
+   # SDDM on Wayland just produces a black screen -> use X11 instead!
+   /usr/bin/dnf install -y sddm-x11 --allowerasing
 
    systemctl enable sddm.service
    systemctl start sddm.service
@@ -106,11 +134,29 @@ elif [ -e /usr/bin/dnf ] ; then
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
-   /usr/sbin/pkg install -y firefox-esr jq kde5 noto oxygen-fonts plasma5-oxygen plasma5-sddm-kcm sddm xf86-video-vmware xorg
+
+   packages="
+      dia
+      firefox-esr
+      fractgen
+      gimp
+      kde5
+      kile
+      libreoffice
+      noto
+      oxygen-fonts
+      plasma5-oxygen
+      plasma5-sddm-kcm
+      R
+      sddm
+      wireshark
+      xf86-video-vmware
+      xorg
+   "
+
+   # shellcheck disable=SC2086
+   /usr/sbin/pkg install -y ${packages}
 
    sysrc dbus_enable="YES" ; service dbus start || true
    sysrc sddm_enable="YES" ; service sddm start || true
-
-
-   /usr/sbin/pkg install -y R dia fractgen gimp kile libreoffice wireshark
 fi
