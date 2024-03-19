@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -e
+
+# Debian Images Key: https://keyring.debian.org/
+gpg --quiet --keyserver hkp://keyring.debian.org --recv-keys 0xDF9B9C49EAA9298432589D76DA87E80D6294BE9B
+
+
+
+function output ()
+{
+   echo -en "\x1b[34m"
+   echo "${system} ${latestMajor}.${latestMinor}:"
+   echo "   * URL: ${latestURL}"
+   echo "   * Checksum: ${algorithm}:${latestChecksum}"
+   echo -en "\x1b[0m"
+}
+
+
+
+major=10
+minor=13
+
+latestLocation=""
+latestChecksum=""
+latestMajor=""
+latestMinor=""
+
+while [ true ] ; do
+
+   system="Debian"
+   location1="https://cdimage.debian.org/cdimage/archive/${major}.${minor}.0/amd64/iso-cd"
+   location2="https://cdimage.debian.org/cdimage/release/${major}.${minor}.0/amd64/iso-cd"
+   iso="debian-${major}.${minor}.0-amd64-netinst.iso"
+   algorithm="sha512"
+   checksums="SHA512SUMS"
+   signature="SHA512SUMS.sign"
+
+
+   echo "Checking $major.$minor ..."
+   location=""
+   if wget -q "${location1}/${checksums}" -O "${checksums}" ; then
+      location="${location1}"
+   elif wget -q "${location2}/${checksums}" -O "${checksums}" ; then
+      location="${location2}"
+   fi
+   if [ "${location}" != "" ] ; then
+      if wget -q "${location}/${signature}" -O "${signature}" ; then
+         if gpg --verify "${signature}" "${checksums}" ; then
+
+            latestURL="${location}/${iso}"
+            latestChecksum="$(grep "${iso}$" "${checksums}" | cut -d' ' -f1)"
+            latestMajor=${major}
+            latestMinor=${minor}
+
+            let minor=$((minor+1))
+         else
+            break
+         fi
+      else
+         break
+      fi
+   else
+      if [ ${minor} -gt 0 ] ; then
+         output
+      else
+         break
+      fi
+      major=$((major+1))
+      minor=0
+   fi
+
+ done
