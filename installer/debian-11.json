@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/11.8.0/amd64/iso-cd/debian-11.8.0-amd64-netinst.iso",
-  "iso_checksum": "sha256:d7a74813a734083df30c8d35784926deaa36bc41e5c0766388e9f591ab056b72",
+  "iso_url": "https://cdimage.debian.org/cdimage/archive/11.9.0/amd64/iso-cd/debian-11.9.0-amd64-netinst.iso",
+  "iso_checksum": "sha512:0194bd9b7476f26bc59569fe6439cb046ed747a47632fb5324cc3c294b8231b53e497ac6e216cef581b44dcfad8a76da4bd860f0d930cebe06ad2995b3cb812c",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
