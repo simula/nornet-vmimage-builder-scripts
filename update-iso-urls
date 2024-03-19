@@ -39,6 +39,16 @@ function output ()
    fi
    echo "   * Checksum: ${algorithm}:${latestChecksum}"
    echo -en "\x1b[0m"
+
+   if [ "${system}" == "FreeBSD" ] ; then
+      systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}-${variant}.json"
+   else
+      systemJSON="installer/${system,,}-${latestMajor}.json"
+   fi
+   if [ ! -e "${systemJSON}" ] ; then
+      echo >&2 "ERROR: No JSON ${systemJSON} for ${system} ${latestMajor}.${latestMinor}!"
+      exit 1
+   fi
 }
 
 
@@ -109,6 +119,7 @@ function find-isos ()
 # ###### Find Debian ISOs ###################################################
 function find-debian-isos ()
 {
+   system="Debian"
    major=10
    minor=13
    latestURL=""
@@ -116,14 +127,13 @@ function find-debian-isos ()
    latestMajor=""
    latestMinor=""
    while true ; do
-      system="Debian"
       location1="https://cdimage.debian.org/cdimage/archive/${major}.${minor}.0/amd64/iso-cd"
       location2="https://cdimage.debian.org/cdimage/release/${major}.${minor}.0/amd64/iso-cd"
       iso1="debian-${major}.${minor}.0-amd64-netinst.iso"
       algorithm="sha512"
       checksums="SHA512SUMS"
       signature="SHA512SUMS.sign"
-      find-isos
+      find-isos || return 0
     done
 }
 
@@ -131,6 +141,7 @@ function find-debian-isos ()
 # ###### Find Ubuntu ISOs ###################################################
 function find-ubuntu-isos ()
 {
+   system="Ubuntu"
    major=20.04
    minor=6
    latestURL=""
@@ -138,14 +149,13 @@ function find-ubuntu-isos ()
    latestMajor=""
    latestMinor=""
    while true ; do
-      system="Ubuntu"
       location1="https://releases.ubuntu.com/${major}.${minor}"
       location2="https://old-releases.ubuntu.com/releases/${major}.${minor}"
       iso1="ubuntu-${major}.${minor}-live-server-amd64.iso"
       algorithm="sha256"
       checksums="SHA256SUMS"
       signature="SHA256SUMS.gpg"
-      find-isos
+      find-isos || return 0
     done
 }
 
@@ -153,6 +163,7 @@ function find-ubuntu-isos ()
 # ###### Find Fedora ISOs ###################################################
 function find-fedora-isos ()
 {
+   system="Fedora"
    major=38
    latestURL=""
    latestChecksum=""
@@ -175,7 +186,7 @@ function find-fedora-isos ()
 
          output
       else
-         return 1
+         return 0
       fi
 
       major=$((major+1))
@@ -186,6 +197,7 @@ function find-fedora-isos ()
 # ###### Find FreeBSD ISOs ##################################################
 function find-freebsd-isos ()
 {
+   system="FreeBSD"
    major=13
    minor=3
    variant="$1"
@@ -194,14 +206,13 @@ function find-freebsd-isos ()
    latestMajor=""
    latestMinor=""
    while true ; do
-      system="FreeBSD"
       location1="https://download.freebsd.org/ftp/releases/ISO-IMAGES/${major}.${minor}"
       location2=""
       iso1="FreeBSD-${major}.${minor}-${variant}-amd64-disc1.iso"
       algorithm="sha512"
       checksums="CHECKSUM.SHA512-FreeBSD-${major}.${minor}-${variant}-amd64"
       signature=""
-      find-isos
+      find-isos || return 0
     done
 }
 
@@ -212,4 +223,3 @@ find-ubuntu-isos
 find-debian-isos
 find-freebsd-isos RELEASE
 find-fedora-isos
-
