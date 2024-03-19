@@ -3,7 +3,10 @@
 set -e
 
 # Debian Images Key: https://keyring.debian.org/
-gpg --quiet --keyserver hkp://keyring.debian.org --recv-keys 0xDF9B9C49EAA9298432589D76DA87E80D6294BE9B
+# gpg --quiet --keyserver hkp://keyring.debian.org --recv-keys 0xDF9B9C49EAA9298432589D76DA87E80D6294BE9B
+
+# Fedora Image Keys:
+# curl https://fedoraproject.org/fedora.gpg | gpg --import
 
 
 
@@ -11,9 +14,9 @@ function output ()
 {
    echo -en "\x1b[34m"
    echo "${system} ${latestMajor}.${latestMinor}:"
-   echo "   * URL: ${latestURL}"
+   echo -n "   * URL: ${latestURL}"
    if curl --silent --head --max-redirs 3 "${latestURL}" >/dev/null ; then
-      echo "     URL OKAY!"
+      echo "   OK!"
    fi
    echo "   * Checksum: ${algorithm}:${latestChecksum}"
    echo -en "\x1b[0m"
@@ -34,9 +37,7 @@ function find-isos ()
       location="${location2}"
    elif [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
       if [ "${minor}" -eq 0 ] ; then
-         echo "L=$location2"
          l=$(echo "${location2}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
-         echo "L=$l"
          if wget -q "${l}/${checksums}" -O "${checksums}" ; then
             location="${l}"
             iso=$(echo "${iso1}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
@@ -134,33 +135,28 @@ function find-ubuntu-isos ()
 function find-fedora-isos ()
 {
    major=38
+   while [ true ] ; do
+      location="https://mirrors.xtom.de/fedora/releases/${major}/Server/x86_64/iso"
+      isoPattern="Fedora-Server-netinst-x86_64-${major}-.*\.iso"
 
-   location="https://mirrors.xtom.de/fedora/releases/${major}/Server/x86_64/iso"
+      rm -rf "F${major}"
+      if wget --quiet -P "F${major}" --recursive --no-parent --level 1 --accept-regex '.*-CHECKSUM$' "${location}" ; then
+         checksums="$(find "F${major}" -name "*-CHECKSUM" | head -n1)"
+         gpg --verify "${checksums}"
 
+         latestMajor=${major}
+         latestMinor=""
+         iso="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e "s/.*(\(.*\)) = .*/\1/g")"
+         latestURL="${location}/${iso}"
+         latestChecksum="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e 's/^.* = //g')"
 
-   rm -rf "F${major}"
-   wget -P "F${major}" --recursive --no-parent --level 1 --accept-regex '.*-CHECKSUM$' "${location}"
+         output
+      else
+         return 1
+      fi
 
-   checksums="$(find "F${major}" -name "*-CHECKSUM" | head -n1)"
-
-   gpg --verify "$(checksums)"
-
-#    minor=0
-#    latestLocation=""
-#    latestChecksum=""
-#    latestMajor=""
-#    latestMinor=""
-#    while [ true ] ; do
-#       system="Ubuntu"
-#       location1="https://mirrors.xtom.de/fedora/releases/${major}/Server/x86_64/iso"
-#       https://mirrors.xtom.de/fedora/releases/39/Server/x86_64/iso/Fedora-Server-39-1.5-x86_64-CHECKSUM
-#       location2="""
-#       iso1="ubuntu-${major}.${minor}-live-server-amd64.iso"
-#       algorithm="sha256"
-#       checksums="SHA256SUMS"
-#       signature="SHA256SUMS.gpg"
-#       find-isos
-#     done
+      major=$((major+1))
+   done
 }
 
 
