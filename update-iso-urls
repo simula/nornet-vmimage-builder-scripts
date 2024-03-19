@@ -37,7 +37,7 @@ function process-result ()
    if curl --silent --head --max-redirs 3 "${latestURL}" >/dev/null ; then
       echo "   OK!"
    fi
-   echo "   * Checksum: <${algorithm}:${latestChecksum}"
+   echo "   * Checksum: ${algorithm}:${latestChecksum}"
    echo -en "\x1b[0m"
 
    if [ "${system}" == "FreeBSD" ] ; then
@@ -52,9 +52,11 @@ function process-result ()
 
 
    sed -e  "s@\(\"iso_url\": \"\)\([^\"]*\)@\\1${latestURL}@g" \
-       -e  "s@\(\"iso_checksum\": \"\)\([^\"]*\)@\\1${latestChecksum}@g" \
+       -e  "s@\(\"iso_checksum\": \"\)\([^\"]*\)@\\1${algorithm}:${latestChecksum}@g" \
        <"${systemJSON}" >"${systemJSON}.updated"
-   diff --color "${systemJSON}" "${systemJSON}.updated" || true
+   if diff --color "${systemJSON}" "${systemJSON}.updated" ; then
+      mv "${systemJSON}.updated" "${systemJSON}"
+   fi
 }
 
 
@@ -63,6 +65,7 @@ function find-isos ()
 {
    echo "Checking for $major.$minor ..."
 
+   # ====== Look for checksums file =========================================
    location=""
    iso="${iso1}"
    rm -f "${checksums}"
@@ -79,7 +82,11 @@ function find-isos ()
          fi
       fi
    fi
+
+   # ====== There is a checksums file =======================================
    if [ "${location}" != "" ] ; then
+
+      # ====== Look for signatures file =====================================
       if [ "${signature}" != "" ] ; then
          rm -f "${signature}"
          if wget -q "${location}/${signature}" -O "${signature}" ; then
@@ -93,6 +100,7 @@ function find-isos ()
          fi
       fi
 
+      # ====== Get ISO checksum =============================================
       latestURL="${location}/${iso}"
       if [[ "${checksums}" =~ FreeBSD ]] ; then
          latestChecksum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
@@ -103,7 +111,13 @@ function find-isos ()
       latestMinor=${minor}
       rm -f "${checksums}" "${signature}"
 
+      # ====== Increment minor version ======================================
       minor=$((minor+1))
+      if [ "${system}" == "Debian" ] && [ "${major}.${minor}" == "12.3" ] ; then
+         minor=4   # Fix: Debian 12.3 does not exist!
+      fi
+
+   # ====== No checksums file => try next major version =====================
    else
       rm -f "${checksums}"
       if [ ${minor} -gt 0 ] ; then
@@ -231,7 +245,7 @@ function find-freebsd-isos ()
 
 
 # ###### Main program #######################################################
-find-ubuntu-isos
 find-debian-isos
+find-ubuntu-isos
 find-fedora-isos
 find-freebsd-isos RELEASE
