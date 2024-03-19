@@ -28,8 +28,8 @@ set -e
 # curl https://fedoraproject.org/fedora.gpg | gpg --import
 
 
-
-function output ()
+# ###### Process result #####################################################
+function process-result ()
 {
    echo -en "\x1b[34m"
    echo "${system} ${latestMajor}.${latestMinor}:"
@@ -37,7 +37,7 @@ function output ()
    if curl --silent --head --max-redirs 3 "${latestURL}" >/dev/null ; then
       echo "   OK!"
    fi
-   echo "   * Checksum: ${algorithm}:${latestChecksum}"
+   echo "   * Checksum: <${algorithm}:${latestChecksum}"
    echo -en "\x1b[0m"
 
    if [ "${system}" == "FreeBSD" ] ; then
@@ -49,6 +49,12 @@ function output ()
       echo >&2 "ERROR: No JSON ${systemJSON} for ${system} ${latestMajor}.${latestMinor}!"
       exit 1
    fi
+
+
+   sed -e  "s@\(\"iso_url\": \"\)\([^\"]*\)@\\1${latestURL}@g" \
+       -e  "s@\(\"iso_checksum\": \"\)\([^\"]*\)@\\1${latestChecksum}@g" \
+       <"${systemJSON}" >"${systemJSON}.updated"
+   diff --color "${systemJSON}" "${systemJSON}.updated" || true
 }
 
 
@@ -78,26 +84,30 @@ function find-isos ()
          rm -f "${signature}"
          if wget -q "${location}/${signature}" -O "${signature}" ; then
             if ! gpg --verify "${signature}" "${checksums}" ; then
+               rm -f "${checksums}" "${signature}"
                return 1
             fi
          else
+            rm -f "${checksums}" "${signature}"
             return 1
          fi
       fi
 
       latestURL="${location}/${iso}"
       if [[ "${checksums}" =~ FreeBSD ]] ; then
-         latestChecksum="$(grep "${iso}" "${checksums}" | sed -e 's/^.* = //g')"
+         latestChecksum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
       else
          latestChecksum="$(grep "${iso}$" "${checksums}" | cut -d' ' -f1)"
       fi
       latestMajor=${major}
       latestMinor=${minor}
+      rm -f "${checksums}" "${signature}"
 
       minor=$((minor+1))
    else
+      rm -f "${checksums}"
       if [ ${minor} -gt 0 ] ; then
-         output
+         process-result
       else
          return 1
       fi
@@ -184,8 +194,10 @@ function find-fedora-isos ()
          latestURL="${location}/${iso}"
          latestChecksum="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e 's/^.* = //g')"
 
-         output
+         process-result
+         rm -rf "F${major}"
       else
+         rm -rf "F${major}"
          return 0
       fi
 
@@ -221,5 +233,5 @@ function find-freebsd-isos ()
 # ###### Main program #######################################################
 find-ubuntu-isos
 find-debian-isos
-find-freebsd-isos RELEASE
 find-fedora-isos
+find-freebsd-isos RELEASE
