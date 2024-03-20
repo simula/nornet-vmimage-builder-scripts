@@ -39,6 +39,7 @@ set -e
 # - Joe (editor)
 # - JQ (JSON editing tool)
 # - NetPerfMeter (network performance metering tool)
+# - NetPlan (network configuration; on Linux systems only!)
 # - PLocate ("locate" command for finding files)
 # - Python (Python 3 interpreter)
 # - PwGen (password generator)
@@ -94,6 +95,7 @@ if [ -e /usr/bin/apt-get ] ; then
       libtool-bin
       make
       netperfmeter
+      netplan.io
       net-tools
       pwgen
       python3
