@@ -23,11 +23,10 @@ set -e
 
 
 # ###########################################################################
-# The Minimal installation only contains the default packages of the
-# distribution's installer, as well as tools needed for the basic system
-# installation:
-# - Ping (network connectivity check)
-# - cURL (download tool)
+# The "Development" installation is based on the "Basic" installation. It
+# must contain the following packages:
+# - GraphicsMagick (image conversion)
+# - Valgrind (debugging tool)
 # ###########################################################################
 
 
@@ -36,30 +35,44 @@ set -e
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
-   echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
+   packages="
+      graphicsmagick
+      valgrind
+   "
 
-   # Just ensure the package database is up-to-date
-   /usr/bin/apt-get update
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
 
-   # Nothing to do here!
-   true
+   packages="
+      GraphicsMagick
+      valgrind
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y sddm ${packages}
+
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-   # Nothing to do here!
-   true
+   packages="
+      graphicsmagick
+      valgrind
+   "
 
+   # shellcheck disable=SC2086
+   /usr/sbin/pkg install -y ${packages}
 fi
 
 
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in ping curl ; do
+for command in gm valgrind ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
