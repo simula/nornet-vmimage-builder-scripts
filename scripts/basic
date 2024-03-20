@@ -23,12 +23,14 @@ set -e
 
 
 # ###########################################################################
-# The "Basic" installation must contain the following packages:
+# The "Basic" installation is based on the "Minimal" installation. It must
+# contain the following packages:
 # - Autoconf/Automake/Libtool (basic build tools)
 # - Base64 (base64 tool)
 # - Ping, Traceroute, ifconfig (basic networking tools)
 # - BWM-NG (simple bandwidth monitor)
 # - cURL (download tool)
+# - Fail2Ban (prevent brute-force SSH attacks)
 # - GDisk (GPT partitioning tool)
 # - Git (revision management)
 # - GNU gcc/g++, GNU Make (GNU C/C++ compilers and make tool)
@@ -64,7 +66,7 @@ if [ -e /usr/bin/apt-get ] ; then
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y wget
          cd /tmp
          wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" | xargs env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y
+         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y
       fi
    fi
    # ------------------------------------------------------------------------
@@ -81,6 +83,7 @@ if [ -e /usr/bin/apt-get ] ; then
       bwm-ng
       cmake
       curl
+      fail2ban
       g++
       gcc
       gdisk
@@ -121,6 +124,7 @@ elif [ -e /usr/bin/dnf ] ; then
       bwm-ng
       cmake
       curl
+      fail2ban
       g++
       gcc
       gdisk
@@ -153,8 +157,10 @@ elif [ -e /usr/bin/dnf ] ; then
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y sddm ${packages}
 
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
+
    packages="
       autoconf
       automake
@@ -175,6 +181,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       netperfmeter
       plocate
       python3
+      py39-fail2ban
       pwgen
       subnetcalc
       td-system-tools
@@ -192,7 +199,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe libtool make netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tree tshark virt-what wget ; do
+for command in autoconf automake base64 bwm-ng cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe jq libtool make netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tree tshark virt-what wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
