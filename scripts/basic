@@ -94,6 +94,8 @@ if [ -e /usr/bin/apt-get ] ; then
       libtool-bin
       make
       netperfmeter
+      netplan
+      netplan-default-backend-networkd
       net-tools
       pwgen
       python3
