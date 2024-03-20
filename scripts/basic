@@ -135,10 +135,12 @@ elif [ -e /usr/bin/dnf ] ; then
       libtool
       make
       netperfmeter
+      netplan
+      netplan-default-backend-networkd
       net-tools
       plocate
-      python3
       pwgen
+      python3
       subnetcalc
       td-system-tools
       traceroute
