@@ -55,6 +55,7 @@ USER_NAME="nornetpp"
 USER_REALNAME="NorNet Praesum Presum"
 USER_PASSWORD="!NorNetInst!"
 
+BOOTSPLASH="/usr/share/bootsplash/Splash-Gressholmen-3840x2160-plain.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
@@ -248,6 +249,9 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--password" ] || [ "$1" == "-p" ] ; then
       USER_PASSWORD="$2"
+      shift
+   elif [ "$1" == "--bootsplash" ] || [ "$1" == "-BB" ] ; then
+      BOOTSPLASH="$2"
       shift
    elif [ "$1" == "--background-sddm" ] || [ "$1" == "-BS" ] ; then
       BACKGROUND_SDDM="$2"
@@ -580,14 +584,19 @@ for provisioner in ${PROVISIONERS} ; do
    found=0
 
    # ------ File provisioner ------------------------------------------------
-   if [ -e files/"${provisioner}" ] ; then
+   if [ -e "files/${provisioner}" ] ; then
       found=1
 
       while read -r s destination ; do
-         if [[ ! "${s}" =~ ^([ \t]*#) ]] ; then
+         if [ "${s}" != "" ] && [[ ! "${s}" =~ ^# ]] ; then
             source="$(realpath files/"${s}")"
             if [ ! -e "${source}" ] ; then
-               echo >&2 "ERROR: Cannot find source file ${source}!"
+               echo >&2 "ERROR: Cannot find source file ${source} in files/${provisioner}!"
+               exit 1
+            fi
+
+            if [ "${destination}" == "" ] ; then
+               echo >&2 "ERROR: Destination has to be provided in files/${provisioner}!"
                exit 1
             fi
 
@@ -604,7 +613,7 @@ for provisioner in ${PROVISIONERS} ; do
 EOF
 
          fi
-      done <files/"${provisioner}"
+      done <"files/${provisioner}"
    fi
 
    # ------ Script provisioner ----------------------------------------------
@@ -627,6 +636,7 @@ EOF
                                "FQDN=${FQDN}",
                                "USER_NAME=${USER_NAME}",
                                "USER_REALNAME=${USER_REALNAME}",
+                               "BOOTSPLASH=${BOOTSPLASH}",
                                "BACKGROUND_SDDM=${BACKGROUND_SDDM}",
                                "BACKGROUND_LOCKSCREEN=${BACKGROUND_LOCKSCREEN}",
                                "BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}" ]
@@ -711,6 +721,10 @@ if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
    echo " - VM_DISK_SWAP=${VM_DISK_SWAP} (MiB)"
 fi
 echo " - VIDEO=${VIDEO}"
+echo " - BOOTSPLASH=${BOOTSPLASH}"
+echo " - BACKGROUND_SDDM=${BACKGROUND_SDDM}"
+echo " - BACKGROUND_LOCKSCREEN=${BACKGROUND_LOCKSCREEN}"
+echo " - BACKGROUND_DESKTOP=${BACKGROUND_DESKTOP}"
 echo " - XKBMODEL=${XKBMODEL}"
 echo " - XKBLAYOUT=${XKBLAYOUT}"
 echo " - XKBVARIANT=${XKBVARIANT}"
@@ -810,12 +824,12 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
 (
    echo "TIMESTAMP=$(env LANG=C date +"%Y/%m/%d-%H:%M:%S")"
    if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
-      echo "RESULT=$(realpath --relative-to=. "${OUTPUT_DIRECTORY}"/"${NAME}"/"${NAME}"/"${vm_name}".ova)"
+      echo "RESULT=$(realpath --relative-to=. "${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}.ova")"
    elif [ "${HYPERVISOR}" == "QEMU" ] ; then
       # Rename QEMU image to have qcow2 extension!
-      mv "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}" "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}".qcow2
+      mv "${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}" "${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}".qcow2
       # Create a compressed version as well:
-      nice xz -T0 -k "${OUTPUT_DIRECTORY}"/"${NAME}"/"${vm_name}"/"${vm_name}".qcow2
+      nice xz -T0 -k "${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}".qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
    elif [ "${HYPERVISOR}" == "vSphere" ] ; then
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
