@@ -34,27 +34,35 @@ if [ "${UNAME}" == "Linux" ] ; then
       # ------ VirtualBox ---------------------------------------------------
       if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
          # NOTE: virtualbox-guest-dkms is obsolete now!
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
             virtualbox-guest-utils || true
          if [ -e /usr/lib/systemd/system/sddm.service ] ; then
             # System has X11 -> also install X11 utilities as well:
-            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
                virtualbox-guest-x11 || true
          fi
       # ------ vSphere ------------------------------------------------------
       elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
             open-vm-tools
          if [ -e /usr/lib/systemd/system/sddm.service ] ; then
             # System has X11 -> also install X11 utilities as well:
-            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
                open-vm-tools-desktop || true
          fi
       # ------ QEMU ---------------------------------------------------------
       elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
             qemu-guest-agent
       fi
+
+      # ------ Not in QEMU -> remove qemu-guest-agent -----------------------
+      if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+         # NOTE: qemu-guest-agent may have been installed as part of th
+         #       initial setup, since e.g. the Proxmox builder may expect it!
+         /usr/bin/apt-get autoremove -y --purge qemu-guest-agent
+      fi
+
 
    # ====== Fedora Linux ====================================================
    elif [ -e /usr/bin/dnf ] ; then
@@ -71,9 +79,16 @@ if [ "${UNAME}" == "Linux" ] ; then
          fi
       # ------ QEMU ---------------------------------------------------------
       elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
-            qemu-guest-agent
+         /usr/bin/dnf install -y  qemu-guest-agent
       fi
+
+      # ------ Not in QEMU -> remove qemu-guest-agent -----------------------
+      if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+         # NOTE: qemu-guest-agent may have been installed as part of th
+         #       initial setup, since e.g. the Proxmox builder may expect it!
+         /usr/bin/dnf remove -y qemu-guest-agent
+      fi
+
    fi
 
    # ====== Fix for multipathd error messages ===============================
@@ -105,6 +120,14 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
       /usr/sbin/pkg install -y qemu-guest-agent
       sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of th
+      #       initial setup, since e.g. the Proxmox builder may expect it!
+      /usr/sbin/pkg remove -y qemu-guest-agent
+      sysrc qemu_guest_agent_enable="NO"
    fi
 
 fi

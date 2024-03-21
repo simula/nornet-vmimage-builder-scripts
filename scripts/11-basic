@@ -54,7 +54,7 @@ set -e
 # ###########################################################################
 
 
-# ====== Basic package installation =========================================
+# ====== Package installation ===============================================
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
@@ -193,6 +193,7 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+
 fi
 
 

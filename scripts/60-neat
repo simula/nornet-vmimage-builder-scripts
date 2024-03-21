@@ -19,15 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -e
-
-
-# ###########################################################################
-# The "Development" installation is based on the "Basic" installation. It
-# must contain the following packages:
-# - GraphicsMagick (image conversion)
-# - Valgrind (debugging tool)
-# ###########################################################################
+set -ex
 
 
 # ====== Package installation ===============================================
@@ -36,30 +28,20 @@ set -e
 if [ -e /usr/bin/apt-get ] ; then
 
    packages="
-      graphicsmagick
-      valgrind
+      neat-stuff-desktop
+      neat-stuff-development
    "
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
-
-   for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
-      grep "^deb \(.*\)$" "${list}" | \
-         sed -e "s/deb[ \t]*//g" | \
-         xargs -n1 -I§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >"${list}".sed
-      sed -f "${list}".sed <"${list}" >"${list}".new
-      diff "${list}" "${list}".new || true
-      mv "${list}".new "${list}"
-      rm -f "${list}".sed
-   done
 
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
-      GraphicsMagick
-      valgrind
+      neat-stuff-desktop
+      neat-stuff-development
    "
 
    # shellcheck disable=SC2086
@@ -69,30 +51,7 @@ elif [ -e /usr/bin/dnf ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-   packages="
-      graphicsmagick
-      valgrind
-   "
+   # TBD!
+   true
 
-   # shellcheck disable=SC2086
-   /usr/sbin/pkg install -y ${packages}
-
-fi
-
-
-# ====== Verify command availability ========================================
-echo "Verifying command availability:"
-errors=0
-for command in gm valgrind ; do
-   echo -n "${command}: "
-   if which ${command} >/dev/null ; then
-      echo "OK"
-   else
-      echo "FAILED!"
-      errors=$((errors+1))
-   fi
-done
-if [ ${errors} -gt 0 ] ; then
-   echo "ERROR: ${errors} packages are missing!"
-   exit 1
 fi

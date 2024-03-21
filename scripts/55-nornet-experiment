@@ -22,34 +22,52 @@
 set -ex
 
 
-UNAME="`uname`"
+UNAME="$(uname)"
 
 
-# ====== NorNet configuration ===============================================
+# ====== Experiment user configuration ======================================
 if [ "${UNAME}" == "Linux" ] ; then
 
    # Create experiment user:
    adduser experiment --disabled-password --gecos "NorNet Experiment User"
    usermod -a -G adm,sudo experiment
 
-   # ------ Ubuntu ----------------------------------------------------------
-   if [ -e /usr/bin/apt-get ] ; then
-      /usr/bin/apt-get update
-
-      packages="nornet-node"
-
-      # Try 3 times, for the case of download issues:
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-         sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-            sleep 30 && env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
-
-   # ------ Fedora ----------------------------------------------------------
-   elif [ -e /usr/bin/dnf ] ; then
-      /usr/bin/dnf install -y nornet-node
-   fi
-
-
 elif [ "${UNAME}" == "FreeBSD" ] ; then
+
+   # TBD!
+   true
+
+fi
+
+
+# ====== Package installation ===============================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+
+   packages="
+      nornet-node
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+
+   packages="
+      nornet-node
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y ${packages}
+
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ -e /usr/sbin/pkg ] ; then
+
+   # TBD!
    true
 
 fi
