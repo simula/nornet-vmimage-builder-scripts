@@ -25,7 +25,6 @@ set -e
 # ###########################################################################
 # The "Basic" installation is based on the "Minimal" installation. It must
 # contain the following packages:
-# - Autoconf/Automake/Libtool (basic build tools)
 # - Base64 (base64 tool)
 # - Ping, Traceroute, ifconfig (basic networking tools)
 # - BWM-NG (simple bandwidth monitor)
@@ -34,7 +33,6 @@ set -e
 # - Fail2Ban (prevent brute-force SSH attacks)
 # - GDisk (GPT partitioning tool)
 # - Git (revision management)
-# - GNU gcc/g++, GNU Make (GNU C/C++ compilers and make tool)
 # - GnuPG (cryptography for signature checks)
 # - GNU Wget (download tool)
 # - HiPerConTracer
@@ -48,7 +46,7 @@ set -e
 # - Python (Python 3 interpreter)
 # - PwGen (password generator)
 # - SubNetCalc (address calculator)
-# - Sudo
+# - Sudo (privileged command execution)
 # - System-Tools (system information on login)
 # - T-Shark (CLI-version for Wireshark)
 # - Tree (tree view of directory hierachy)
@@ -80,15 +78,10 @@ if [ -e /usr/bin/apt-get ] ; then
 
    packages="
       apt-file
-      autoconf
-      automake
       bwm-ng
       bzip2
-      cmake
       curl
       fail2ban
-      g++
-      gcc
       gdisk
       git
       gpg
@@ -98,7 +91,6 @@ if [ -e /usr/bin/apt-get ] ; then
       iputils-ping
       joe
       jq
-      libtool-bin
       man
       make
       netperfmeter
@@ -123,14 +115,10 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
-      autoconf
-      automake
       bwm-ng
       cmake
       curl
       fail2ban
-      g++
-      gcc
       gdisk
       git
       gpg
@@ -140,7 +128,6 @@ elif [ -e /usr/bin/dnf ] ; then
       iputils
       joe
       jq
-      libtool
       make
       netperfmeter
       netplan
@@ -166,13 +153,10 @@ elif [ -e /usr/bin/dnf ] ; then
 elif [ -e /usr/sbin/pkg ] ; then
 
    packages="
-      autoconf
-      automake
       base64
       bwm-ng
       cmake
       curl
-      gcc
       gdisk
       git
       gmake
@@ -181,7 +165,6 @@ elif [ -e /usr/sbin/pkg ] ; then
       htop
       joe
       jq
-      libtool
       netperfmeter
       plocate
       python3
@@ -203,7 +186,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake base64 bwm-ng bzip2 cmake curl locate g++ gcc gdisk gpg hipercontracer htop ifconfig joe jq libtool make man netperfmeter ping pwgen python3 subnetcalc System-Info System-Maintenance traceroute tree tshark virt-what wget ; do
+for command in base64 bwm-ng bzip2 curl locate gdisk gpg hipercontracer htop ifconfig joe jq man netperfmeter ping pwgen python3 subnetcalc sudo System-Info System-Maintenance traceroute tree tshark virt-what wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"

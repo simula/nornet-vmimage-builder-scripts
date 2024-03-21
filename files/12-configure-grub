@@ -5,4 +5,4 @@ backgrounds/Output/Splash/Gressholmen-3840x2160.jpeg   /tmp/Splash-Gressholmen-3
 backgrounds/Output/Splash/Lindøya-3840x2160.jpeg       /tmp/Splash-Lindøya-3840x2160.jpeg
 backgrounds/Output/Splash/Nordmarka-3840x2160.jpeg     /tmp/Splash-Nordmarka-3840x2160.jpeg
 
-12-configure-grub.files/01_bootsplash.in               /tmp/
+12-configure-grub.files/06_aaaaa_bootsplash.in         /tmp/
