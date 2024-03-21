@@ -36,9 +36,23 @@ if [ "${UNAME}" == "Linux" ] ; then
       sudo mv "/tmp/$(basename "${BOOTSPLASH}")" "${dir}/"
    fi
 
+   loader=""
+   if [[ "${BOOTSPLASH}" =~ (\.[Jj][Pp][Ee][Gg]|\.[Jj][Pp][Ee][Gg])$ ]] ; then
+      loader="jpeg"
+   elif [[ "${BOOTSPLASH}" =~ (\.[Pp][Nn][Gg])$ ]] ; then
+      loader="png"
+   elif [[ "${BOOTSPLASH}" =~ (\.[Tt][Gg][Aa])$ ]] ; then
+      loader="tga"
+   else
+      echo >&2 "ERROR: Unknown bootsplash image format of ${BOOTSPLASH}!"
+      exit 1
+   fi
+
    # Set the background image as bootsplash:
    if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
-      sed -e "s/@SET_BOOTSPLASH_HERE@/${BOOTSPLASH}/g" </tmp/01_bootsplash.in >/etc/grub.d/01_bootsplash
+      sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
+          -e "s%@SET_LOADER_HERE@%${loader}%g" \
+          </tmp/01_bootsplash.in >/etc/grub.d/01_bootsplash
       chmod +x /etc/grub.d/01_bootsplash
       configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
 
