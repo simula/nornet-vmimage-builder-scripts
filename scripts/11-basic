@@ -40,6 +40,7 @@ set -e
 # - HTop (process monitor)
 # - Joe (editor)
 # - JQ (JSON editing tool)
+# - Manual page utilities (manual page viewer)
 # - NetPerfMeter (network performance metering tool)
 # - NetPlan (network configuration; on Linux systems only!)
 # - PLocate ("locate" command for finding files)
@@ -96,6 +97,7 @@ if [ -e /usr/bin/apt-get ] ; then
       joe
       jq
       libtool-bin
+      man
       make
       netperfmeter
       netplan.io
