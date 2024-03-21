@@ -52,8 +52,8 @@ if [ "${UNAME}" == "Linux" ] ; then
    if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
       sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
           -e "s%@SET_LOADER_HERE@%${loader}%g" \
-          </tmp/01_bootsplash.in >/etc/grub.d/01_bootsplash
-      chmod +x /etc/grub.d/01_bootsplash
+          </tmp/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
+      chmod +x /etc/grub.d/06_aaaaa_bootsplash
       configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
 
       if [ -x /usr/sbin/grub2-mkconfig ] ; then
