@@ -32,7 +32,7 @@ set -e
 
 # ====== Basic package installation =========================================
 
-# ------ Ubuntu -------------------------------------------------------------
+# ------ Ubuntu/Debian ------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
    packages="
@@ -41,7 +41,17 @@ if [ -e /usr/bin/apt-get ] ; then
    "
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+   for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
+      grep "^deb \(.*\)$" "${list}" | \
+         sed -e "s/deb[ \t]*//g" | \
+         xargs -n1 -i§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >${list}.sed
+      cat ${list} | sed -f ${list}.sed >${list}.new
+      diff ${list} ${list}.new || true
+      mv ${list}.new ${list}
+      rm -f ${list}.sed
+   done
 
 
 # ------ Fedora -------------------------------------------------------------

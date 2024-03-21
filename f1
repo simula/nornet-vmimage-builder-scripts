@@ -26,7 +26,7 @@ HYPERVISOR="VirtualBox"
 SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"   # FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Basic"   # "Minimal Basic KDE"
+PROJECTS="Basic KDE"   # "Minimal Basic KDE"
 # PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.simula.nornet"

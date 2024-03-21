@@ -29,6 +29,7 @@ UNAME="$(uname)"
 if [ "${UNAME}" == "Linux" ] ; then
    # ------ Ubuntu ----------------------------------------------------------
    if [ -x /usr/bin/apt-get ] ; then
+      /usr/bin/apt-get update
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge
       if [ -x /usr/bin/apt-file ] ; then
@@ -64,3 +65,11 @@ if [ "${UNAME}" == "Linux" ] ; then
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    sudo zpool trim zroot
 fi
+
+
+# ====== Run sync ===========================================================
+# Just to be sure all data is synced to disk.
+# FreeBSD in VirtualBox cannot be shut down cleanly, due a bug!
+sync
+sync
+sync

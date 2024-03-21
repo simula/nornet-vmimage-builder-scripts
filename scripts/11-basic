@@ -63,18 +63,18 @@ if [ -e /usr/bin/apt-get ] ; then
    if [ -e /etc/os-release ] ; then
       . /etc/os-release
       if [ "${ID}" == "debian" ] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y wget
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
          cd /tmp
          wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y
+         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
       fi
    fi
    # ------------------------------------------------------------------------
 
    # PLocate is the successor of findutils, both providing a "locate" command.
    # Try PLocate first, then findutils:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y plocate || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y findutils
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
 
    packages="
       apt-file
@@ -112,7 +112,7 @@ if [ -e /usr/bin/apt-get ] ; then
    "
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
 
 # ------ Fedora -------------------------------------------------------------
