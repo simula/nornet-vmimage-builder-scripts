@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+#
+# Caption Script
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# Example:
+# Make-Caption Caption.png Caption.input 1024 42 "Noto Sans Bold" 60
+# Make-Caption Caption.png Caption.input 1024 42 "Noto Sans Bold" 60 "#02266b" "#ffd700" 26
+
+
+# ====== Handle arguments ===================================================
+if [ $# -lt 6 ] ; then
+   echo >&2 "Usage: $0 output_filename caption_text caption_width caption_height font font_size_percent [foreground [background [transparency]]]"
+   exit 1
+fi
+OUTPUTFILENAME="$1"
+CAPTION_TEXT="$2"
+CAPTION_WIDTH=$3
+CAPTION_HEIGHT=$4
+FONT="$5"
+FONT_SIZE=$6
+
+COLOR_FOREGROUND="#02266b"   # Dark Blue
+COLOR_BACKGROUND="#ffd700"   # Gold
+TRANSPARENCY=25              # %
+if [ $# -gt 6 ] ; then
+   COLOR_FOREGROUND="$7"
+   if [ $# -gt 7 ] ; then
+      COLOR_BACKGROUND="$8"
+      if [ $# -gt 8 ] ; then
+         TRANSPARENCY="$9"
+      fi
+   fi
+fi
+
+
+# ====== Call GIMP ==========================================================
+rm -f "$OUTPUTFILENAME"
+( cat <<EOF
+(let*
+   ((outputFileName   "$OUTPUTFILENAME")
+    (captionText      "$CAPTION_TEXT")
+    (captionWidth     $CAPTION_WIDTH)
+    (captionHeight    $CAPTION_HEIGHT)
+    (captionFont      "$FONT")
+    (captionFontSize  (/ (* $FONT_SIZE captionHeight) 100))
+    (captionOpacity   (- 100 $TRANSPARENCY))
+    (captionFGColor   "$COLOR_FOREGROUND")
+    (captionBGColor   "$COLOR_BACKGROUND")
+    (theText)
+    (drawable)
+    (image (car (gimp-image-new captionWidth captionHeight RGB)))
+    (layer1 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 1" captionOpacity NORMAL-MODE)))
+    (layer2 (car (gimp-layer-new image captionWidth captionHeight RGBA-IMAGE "Layer 2" 100 NORMAL-MODE)))
+   )
+   ; ------------------------------------------------------------------------
+   (gimp-image-add-layer image layer1 0)
+   (gimp-image-add-layer image layer2 0)
+   (gimp-context-set-background captionBGColor)
+   (gimp-context-set-foreground captionFGColor)
+   (gimp-drawable-fill layer1 BACKGROUND-FILL)
+
+   (set! theText (car (gimp-text-fontname image layer2 0 0 captionText 0 TRUE captionFontSize PIXELS captionFont) ) )
+   (gimp-layer-set-offsets
+      theText
+      (/ (- captionWidth  (car (gimp-drawable-width  theText))) 2)
+      (/ (- captionHeight (car (gimp-drawable-height theText))) 2))
+
+   (gimp-image-merge-visible-layers image CLIP-TO-IMAGE)
+   ; (gimp-display-new image)
+   ; ------------------------------------------------------------------------
+   (set! drawable (car (gimp-image-get-active-layer image)))
+   (file-png-save2 RUN-NONINTERACTIVE image drawable outputFileName outputFileName TRUE 9 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp --new-instance --no-interface --no-splash --batch - 2>&1 | \
+       ( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-gegl-operation.c-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|^$" || true )
+
+if [ ! -e "$OUTPUTFILENAME" ] ; then
+   echo >&2 "ERROR: $OUTPUTFILENAME has not been produced. Something went wrong!"
+   exit 1
+fi

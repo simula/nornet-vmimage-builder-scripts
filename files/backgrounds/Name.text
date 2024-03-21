@@ -1,0 +1,2 @@
+# Note: DejaVu Sans does not support CJK characters -> fallback is (probably) Noto Sans
+${MAKE_TEXT} ${OUTPUT}   "Thomas Dreibholz (托马斯博士)"   256 10 "Golden"   "DejaVu Sans"

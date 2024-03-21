@@ -25,7 +25,11 @@ set -e
 # ###########################################################################
 # The "Development" installation is based on the "Basic" installation. It
 # must contain the following packages:
+# - Autoconf/Automake/Libtool (basic build tools)
+# - CMake (build tool)
+# - GNU gcc/g++, GNU Make, GNU Debugger (compilers, debugger and make tool)
 # - GraphicsMagick (image conversion)
+# - LibTool (build tool for libraries)
 # - Valgrind (debugging tool)
 # ###########################################################################
 
@@ -36,7 +40,14 @@ set -e
 if [ -e /usr/bin/apt-get ] ; then
 
    packages="
+      autoconf
+      automake
+      cmake
+      g++
+      gcc
+      gdb
       graphicsmagick
+      libtool-bin
       valgrind
    "
 
@@ -58,7 +69,14 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      autoconf
+      automake
+      cmake
+      g++
+      gcc
+      gdb
       GraphicsMagick
+      libtool
       valgrind
    "
 
@@ -70,7 +88,13 @@ elif [ -e /usr/bin/dnf ] ; then
 elif [ -e /usr/sbin/pkg ] ; then
 
    packages="
+      autoconf
+      automake
+      cmake
+      gcc
+      gdb
       graphicsmagick
+      libtool
       valgrind
    "
 
@@ -83,7 +107,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in gm valgrind ; do
+for command in autoconf automake cmake g++ gcc gm libtool make valgrind ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"

@@ -1,0 +1,114 @@
+# SimulaMet Desktop Background Script
+# Copyright (C) 2018-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+
+PROJECT(simulamet NONE)
+
+SET(BUILD_MAJOR "0")
+SET(BUILD_MINOR "0")
+SET(BUILD_PATCH "0")
+SET(BUILD_VERSION ${BUILD_MAJOR}.${BUILD_MINOR}.${BUILD_PATCH})
+
+
+# ------ Helper variables ---------------------------------
+EXECUTE_PROCESS(COMMAND env LC_TIME=en_GB.UTF-8 date "+%Y"
+                OUTPUT_VARIABLE this_year OUTPUT_STRIP_TRAILING_WHITESPACE)
+EXECUTE_PROCESS(COMMAND cat version.txt
+                OUTPUT_VARIABLE this_version OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+
+# ###### Settings ###########################################################
+
+# ------ Layouts ------------------------------------------
+SET(TDD_RESOLUTIONS
+#   320x200
+#   640x480     # VGA
+#   1024x768    # Standard
+#   1366x768
+#   1600x1200
+#   1920x1080   # Full HD 16:9
+#   1920x1200   # Full HD 16:10
+#   2970x2100   # DIN A4
+   3840x2160   # 4K 16:9
+#   3840x2400   # 4K 16:10
+)
+
+SET(TDD_VARIANTS
+   plain
+   mosaic
+#   oil
+#   cloth
+#   oldphoto
+)
+
+SET(TDD_JPEG_QUALITY          92.5)
+
+SET(TDD_BUILD_MIRRORED        0)
+
+SET(TDD_BUILD_BOOTSPLASH      1)
+SET(TDD_BOOTSPLASH_RESOLUTIONS
+   # 1024x768    # Standard
+   # 1920x1080   # Full HD 16:9
+   # 3840x2160   # 4K 16:9
+   ${TDD_RESOLUTIONS}   # Use all image resolutions
+)
+SET(TDD_BOOTSPLASH_VARIANT    "plain")
+SET(TDD_BOOTSPLASH_TEXT       "Thomas Dreibholz's System Installation Scripts: ${this_version}")
+
+SET(TDD_PRINT_VARIANT         "plain")
+SET(TDD_PRINT_IMAGE           "Lindøya.jpeg")
+SET(TDD_PRINT_PREFIX          "SimulaMet")
+SET(TDD_PRINT_A4              0)
+SET(TDD_PRINT_A3              0)
+
+SET(TDD_INSERT_HOSTNAME       1)   # If name begings with a lower-case letter, assume it is a hostname and insert it into the output image
+SET(TDD_DOMAIN                "simulamet.no")
+SET(TDD_COPYRIGHT             "Copyright ${this_year} by Thomas Dreibholz")
+
+# ------ Inputs -------------------------------------------
+FILE(GLOB TDD_TEXT_FILES  "*.text")
+FILE(GLOB TDD_IMAGE_FILES "Input/*.[Jj][Pp][Ee][Gg]" "Input/*.[Jj][Pp][Gg]" "Input/*.[Pp][Nn][Gg]")
+
+SET(TDD_BUILD_OVERLAY "${CMAKE_CURRENT_SOURCE_DIR}/build-overlay")
+SET(TDD_BUILD_CAPTION "${CMAKE_CURRENT_SOURCE_DIR}/build-caption")
+
+# ------ Outputs ------------------------------------------
+SET(TDD_ADD_DIST_TARGET              0)
+SET(TDD_FLAT_DIRECTORY_STRUCTURE     1)
+SET(TDD_OUTPUT_DIRECTORY             "Output")
+SET(TDD_INSTALL_SUBDIRECTORY         "${CMAKE_PROJECT_NAME}")   # Install under [PREFIX]/share/${TDD_INSTALL_SUBDIRECTORY}
+SET(TDD_INSTALL_ORIGINALS            1)
+SET(TDD_OUTPUT_OVERLAY               "Overlay")
+SET(TDD_OUTPUT_ORIGINALS             "Originals")
+SET(TDD_OUTPUT_WITHOUT_LOGO          "Desktop-without-Logo")
+SET(TDD_OUTPUT_WITH_LOGO             "Desktop-with-Logo")
+SET(TDD_OUTPUT_MIRRORED_WITHOUT_LOGO "Mirrored-Desktop-without-Logo")
+SET(TDD_OUTPUT_MIRRORED_WITH_LOGO    "Mirrored-Desktop-with-Logo")
+SET(TDD_OUTPUT_SPLASH                "Splash")
+SET(TDD_OUTPUT_CAPTIONFILE           "simulamet-version")
+
+# ------ Programs -----------------------------------------
+SET(TDD_TEST_GIMP       "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Test-Gimp")
+SET(TDD_MAKE_CROPPED    "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Resize-with-Cropping")
+SET(TDD_MAKE_CAPTION    "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Caption")
+SET(TDD_MAKE_TEXT       "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Text")
+SET(TDD_MAKE_BACKGROUND "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Background")
+SET(TDD_MAKE_PAINTING   "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Painting")
+SET(TDD_MAKE_MOSAIC     "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Mosaic")
+SET(TDD_MAKE_CLOTH      "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-Cloth")
+SET(TDD_MAKE_OLDPHOTO   "${CMAKE_CURRENT_SOURCE_DIR}/gimp-scripts/Make-OldPhoto")

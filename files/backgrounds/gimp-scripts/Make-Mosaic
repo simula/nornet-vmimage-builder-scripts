@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+#
+# Mosaic Script
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# Example:
+# Make-Mosaic Image.jpeg Mosaic 24 4 4 hexagons rough
+# Make-Mosaic Image.jpeg Mosaic 32 4 2 octagons smooth
+
+
+# ====== Handle arguments ===================================================
+if [ $# -lt 5 ] ; then
+   echo >&2 "Usage: $0 input_filename output_filename tile_size tile_height tile_spacing [squares|hexagons|octagons|triangles [smooth|rough]]"
+   exit 1
+fi
+INPUTFILENAME="$1"
+OUTPUTFILENAME="$2"
+TILESIZE=$3
+TILEHEIGHT=$4
+TILESPACING=$5
+TILETYPE="1"
+TILESURFACE=0
+if [ $# -gt 5 ] ; then
+   if [ "$6" = "squares" ] ; then
+      TILETYPE=0
+   elif [ "$6" = "hexagons" ] ; then
+      TILETYPE=1
+   elif [ "$6" = "octagons" ] ; then
+      TILETYPE=2
+   elif [ "$6" = "triangles]" ] ; then
+      TILETYPE=3
+   else
+      echo >&2 "Invalid tile type: $6"
+      exit 1
+   fi
+fi
+if [ $# -gt 6 ] ; then
+   if [ "$7" = "smooth" ] ; then
+      TILESURFACE=0
+   elif [ "$7" = "rough" ] ; then
+      TILESURFACE=1
+   else
+      echo >&2 "Invalid tile surface: $7"
+      exit 1
+   fi
+fi
+
+# ====== Call GIMP ==========================================================
+rm -f "$OUTPUTFILENAME"
+( cat <<EOF
+(let*
+   ((inputFileName    "$INPUTFILENAME")
+    (outputFileName   "$OUTPUTFILENAME")
+    (tileType         $TILETYPE)
+    (tileSize         $TILESIZE)
+    (tileHeight       $TILEHEIGHT)
+    (tileSpacing      $TILESPACING)
+    (tileSurface      $TILESURFACE)
+    (image (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (drawable (car (gimp-image-get-active-layer image)))
+   )
+   ; ------------------------------------------------------------------------
+   ; First, make sure that the image is RGB, not indexed color mode!
+   (if (not (= RGB (car (gimp-image-base-type image))))
+             (gimp-image-convert-rgb image))
+
+   (plug-in-mosaic RUN-NONINTERACTIVE image drawable
+       tileSize tileHeight tileSpacing
+       0.65 TRUE 135.0 0.2 TRUE TRUE
+       tileType tileSurface FALSE)
+   ; ------------------------------------------------------------------------
+   (file-png-save2 RUN-NONINTERACTIVE image drawable outputFileName outputFileName TRUE 9 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp --new-instance --no-interface --no-splash --batch - 2>&1 | \
+       ( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-gegl-operation.c-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|^$" || true )
+
+if [ ! -e "$OUTPUTFILENAME" ] ; then
+   echo >&2 "ERROR: $OUTPUTFILENAME has not been produced. Something went wrong!"
+   exit 1
+fi

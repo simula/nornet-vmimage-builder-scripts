@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+cd "$(dirname "$0")"
+
+flock backgrounds.lock bash -c '
+   echo "Generating backgrounds ..."
+   cd backgrounds
+
+   version="commit $(git rev-parse --short HEAD), built on $(date +"%a %Y-%m-%d")"
+   if [ ! -e version.txt ] ; then
+      echo "${version}" >version.txt
+      cmake .
+   else
+      echo "${version}" >version.txt.new
+      if diff version.txt.new version.txt >/dev/null ; then
+         mv version.txt.new version.txt
+         cmake .
+      fi
+   fi
+   if [ ! -e Makefile ] ; then
+      cmake .
+   fi
+   make
+   echo "Done!"
+'

@@ -68,6 +68,7 @@ build-defined-vms ()
                      --cores "${CORES}" --memory "${MEMORY}" --balloon "${BALLOON}" \
                      --root "${DISK_ROOT}" --home "${DISK_HOME}" --swap "${DISK_SWAP}" \
                      --video "${VIDEO}" \
+                     --bootsplash "${BOOTSPLASH}" \
                      --background-sddm "${BACKGROUND_SDDM}" \
                      --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
                      --background-desktop "${BACKGROUND_DESKTOP}" \

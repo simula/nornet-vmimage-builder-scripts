@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+# NOTE:
+# 05_debian_theme is initialising the Debian menu colouring. The naming of
+# *this* script must be sorted after 05_debian_theme. Therefore, using the
+# name 06_aaaaa_bootsplash here, to avoid overriding later configurations.
+
+
+# Include the GRUB helper library for grub-mkconfig.
+. "/usr/share/grub/grub-mkconfig_lib"
+
+# ====== Apply the theme ====================================================
+echo >&2 "Using boot splash from @SET_BOOTSPLASH_HERE@!"
+
+echo "insmod @SET_LOADER_HERE@"
+echo "if background_image $(make_system_path_relative_to_its_root @SET_BOOTSPLASH_HERE@) ; then"
+echo "   set menu_color_normal=yellow/black"
+echo "   set menu_color_highlight=red/light-gray"
+echo "   set color_normal=yellow/black"
+echo "fi"
