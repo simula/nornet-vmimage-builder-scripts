@@ -29,7 +29,7 @@ PROJECT="NorNet"
 HYPERVISOR="VirtualBox"
 DISTRIBUTION="Ubuntu"
 RELEASE="20.04"
-PROVISIONERS="user-settings"   # NOTE: "clean-up" will be added later!
+PROVISIONERS=""
 
 DRY_RUN=0
 
@@ -380,17 +380,12 @@ fi
 . "./${projectConfiguration}"
 popd
 
-# Finally, add guest utilities and clean-up scripts:
-PROVISIONERS="${PROVISIONERS} install-guest-utils clean-up"
 NAME="${NAME}-${PROJECT}"
-
-
-if [ "$(echo "${PROVISIONERS}" | xargs -n1 | sort)" !=  "$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)" ] ; then
-   echo >&2 "ERROR: Some provisioners seem to be listed twice!"
-   echo >&2 "PROVISIONERS=${PROVISIONERS}"
-   exit 1
-fi
-
+PROVISIONERS="$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)"
+echo "Provisioners:"
+for provisioner in ${PROVISIONERS} ; do
+   echo "- ${provisioner}"
+done
 
 if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
    BUILDER_VMSETUP="${BUILDER_VMSETUP}-3disks"

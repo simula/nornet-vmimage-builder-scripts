@@ -20,13 +20,13 @@
   // ====== ISO settings ====================================================
   // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep noble-live-server-amd64.iso
   "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/noble-live-server-amd64.iso",
-  "iso_checksum": "sha256:03544809bd979a038c5241409a712eb178f8ef3600ac32e1a982c99538dbc7d2",
+  "iso_checksum": "sha256:402b85ef27e55a45d4ee99c70316aca28c03163c75b31738c666ab40d1cf5144",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  // No shutdown_command needed!
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
   "boot_wait": "5s",

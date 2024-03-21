@@ -526,7 +526,7 @@ EOF
 cat >"/home/${USER_NAME}/.config/kxkbrc" <<EOF
 [Layout]
 DisplayNames=,,
-LayoutList=de(nodeadkeys),no,us
+LayoutList=de,no,us
 LayoutLoopCount=-1
 Model=pc105
 ResetOldOptions=false
@@ -536,6 +536,7 @@ ShowLayoutIndicator=true
 ShowSingle=false
 SwitchMode=Global
 Use=true
+VariantList=nodeadkeys,,
 EOF
 
 
