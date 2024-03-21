@@ -23,11 +23,12 @@ set -ex
 
 
 # ====== Ensure that script is ran by user account to provision =============
-if [ $(id -u) -eq 0 ] ; then
+if [ "$(id -u)" -eq 0 ] ; then
    # Running by configuring sudo root. Run script again, but as user!
-   echo "Running as ROOT! SUDO_USER=${SUDO_USER} USER_NAME=${USER_NAME}"
-   if [ "${USER_NAME}" != "root" ] ; then
-      sudo -u ${USER_NAME} $0 $@ && exit 0
+   echo "Running as ROOT! SUDO_USER=${SUDO_USER}"
+   if [ "${SUDO_USER}" != "root" ] ; then
+      # shellcheck disable=SC2068
+      sudo -u "${SUDO_USER}" "$0" $@ && exit 0
       exit 1
    else
       # Prevent recursive invocation as "root" user:
@@ -36,13 +37,12 @@ if [ $(id -u) -eq 0 ] ; then
    fi
 else
    # Echo running as user
-   echo "Running as ${USER}! SUDO_USER=${SUDO_USER} USER_NAME=${USER_NAME}"
+   echo "Running as ${USER}! SUDO_USER=${SUDO_USER}"
 fi
 
-
 # ====== Prepare source repositories ========================================
-mkdir -p /home/${USER}/src
-cd /home/${USER}/src
+mkdir -p "/home/${USER}/src"
+cd "/home/${USER}/src"
 
 # NOTE: The repositories are not cloned here!
 
@@ -52,5 +52,5 @@ git init
 git remote add origin https://github.com/simula/nornet-control.git
 popd
 
-cd /home/${USER}
+cd "/home/${USER}"
 ln -s src/nornet-control ctrl
