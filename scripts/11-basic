@@ -116,6 +116,7 @@ elif [ -e /usr/bin/dnf ] ; then
 
    packages="
       bwm-ng
+      bzip2
       cmake
       curl
       fail2ban
