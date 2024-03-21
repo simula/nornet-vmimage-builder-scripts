@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# Background Script
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# Example:
+# Make-Background Demo-Fractal-8192x6144.png Background1.png
+
+
+# ====== Handle arguments ===================================================
+if [ $# -lt 2 ] ; then
+   echo >&2 "Usage: $0 input_filename output_filename"
+   exit 1
+fi
+INPUTFILENAME="$1"
+OUTPUTFILENAME="$2"
+# if [ $# -gt 3 ] ; then
+#    COLORSCHEME="$4"
+# fi
+
+
+# ====== Call GIMP ==========================================================
+rm -f "$OUTPUTFILENAME"
+( cat <<EOF
+(let*
+   ((inputFileName    "$INPUTFILENAME")
+    (outputFileName   "$OUTPUTFILENAME")
+    (image (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (drawable (car (gimp-image-get-active-layer image)))
+   )
+   ; ------------------------------------------------------------------------
+   ; First, make sure that the image is RGB, not indexed color mode!
+   (if (not (= RGB (car (gimp-image-base-type image))))
+             (gimp-image-convert-rgb image))
+
+   ; Change colours
+   (gimp-hue-saturation drawable ALL-HUES 120 0 0)
+   ; Bump Map
+   (plug-in-bump-map RUN-NONINTERACTIVE image drawable drawable
+      30.0 45.0 20
+      0 0 0 0
+      TRUE FALSE 0)
+   ; Darken it a little bit
+   (gimp-hue-saturation drawable ALL-HUES 0 -15 0)
+   ; ------------------------------------------------------------------------
+   (file-png-save2 RUN-NONINTERACTIVE image drawable outputFileName outputFileName TRUE 9 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp --new-instance --no-interface --no-splash --batch - 2>&1 | \
+       ( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|^$" || true )
+
+if [ ! -e "$OUTPUTFILENAME" ] ; then
+   echo >&2 "ERROR: $OUTPUTFILENAME has not been produced. Something went wrong!"
+   exit 1
+fi

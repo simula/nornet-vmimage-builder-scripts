@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#
+# Old Photo Script
+# Copyright (C) 2018-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# Example:
+# Make-OldPhoto Image.jpeg OldPhoto.png 20
+
+
+# ====== Handle arguments ===================================================
+if [ $# -lt 2 ] ; then
+   echo >&2 "Usage: $0 input_filename output_filename [border_size]"
+   exit 1
+fi
+INPUTFILENAME="$1"
+OUTPUTFILENAME="$2"
+BORDERSIZE=20
+if [ $# -gt 2 ] ; then
+   BORDERSIZE="$3"
+fi
+
+
+# ====== Call GIMP ==========================================================
+rm -f "$OUTPUTFILENAME"
+( cat <<EOF
+(let*
+   ((inputFileName    "$INPUTFILENAME")
+    (outputFileName   "$OUTPUTFILENAME")
+    (borderSize       $BORDERSIZE)
+    (image (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
+    (drawable (car (gimp-image-get-active-layer image)))
+   )
+   ; ------------------------------------------------------------------------
+   ; First, make sure that the image is RGB, not indexed color mode!
+   (if (not (= RGB (car (gimp-image-base-type image))))
+             (gimp-image-convert-rgb image))
+
+   (script-fu-old-photo image drawable
+                        TRUE borderSize TRUE FALSE FALSE)
+   ; ------------------------------------------------------------------------
+   (file-png-save2 RUN-NONINTERACTIVE image (car (gimp-image-get-active-layer image))
+                   outputFileName outputFileName TRUE 9 TRUE TRUE FALSE TRUE TRUE FALSE TRUE)
+)
+(gimp-quit TRUE)
+EOF
+) | env LANG=C HOME=/tmp gimp --new-instance --no-interface --no-splash --batch - 2>&1 | \
+       ( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-gegl-operation.c-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|^$" || true )
+
+if [ ! -e "$OUTPUTFILENAME" ] ; then
+   echo >&2 "ERROR: $OUTPUTFILENAME has not been produced. Something went wrong!"
+   exit 1
+fi

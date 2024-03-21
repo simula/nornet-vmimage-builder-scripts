@@ -1,3 +1,4 @@
 # Copy background images:
-00-user-settings.files/Face-Beastie.png   /tmp/
-00-user-settings.files/Face-Tux.png       /tmp/
+00-user-settings.files/Face-Beastie.png                /tmp/
+00-user-settings.files/Face-Tux.png                    /tmp/
+backgrounds/Output/Splash/Gressholmen-3840x2160.jpeg   /tmp/

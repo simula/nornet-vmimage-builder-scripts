@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+#
+# SimulaMet Desktop Background Script
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY# without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -e
+
+
+if [ $# -lt 4 ] ; then
+   echo >&2 "Usage: $0 output_file width height input_directory"
+   exit 1
+fi
+OUTPUT="$1"
+WIDTH="$2"
+HEIGHT="$3"
+DIRECTORY="$4"
+
+GM="gm"
+SCRIPTPATH=`dirname "$0"`   # NOTE: Current directory may be a build directory!
+
+# ------ Proportions --------------------------------------------------------
+titleWidth=0.75      # of Width
+subtitleWidth=0.80   # of Width
+nameHeight=0.035     # of Height
+titleBorder=0.50     # of Name Height
+nameBorder=0.35      # of Name Height
+indent=0.055         # of Height
+
+titleWidthValue=`awk "BEGIN { print ${WIDTH}*${titleWidth} }"`
+subtitleWidthValue=`awk "BEGIN { print ${WIDTH}*${subtitleWidth} }"`
+nameHeightValue=`awk "BEGIN { print ${HEIGHT}*${nameHeight} }"`
+titleBorderValue=`awk "BEGIN { print ${nameHeightValue}*${titleBorder} }"`
+nameBorderValue=`awk "BEGIN { print ${nameHeightValue}*${nameBorder} }"`
+indentValue=`awk "BEGIN { print ${HEIGHT}*${indent} }"`
+
+
+
+tempDirectory=`mktemp -d simulamet-overlay-${WIDTH}x${HEIGHT}.XXXXXXXXXXXXXXXX`
+
+# ------ Resize input images ------------------------------------------------
+${GM} convert $DIRECTORY/Title.png -trim \
+   -resize ${titleWidthValue}x \
+   +compress ${tempDirectory}/title.tiff
+${GM} convert $DIRECTORY/Subtitle.png -trim \
+   -resize ${subtitleWidthValue}x \
+   -bordercolor none -border 0x${titleBorderValue} \
+   +compress ${tempDirectory}/subtitle.tiff
+
+${GM} convert $DIRECTORY/Name.png -trim \
+   -resize x${nameHeightValue} \
+   +compress ${tempDirectory}/name.tiff
+${GM} convert $DIRECTORY/Affiliation.png -trim \
+   -resize x${nameHeightValue} \
+   -bordercolor none -border 0x${nameBorderValue} \
+   +compress ${tempDirectory}/affiliation.tiff
+${GM} convert $DIRECTORY/URL.png -trim \
+   -resize x${nameHeightValue} \
+   +compress ${tempDirectory}/url.tiff
+
+# ------ Center title over subtitle -----------------------------------------
+th=`gm identify -format "%h" "${tempDirectory}/title.tiff"`
+# Size is ${subtitleWidthValue}x${th}:
+${GM} composite -size ${subtitleWidthValue}x${th} \
+   -gravity Center ${tempDirectory}/title.tiff \
+   xc:none +compress ${tempDirectory}/title-c.tiff
+
+${GM} convert -background none -append \
+   ${tempDirectory}/title-c.tiff \
+   ${tempDirectory}/subtitle.tiff \
+   +compress ${tempDirectory}/logo.tiff
+
+
+# ------ Center contact labels ----------------------------------------------
+nw=`gm identify -format "%w" "${tempDirectory}/name.tiff"`
+nh=`gm identify -format "%h" "${tempDirectory}/name.tiff"`
+
+aw=`gm identify -format "%w" "${tempDirectory}/affiliation.tiff"`
+ah=`gm identify -format "%h" "${tempDirectory}/affiliation.tiff"`
+
+uw=`gm identify -format "%w" "${tempDirectory}/url.tiff"`
+uh=`gm identify -format "%h" "${tempDirectory}/url.tiff"`
+
+cw=`echo "$nw $aw $uw" | xargs -n1 echo | sort -n -r | head -n1`
+${GM} composite -size ${cw}x${nh} -gravity Center ${tempDirectory}/name.tiff xc:none +compress ${tempDirectory}/name-c.tiff
+${GM} composite -size ${cw}x${ah} -gravity Center ${tempDirectory}/affiliation.tiff xc:none +compress ${tempDirectory}/affiliation-c.tiff
+${GM} composite -size ${cw}x${uh} -gravity Center ${tempDirectory}/url.tiff xc:none +compress ${tempDirectory}/url-c.tiff
+
+${GM} convert -gravity Center -background none -append \
+   ${tempDirectory}/name-c.tiff ${tempDirectory}/affiliation-c.tiff ${tempDirectory}/url-c.tiff \
+   +compress ${tempDirectory}/contact.tiff
+
+
+# ------ Combine everything -------------------------------------------------
+${GM} composite -size ${WIDTH}x${HEIGHT} \
+   -gravity Center ${tempDirectory}/logo.tiff \
+   xc:none +compress ${tempDirectory}/layer-logo.tiff
+${GM} composite -size ${WIDTH}x${HEIGHT} \
+   -gravity SouthEast -geometry +${indentValue}+${indentValue} ${tempDirectory}/contact.tiff \
+   xc:none +compress ${tempDirectory}/layer-contact.tiff
+
+
+# ${GM} composite ${tempDirectory}/layer-contact.tiff ${tempDirectory}/layer-logo.tiff "${OUTPUT}"
+cp ${tempDirectory}/layer-logo.tiff "${OUTPUT}"
+
+
+rm -rf ${tempDirectory}

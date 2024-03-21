@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+# Include the GRUB helper library for grub-mkconfig.
+. "/usr/share/grub/grub-mkconfig_lib"
+
+# ====== Apply the theme ====================================================
+echo >&2 "Using boot splash from @SET_BOOTSPLASH_HERE@!"
+
+# shellcheck disable=SC2050
+if [[ "@SET_BOOTSPLASH_HERE@" =~ (\.[Jj][Pp][Ee][Gg]|\.[Jj][Pp][Ee][Gg])$ ]] ; then
+   echo "insmod jpeg"   # Load JPEG reader!
+elif [[ "@SET_BOOTSPLASH_HERE@" =~ (\.[Pp][Nn][Gg])$ ]] ; then
+   echo "insmod png"    # Load PNG reader!
+elif [[ "@SET_BOOTSPLASH_HERE@" =~ (\.[Tt][Gg][Aa])$ ]] ; then
+   echo "insmod tga"    # Load TGA reader!
+else
+   echo >&2 "ERROR: Unknown image format!"
+fi
+echo "if background_image $(make_system_path_relative_to_its_root @SET_BOOTSPLASH_HERE@) ; then"
+echo "   set menu_color_normal=yellow/black"
+echo "   set menu_color_highlight=red/light-gray"
+echo "   set color_normal=yellow/black"
+echo "fi"
