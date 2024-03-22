@@ -26,10 +26,10 @@ set -e
 # The "Basic" installation is based on the "Minimal" installation.
 # It must contain the following packages:
 # - Base64 (base64 tool)
-# - Ping, Traceroute, ifconfig (basic networking tools)
 # - BWM-NG (simple bandwidth monitor)
 # - BZip2 (compression tool)
 # - cURL (download tool)
+# - EthTool (Ethernet card configuration tool; on Linux systems only!)
 # - Fail2Ban (prevent brute-force SSH attacks)
 # - GDisk (GPT partitioning tool)
 # - Git (revision management)
@@ -38,17 +38,20 @@ set -e
 # - HTop (process monitor)
 # - Joe (editor)
 # - JQ (JSON editing tool)
+# - NMap (network testing tool)
 # - Manual page utilities (manual page viewer)
 # - NetPerfMeter (network performance metering tool)
 # - NetPlan (network configuration; on Linux systems only!)
+# - Ping, Traceroute, ifconfig (basic networking tools)
 # - PLocate ("locate" command for finding files)
-# - Python (Python 3 interpreter)
 # - PwGen (password generator)
+# - Python (Python 3 interpreter)
+# - RSPLIB Tools (RSerPool testing tools)
 # - SubNetCalc (address calculator)
 # - Sudo (privileged command execution)
 # - System-Tools (system information on login)
-# - T-Shark (CLI-version for Wireshark)
 # - Tree (tree view of directory hierachy)
+# - T-Shark (CLI-version for Wireshark)
 # ###########################################################################
 
 
@@ -81,6 +84,7 @@ if [ -e /usr/bin/apt-get ] ; then
       bwm-ng
       bzip2
       curl
+      ethtool
       fail2ban
       gdisk
       git
@@ -90,16 +94,18 @@ if [ -e /usr/bin/apt-get ] ; then
       iputils-ping
       joe
       jq
-      man
       make
+      man
       netperfmeter
       netplan.io
       net-tools
+      nmap
       pwgen
       python3
+      rsplib-tools
       subnetcalc
-      td-system-tools
       td-system-configure-grub
+      td-system-tools
       traceroute
       tree
       tshark
@@ -114,10 +120,13 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      bash
+      bash-completion
       bwm-ng
       bzip2
       cmake
       curl
+      ethtool
       fail2ban
       gdisk
       git
@@ -132,9 +141,11 @@ elif [ -e /usr/bin/dnf ] ; then
       netplan
       netplan-default-backend-networkd
       net-tools
+      nmap
       plocate
       pwgen
       python3
+      rsplib-tools
       subnetcalc
       td-system-tools
       td-system-tools-configure-grub
@@ -164,10 +175,12 @@ elif [ -e /usr/sbin/pkg ] ; then
       joe
       jq
       netperfmeter
+      nmap
       plocate
-      python3
-      py39-fail2ban
       pwgen
+      py39-fail2ban
+      python3
+      rsplib
       subnetcalc
       td-system-tools
       tree
@@ -184,7 +197,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in base64 bwm-ng bzip2 curl locate gdisk hipercontracer htop ifconfig joe jq man netperfmeter ping pwgen python3 subnetcalc sudo System-Info System-Maintenance traceroute tree tshark wget ; do
+for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap ping pwgen python3 rspserver rspterminal subnetcalc sudo System-Info System-Maintenance traceroute tree tshark wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
@@ -193,6 +206,17 @@ for command in base64 bwm-ng bzip2 curl locate gdisk hipercontracer htop ifconfi
       errors=$((errors+1))
    fi
 done
+if "$(uname)" == "Linux" ] ; then
+   for command in ethtool netplan ; do
+      echo -n "${command}: "
+      if which ${command} >/dev/null ; then
+         echo "OK"
+      else
+         echo "FAILED!"
+         errors=$((errors+1))
+      fi
+   done
+fi
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1

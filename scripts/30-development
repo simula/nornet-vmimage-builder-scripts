@@ -26,12 +26,29 @@ set -e
 # The "Development" installation is based on the "Basic" installation.
 #
 # It must contain the following packages:
-# - Autoconf/Automake/Libtool (basic build tools)
+# - BC (arbitrary precision calculator language)
+# - CLang (CLang C and C++ compilers)
 # - CMake (build tool)
-# - GNU gcc/g++, GNU Make, GNU Debugger (compilers, debugger and make tool)
+# - ExifTool (EXIF metadata editing tool for images)
+# - GhostScript (PostScript interpreter and fonts)
+# - GNU Autoconf/Automake/Libtool (basic build tools)
+# - GNU Bison (parser generator)
+# - GNU Flex (lexical analyser generator)
+# - GNU GCC/G++, GNU Make, GNU Debugger (compilers, debugger and make tool)
+# - GNU R (statistical computing language)
 # - GraphicsMagick (image conversion)
 # - LibTool (build tool for libraries)
+# - PkgConfig (metainformation about installed libraries)
+# - Python (Python 3 interpreter, tools and PIP package management)
+# - ShellCheck (checker tool for shell scripts)
 # - Valgrind (debugging tool)
+# - YamlLint (checker tool for YAML)
+# - RepRepro (DEB repository build tool; on Linux systems only!)
+# - PBuilder (DEB build tool; on Linux systems only!)
+#
+# It must contain the following libraries and development files:
+# - BOOST (portable C++ libraries)
+# - SCTP
 #
 # Further properties:
 # - Password-less sudo calls
@@ -48,13 +65,36 @@ if [ -e /usr/bin/apt-get ] ; then
    packages="
       autoconf
       automake
+      bc
+      bison
+      clang
       cmake
+      debhelper
+      devscripts
+      flex
+      fonts-dejavu
+      fonts-noto-cjk
+      fonts-noto-hinted
       g++
       gcc
       gdb
+      ghostscript
       graphicsmagick
+      gsfonts
+      libboost-all-dev
+      libimage-exiftool-perl
+      libsctp-dev
       libtool-bin
+      manpages-dev
+      pbuilder
+      pkg-config
+      python3-all
+      python3-pip
+      r-base
+      reprepro
+      shellcheck
       valgrind
+      yamllint
    "
 
    # shellcheck disable=SC2086
@@ -77,13 +117,35 @@ elif [ -e /usr/bin/dnf ] ; then
    packages="
       autoconf
       automake
+      bc
+      bison
+      boost-devel
+      clang
       cmake
+      flex
       g++
       gcc
       gdb
+      ghostscript
+      google-noto-cjk-fonts
+      google-noto-sans-fonts
+      google-noto-serif-fonts
       GraphicsMagick
       libtool
+      lksctp-tools-devel
+      mock
+      pbuilder
+      perl-Image-ExifTool
+      pkg-config
+      python3
+      python3-pip
+      python3-setuptools
+      R-base
+      reprepro
+      shellcheck
+      urw-base35-fonts
       valgrind
+      yamllint
    "
 
    # shellcheck disable=SC2086
@@ -113,7 +175,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake cmake g++ gcc gdb gm libtool make valgrind ; do
+for command in autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb gm gs libtool make pkg-config shellcheck valgrind yamllint ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
@@ -122,6 +184,17 @@ for command in autoconf automake cmake g++ gcc gdb gm libtool make valgrind ; do
       errors=$((errors+1))
    fi
 done
+if "$(uname)" == "Linux" ] ; then
+   for command in reprepro pbuilder ; do
+      echo -n "${command}: "
+      if which ${command} >/dev/null ; then
+         echo "OK"
+      else
+         echo "FAILED!"
+         errors=$((errors+1))
+      fi
+   done
+fi
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
