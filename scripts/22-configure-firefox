@@ -53,8 +53,8 @@ else
 fi
 
 if [ -x /usr/bin/lsb_release ] ; then
-   release=$(/usr/bin/lsb_release -cs)
-   if [ "${release}" == "precise" ] ; then
+   release="$(/usr/bin/lsb_release -cs)"
+   if [ "${release}" == "precise" ] || [ "${release}" == "trusty" ] || [ "${release}" == "xenial" ]; then
       echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
       exit 0
    fi

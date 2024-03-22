@@ -45,6 +45,20 @@ if [ "${UNAME}" == "Linux" ] ; then
 fi
 
 
+# ====== Cloud-Init configuration ===========================================
+if [ "${UNAME}" == "Linux" ] ; then
+   # !!! Ensure that growpart and resizefs are enabled !!!!!!!!!!!!!!!!!!!!!!!!!
+   # With new Ubuntu autoinstaller:
+   # /etc/cloud/cloud.cfg.d/99-installer.cfg disables growpart and resizefs
+   # => fixing this here:
+   if [ -e /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
+      sed -e "s#growpart: {mode: 'off'}#growpart: {mode: 'auto'}#g" \
+          -e "s#resize_rootfs: false#resize_rootfs: true#g" \
+          -i /etc/cloud/cloud.cfg.d/99-installer.cfg
+   fi
+fi
+
+
 # ====== Enable SCTP module =================================================
 if [ "${UNAME}" == "Linux" ] ; then
    # Load SCTP when booting:
@@ -101,7 +115,57 @@ EOF
 fi
 
 
-# ====== Renew SSH keys and enforce strong cipher configurations ============
-if [ -e /usr/bin/Create-New-SSH-Node-Keys ] ; then
-   /usr/bin/Create-New-SSH-Node-Keys -yes-to-all-i-am-really-sure
-fi
+# ====== Hardened SSH server configuration ==================================
+cat >/etc/ssh/sshd_config <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
+# The following 3 options require a very new sshd:
+# PubkeyAcceptedKeyTypes    ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostbasedAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+# HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+UsePAM                    yes
+X11Forwarding             yes
+TCPKeepAlive              yes
+ClientAliveInterval       60
+ClientAliveCountMax       3
+
+AcceptEnv                 LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+
+EOF
+for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
+   if [ -e "$sftp" ] ; then
+      echo "Subsystem sftp $sftp" >>/etc/ssh/sshd_config
+      break
+   fi
+done
+
+
+# ====== Hardened SSH client configuration ==================================
+cat >/etc/ssh/ssh_config <<EOF
+Protocol 2
+
+# Check supported algorithms with "ssh -Q cipher|kex|key|mac"!
+Ciphers                   aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr
+MACs                      hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512
+KexAlgorithms             curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256
+# To prefer RSA:
+# HostKeyAlgorithms         ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+# To prefer ED25519:
+HostKeyAlgorithms         ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,ssh-ed25519,ssh-rsa-cert-v01@openssh.com,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com
+
+VerifyHostKeyDNS          ask
+HashKnownHosts            yes
+GSSAPIAuthentication      yes
+GSSAPIDelegateCredentials no
+
+TCPKeepAlive              yes
+ServerAliveInterval       30
+ServerAliveCountMax       3
+
+SendEnv                   LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+EOF

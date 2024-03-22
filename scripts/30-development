@@ -23,14 +23,20 @@ set -e
 
 
 # ###########################################################################
-# The "Development" installation is based on the "Basic" installation. It
-# must contain the following packages:
+# The "Development" installation is based on the "Basic" installation.
+#
+# It must contain the following packages:
 # - Autoconf/Automake/Libtool (basic build tools)
 # - CMake (build tool)
 # - GNU gcc/g++, GNU Make, GNU Debugger (compilers, debugger and make tool)
 # - GraphicsMagick (image conversion)
 # - LibTool (build tool for libraries)
 # - Valgrind (debugging tool)
+#
+# Further properties:
+# - Password-less sudo calls
+#   WARNING: Development settings are intended for developers only!
+# - Source packages enabled from package manager (if available)
 # ###########################################################################
 
 

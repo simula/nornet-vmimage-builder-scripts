@@ -28,9 +28,12 @@ set -ex
 if [ -e /usr/bin/apt-get ] ; then
 
    packages="
-      nornet-autoupdate
-      nornet-management
+      simulamet-management
+      simulamet-desktop
+      simulamet-development
+      texlive-full
    "
+   # libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb hunspell-de-de hunspell-no hunspell-en-gb hunspell-en-us hunspell-en-au
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
@@ -40,8 +43,10 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
-      nornet-autoupdate
-      nornet-management
+      simulamet-management
+      simulamet-desktop
+      simulamet-development
+      texlive-scheme-full
    "
 
    # shellcheck disable=SC2086
@@ -54,10 +59,4 @@ elif [ -e /usr/sbin/pkg ] ; then
    # TBD!
    true
 
-fi
-
-
-# ====== Renew SSH keys and enforce strong cipher configurations ============
-if [ -e /usr/bin/Create-New-SSH-Node-Keys ] ; then
-   /usr/bin/Create-New-SSH-Node-Keys -yes-to-all-i-am-really-sure
 fi

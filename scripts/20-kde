@@ -23,7 +23,9 @@ set -ex
 
 
 # ###########################################################################
-# The "KDE" installation must contain the following packages:
+# The "KDE" installation is based on the "Basic" installation.
+#
+# It must contain the following packages:
 # - The KDE Plasma Desktop with Oxygen theme and SDDM
 # - Dia
 # - Firefox
@@ -36,6 +38,10 @@ set -ex
 # - Okular
 # - R
 # - Wireshark
+#
+# Further properties:
+# - Configured KDE and SDDM login manager
+# - Configured Firefox (hardened settings, privacy settings, some add-ons)
 # ###########################################################################
 
 

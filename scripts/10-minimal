@@ -24,15 +24,20 @@ set -e
 
 # ###########################################################################
 # The Minimal installation only contains the default packages of the
-# distribution's installer, as well as tools needed for the basic system
-# installation:
-# - Ping (network connectivity check)
+# distribution's installer, as well as tools needed for the initial system
+# installation with these scripts:
+# - Bash (shell)
 # - cURL (download tool)
+# - GnuPG (cryptography for signature checks)
+# - Ping (network connectivity check)
+# - Virt-What (identification of virtualisation environment)
 #
 # Further properties:
+# - Bash as default shell
 # - ECN enabled
 # - SCTP enabled
 # - SSH server enabled
+# - Hardened SSH server and client settings
 # - UTF-8 character encoding
 # ###########################################################################
 
@@ -45,20 +50,41 @@ if [ -e /usr/bin/apt-get ] ; then
    # Make 3 APT package download retries, in case of network problems:
    echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
 
-   # Just ensure the package database is up-to-date:
+   # Ensure that the package database is up-to-date:
    /usr/bin/apt-get update
+
+   packages="
+      curl
+      gpg
+      virt-what
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
 
-   # Nothing to do here!
-   true
+   packages="
+      curl
+      gpg
+      virt-what
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y sddm ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-   # Nothing to do here!
-   true
+   packages="
+      curl
+      gnupg
+      virt-what
+   "
+
+   # shellcheck disable=SC2086
+   /usr/sbin/pkg install -y ${packages}
 
 fi
 
@@ -66,7 +92,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in ping curl ; do
+for command in gpg ping curl virt-what ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"

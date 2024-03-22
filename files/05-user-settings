@@ -1,4 +1,6 @@
-# Copy background images:
+# This is /etc/skel/.bashrc of Ubuntu 22.04 LTS:
+05-user-settings.files/bashrc                          /tmp/
+
+# User images:
 05-user-settings.files/Face-Beastie.png                /tmp/
 05-user-settings.files/Face-Tux.png                    /tmp/
-backgrounds/Output/Splash/Gressholmen-3840x2160.jpeg   /tmp/

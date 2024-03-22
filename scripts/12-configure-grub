@@ -28,34 +28,39 @@ UNAME="$(uname)"
 # ====== Configure GRUB bootloader ==========================================
 if [ "${UNAME}" == "Linux" ] ; then
 
-   # If the background image files are not at their location, try to move them
-   # from tmp/. They should have been placed there by the file provisioner.
-   if [ ! -e "${BOOTSPLASH}" ] ; then
-      dir="$(dirname "${BOOTSPLASH}")"
-      sudo mkdir -p "${dir}/"
-      sudo mv "/tmp/$(basename "${BOOTSPLASH}")" "${dir}/"
-   fi
+   # ------ Set GRUB bootsplash image ---------------------------------------
+   if [ "${BOOTSPLASH}" != "" ] ; then
+      # If the background image files are not at their location, try to move them
+      # from tmp/. They should have been placed there by the file provisioner.
+      if [ ! -e "${BOOTSPLASH}" ] ; then
+         dir="$(dirname "${BOOTSPLASH}")"
+         sudo mkdir -p "${dir}/"
+         sudo mv "/tmp/$(basename "${BOOTSPLASH}")" "${dir}/"
+      fi
 
-   loader=""
-   if [[ "${BOOTSPLASH}" =~ (\.[Jj][Pp][Ee][Gg]|\.[Jj][Pp][Ee][Gg])$ ]] ; then
-      loader="jpeg"
-   elif [[ "${BOOTSPLASH}" =~ (\.[Pp][Nn][Gg])$ ]] ; then
-      loader="png"
-   elif [[ "${BOOTSPLASH}" =~ (\.[Tt][Gg][Aa])$ ]] ; then
-      loader="tga"
-   else
-      echo >&2 "ERROR: Unknown bootsplash image format of ${BOOTSPLASH}!"
-      exit 1
-   fi
-
-   # Set the background image as bootsplash:
-   if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
+      loader=""
+      if [[ "${BOOTSPLASH}" =~ (\.[Jj][Pp][Ee][Gg]|\.[Jj][Pp][Ee][Gg])$ ]] ; then
+         loader="jpeg"
+      elif [[ "${BOOTSPLASH}" =~ (\.[Pp][Nn][Gg])$ ]] ; then
+         loader="png"
+      elif [[ "${BOOTSPLASH}" =~ (\.[Tt][Gg][Aa])$ ]] ; then
+         loader="tga"
+      else
+         echo >&2 "ERROR: Unknown bootsplash image format of ${BOOTSPLASH}!"
+         exit 1
+      fi
       sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
           -e "s%@SET_LOADER_HERE@%${loader}%g" \
           </tmp/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
       chmod +x /etc/grub.d/06_aaaaa_bootsplash
       configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
+   fi
 
+   # ------ Update GRUB configuration ---------------------------------------
+   if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
+      configure-grub /usr/share/configure-grub/grub-defaults-nornet \
+         -V "auto,${VIDEO},1024x768" \
+         -o /etc/default/grub
       if [ -x /usr/sbin/grub2-mkconfig ] ; then
          /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg || true
       else
