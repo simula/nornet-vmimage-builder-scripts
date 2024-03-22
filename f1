@@ -23,12 +23,11 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"   # FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE
+SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"
+# SYSTEMS="FreeBSD-14.0-STABLE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Basic KDE"   # "Minimal Basic KDE"
-# PROJECTS="Minimal"
-
+PROJECTS="KDE+Development"   # Minimal Basic Development KDE KDE+Development
 HOSTNAME="burgsteinfurt.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
@@ -43,10 +42,12 @@ DISK_ROOT=32768
 DISK_HOME=16384
 DISK_SWAP=4096
 VIDEO="HD+"
+BOOTSPLASH="/usr/share/bootsplash/Splash-Gressholmen-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 
+files/generate-backgrounds
 build-defined-vms
