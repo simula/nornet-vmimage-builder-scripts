@@ -155,14 +155,27 @@ elif [ -e /usr/bin/dnf ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-   packages="
+     packages="
       autoconf
       automake
+      bison
+      boost-all
       cmake
+      flex
       gcc
       gdb
+      ghostscript10
       graphicsmagick
+      GraphicsMagick
+      hs-ShellCheck
       libtool
+      noto
+      p5-Image-ExifTool
+      p5-PkgConfig-LibPkgConf
+      py39-yamllint
+      python
+      R
+      urw-base35-fonts
       valgrind
    "
 
