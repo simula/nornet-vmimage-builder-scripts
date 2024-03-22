@@ -107,7 +107,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake cmake g++ gcc gm libtool make valgrind ; do
+for command in autoconf automake cmake g++ gcc gdb gm libtool make valgrind ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
@@ -117,6 +117,6 @@ for command in autoconf automake cmake g++ gcc gm libtool make valgrind ; do
    fi
 done
 if [ ${errors} -gt 0 ] ; then
-   echo "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
 fi

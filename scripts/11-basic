@@ -198,6 +198,6 @@ for command in base64 bwm-ng bzip2 curl locate gdisk gpg hipercontracer htop ifc
    fi
 done
 if [ ${errors} -gt 0 ] ; then
-   echo "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
 fi

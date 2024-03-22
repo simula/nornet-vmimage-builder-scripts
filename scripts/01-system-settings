@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+UNAME="$(uname)"
+
+
+# ====== Set timezone =======================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   TIMEZONE="Europe/Oslo"
+   if [ -x /usr/bin/timedatectl ] ; then
+      rm -f /etc/localtime
+      ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+      # This command may fail in a Docker container, due to systemd not running:
+      /usr/bin/timedatectl set-timezone ${TIMEZONE} || true
+   else
+      if [ -e /usr/bin/apt-get ] ; then
+         # ------ Old Ubuntu (12.04 etc.) -----------------------------------
+         if [ ! -e /usr/bin/apt ] ; then
+            echo "${TIMEZONE}" >/etc/timezone
+            dpkg-reconfigure -f noninteractive tzdata
+         fi
+      fi
+   fi
+fi
+
+
+# ====== Enable SCTP module =================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   # Load SCTP when booting:
+   cat >/etc/modules-load.d/sctp.conf <<EOF
+sctp
+EOF
+   # Remove blacklisting of SCTP in Fedora:
+   rm -f /etc/modprobe.d/sctp-blacklist.conf
+fi
+
+
+# ====== Set sysctls ========================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   cat >>/etc/sysctl.conf <<EOF
+
+#############################################################################
+
+# ------ Custom settings ----------------------------------------------------
+# Enable ECN:
+net.ipv4.tcp_ecn=1
+
+# ------ TCP settings -------------------------------------------------------
+# Turn off auto-tuning of the TCP receive buffer size:
+# net.ipv4.tcp_moderate_rcvbuf=0
+# net.netfilter.nf_conntrack_icmp_timeout=60
+
+# net.core.rmem_default=212992
+# net.core.rmem_max=134217728
+# net.core.wmem_default=212992
+# net.core.wmem_max=134217728
+# net.ipv4.tcp_rmem='4096 87380 134217728'
+# net.ipv4.tcp_wmem='4096 16384 134217728'
+# net.ipv4.tcp_mem='134217728 134217728 134217728'
+# net.ipv4.route.flush=1
+# net.ipv6.route.flush=1
+
+# ----- MPTCP settings ------------------------------------------------------
+# net.mptcp.mptcp_enabled=1
+# net.mptcp.mptcp_path_manager=fullmesh
+EOF
+
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   cat >>/etc/sysctl.conf <<EOF
+
+#############################################################################
+
+# ------ Custom settings ----------------------------------------------------
+# Enable ECN:
+net.inet.tcp.ecn.enable=1
+# Make sure power off works with EFI:
+hw.efi.poweroff=0
+EOF
+
+fi
+
+
+# ====== Renew SSH keys and enforce strong cipher configurations ============
+if [ -e /usr/bin/Create-New-SSH-Node-Keys ] ; then
+   /usr/bin/Create-New-SSH-Node-Keys -yes-to-all-i-am-really-sure
+fi

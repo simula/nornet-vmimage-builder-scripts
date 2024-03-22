@@ -28,6 +28,12 @@ set -e
 # installation:
 # - Ping (network connectivity check)
 # - cURL (download tool)
+#
+# Further properties:
+# - ECN enabled
+# - SCTP enabled
+# - SSH server enabled
+# - UTF-8 character encoding
 # ###########################################################################
 
 
@@ -36,9 +42,10 @@ set -e
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
+   # Make 3 APT package download retries, in case of network problems:
    echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
 
-   # Just ensure the package database is up-to-date
+   # Just ensure the package database is up-to-date:
    /usr/bin/apt-get update
 
 # ------ Fedora -------------------------------------------------------------
@@ -69,6 +76,6 @@ for command in ping curl ; do
    fi
 done
 if [ ${errors} -gt 0 ] ; then
-   echo "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
 fi
