@@ -10,7 +10,17 @@ fi
 address="$1"
 
 ssh-copy-id nornetpp@${address}
-ssh -t nornetpp@${address} '
+ssh -t -oStrictHostKeyChecking=no nornetpp@${address} '
+echo "nornetpp ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/99-nornetpp
+if ! which git ; then
+   if [ -x /usr/bin/apt ] ; then
+      sudo /usr/bin/apt install -y git joe
+   elif [ -x /usr/bin/dnf ] ; then
+      sudo /usr/bin/dnf install -y git joe
+   elif [ -x /usr/bin/pkg ] ; then
+      sudo /usr/bin/pkg install -y git joe
+   fi
+fi
 if [ ! -d ~/src/vmimage-builder-scripts ] ; then
    git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts ~/src/vmimage-builder-scripts
    cd ~/src/vmimage-builder-scripts
