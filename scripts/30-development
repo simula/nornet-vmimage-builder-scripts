@@ -184,7 +184,7 @@ for command in autoconf automake bc bison clang clang++ cmake exiftool flex g++ 
       errors=$((errors+1))
    fi
 done
-if "$(uname)" == "Linux" ] ; then
+if [ "$(uname)" == "Linux" ] ; then
    for command in reprepro pbuilder ; do
       echo -n "${command}: "
       if which ${command} >/dev/null ; then

@@ -206,7 +206,7 @@ for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig j
       errors=$((errors+1))
    fi
 done
-if "$(uname)" == "Linux" ] ; then
+if [ "$(uname)" == "Linux" ] ; then
    for command in ethtool netplan ; do
       echo -n "${command}: "
       if which ${command} >/dev/null ; then
