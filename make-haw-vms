@@ -41,6 +41,7 @@ DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048
 VIDEO="FHD"
+BOOTSPLASH=""
 BACKGROUND_SDDM="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Hamburg1.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/simulamet/Desktop-with-Logo/3840x2160/mosaic/Hamburg2.jpeg"
 BACKGROUND_DESKTOP="/usr/share/simulamet/Desktop-with-Logo/3840x2160/plain/Hamburg2.jpeg"

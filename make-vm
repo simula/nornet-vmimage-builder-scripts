@@ -822,7 +822,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    "${JSON}"
 
 (
-   echo "TIMESTAMP=$(env LANG=C date +"%Y/%m/%d-%H:%M:%S")"
+   echo "TIMESTAMP=$(date +"%Y/%m/%d-%H:%M:%S")"
    if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
       echo "RESULT=$(realpath --relative-to=. "${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}.ova")"
    elif [ "${HYPERVISOR}" == "QEMU" ] ; then
