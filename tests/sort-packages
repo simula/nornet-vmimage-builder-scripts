@@ -1,0 +1,15 @@
+#!/bin/bash
+
+   packages="
+awk base64 bwm-ng bzip2 curl locate gdisk hipercontracer htop ifconfig joe jq man netperfmeter nmap ping pwgen python3 subnetcalc sudo System-Info System-Maintenance traceroute tree tshark wget rspserver rspterminal
+"
+
+sorted="$(echo "${packages}" | xargs -n1 | sort -u)"
+echo '   packages="'
+for package in ${sorted} ; do
+   echo "      ${package}"
+done
+echo '   "'
+
+echo ""
+echo \"${sorted}\" | xargs
