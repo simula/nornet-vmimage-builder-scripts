@@ -1,7 +1,7 @@
 #!/bin/bash
 
-   packages="
-awk base64 bwm-ng bzip2 curl locate gdisk hipercontracer htop ifconfig joe jq man netperfmeter nmap ping pwgen python3 subnetcalc sudo System-Info System-Maintenance traceroute tree tshark wget rspserver rspterminal
+packages="
+autoconf automake bison boost-all cmake flex gcc gdb ghostscript10 noto graphicsmagick GraphicsMagick libtool python R urw-base35-fonts valgrind p5-Image-ExifTool py39-yamllint p5-PkgConfig-LibPkgConf hs-ShellCheck
 "
 
 sorted="$(echo "${packages}" | xargs -n1 | sort -u)"
