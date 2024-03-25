@@ -134,7 +134,7 @@ TCPKeepAlive              yes
 ClientAliveInterval       60
 ClientAliveCountMax       3
 
-AcceptEnv                 LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+AcceptEnv                 LANG LC_*
 
 EOF
 for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
@@ -167,7 +167,7 @@ TCPKeepAlive              yes
 ServerAliveInterval       30
 ServerAliveCountMax       3
 
-SendEnv                   LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
+SendEnv                   LANG LC_*
 EOF
 
 

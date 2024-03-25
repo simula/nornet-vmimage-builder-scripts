@@ -23,11 +23,12 @@ set -ex
 
 
 # ====== Ensure that script is ran by user account to provision =============
-if [ $(id -u) -eq 0 ] ; then
+if [ "$(id -u)" -eq 0 ] ; then
    # Running by configuring sudo root. Run script again, but as user!
-   echo "Running as ROOT! SUDO_USER=$SUDO_USER"
-   if [ "$SUDO_USER" != "root" ] ; then
-      sudo -u $SUDO_USER $0 $@ && exit 0
+   echo "Running as ROOT! SUDO_USER=${SUDO_USER}"
+   if [ "${SUDO_USER}" != "root" ] ; then
+      # shellcheck disable=SC2068
+      sudo -u "${SUDO_USER}" "$0" $@ && exit 0
       exit 1
    else
       # Prevent recursive invocation as "root" user:
@@ -36,7 +37,7 @@ if [ $(id -u) -eq 0 ] ; then
    fi
 else
    # Echo running as user
-   echo "Running as $USER! SUDO_USER=$SUDO_USER"
+   echo "Running as ${USER}! SUDO_USER=${SUDO_USER}"
 fi
 
 
@@ -44,12 +45,32 @@ fi
 mkdir -p ~/src
 cd ~/src
 
-git clone https://dreibh@github.com/dreibh/fractgen.git
-git clone https://dreibh@github.com/dreibh/hipercontracer.git
-git clone https://dreibh@github.com/dreibh/netperfmeter.git
-git clone https://dreibh@github.com/dreibh/rsplib.git
-git clone https://dreibh@github.com/dreibh/subnetcalc.git
-git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+if [ ! -e bibtexconv ] ; then
+   git clone https://dreibh@github.com/dreibh/bibtexconv.git
+fi
+if [ ! -e fractgen ] ; then
+   git clone https://dreibh@github.com/dreibh/fractgen.git
+fi
+if [ ! -e hipercontracer ] ; then
+   git clone https://dreibh@github.com/dreibh/hipercontracer.git
+fi
+if [ ! -e netperfmeter ] ; then
+   git clone https://dreibh@github.com/dreibh/netperfmeter.git
+fi
+if [ ! -e rsplib ] ; then
+   git clone https://dreibh@github.com/dreibh/rsplib.git
+fi
+if [ ! -e subnetcalc ] ; then
+   git clone https://dreibh@github.com/dreibh/subnetcalc.git
+fi
+if [ ! -e system-tools ] ; then
+   git clone https://dreibh@github.com/dreibh/system-tools.git
+fi
+if [ ! -e vmimage-builder-scripts ] ; then
+   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+fi
 
 # HAW "Rechnernetze" exercise sources:
-git clone https://dreibh@bitbucket.org/dreibh/rn20.git rn20
+if [ ! -e rn23 ] ; then
+   git clone https://dreibh@bitbucket.org/dreibh/rn23.git rn23
+fi

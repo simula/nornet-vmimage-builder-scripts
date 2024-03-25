@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# ====== Package installation ===============================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+
+   packages="
+      rserpooldemo-desktop
+      rserpooldemo-development
+      rserpooldemo-tool
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+
+   packages="
+      rserpooldemo-desktop
+      rserpooldemo-development
+      rserpooldemo-tool
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y ${packages}
+
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ -e /usr/sbin/pkg ] ; then
+
+   # TBD!
+   true
+
+fi
+
+
+# ====== Add demo scenario icon to desktop ==================================
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
+if [ -e /usr/share/rserpooldemo/local-scenario/local-setup.xml ] ; then
+   sudo -u "${USER_NAME}" ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/"
+fi
+
+
+# ====== Prepare source repositories ========================================
+mkdir -p ~/src
+cd ~/src
+
+if [ ! -e rsplib ] ; then
+   git clone https://dreibh@github.com/dreibh/rsplib
+fi
+if [ ! -e rserpooldemo ] ; then
+   git clone https://dreibh@github.com/dreibh/rserpooldemo
+fi
+if [ ! -e rsplib ] ; then
+   git clone https://dreibh@github.com/dreibh/rsplib
+fi
+if [ ! -e socketapi ] ; then
+   git clone https://dreibh@github.com/dreibh/socketapi
+fi
+if [ ! -e vmimage-builder-scripts ] ; then
+   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+fi

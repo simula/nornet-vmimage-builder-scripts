@@ -51,7 +51,7 @@ if [ "${UNAME}" == "Linux" ] ; then
       fi
       sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
           -e "s%@SET_LOADER_HERE@%${loader}%g" \
-          </tmp/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
+          </tmp/configuration-files/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
       chmod +x /etc/grub.d/06_aaaaa_bootsplash
       configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
    fi
