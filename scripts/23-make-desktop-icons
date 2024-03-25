@@ -58,6 +58,7 @@ APPLICATIONS="
    fractgen
    gimp
    libreoffice-startcenter
+   org.inkscape.Inkscape
    org.kde.kate
    org.kde.kile
    org.kde.konsole

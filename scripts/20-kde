@@ -32,6 +32,7 @@ set -ex
 # - FractGen
 # - LibreOffice
 # - Gimp
+# - Inkscape
 # - Kate
 # - Kile
 # - Konsole
@@ -56,6 +57,7 @@ if [ -e /usr/bin/apt-get ] ; then
       kde-plasma-desktop
       kde-style-oxygen-qt5
       gimp
+      inkscape
       kate
       kile
       konsole
@@ -113,6 +115,7 @@ elif [ -e /usr/bin/dnf ] ; then
       firefox
       fractgen
       gimp
+      inkscape
       kate
       @KDE
       kile
@@ -146,6 +149,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       firefox-esr
       fractgen
       gimp
+      inkscape
       kde5
       kile
       libreoffice

@@ -62,13 +62,16 @@ set -e
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
+   # Programs:
    packages="
       autoconf
       automake
       bc
       bison
+      build-essential
       clang
       cmake
+      extra-cmake-modules
       debhelper
       devscripts
       flex
@@ -81,9 +84,7 @@ if [ -e /usr/bin/apt-get ] ; then
       ghostscript
       graphicsmagick
       gsfonts
-      libboost-all-dev
       libimage-exiftool-perl
-      libsctp-dev
       libtool-bin
       manpages-dev
       pbuilder
@@ -95,6 +96,28 @@ if [ -e /usr/bin/apt-get ] ; then
       shellcheck
       valgrind
       yamllint
+   "
+
+   # Development files:
+   packages="${packages}
+      libboost-all-dev
+      libbz2-dev
+      libc-ares-dev
+      libcpprspserver-dev
+      libcurl4-openssl-dev
+      libgeoip-dev
+      liblzma-dev
+      libmongoc-dev
+      libmysqlcppconn-dev
+      libpqxx-dev
+      librsplib-dev
+      libsctp-dev
+      libssl-dev
+      qtbase5-dev
+      qtbase5-dev-tools
+      qtchooser
+      qttools5-dev
+      zlib1g-dev
    "
 
    # shellcheck disable=SC2086
@@ -114,12 +137,12 @@ if [ -e /usr/bin/apt-get ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
 
+   # Programs:
    packages="
       autoconf
       automake
       bc
       bison
-      boost-devel
       clang
       cmake
       flex
@@ -132,7 +155,6 @@ elif [ -e /usr/bin/dnf ] ; then
       google-noto-serif-fonts
       GraphicsMagick
       libtool
-      lksctp-tools-devel
       mock
       pbuilder
       perl-Image-ExifTool
@@ -148,6 +170,27 @@ elif [ -e /usr/bin/dnf ] ; then
       yamllint
    "
 
+   # Development files:
+   packages="${packages}
+      boost-devel
+      bzip2-devel
+      c-ares-devel
+      GeoIP-devel
+      libbson-devel
+      libcurl-devel
+      libpqxx-devel
+      lksctp-tools-devel
+      mongo-c-driver-devel
+      openssl-devel
+      qt5-qtbase-devel
+      qt5-qttools-devel
+      qtchooser
+      rsplib-libcpprspserver-devel
+      rsplib-librsplib-devel
+      xz-devel
+      zlib-devel
+   "
+
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
@@ -155,7 +198,8 @@ elif [ -e /usr/bin/dnf ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-     packages="
+   # Programs:
+   packages="
       autoconf
       automake
       bison
@@ -177,6 +221,11 @@ elif [ -e /usr/sbin/pkg ] ; then
       R
       urw-base35-fonts
       valgrind
+   "
+
+   # Development files:
+   packages="${packages}
+
    "
 
    # shellcheck disable=SC2086
