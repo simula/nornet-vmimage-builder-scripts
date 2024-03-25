@@ -28,7 +28,7 @@ UNAME="$(uname)"
 # ====== Initial .bashrc ====================================================
 if [ "${UNAME}" == "FreeBSD" ] ; then
    if [ ! -e "/home/${USER_NAME}/.bashrc" ] ; then
-      cp /tmp/bashrc "/home/${USER_NAME}/.bashrc"
+      cp /tmp/configuration-files/bashrc "/home/${USER_NAME}/.bashrc"
    fi
    if [ ! -e "/home/${USER_NAME}/.bash_profile" ] ; then
       cat >"/home/${USER_NAME}/.bash_profile" <<EOF
@@ -76,9 +76,9 @@ sudo -u "${USER_NAME}" chmod 600 "/home/${USER_NAME}/.ssh/authorized_keys"
 
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   sudo -u "${USER_NAME}" cp /tmp/Face-Tux.png "/home/${USER_NAME}/.face.icon"
+   sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Tux.png "/home/${USER_NAME}/.face.icon"
 elif [ "${UNAME}" == "FreeBSD" ] ; then
-   sudo -u "${USER_NAME}" cp /tmp/Face-Beastie.png "/home/${USER_NAME}/.face.icon"
+   sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Beastie.png "/home/${USER_NAME}/.face.icon"
 fi
 
 

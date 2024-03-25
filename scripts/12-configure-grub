@@ -35,7 +35,7 @@ if [ "${UNAME}" == "Linux" ] ; then
       if [ ! -e "${BOOTSPLASH}" ] ; then
          dir="$(dirname "${BOOTSPLASH}")"
          sudo mkdir -p "${dir}/"
-         sudo mv "/tmp/$(basename "${BOOTSPLASH}")" "${dir}/"
+         sudo mv "/tmp/bootsplash-images/$(basename "${BOOTSPLASH}")" "${dir}/"
       fi
 
       loader=""
