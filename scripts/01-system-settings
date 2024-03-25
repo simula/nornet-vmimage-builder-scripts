@@ -172,8 +172,14 @@ EOF
 
 
 # ====== Prepare temorary directories for further setup =====================
-mkdir -p /tmp/desktop-backgrounds
-mkdir -p /tmp/bootsplash-images
-mkdir -p /tmp/system-info
-mkdir -p /tmp/face-icons
-mkdir -p /tmp/configuration-files
+directories="
+   bootsplash-images
+   configuration-files
+   desktop-backgrounds
+   face-icons
+   system-info
+"
+for directory in ${directories} ; do
+   mkdir -p "/tmp/${directory}"
+   chown ${USER_NAME}:${USER_NAME} "/tmp/${directory}"
+done

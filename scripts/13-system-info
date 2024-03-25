@@ -22,9 +22,15 @@
 set -ex
 
 
-UNAME="$(uname)"
-
-
 # ====== Configure System-Info ==============================================
-find /tmp/sytem-info -name "*" -print0 | xargs -r -0 -I {} chmod +x {}
-find /tmp/sytem-info -name "*" -print0 | xargs -r -0 -I {} mv {} /etc/system-info.d/
+if [ "$(uname)" == "FreeBSD" ] ; then
+   systemInfoDirectory="/usr/local/etc/system-info.d"
+
+   # FIXME! This can be removed when the td-system-tools port got updated!
+   pkg install -y figlet
+else
+   systemInfoDirectory="/etc/system-info.d"
+fi
+
+find /tmp/system-info -type f -print0 | xargs -r -0 -I "{}" chmod +x "{}"
+find /tmp/system-info -type f -print0 | xargs -r -0 -I "{}" cp "{}" "${systemInfoDirectory}"
