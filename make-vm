@@ -149,7 +149,7 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--memory" ] || [ "$1" == "-m" ] ; then
       VM_MEMORY="$2"
-      if [[ ! "${VM_MEMORY}" =~ ^[0-9]*$|^NA$ ]] ; then
+      if [[ ! "${VM_MEMORY}" =~ ^[0-9]+$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for memory: ${VM_MEMORY} MiB"
          exit 1
       fi
@@ -161,14 +161,17 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--balloon" ] || [ "$1" == "-b" ] ; then
       VM_BALLOON="$2"
-      if [[ ! "${VM_BALLOON}" =~ ^[0-9]*$|^NA$ ]] ; then
+      if [[ ! "${VM_BALLOON}" =~ ^[0-9]+$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for memory balloon: ${VM_BALLOON} MiB"
          exit 1
+      fi
+      if [ "${VM_BALLOON}" == "NA" ] ; then
+         VM_BALLOON=0
       fi
       shift
    elif [ "$1" == "--root" ] || [ "$1" == "-r" ] ; then
       VM_DISK_ROOT="$2"
-      if [[ ! "${VM_DISK_ROOT}" =~ ^[0-9]*$|^NA$ ]] ; then
+      if [[ ! "${VM_DISK_ROOT}" =~ ^[0-9]+$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for root: ${VM_DISK_ROOT} MiB"
          exit 1
       fi
@@ -180,7 +183,7 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--home" ] || [ "$1" == "-r" ] ; then
       VM_DISK_HOME="$2"
-      if [[ ! "${VM_DISK_HOME}" =~ ^[0-9]*$|^NA$ ]] ; then
+      if [[ ! "${VM_DISK_HOME}" =~ ^[0-9]+$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for home: ${VM_DISK_HOME} MiB"
          exit 1
       fi
@@ -192,7 +195,7 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--swap" ] || [ "$1" == "-r" ] ; then
       VM_DISK_SWAP="$2"
-      if [[ ! "${VM_DISK_SWAP}" =~ ^[0-9]*$|^NA$ ]] ; then
+      if [[ ! "${VM_DISK_SWAP}" =~ ^[0-9]+$|^NA$ ]] ; then
          echo >&2 "ERROR: Bad size for swap: ${VM_DISK_SWAP} MiB"
          exit 1
       fi
@@ -220,7 +223,7 @@ while [ $# -gt 0 ] ; do
          VIDEO="3840x2160"  # 4K, 16:9
       fi
       if [ ${VIDEO} != "NA" ] ; then
-         if [[ ! "${VIDEO}" =~ ^[0-9]*x[0-9]*$ ]] ; then
+         if [[ ! "${VIDEO}" =~ ^[0-9]+x[0-9]+$ ]] ; then
             echo >&2 "ERROR: Bad video setting: ${VIDEO}"
             exit 1
          fi
