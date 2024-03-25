@@ -777,6 +777,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -parallel-builds=0 \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${NAME}" \
    -var "vm_name=${vm_name}"                           \
+   -var "vm_name_dnsname=${vm_name//[^a-zA-Z0-9\\.-]/}" \
    -var "vm_version=${vm_version}"                     \
    -var "vm_version=${vm_version}"                     \
    -var "vm_chipset=${VM_CHIPSET}"                     \
