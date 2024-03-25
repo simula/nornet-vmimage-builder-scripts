@@ -55,7 +55,7 @@ USER_NAME="nornetpp"
 USER_REALNAME="NorNet Praesum Presum"
 USER_PASSWORD="!NorNetInst!"
 
-BOOTSPLASH="/usr/share/bootsplash/Gressholmen-3840x2160.jpeg"
+BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
