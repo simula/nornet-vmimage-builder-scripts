@@ -24,7 +24,7 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS  Ubuntu-24.04-LTS   Ubuntu-23.10   Fedora-38 Fedora-39"
-# SYSTEMS="Ubuntu-22.04-LTS"
+SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="RSerPoolDemo"
@@ -37,6 +37,7 @@ CHIPSET=ich9
 FIRMWARE=efi
 CORES=6
 MEMORY=4096
+BALLOON=2048
 DISK_ROOT=32768
 DISK_HOME=65536
 DISK_SWAP=2048

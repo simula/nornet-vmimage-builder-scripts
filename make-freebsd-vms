@@ -26,7 +26,7 @@ HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
 SYSTEMS="FreeBSD-14.0-RELEASE" # FreeBSD-14.0-STABLE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal" # KDE"
+PROJECTS="KDE+Development"   # Minimal Basic Development KDE KDE+Development
 # PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.openstack"
@@ -46,7 +46,7 @@ BOOTSPLASH="/usr/share/bootsplash/Gressholmen-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
-OPTIONS="-1"   # Just one disk!
+OPTIONS=""
 # ---------------------------------------------------------
 
 files/generate-backgrounds
