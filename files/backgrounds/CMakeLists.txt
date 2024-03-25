@@ -85,12 +85,38 @@ INCLUDE(FindUnixCommands)
 # ------ Required prgorams --------------------------------------------------
 FIND_PROGRAM(AWK awk PATHS /bin /usr/bin /usr/local/bin)
 IF(NOT AWK)
-   MESSAGE(FATAL_ERROR "awk (Ubuntu/Debian: awk; Fedora: awk) not found!")
+   MESSAGE(FATAL_ERROR
+           " Cannot find AWK! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y awk\n"
+           " * Fedora:        sudo dnf install -y awk\n"
+           " * FreeBSD:       (should always be there!")
 ENDIF()
 
 FIND_PROGRAM(GM gm PATHS /bin /usr/bin /usr/local/bin)
 IF(NOT GM)
-   MESSAGE(FATAL_ERROR "gm (Ubuntu/Debian: graphicsmagick; Fedora: GraphicsMagick) not found!")
+   MESSAGE(FATAL_ERROR
+           " Cannot find GraphicsMagick! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y GraphicsMagick\n"
+           " * Fedora:        sudo dnf install -y GraphicsMagick\n"
+           " * FreeBSD:       sudo pkg install -y GraphicsMagick")
+ENDIF()
+
+FIND_PROGRAM(GIMP gimp PATHS /bin /usr/bin /usr/local/bin)
+IF(NOT GIMP)
+   MESSAGE(FATAL_ERROR
+           " Cannot find Gimp! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y gimp\n"
+           " * Fedora:        sudo dnf install -y gimp\n"
+           " * FreeBSD:       sudo pkg install -y gimp")
+ENDIF()
+
+FIND_PROGRAM(INKSCAPE inkscape PATHS /bin /usr/bin /usr/local/bin)
+IF(NOT INKSCAPE)
+   MESSAGE(FATAL_ERROR
+           " Cannot find Gimp! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y inkscape\n"
+           " * Fedora:        sudo dnf install -y inkscape\n"
+           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool")
 ENDIF()
 
 # NOTE: exiftool fails to handle GIMP-generated JPEG files under
@@ -98,7 +124,11 @@ ENDIF()
 # (i.e. the EXIF information will not be updated).
 FIND_PROGRAM(EXIFTOOL exiftool PATHS /bin /usr/bin /usr/local/bin)
 IF(NOT EXIFTOOL)
-   MESSAGE(FATAL_ERROR "exiftool (Ubuntu/Debian: libimage-exiftool-perl; Fedora: perl-Image-ExifTool) not found!")
+   MESSAGE(FATAL_ERROR
+           " Cannot find ExifTool! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y libimage-exiftool-perl\n"
+           " * Fedora:        sudo dnf install -y perl-Image-ExifTool\n"
+           " * FreeBSD:       sudo pkg install -y inkscape")
 ENDIF()
 
 # ------ Required scripts ---------------------------------------------------
