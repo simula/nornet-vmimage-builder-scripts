@@ -75,21 +75,21 @@ fi
 
 
 # ====== Prepare source repositories ========================================
-mkdir -p ~/src
+sudo -u "${USER_NAME}:${USER_NAME}" mkdir -p ~/src
 cd ~/src
 
 if [ ! -e rsplib ] ; then
-   git clone https://dreibh@github.com/dreibh/rsplib
+   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
 fi
 if [ ! -e rserpooldemo ] ; then
-   git clone https://dreibh@github.com/dreibh/rserpooldemo
+   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
 fi
 if [ ! -e rsplib ] ; then
-   git clone https://dreibh@github.com/dreibh/rsplib
+   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
 fi
 if [ ! -e socketapi ] ; then
-   git clone https://dreibh@github.com/dreibh/socketapi
+   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
-   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 fi
