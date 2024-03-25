@@ -35,22 +35,22 @@ elif [ -e /usr/bin/dnf ] ; then
 fi
 
 # ====== Create user ========================================================
-mkdir -p /home/${USER_NAME}
-groupadd ${USER_NAME}
+mkdir -p /home/"${USER_NAME}"
+groupadd "${USER_NAME}"
 useradd -s /bin/bash \
    -c "${USER_REALNAME}" \
    -g "${USER_NAME}" \
    -d "/home/${USER_NAME}" \
    -p "${USER_PASSWORD}" \
-   ${USER_NAME}
+   "${USER_NAME}"
 echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd
-chown ${USER_NAME}:${USER_NAME} /home/${USER_NAME}
+chown "${USER_NAME}":"${USER_NAME}" /home/"${USER_NAME}"
 if [ ! -e /usr/bin/dnf ] ; then
    # Debian/Ubuntu:
-   usermod -aG sudo ${USER_NAME}
+   usermod -aG sudo "${USER_NAME}"
 else
    # Fedora:
-   usermod -aG wheel ${USER_NAME}
+   usermod -aG wheel "${USER_NAME}"
 fi
 
 # ====== Create locales and time zone data ==================================
@@ -82,13 +82,13 @@ if [ -e /usr/bin/apt-get ] ; then
       software-properties-common gnupg
 
    # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
-   sudo -u ${USER_NAME} gpg \
-      --homedir /home/${USER_NAME}/.gnupg \
+   sudo -u "${USER_NAME}" gpg \
+      --homedir "/home/${USER_NAME}/.gnupg" \
       --keyserver hkp://keyserver.ubuntu.com \
       --recv-keys \
          8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
-   sudo -u ${USER_NAME} gpg \
-      --homedir /home/${USER_NAME}/.gnupg \
+   sudo -u "${USER_NAME}" gpg \
+      --homedir "/home/${USER_NAME}/.gnupg" \
       --armor \
       --export 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0 | apt-key add -
    apt-add-repository -y ppa:dreibh/ppa

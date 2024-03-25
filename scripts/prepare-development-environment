@@ -32,9 +32,9 @@ for key in ${KEYS} ; do
    # GnuPG is picky with the DNS server response, and OsloMet has a lot of
    # obscure firewall rules as well => this may fail here!
    for keyServer in ${KEYSERVERS} ; do
-      if sudo -u ${USER_NAME} gpg \
-            --homedir /home/${USER_NAME}/.gnupg \
-            --keyserver hkp://${keyServer} \
+      if sudo -u "${USER_NAME}" gpg \
+            --homedir /home/"${USER_NAME}"/.gnupg \
+            --keyserver hkp://"${keyServer}" \
             --recv-keys ${key} ; then
          echo "Got ${key} from ${keyServer}!"
          foundKey=1
@@ -48,8 +48,8 @@ for key in ${KEYS} ; do
       else
          curl "https://www.nntb.no/~dreibh/${key}.asc" >/tmp/${key}.asc
       fi
-      if sudo -u ${USER_NAME} gpg \
-            --homedir /home/${USER_NAME}/.gnupg \
+      if sudo -u "${USER_NAME}" gpg \
+            --homedir /home/"${USER_NAME}"/.gnupg \
             --import /tmp/${key}.asc ; then
          echo "Got ${key} from NNTB web server!"
          foundKey=1
@@ -68,12 +68,12 @@ done
 
 # ------ Ubuntu -------------------------------------------------------------
 if [ -e /etc/apt/sources.list ] ; then
-   for list in /etc/apt/sources.list `find /etc/apt/sources.list.d -name "*.list"`; do
-      cat ${list} | grep "^deb \(.*\)$" | sed -e "s/deb[ \t]*//g" | xargs -n1 -i§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >${list}.sed
-      cat ${list} | sed -f ${list}.sed >${list}.new
-      diff ${list} ${list}.new || true
-      mv ${list}.new ${list}
-      rm -f ${list}.sed
+   for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
+      cat "${list}" | grep "^deb \(.*\)$" | sed -e "s/deb[ \t]*//g" | xargs -n1 -i§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >"${list}".sed
+      cat "${list}" | sed -f "${list}".sed >"${list}".new
+      diff "${list}" "${list}".new || true
+      mv "${list}".new "${list}"
+      rm -f "${list}".sed
    done
 
    # Add commented-out debugging symbols repository:
@@ -88,7 +88,7 @@ if [ -e /etc/apt/sources.list ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ubuntu-dbgsym-keyring || apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F2EDC64DC5AEE1F6B9C621F0C8CAB6595FDFF622
 
    # Add commented-out MPTCP repository:
-   codename=`lsb_release -c -s`
+   codename=$(lsb_release -c -s)
    (
       echo ""
       echo "# Thomas Dreibholz's MPTCP kernel repository:"
@@ -99,8 +99,8 @@ if [ -e /etc/apt/sources.list ] ; then
    ) >>/etc/apt/sources.list
 
    KEY="21412672518D8B2D1862EFEF5CD5D12AA0877B49"
-   sudo -u ${USER_NAME} gpg \
-      --homedir /home/${USER_NAME}/.gnupg \
+   sudo -u "${USER_NAME}" gpg \
+      --homedir /home/"${USER_NAME}"/.gnupg \
       --armor \
       --export ${KEY} | apt-key add -
 

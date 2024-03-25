@@ -41,7 +41,7 @@ if [ -e /usr/bin/apt-get ] ; then
    (
       echo "# Allow password-less sudo for ${USER_NAME}:"
       echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL"
-   ) >/etc/sudoers.d/99-${USER_NAME}
+   ) >"/etc/sudoers.d/99-${USER_NAME}"
 
    # Remove installer's cloud configuration settings, to make sure Cloud-Init
    # is run again during image instantiation!
