@@ -70,26 +70,26 @@ fi
 # ====== Add demo scenario icon to desktop ==================================
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
 if [ -e /usr/share/rserpooldemo/local-scenario/local-setup.xml ] ; then
-   sudo -u "${USER_NAME}" ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/"
+   sudo -u "${USER_NAME}" ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/" || true
 fi
 
 
 # ====== Prepare source repositories ========================================
-sudo -u "${USER_NAME}:${USER_NAME}" mkdir -p ~/src
-cd ~/src
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+cd "/home/${USER_NAME}/src"
 
 if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
 fi
 if [ ! -e rserpooldemo ] ; then
-   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
 fi
 if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
 fi
 if [ ! -e socketapi ] ; then
-   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
-   sudo -u "${USER_NAME}:${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 fi
