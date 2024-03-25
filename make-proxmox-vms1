@@ -23,12 +23,11 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-11 Debian-12   Fedora-38 Fedora-39"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Ubuntu-23.10   Debian-11 Debian-12   Fedora-38 Fedora-39"
-SYSTEMS="Ubuntu-24.04-LTS"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-12   Fedora-38 Fedora-39"
+# SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"   # Minimal Basic Development KDE KDE+Development
+PROJECTS=Basic #"Minimal Basic Development KDE KDE+Development"   # Minimal Basic Development KDE KDE+Development
 
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
@@ -43,7 +42,7 @@ BALLOON=1024
 DISK_ROOT=16384
 DISK_HOME=8192
 DISK_SWAP=2048
-VIDEO="HD+"
+VIDEO="FHD"
 OPTIONS="--proxmox $HOME/.config/proxmox.config"
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
