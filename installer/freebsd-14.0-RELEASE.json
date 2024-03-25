@@ -18,7 +18,7 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/releases/ISO-IMAGES/14.0/FreeBSD-14.0-RELEASE-amd64-disc1.iso",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.0/FreeBSD-14.0-RELEASE-amd64-disc1.iso",
   "iso_checksum": "sha512:e7942034bd4ad9bfd677e3f722fc89ac827227fac8312cdf4b4a5f508ac99caac0273eae466107c7416abba1ac8004b983f5d9250d5a8622940f88c476d74920",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
