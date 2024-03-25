@@ -28,8 +28,8 @@ set -ex
 if [ -e /usr/bin/apt-get ] ; then
 
    packages="
-      neat-stuff-desktop
-      neat-stuff-development
+      neat-desktop
+      neat-development
    "
 
    # shellcheck disable=SC2086
