@@ -25,6 +25,14 @@ set -ex
 UNAME="$(uname)"
 
 
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+
 # ====== Initial .bashrc ====================================================
 if [ "${UNAME}" == "FreeBSD" ] ; then
    if [ ! -e "/home/${USER_NAME}/.bashrc" ] ; then

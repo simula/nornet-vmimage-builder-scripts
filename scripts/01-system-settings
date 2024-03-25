@@ -25,6 +25,14 @@ set -ex
 UNAME="$(uname)"
 
 
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+
 # ====== Set timezone =======================================================
 if [ "${UNAME}" == "Linux" ] ; then
    TIMEZONE="Europe/Oslo"
