@@ -1,6 +1,6 @@
 # This is /etc/skel/.bashrc of Ubuntu 22.04 LTS:
-05-user-settings.files/bashrc                          /tmp/
+05-user-settings.files/bashrc                          /tmp/configuration-files/
 
 # User images:
-05-user-settings.files/Face-Beastie.png                /tmp/
-05-user-settings.files/Face-Tux.png                    /tmp/
+05-user-settings.files/Face-Beastie.png                /tmp/face-icons/
+05-user-settings.files/Face-Tux.png                    /tmp/face-icons/

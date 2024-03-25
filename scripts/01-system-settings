@@ -169,3 +169,11 @@ ServerAliveCountMax       3
 
 SendEnv                   LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION LC_ALL LANGUAGE XMODIFIERS
 EOF
+
+
+# ====== Prepare temorary directories for further setup =====================
+mkdir -p /tmp/desktop-backgrounds
+mkdir -p /tmp/bootsplash-images
+mkdir -p /tmp/system-info
+mkdir -p /tmp/face-icons
+mkdir -p /tmp/configuration-files
