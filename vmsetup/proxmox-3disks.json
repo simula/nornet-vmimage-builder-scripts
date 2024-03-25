@@ -51,15 +51,17 @@
         "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      },
+     // FIXME! For unknown reason, the disks get reordered in QEMU!
+     // Therefore, defining home disk first, then swap:
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_home`}}M",
+        "disk_size": "{{user `vm_disk_swap`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      },
      {
         "type": "scsi",
-        "disk_size": "{{user `vm_disk_swap`}}M",
+        "disk_size": "{{user `vm_disk_home`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
         "discard": "true"
      }
