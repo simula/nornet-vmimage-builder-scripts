@@ -21,8 +21,8 @@
 # Bash options:
 set -e
 
-if [ $# -lt 3 ] ; then
-   echo >&2 "Usage: $0 output_file caption width"
+if [ $# -lt 4 ] ; then
+   echo >&2 "Usage: $0 output_file caption width height"
    exit 1
 fi
 
