@@ -143,7 +143,7 @@ function run-firefox-headless ()
    echo "Waiting a moment to let Firefox initialise the profile (PID ${pid}) ..."
    sleep 45
    echo "Stopping Firefox ..."
-   kill ${pid}   # Executable is /usr/lib*/firefox/firefox
+   kill -s TERM ${pid}   # Executable is /usr/lib*/firefox/firefox
 
    echo "Waiting for Firefox to finish ..."
    wait
