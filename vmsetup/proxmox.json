@@ -17,12 +17,12 @@
 // Contact: dreibh@simula.no
 
 {
-  "vm_name": "{{user `vm_name`}}",
+  "vm_name": "{{user `vm_name_dnsname`}}",
   "type": "proxmox-iso",
   "task_timeout": "10m",
   "boot_keygroup_interval": "500ms",
   "os": "l26",
-  "template_name": "{{user `vm_name`}}",
+  "template_name": "{{user `vm_name_dnsname`}}",
   "template_description": "{{user `vm_description`}}",
 
   "username": "{{user `proxmox_username`}}",
