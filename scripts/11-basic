@@ -72,10 +72,11 @@ if [ -e /usr/bin/apt-get ] ; then
    fi
    # ------------------------------------------------------------------------
 
-   # PLocate is the successor of findutils, both providing a "locate" command.
-   # Try PLocate first, then findutils:
+   # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
+   # Try PLocate first, then MLocate, then findutils:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends mlocate || \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
 
    packages="
       apt-file
