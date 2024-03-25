@@ -54,7 +54,7 @@ function process-result ()
    sed -e  "s@\(\"iso_url\": \"\)\([^\"]*\)@\\1${latestURL}@g" \
        -e  "s@\(\"iso_checksum\": \"\)\([^\"]*\)@\\1${algorithm}:${latestChecksum}@g" \
        <"${systemJSON}" >"${systemJSON}.updated"
-   if diff --color "${systemJSON}" "${systemJSON}.updated" ; then
+   if ! diff --color "${systemJSON}" "${systemJSON}.updated" ; then
       mv "${systemJSON}.updated" "${systemJSON}"
    fi
 }
