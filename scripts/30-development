@@ -208,7 +208,6 @@ elif [ -e /usr/sbin/pkg ] ; then
       gcc
       gdb
       ghostscript10
-      graphicsmagick
       GraphicsMagick
       hs-ShellCheck
       libtool
