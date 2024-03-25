@@ -203,7 +203,6 @@ elif [ -e /usr/sbin/pkg ] ; then
       autoconf
       automake
       bison
-      boost-all
       cmake
       flex
       gcc
@@ -225,7 +224,11 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    # Development files:
    packages="${packages}
-
+      boost-all
+      mongo-c-driver
+      mysql-connector-c++
+      postgresql-libpqxx
+      qt5
    "
 
    # shellcheck disable=SC2086

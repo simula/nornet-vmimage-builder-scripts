@@ -1,7 +1,10 @@
 #!/bin/bash
 
 packages="
-autoconf automake bison boost-all cmake flex gcc gdb ghostscript10 noto graphicsmagick GraphicsMagick libtool python R urw-base35-fonts valgrind p5-Image-ExifTool py39-yamllint p5-PkgConfig-LibPkgConf hs-ShellCheck
+      boost-all
+mysql-connector-c++
+postgresql-libpqxx
+mongo-c-driver
 "
 
 sorted="$(echo "${packages}" | xargs -n1 | sort -u)"
