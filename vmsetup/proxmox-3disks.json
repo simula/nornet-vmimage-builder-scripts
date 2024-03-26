@@ -25,6 +25,7 @@
   "os": "l26",
   "template_name": "{{user `vm_name_dnsname`}}",
   "template_description": "{{user `vm_description`}}",
+  "tags": "{{user `vm_tags`}}",
 
   "username": "{{user `proxmox_username`}}",
   "password": "{{user `proxmox_password`}}",
