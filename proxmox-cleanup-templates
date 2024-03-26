@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+dryRun=1
+if [ $# -gt 0 ] ; then
+   if [ "$1" == "--really-remove" ] ; then
+      dryRun=0
+   else
+      echo >&2 "Usage: $0 [--really-remove]"
+      exit 1
+   fi
+fi
+
+qm list | awk '
+{
+   id=$1;
+   name=$2;
+   status=$3;
+   if(id ~ /^2[0-9][0-1][0-9][0-3][0-9][0-9][0-9][0-9]$/ ) {
+      if(status == "running") {
+         print("" id " " name " " status);
+      }
+   }
+}
+' | \
+while read -r id name status ; do
+   if [ "${dryRun}" -eq 0 ] ; then
+      echo "Removing ${id} (${name}) with status \"${status}\" ..."
+      echo qm stop ${id}
+      echo qm destroy ${id}
+   else
+      echo "# Dry run only! Would remove ${id} (${name}) with status \"${status}\" ..."
+      echo qm stop ${id}
+      echo qm destroy ${id}   
+   fi
+done
