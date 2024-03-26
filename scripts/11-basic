@@ -64,6 +64,9 @@ if [ -e /usr/bin/apt-get ] ; then
    if [ -e /etc/os-release ] ; then
       . /etc/os-release
       if [ "${ID}" == "debian" ] ; then
+         # FIXME! This is not the best solution. Ideally, there should be a
+         #        Debian PPA for System-Tools!
+         #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
          cd /tmp
          wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
@@ -72,10 +75,11 @@ if [ -e /usr/bin/apt-get ] ; then
    fi
    # ------------------------------------------------------------------------
 
-   # PLocate is the successor of findutils, both providing a "locate" command.
-   # Try PLocate first, then findutils:
+   # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
+   # Try PLocate first, then MLocate, then findutils:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends mlocate || \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
 
    packages="
       apt-file

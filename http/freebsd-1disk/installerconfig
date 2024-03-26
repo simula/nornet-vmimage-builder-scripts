@@ -129,7 +129,7 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # Install some basic packages:
 pkg update
 pkg upgrade -y
-pkg install -y base64 bash curl git gnupg joe sudo td-system-tools virt-what
+pkg install -y bash curl git gnupg sudo virt-what
 
 # ====== Bash profile link ==================================================
 # Bash does not use /etc/profile, only /usr/local/etc/profile

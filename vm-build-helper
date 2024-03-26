@@ -22,6 +22,8 @@ set -e
 
 . ./directories.config
 
+
+# ###### Handle command-line parameters #####################################
 if [ ! -e "${OUTPUT_DIRECTORY}" ] ; then
    echo >&2 "ERROR: Output directory ${OUTPUT_DIRECTORY} does not exist!"
    exit 1

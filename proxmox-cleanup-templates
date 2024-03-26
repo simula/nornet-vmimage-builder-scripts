@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+set -e
+
+
+# ====== Check arguments ====================================================
+dryRun=1
+if [ $# -gt 0 ] ; then
+   if [ "$1" == "--really-remove" ] ; then
+      dryRun=0
+   else
+      echo >&2 "Usage: $0 [--really-remove]"
+      exit 1
+   fi
+fi
+
+
+# ====== Identify templates and VMs for removal =============================
+echo -e "\x1b[34mLooking for VMs/templates to clean up ...\x1b[0m"
+qm list | sort -k2 -k1nr | awk '
+BEGIN {
+   lastName="";
+   lastID=-1;
+}
+
+/^[ ]*2[0-9][0-1][0-9][0-3][0-9][0-9][0-9][0-9] / {
+   id=$1;
+   name=$2;
+   status=$3;
+   if(id ~ /^2[0-9][0-1][0-9][0-3][0-9][0-9][0-9][0-9]$/ ) {
+      if(status == "running") {
+         print "=> " name " is still running, but should be a not-running template!" | "cat 1>&2"
+         print id " " name " " status;
+      }
+      else if(status == "stopped") {
+         if(name == lastName) {
+            # This is an older version of the same template!
+            if(id < lastID) {
+               print "=> " name " (ID " id ") is older than " lastName " (ID " lastID ")" | "cat 1>&2"
+               print "" id " " name " " status;
+            }
+            else {
+               print "Something is wrong!" | "cat 1>&2"
+               exit 1;
+            }
+         }
+         else {
+            lastName = name;
+            lastID   = id;
+         }
+      }
+   }
+}
+' | (
+   echo -e "\x1b[34mCleaning up obsolete VMs/templates ...\x1b[0m"
+   while read -r id name status ; do
+      if [[ ! "${id}" =~ ^2[0-9][0-1][0-9][0-3][0-9][0-9][0-9][0-9]$ ]] ; then
+         echo >&2 "ERROR: ID is not in the expected format! Something is wrong!"
+         exit 1
+      fi
+      if [ "${dryRun}" -eq 0 ] ; then
+         echo -e "\x1b[35mRemoving ${id} (${name}) with status \"${status}\" ...\x1b[0m"
+         echo -e "\x1b[36mqm stop ${id}\x1b[0m"
+         qm stop ${id}
+         echo -e "\x1b[36mqm destroy ${id}\x1b[0m"
+         qm destroy ${id}
+      else
+         echo -e "\x1b[35mDRY RUN ONLY: Would remove ${id} (${name}) with status \"${status}\" ...\x1b[0m"
+         echo -e "\x1b[36mqm stop ${id}\x1b[0m"
+         echo -e "\x1b[36mqm destroy ${id}\x1b[0m"
+      fi
+   done
+)

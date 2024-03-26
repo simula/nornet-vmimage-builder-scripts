@@ -26,7 +26,7 @@ HYPERVISOR="Proxmox"
 SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-13.3-RELEASE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="Minimal Basic Development KDE KDE+Development"   # Minimal Basic Development KDE KDE+Development
 
 HOSTNAME="gressholmen.simula.nornet"
 USER_NAME="nornetpp"
@@ -41,12 +41,12 @@ BALLOON=2048
 DISK_ROOT=32768
 DISK_HOME=16384
 DISK_SWAP=4096
-VIDEO="HD+"
+VIDEO="FHD"
+OPTIONS="--proxmox $HOME/.config/proxmox.config"
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
-OPTIONS=""
 # ---------------------------------------------------------
 
 files/generate-backgrounds

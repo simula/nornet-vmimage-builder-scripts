@@ -17,6 +17,7 @@
 // Contact: dreibh@simula.no
 
 {
+  "vm_id": "{{user `vm_id`}}",
   "vm_name": "{{user `vm_name_dnsname`}}",
   "type": "proxmox-iso",
   "task_timeout": "10m",
@@ -24,6 +25,7 @@
   "os": "l26",
   "template_name": "{{user `vm_name_dnsname`}}",
   "template_description": "{{user `vm_description`}}",
+  "tags": "{{user `vm_tags`}}",
 
   "username": "{{user `proxmox_username`}}",
   "password": "{{user `proxmox_password`}}",
@@ -43,25 +45,31 @@
   "iso_download_pve": true,
   "unmount_iso": true,
 
-  "scsi_controller": "virtio-scsi-pci",
+  // NOTE: Using virtio-scsi-pci leads to reordering for Ubuntu 20.04+,
+  //       while it is fine for old Ubuntu, Debian and Fedora!
+  //       Using virtio-scsi-single is fine, and it supports io_thread!
+  "scsi_controller": "virtio-scsi-single",
   "disks": [
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_root`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
-        "discard": "true"
+        "discard": true,
+        "io_thread": true
      },
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_home`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
-        "discard": "true"
+        "discard": true,
+        "io_thread": true
      },
      {
         "type": "scsi",
         "disk_size": "{{user `vm_disk_swap`}}M",
         "storage_pool": "{{user `proxmox_disk_storage`}}",
-        "discard": "true"
+        "discard": true,
+        "io_thread": true
      }
   ],
   "network_adapters": [
@@ -81,6 +89,6 @@
   "ballooning_minimum": "{{user `vm_balloon_min`}}",
   "vga": {
      "type": "qxl",
-     "memory": 16
+     "memory": 32
    }
 }
