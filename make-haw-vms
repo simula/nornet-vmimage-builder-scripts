@@ -54,10 +54,12 @@ for project in ${PROJECTS} ; do
       HOSTNAME="baumwall.haw.nornet"
       CORES=4
       MEMORY=4096
+      BALLOON=2048
    else
       HOSTNAME="reeperbahn.haw.nornet"
       CORES=2
       MEMORY=2048
+      BALLOON=1024
    fi
    PROJECTS="${project}"
    build-defined-vms &
