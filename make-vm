@@ -21,6 +21,26 @@
 set -e
 
 
+# ###### Generate serial number based on date, number <= 999999999 ##########
+function generate-serial-number ()
+{
+   flock serial.lock bash -c '
+      serialFile="$(dirname .)/serial.txt"
+      if [ ! -e "${serialFile}" ] ; then
+         serial="$(date +"%y%m%d000")"
+         echo "${serial}" | tee "${serialFile}"
+      else
+         serial="$(cat "${serialFile}")"
+         if [[ ! "${serial}" =~ ^[0-9]+$ ]] ; then
+            serial="$(date +"%y%m%d000")"
+         fi
+         serial=$((serial+1))
+         echo "${serial}" | tee "${serialFile}"
+      fi
+'
+}
+
+
 # ###### Defaults ###########################################################
 # PACKER="${HOME}/src/packer/bin/packer"
 PACKER="/usr/bin/packer"
@@ -337,15 +357,24 @@ NAME=""
 if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    BUILDER_VMSETUP="virtualbox"
    NAME="VirtualBox"
-   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
+   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
+   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
 elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
-   VM_DISK_PREFIX="vd"   # Using /dev/vd<N> for disks!
+   VM_DISK_PREFIX="/dev/vd"   # Using /dev/vd<N> for disks!
+   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
+   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
+   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
 elif [ "${HYPERVISOR}" == "vSphere" ] ; then
    BUILDER_VMSETUP="vsphere"
    NAME="vSphere"
-   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
+   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
+   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
    if [ "${VSPHERE_CONFIG_FILE}" == "" ] ; then
       echo >&2 "ERROR: No vSphere configuration file specified (--vsphere parameter)!"
       exit 1
@@ -355,7 +384,10 @@ elif [ "${HYPERVISOR}" == "vSphere" ] ; then
 elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    BUILDER_VMSETUP="proxmox"
    NAME="Proxmox"
-   VM_DISK_PREFIX="sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
+   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
+   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
+   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
    if [ "${PROXMOX_CONFIG_FILE}" == "" ] ; then
       echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
       exit 1
@@ -519,7 +551,9 @@ httpFiles=$(find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*")
 for httpFile in ${httpFiles} ; do
    echo "Processing: ${httpFile} -> ${NAME}/http/$(basename "${httpFile}")"
    # shellcheck disable=SC2094
-   sed -e "s/<SET_DISK_PREFIX_HERE>/${VM_DISK_PREFIX}/g" \
+   sed -e "s%<SET_ROOT_DISK_DEVICE_HERE>%${VM_DISK_ROOT_DEVICE}%g" \
+       -e "s%<SET_HOME_DISK_DEVICE_HERE>%${VM_DISK_HOME_DEVICE}%g" \
+       -e "s%<SET_SWAP_DISK_DEVICE_HERE>%${VM_DISK_SWAP_DEVICE}%g" \
        -e "s/<SET_XKBMODEL_HERE>/${XKBMODEL}/g" \
        -e "s/<SET_XKBLAYOUT_HERE>/${XKBLAYOUT}/g" \
        -e "s/<SET_XKBVARIANT_HERE>/${XKBVARIANT}/g" \
@@ -694,6 +728,7 @@ rm -f "${JSONTMP}"
 
 
 # ###### Run Packer #########################################################
+vm_id="$(generate-serial-number)"
 vm_name="${NAME/${HYPERVISOR}-/}"
 vm_version=$(date +"%Y.%m.%d-%H%M%S")
 vm_product="${HYPERVISOR} ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE}"
@@ -706,6 +741,7 @@ vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HY
 echo "Configuration:"
 echo " - HYPERVISOR=${HYPERVISOR}"
 echo " - NAME=${NAME}"
+echo " - VM_ID=${vm_id}"
 echo " - VM_NAME=${vm_name}"
 echo " - PROJECT=${PROJECT}"
 echo " - DISTRIBUTION=${DISTRIBUTION}"
@@ -776,8 +812,9 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -timestamp-ui \
    -parallel-builds=0 \
    -var "vm_directory=${OUTPUT_DIRECTORY}/${NAME}/${NAME}" \
-   -var "vm_name=${vm_name}"                           \
-   -var "vm_name_dnsname=${vm_name//[^a-zA-Z0-9\\.-]/}" \
+   -var "vm_id=${vm_id}"                                   \
+   -var "vm_name=${vm_name}"                               \
+   -var "vm_name_dnsname=${vm_name//[^a-zA-Z0-9\\.-]/}"    \
    -var "vm_version=${vm_version}"                     \
    -var "vm_version=${vm_version}"                     \
    -var "vm_chipset=${VM_CHIPSET}"                     \
@@ -836,8 +873,8 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
       nice xz -T0 -k "${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}".qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
    elif [ "${HYPERVISOR}" == "vSphere" ] ; then
-      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/successfully-built.txt"
    elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
-      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${NAME}/${vm_name}   FIXME!"
+      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/successfully-built.txt"
    fi
 ) >successfully-built.txt
