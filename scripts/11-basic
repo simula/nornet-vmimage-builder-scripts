@@ -64,6 +64,9 @@ if [ -e /usr/bin/apt-get ] ; then
    if [ -e /etc/os-release ] ; then
       . /etc/os-release
       if [ "${ID}" == "debian" ] ; then
+         # FIXME! This is not the best solution. Ideally, there should be a
+         #        Debian PPA for System-Tools!
+         #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
          cd /tmp
          wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
