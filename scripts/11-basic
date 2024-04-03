@@ -32,6 +32,7 @@ set -e
 # - EthTool (Ethernet card configuration tool; on Linux systems only!)
 # - Fail2Ban (prevent brute-force SSH attacks)
 # - GDisk (GPT partitioning tool)
+# - GrowPart (Partition growing tool; on Linux systems only!)
 # - Git (revision management)
 # - GNU Wget (download tool)
 # - HiPerConTracer
@@ -87,6 +88,7 @@ if [ -e /usr/bin/apt-get ] ; then
       bash-completion
       bwm-ng
       bzip2
+      cloud-guest-utils
       curl
       ethtool
       fail2ban
@@ -129,6 +131,7 @@ elif [ -e /usr/bin/dnf ] ; then
       bwm-ng
       bzip2
       cmake
+      cloud-utils-growpart
       curl
       ethtool
       fail2ban
@@ -211,7 +214,7 @@ for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig j
    fi
 done
 if [ "$(uname)" == "Linux" ] ; then
-   for command in ethtool netplan ; do
+   for command in ethtool growpart netplan ; do
       echo -n "${command}: "
       if which ${command} >/dev/null ; then
          echo "OK"
