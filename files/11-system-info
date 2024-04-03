@@ -1,0 +1,3 @@
+11-system-info.files/01-hostname     /tmp/system-info/
+11-system-info.files/02-simulamet    /tmp/system-info/
+11-system-info.files/banner-helper   /tmp/system-info/
