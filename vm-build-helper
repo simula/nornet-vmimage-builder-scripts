@@ -59,21 +59,21 @@ build-defined-vms ()
          fi
 
          # ====== Build VM ==================================================
-         if [ "${isFirst}" -eq 0 ] ; then
-            if [ "${delay}" -gt 0 ] ; then
-               echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
-               sleep ${delay}
+         name="${HYPERVISOR}-${project}-${distribution}-${release}"
+         logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
+         if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
+            if [ "${isFirst}" -eq 0 ] ; then
+               if [ "${delay}" -gt 0 ] ; then
+                  echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
+                  sleep ${delay}
+               fi
             fi
-         fi
-         isFirst=0
+            isFirst=0
 
-         (
-            name="${HYPERVISOR}-${project}-${distribution}-${release}"
-            logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
-            if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
-               startTime=$(date)
-               echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
-               mkdir -p "${OUTPUT_DIRECTORY}/${name}"
+            startTime=$(date)
+            echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
+            mkdir -p "${OUTPUT_DIRECTORY}/${name}"
+            (
                # shellcheck disable=SC2086
                if ./make-vm -H "${HYPERVISOR}" \
                      --project "${project}" --distribution "${distribution}" --release "${release}" \
@@ -99,10 +99,10 @@ build-defined-vms ()
                fi
                finishTime=$(date)
                echo -e "\x1b[${resultColor}m${finishTime}: Finished to build ${name} - ${result} -> ${logfile}\x1b[0m"
-            else
-               echo -e "\x1b[34m${name} is already there -> ${logfile}\x1b[0m"
-            fi
-         ) &
+            ) &
+         else
+            echo -e "\x1b[34m${name} is already there -> ${logfile}\x1b[0m"
+         fi
 
       done
    done
