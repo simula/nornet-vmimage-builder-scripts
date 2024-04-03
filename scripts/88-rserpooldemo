@@ -30,6 +30,27 @@ if [ "${USER_NAME}" == "" ] ; then
 fi
 
 
+# ====== Prepare source repositories ========================================
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+cd "/home/${USER_NAME}/src"
+
+if [ ! -e rsplib ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+fi
+if [ ! -e rserpooldemo ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
+fi
+if [ ! -e rsplib ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+fi
+if [ ! -e socketapi ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
+fi
+if [ ! -e vmimage-builder-scripts ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+fi
+
+
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
@@ -61,35 +82,25 @@ elif [ -e /usr/bin/dnf ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
 
-   # TBD!
-   true
+   # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
+   cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
+   cd "/home/${USER_NAME}/src/rserpooldemo"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
+   sudo -u "${USER_NAME}" make -j${cores}
+   sudo make install
+   sudo update-mime-database /usr/local/share/mime
+   sudo update-desktop-database
 
 fi
 
 
 # ====== Add demo scenario icon to desktop ==================================
+if [ "$(uname)" == "FreeBSD" ] ; then
+   usrPrefix="/usr/local"
+else
+   usrPrefix="/usr"
+fi
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
-if [ -e /usr/share/rserpooldemo/local-scenario/local-setup.xml ] ; then
-   sudo -u "${USER_NAME}" ln -s /usr/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/" || true
-fi
-
-
-# ====== Prepare source repositories ========================================
-sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
-cd "/home/${USER_NAME}/src"
-
-if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
-fi
-if [ ! -e rserpooldemo ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
-fi
-if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
-fi
-if [ ! -e socketapi ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
-fi
-if [ ! -e vmimage-builder-scripts ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+if [ -e ${usrPrefix}/share/rserpooldemo/local-scenario/local-setup.xml ] ; then
+   sudo -u "${USER_NAME}" ln -s ${usrPrefix}/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/" || true
 fi
