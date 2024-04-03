@@ -88,6 +88,8 @@ elif [ -e /usr/sbin/pkg ] ; then
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
    sudo -u "${USER_NAME}" make -j${cores}   
    sudo make install
+   sudo update-mime-database /usr/local/share/mime
+   sudo update-desktop-database
 
 fi
 
