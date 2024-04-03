@@ -9,8 +9,8 @@ if [ $# -lt 1 ] ; then
 fi
 address="$1"
 
-ssh-copy-id nornetpp@${address}
-ssh -t -oStrictHostKeyChecking=no nornetpp@${address} '
+ssh-copy-id -oStrictHostKeyChecking=no nornetpp@${address}
+ssh -t nornetpp@${address} '
 echo "nornetpp ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/99-nornetpp
 if ! which git ; then
    if [ -x /usr/bin/apt ] ; then
