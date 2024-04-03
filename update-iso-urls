@@ -55,7 +55,11 @@ function process-result ()
        -e  "s@\(\"iso_checksum\": \"\)\([^\"]*\)@\\1${algorithm}:${latestChecksum}@g" \
        <"${systemJSON}" >"${systemJSON}.updated"
    if ! diff --color "${systemJSON}" "${systemJSON}.updated" ; then
+      echo "Updated!"
       mv "${systemJSON}.updated" "${systemJSON}"
+   else
+      echo "Already up-to-date."
+      rm "${systemJSON}.updated"
    fi
 }
 
