@@ -33,7 +33,6 @@ set -e
 # - Fail2Ban (prevent brute-force SSH attacks)
 # - GDisk (GPT partitioning tool)
 # - GrowPart (Partition growing tool; on Linux systems only!)
-# - Git (revision management)
 # - GNU Wget (download tool)
 # - HiPerConTracer
 # - HTop (process monitor)
@@ -49,7 +48,6 @@ set -e
 # - Python (Python 3 interpreter)
 # - RSPLIB Tools (RSerPool testing tools)
 # - SubNetCalc (address calculator)
-# - Sudo (privileged command execution)
 # - System-Tools (system information on login)
 # - Tree (tree view of directory hierachy)
 # - T-Shark (CLI-version for Wireshark)
@@ -84,8 +82,6 @@ if [ -e /usr/bin/apt-get ] ; then
 
    packages="
       apt-file
-      bash
-      bash-completion
       bwm-ng
       bzip2
       cloud-guest-utils
@@ -93,7 +89,6 @@ if [ -e /usr/bin/apt-get ] ; then
       ethtool
       fail2ban
       gdisk
-      git
       gpm
       hipercontracer
       htop
@@ -126,8 +121,6 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
-      bash
-      bash-completion
       bwm-ng
       bzip2
       cmake
@@ -136,7 +129,6 @@ elif [ -e /usr/bin/dnf ] ; then
       ethtool
       fail2ban
       gdisk
-      git
       gpm
       hipercontracer
       htop
@@ -175,7 +167,6 @@ elif [ -e /usr/sbin/pkg ] ; then
       cmake
       curl
       gdisk
-      git
       gmake
       hipercontracer
       htop
@@ -204,7 +195,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap ping pwgen python3 rspserver rspterminal subnetcalc sudo System-Info System-Maintenance traceroute tree tshark wget ; do
+for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap ping pwgen python3 rspserver rspterminal subnetcalc System-Info System-Maintenance traceroute tree tshark wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"

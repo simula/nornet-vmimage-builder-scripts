@@ -28,8 +28,10 @@ set -e
 # installation with these scripts:
 # - Bash (shell)
 # - cURL (download tool)
+# - Git (revision management)
 # - GnuPG (cryptography for signature checks)
 # - Ping (network connectivity check)
+# - Sudo (privileged command execution)
 # - Virt-What (identification of virtualisation environment)
 #
 # Further properties:
@@ -54,8 +56,12 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    packages="
+      bash
+      bash-completion
       curl
+      git
       gpg
+      sudo
       virt-what
    "
 
@@ -66,8 +72,12 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      bash
+      bash-completion
       curl
+      git
       gpg
+      sudo
       virt-what
    "
 
@@ -78,13 +88,39 @@ elif [ -e /usr/bin/dnf ] ; then
 elif [ -e /usr/sbin/pkg ] ; then
 
    packages="
+      bash
+      bash-completion
       curl
+      git
       gnupg
+      sudo
       virt-what
    "
 
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+
+   # ------ Prepare FreeBSD Sources -----------------------------------------
+   cd /usr/src
+   /usr/local/bin/git init -b main
+   /usr/local/bin/git remote add freebsd https://github.com/freebsd/freebsd.git
+   /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
+   /usr/local/bin/git config pull.rebase true
+   # Not running this here:
+   # /usr/local/bin/git fetch freebsd
+   # /usr/local/bin/git checkout main
+
+   # ------ Prepare FreeBSD Ports Collection --------------------------------
+   # See: https://wiki.freebsd.org/Ports/GitQuickStart
+   cd /usr/ports
+   /usr/local/bin/git init -b main
+   /usr/local/bin/git remote add freebsd https://git.freebsd.org/ports.git
+   /usr/local/bin/git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
+   /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
+   /usr/local/bin/git config pull.rebase true
+   # Not running this here:
+   # /usr/local/bin/git fetch freebsd
+   # /usr/local/bin/git checkout main
 
 fi
 
@@ -92,7 +128,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in gpg ping curl virt-what ; do
+for command in bash curl git gpg ping sudo virt-what ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
