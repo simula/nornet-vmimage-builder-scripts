@@ -50,4 +50,4 @@ BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 # ---------------------------------------------------------
 
 files/generate-backgrounds
-build-defined-vms
+build-defined-vms 30

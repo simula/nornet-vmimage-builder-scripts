@@ -59,9 +59,9 @@ build-defined-vms ()
          fi
 
          # ====== Build VM ==================================================
-         if [ "${isFirst}" -eq 1 ] ; then
+         if [ "${isFirst}" -eq 0 ] ; then
             if [ "${delay}" -gt 0 ] ; then
-               echo "Waiting for ${delay} s ..."
+               echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
                sleep ${delay}
             fi
          fi
