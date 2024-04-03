@@ -233,6 +233,27 @@ elif [ -e /usr/sbin/pkg ] ; then
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
 
+   # Fetch and check out the FreeBSD Sources:
+   . /etc/os-release
+   branch="main"
+   if [[ "${VERSION}" =~ -RELEASE$ ]] ; then
+      branch="releng/${VERSION_ID}"
+      echo "Release branch: ${branch}"
+   elif [[ "${VERSION}" =~ -STABLE$ ]] ; then
+      branch="stable/${VERSION_ID//.[0-9]*/}"
+      echo "Stable branch: ${branch}"
+   fi
+   cd /usr/src
+   git fetch --all
+   git checkout "${branch}"
+   git pull
+
+   # Fetch and check out the FreeBSD Ports Collection:
+   cd /usr/ports
+   git fetch --all
+   git checkout main
+   git pull
+
 fi
 
 
