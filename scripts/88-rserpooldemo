@@ -84,9 +84,9 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
    cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
-   cd "/home/${USER_NAME}/src/rserpooldemo"   
+   cd "/home/${USER_NAME}/src/rserpooldemo"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
-   sudo -u "${USER_NAME}" make -j${cores}   
+   sudo -u "${USER_NAME}" make -j${cores}
    sudo make install
    sudo update-mime-database /usr/local/share/mime
    sudo update-desktop-database
