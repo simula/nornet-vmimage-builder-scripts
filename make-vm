@@ -27,17 +27,24 @@ function generate-serial-number ()
    # shellcheck disable=SC2016
    flock serial.lock bash -c '
       serialFile="$(dirname .)/serial.txt"
+      # Serial format: YYMMDDhnn, h=0..9, nn=0..99
+      h=$(date +%H/2.4 | bc)
+      serialToday="$(date +"%y%m%d${h}00")"
       if [ ! -e "${serialFile}" ] ; then
-         serial="$(date +"%y%m%d000")"
-         echo "${serial}" | tee "${serialFile}"
+         serial="${serialToday}"
       else
          serial="$(cat "${serialFile}")"
          if [[ ! "${serial}" =~ ^[0-9]+$ ]] ; then
-            serial="$(date +"%y%m%d000")"
+            # Not a valid serial number -> start new!
+            serial="${serialToday}"
+         elif [[ "${serial}" -lt "${serialToday}" ]] ; then
+            # Old serial number -> start new!
+            serial="${serialToday}"
+         else
+            serial=$((serial+1))
          fi
-         serial=$((serial+1))
-         echo "${serial}" | tee "${serialFile}"
       fi
+      echo "${serial}" | tee "${serialFile}"
 '
 }
 
