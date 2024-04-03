@@ -126,12 +126,13 @@ if [ -e /usr/bin/apt-get ] ; then
    for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
       grep "^deb \(.*\)$" "${list}" | \
          sed -e "s/deb[ \t]*//g" | \
-         xargs -r -I§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >"${list}".sed
-      sed -f "${list}".sed <"${list}" >"${list}".new
-      diff "${list}" "${list}".new || true
-      mv "${list}".new "${list}"
-      rm -f "${list}".sed
+         xargs -r -I§ echo "s@^#[ \t]*deb-src \(§\)[ \t]*\$@deb-src \\1@g" >"${list}.sed"
+      sed -f "${list}".sed <"${list}" >"${list}.new"
+      diff "${list}" "${list}.new" || true
+      mv "${list}.new" "${list}"
+      rm -f "${list}.sed"
    done
+   find /etc/apt/sources.list.d -name "*.sources" -exec sed -e 's/^Types: deb[ \t]*$/Types: deb deb-src/g' -i {} \;
 
 
 # ------ Fedora -------------------------------------------------------------
