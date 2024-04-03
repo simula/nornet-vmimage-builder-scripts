@@ -38,6 +38,12 @@ fi
 # ###### Build VMs ##########################################################
 build-defined-vms ()
 {
+   local delay="$1"
+   if [[ ! "${delay}" =~ ^[0-9]+$ ]] ; then
+      delay=0
+   fi
+
+   isFirst=1
    for project in ${PROJECTS} ; do
       for system in ${SYSTEMS} ; do
          # shellcheck disable=SC2001
@@ -53,12 +59,20 @@ build-defined-vms ()
          fi
 
          # ====== Build VM ==================================================
+         if [ "${isFirst}" -eq 1 ] ; then
+            if [ "${delay}" -gt 0 ] ; then
+               echo "Waiting for ${delay} s ..."
+               sleep ${delay}
+            fi
+         fi
+         isFirst=0
+
          (
             name="${HYPERVISOR}-${project}-${distribution}-${release}"
             logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
             if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
                startTime=$(date)
-               echo "${startTime}: Starting to build ${name}, logfile is ${logfile} ..."
+               echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
                mkdir -p "${OUTPUT_DIRECTORY}/${name}"
                # shellcheck disable=SC2086
                if ./make-vm -H "${HYPERVISOR}" \
@@ -78,13 +92,15 @@ build-defined-vms ()
                      --output-directory "${OUTPUT_DIRECTORY}" \
                      ${OPTIONS}  >"${logfile}" 2>&1 ; then
                   result="OK"
+                  resultColor="32"
                else
                   result="FAILED!"
+                  resultColor="37;41;97"
                fi
                finishTime=$(date)
-               echo "${finishTime}: Finished to build ${name} - ${result} -> ${logfile}"
+               echo -e "\x1b[${resultColor}m${finishTime}: Finished to build ${name} - ${result} -> ${logfile}\x1b[0m"
             else
-               echo "${name} is already there -> ${logfile}"
+               echo -e "\x1b[34m${name} is already there -> ${logfile}\x1b[0m"
             fi
          ) &
 
