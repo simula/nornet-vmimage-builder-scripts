@@ -26,34 +26,34 @@ set -e
 # The "Development" installation is based on the "Basic" installation.
 #
 # It must contain the following packages:
-# - BC (arbitrary precision calculator language)
-# - CLang (CLang C and C++ compilers)
-# - CMake (build tool)
-# - ExifTool (EXIF metadata editing tool for images)
-# - GhostScript (PostScript interpreter and fonts)
-# - GNU Autoconf/Automake/Libtool (basic build tools)
-# - GNU Bison (parser generator)
-# - GNU Flex (lexical analyser generator)
-# - GNU GCC/G++, GNU Make, GNU Debugger (compilers, debugger and make tool)
-# - GNU R (statistical computing language)
-# - GraphicsMagick (image conversion)
-# - LibTool (build tool for libraries)
-# - PkgConfig (metainformation about installed libraries)
-# - Python (Python 3 interpreter, tools and PIP package management)
-# - ShellCheck (checker tool for shell scripts)
-# - Valgrind (debugging tool)
-# - YamlLint (checker tool for YAML)
-# - RepRepro (DEB repository build tool; on Linux systems only!)
-# - PBuilder (DEB build tool; on Linux systems only!)
+# * BC (arbitrary precision calculator language)
+# * CLang (CLang C and C++ compilers)
+# * CMake (build tool)
+# * ExifTool (EXIF metadata editing tool for images)
+# * GhostScript (PostScript interpreter and fonts)
+# * GNU Autoconf/Automake/Libtool (basic build tools)
+# * GNU Bison (parser generator)
+# * GNU Flex (lexical analyser generator)
+# * GNU GCC/G++, GNU Make, GNU Debugger (compilers, debugger and make tool)
+# * GNU R (statistical computing language)
+# * GraphicsMagick (image conversion)
+# * LibTool (build tool for libraries)
+# * PkgConfig (metainformation about installed libraries)
+# * Python (Python 3 interpreter, tools and PIP package management)
+# * ShellCheck (checker tool for shell scripts)
+# * Valgrind (debugging tool)
+# * YamlLint (checker tool for YAML)
+# * RepRepro (DEB repository build tool; on Linux systems only!)
+# * PBuilder (DEB build tool; on Linux systems only!)
 #
 # It must contain the following libraries and development files:
-# - BOOST (portable C++ libraries)
-# - SCTP
+# * BOOST (portable C++ libraries)
+# * SCTP
 #
 # Further properties:
-# - Password-less sudo calls
+# * Password-less sudo calls
 #   WARNING: Development settings are intended for developers only!
-# - Source packages enabled from package manager (if available)
+# * Source packages enabled from package manager (if available)
 # ###########################################################################
 
 

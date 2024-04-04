@@ -25,22 +25,24 @@ set -e
 # ###########################################################################
 # The Minimal installation only contains the default packages of the
 # distribution's installer, as well as tools needed for the initial system
-# installation with these scripts:
-# - Bash (shell)
-# - cURL (download tool)
-# - Git (revision management)
-# - GnuPG (cryptography for signature checks)
-# - Ping (network connectivity check)
-# - Sudo (privileged command execution)
-# - Virt-What (identification of virtualisation environment)
+# installation with these scripts.
+#
+# Provided packages:
+# * Bash (shell)
+# * cURL (download tool)
+# * Git (revision management)
+# * GnuPG (cryptography for signature checks)
+# * Ping (network connectivity check)
+# * Sudo (privileged command execution)
+# * Virt-What (identification of virtualisation environment)
 #
 # Further properties:
-# - Bash as default shell
-# - ECN enabled
-# - SCTP enabled
-# - SSH server enabled
-# - Hardened SSH server and client settings
-# - UTF-8 character encoding
+# * Bash as default shell
+# * ECN enabled
+# * SCTP enabled
+# * SSH server enabled
+# * Hardened SSH server and client settings
+# * UTF-8 character encoding
 # ###########################################################################
 
 

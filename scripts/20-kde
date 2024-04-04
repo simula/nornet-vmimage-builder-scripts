@@ -26,23 +26,26 @@ set -ex
 # The "KDE" installation is based on the "Basic" installation.
 #
 # It must contain the following packages:
-# - The KDE Plasma Desktop with Oxygen theme and SDDM
-# - Dia
-# - Firefox
-# - FractGen
-# - LibreOffice
-# - Gimp
-# - Inkscape
-# - Kate
-# - Kile
-# - Konsole
-# - Okular
-# - R
-# - Wireshark
+# * The KDE Plasma Desktop with Oxygen theme and SDDM
+# * Dia (drawing tool)
+# * Firefox (web browser)
+# * FractGen (fractal generator)
+# * LibreOffice (office suite)
+# * Gimp (graphics editing tool)
+# * Inkscape (drawing tool)
+# * Kate (editor)
+# * Kile (LaTeX editor)
+# * Konsole (console)
+# * Okular (file viewer, e.g. for PDF)
+# * R (statistical computing suite)
+# * Wireshark (packet sniffer, GUI version)
 #
 # Further properties:
-# - Configured KDE and SDDM login manager
-# - Configured Firefox (hardened settings, privacy settings, some add-ons)
+# * Configured KDE and SDDM login manager
+# * Configured 4 virtual desktops.
+# * Configured switchable keyboard layout (DE, NO, US).
+# * Configured Firefox (hardened settings, enhanced privacy settings, as well as some add-ons like NoScript, uBlock Origin, etc.)
+# * Ubuntu 22.04+: Firefox is installed from PPA mozillateam/ppa (<https://launchpad.net/~mozillateam/+archive/ubuntu/ppa/+packages>), instead of using the Snap package.
 # ###########################################################################
 
 
