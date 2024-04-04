@@ -200,7 +200,7 @@ It must contain the following packages:
 * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
 * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
-* PkgConfig (metainformation about installed libraries)
+* [PkgConfig](https://www.freedesktop.org/wiki/Software/pkg-config/) (metainformation about installed libraries)
 * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
 * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
 * [Valgrind](https://valgrind.org/) (debugging tool)
