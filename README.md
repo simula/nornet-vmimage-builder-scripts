@@ -3,6 +3,34 @@ VM Image Builder Scripts
 <https://github.com/simula/nornet-vmimage-builder-scripts>
 
 
+# Table of Contents
+-   [Introduction](#introduction)
+-   [VM Types](#vm-types)
+    -   [VirtualBox](#virtualbox)
+    -   [Proxmox](#proxmox)
+    -   [QEMU](#qemu)
+    -   [vSphere](#vsphere)
+    -   [Docker](#docker)
+-   [Systems](#systems)
+    -   [Ubuntu Linux](#ubuntu-linux)
+    -   [Debian Linux](#debian-linux)
+    -   [Fedora Core Linux](#fedora-core-linux)
+    -   [FreeBSD](#freebsd)
+-   [Projects](#projects)
+    -   [Minimal](#minimal)
+    -   [Basic](#basic)
+    -   [KDE](#kde)
+    -   [Development](#development)
+    -   [KDE+Development](#kdedevelopment)
+    -   [Further Projects](#further-projects)
+        -   [NorNet](#nornet)
+        -   [NorNet-Desktop](#nornet-desktop)
+        -   [NEAT](#neat)
+        -   [RSerPoolDemo](#rserpooldemo)
+        -   [SimulaMet-Desktop](#simulamet-desktop)
+        -   [5gVINNI](#gvinni)
+
+
 # Introduction
 
 This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
@@ -18,13 +46,13 @@ The VirtualBox images use optimised settings for display, network and storage. T
 
 VMs for usage in Proxmox. They are basically like the VirtualBox variant, with the QEMU Guest Agent installed.
 
-## vSphere
-
-VMs for usage in vSphere. They are basically like the VirtualBox variant, with the Open VM Tools installed.
-
 ## QEMU
 
 The QEMU images use optimised settings for display, network and storage. Two disk layouts are available: 3-disks (separate disks for /, /home, and swap) and 1-disk (one disk for everything). These images are mainly useful for OpenStack, for which the layout should be 1-disk.
+
+## vSphere
+
+VMs for usage in vSphere. They are basically like the VirtualBox variant, with the Open VM Tools installed.
 
 ## Docker
 
