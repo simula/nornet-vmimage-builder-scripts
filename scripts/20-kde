@@ -27,18 +27,18 @@ set -ex
 #
 # It must contain the following packages:
 # * The KDE Plasma Desktop with Oxygen theme and SDDM
-# * Dia (drawing tool)
-# * Firefox (web browser)
-# * FractGen (fractal generator)
-# * LibreOffice (office suite)
-# * Gimp (graphics editing tool)
-# * Inkscape (drawing tool)
-# * Kate (editor)
-# * Kile (LaTeX editor)
-# * Konsole (console)
-# * Okular (file viewer, e.g. for PDF)
-# * R (statistical computing suite)
-# * Wireshark (packet sniffer, GUI version)
+# * [Dia](https://wiki.gnome.org/Apps/Dia )(drawing tool)
+# * [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
+# * [FractGen](https://www.nntb.no/~dreibh/fractalgenerator/) (fractal generator)
+# * [LibreOffice](https://www.libreoffice.org/) (office suite)
+# * [Gimp](https://www.gimp.org/) (graphics editing tool)
+# * [Inkscape](https://inkscape.org/) (drawing tool)
+# * [Kate](https://kate-editor.org/) (editor)
+# * [Kile](https://kile.sourceforge.io/) (LaTeX editor)
+# * [Konsole](https://konsole.kde.org/) (console)
+# * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
+# * [R](https://www.r-project.org/) (statistical computing suite)
+# * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 #
 # Further properties:
 # * Configured KDE and SDDM login manager

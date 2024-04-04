@@ -132,31 +132,31 @@ The "Basic" installation is based on the [Minimal](#minimal) installation.
 
 It must contain the following packages:
 * Base64 (base64 tool)
-* BWM-NG (simple bandwidth monitor)
-* BZip2 (compression tool)
-* cURL (download tool)
-* EthTool (Ethernet card configuration tool; on Linux systems only!)
-* Fail2Ban (prevent brute-force SSH attacks)
-* GDisk (GPT partitioning tool)
+* [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
+* [BZip2](https://sourceware.org/bzip2/) (compression tool)
+* [cURL](https://curl.se/) (download tool)
+* [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
+* [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
+* [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
 * GrowPart (Partition growing tool; on Linux systems only!)
-* GNU Wget (download tool)
+* [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
 * [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/) (high-performance network tracing tool)
-* HTop (process monitor)
-* Joe (editor)
-* JQ (JSON editing tool)
-* NMap (network testing tool)
+* [HTop](https://htop.dev/) (process monitor)
+* [Joe](https://joe-editor.sourceforge.io/) (editor)
+* [JQ](https://jqlang.github.io/jq/) (JSON editing tool)
+* [NMap](https://nmap.org/) (network testing tool)
 * Manual page utilities (manual page viewer)
 * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
-* NetPlan (network configuration; on Linux systems only!)
+* [NetPlan](https://netplan.io/) (network configuration; on Linux systems only!)
 * Ping, Traceroute, ifconfig (basic networking tools)
 * PLocate ("locate" command for finding files)
 * PwGen (password generator)
-* Python (Python 3 interpreter)
+* [Python](https://www.python.org/) (Python 3 interpreter)
 * [RSPLIB RSerPool](https://www.nntb.no/~dreibh/rserpool/) Tools (RSerPool testing tools)
 * [SubNetCalc](https://www.nntb.no/~dreibh/subnetcalc/) (address calculator)
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 * Tree (tree view of directory hierachy)
-* T-Shark (packet sniffer, CLI-version for Wireshark)
+* [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 
 
 ## KDE
@@ -165,18 +165,18 @@ The "KDE" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
 * The KDE Plasma Desktop with Oxygen theme and SDDM
-* Dia (drawing tool)
-* Firefox (web browser)
-* FractGen (fractal generator)
-* LibreOffice (office suite)
-* Gimp (graphics editing tool)
-* Inkscape (drawing tool)
-* Kate (editor)
-* Kile (LaTeX editor)
-* Konsole (console)
-* Okular (file viewer, e.g. for PDF)
-* R (statistical computing suite)
-* Wireshark (packet sniffer, GUI version)
+* [Dia](https://wiki.gnome.org/Apps/Dia )(drawing tool)
+* [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
+* [FractGen](https://www.nntb.no/~dreibh/fractalgenerator/) (fractal generator)
+* [LibreOffice](https://www.libreoffice.org/) (office suite)
+* [Gimp](https://www.gimp.org/) (graphics editing tool)
+* [Inkscape](https://inkscape.org/) (drawing tool)
+* [Kate](https://kate-editor.org/) (editor)
+* [Kile](https://kile.sourceforge.io/) (LaTeX editor)
+* [Konsole](https://konsole.kde.org/) (console)
+* [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
+* [R](https://www.r-project.org/) (statistical computing suite)
+* [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 
 Further properties:
 * Configured KDE and SDDM login manager
@@ -263,4 +263,4 @@ Features:
 
 ### 5gVINNI
 
-Basic for general-purpose desktop usage, particularly for working with 5gVINNI <https://www.5g-vinni.eu/>. They base on the NorNet images.
+Basic for general-purpose desktop usage, particularly for working with [5gVINNI](https://www.5g-vinni.eu/). They base on the NorNet images.
