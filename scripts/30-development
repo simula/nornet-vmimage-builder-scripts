@@ -26,29 +26,27 @@ set -e
 # The "Development" installation is based on the "Basic" installation.
 #
 # It must contain the following packages:
-# * BC (arbitrary precision calculator language)
-# * CLang (CLang C and C++ compilers)
-# * CMake (build tool)
-# * ExifTool (EXIF metadata editing tool for images)
-# * GhostScript (PostScript interpreter and fonts)
-# * GNU Autoconf/Automake/Libtool (basic build tools)
-# * GNU Bison (parser generator)
-# * GNU Flex (lexical analyser generator)
-# * GNU GCC/G++, GNU Make, GNU Debugger (compilers, debugger and make tool)
-# * GNU R (statistical computing language)
-# * GraphicsMagick (image conversion)
-# * LibTool (build tool for libraries)
+# * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
+# * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
+# * [CMake](https://cmake.org/) (build tool)
+# * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
+# * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
+# * [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
+# * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
+# * [Flex](https://github.com/westes/flex) (lexical analyser generator)
+# * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
+# * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
 # * PkgConfig (metainformation about installed libraries)
-# * Python (Python 3 interpreter, tools and PIP package management)
-# * ShellCheck (checker tool for shell scripts)
-# * Valgrind (debugging tool)
-# * YamlLint (checker tool for YAML)
-# * RepRepro (DEB repository build tool; on Linux systems only!)
-# * PBuilder (DEB build tool; on Linux systems only!)
+# * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
+# * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
+# * [Valgrind](https://valgrind.org/) (debugging tool)
+# * [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
+# * [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
+# * [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Linux systems only!)
 #
 # It must contain the following libraries and development files:
-# * BOOST (portable C++ libraries)
-# * SCTP
+# * [BOOST C++ Libraries](https://www.boost.org/) (portable C++ libraries)
+# * SCTP development files (if needed)
 #
 # Further properties:
 # * Password-less sudo calls

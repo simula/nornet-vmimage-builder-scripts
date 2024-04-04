@@ -28,20 +28,20 @@ set -e
 # installation with these scripts.
 #
 # Provided packages:
-# * Bash (shell)
-# * cURL (download tool)
-# * Git (revision management)
-# * GnuPG (cryptography for signature checks)
+# * [Bash](https://www.gnu.org/software/bash/) (shell)
+# * [cURL](https://curl.se/) (download tool)
+# * [Git](https://git-scm.com/) (revision management)
+# * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
 # * Ping (network connectivity check)
-# * Sudo (privileged command execution)
-# * Virt-What (identification of virtualisation environment)
+# * [Sudo](https://www.sudo.ws/) (privileged command execution)
+# * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 #
 # Further properties:
 # * Bash as default shell
-# * ECN enabled
-# * SCTP enabled
+# * Explicit Congestion Notification (ECN, RFC 3168) enabled
+# * Stream Control Transmission Protocol (SCTP, RFC 4960) enabled
 # * SSH server enabled
-# * Hardened SSH server and client settings
+# * Hardened SSH server and client settings (weak algorithms disabled)
 # * UTF-8 character encoding
 # ###########################################################################
 

@@ -109,20 +109,20 @@ Details can be found in the directory [projects](https://github.com/simula/norne
 The minimal installation for the system with the settings described above. This project is meant mainly for testing purposes. In most cases, you want the [Basic](#basic) project instead!
 
 Provided packages:
-* Bash (shell)
-* cURL (download tool)
-* Git (revision management)
-* GnuPG (cryptography for signature checks)
+* [Bash](https://www.gnu.org/software/bash/) (shell)
+* [cURL](https://curl.se/) (download tool)
+* [Git](https://git-scm.com/) (revision management)
+* [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
 * Ping (network connectivity check)
-* Sudo (privileged command execution)
-* Virt-What (identification of virtualisation environment)
+* [Sudo](https://www.sudo.ws/) (privileged command execution)
+* [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
 Further properties:
 * Bash as default shell
-* ECN enabled
-* SCTP enabled
+* Explicit Congestion Notification (ECN, RFC 3168) enabled
+* Stream Control Transmission Protocol (SCTP, RFC 4960) enabled
 * SSH server enabled
-* Hardened SSH server and client settings
+* Hardened SSH server and client settings (weak algorithms disabled)
 * UTF-8 character encoding
 
 
@@ -134,7 +134,6 @@ It must contain the following packages:
 * Base64 (base64 tool)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 * [BZip2](https://sourceware.org/bzip2/) (compression tool)
-* [cURL](https://curl.se/) (download tool)
 * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
 * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
@@ -149,7 +148,7 @@ It must contain the following packages:
 * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
 * [NetPlan](https://netplan.io/) (network configuration; on Linux systems only!)
 * Ping, Traceroute, ifconfig (basic networking tools)
-* PLocate ("locate" command for finding files)
+* [PLocate](https://plocate.sesse.net/) ("locate" command for finding files)
 * PwGen (password generator)
 * [Python](https://www.python.org/) (Python 3 interpreter)
 * [RSPLIB RSerPool](https://www.nntb.no/~dreibh/rserpool/) Tools (RSerPool testing tools)
@@ -191,29 +190,27 @@ Further properties:
 The "Development" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
-* BC (arbitrary precision calculator language)
-* CLang (CLang C and C++ compilers)
-* CMake (build tool)
-* ExifTool (EXIF metadata editing tool for images)
-* GhostScript (PostScript interpreter and fonts)
-* GNU Autoconf/Automake/Libtool (basic build tools)
-* GNU Bison (parser generator)
-* GNU Flex (lexical analyser generator)
-* GNU GCC/G++, GNU Make, GNU Debugger (compilers, debugger and make tool)
-* GNU R (statistical computing language)
-* GraphicsMagick (image conversion)
-* LibTool (build tool for libraries)
+* [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
+* [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
+* [CMake](https://cmake.org/) (build tool)
+* [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
+* [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
+* [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
+* [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
+* [Flex](https://github.com/westes/flex) (lexical analyser generator)
+* [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
+* [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
 * PkgConfig (metainformation about installed libraries)
-* Python (Python 3 interpreter, tools and PIP package management)
-* ShellCheck (checker tool for shell scripts)
-* Valgrind (debugging tool)
-* YamlLint (checker tool for YAML)
-* RepRepro (DEB repository build tool; on Linux systems only!)
-* PBuilder (DEB build tool; on Linux systems only!)
+* [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
+* [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
+* [Valgrind](https://valgrind.org/) (debugging tool)
+* [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
+* [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
+* [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Linux systems only!)
 
 It must contain the following libraries and development files:
-* BOOST (portable C++ libraries)
-* SCTP
+* [BOOST C++ Libraries](https://www.boost.org/) (portable C++ libraries)
+* SCTP development files (if needed)
 
 Further properties:
 * Password-less sudo calls
@@ -259,7 +256,7 @@ Features:
 These are SimulaMet desktop VMs, based on the [KDE+Development](#kdedevelopment) installation.
 
 Features:
-* SimulaMet-related source repositories already checked out.
+* Some [SimulaMet](https://code.simula.no/)-related source repositories cloned under ~/src.
 
 ### 5gVINNI
 
