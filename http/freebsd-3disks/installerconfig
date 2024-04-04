@@ -41,6 +41,7 @@ sysrc ipv6_privacy="YES"
 dhclient $interface
 
 # Enable basic daemons:
+sysrc dumpdev="AUTO"
 sysrc zfs_enable="YES"
 sysrc sshd_enable="YES"
 sysrc ntpd_enable="YES"
