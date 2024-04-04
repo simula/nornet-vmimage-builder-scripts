@@ -31,7 +31,7 @@ if [ ! -e "$2" ] ; then
    echo >&2 "ERROR: Caption file $2 does not exist!"
    exit 1
 fi
-CAPTION="`cat "$2"`"
+CAPTION="$(cat "$2")"
 WIDTH="$3"
 HEIGHT="$4"
 
@@ -39,8 +39,8 @@ if [ "${MAKE_CAPTION}" = "" ] ; then
    MAKE_CAPTION=gimp-scripts/Make-Caption
 fi
 
-let height=42*${HEIGHT}/768   # Height "42" is designed for 1024x768
+height=$((42*HEIGHT/768))   # Height "42" is designed for 1024x768
 ${MAKE_CAPTION} \
-   "${OUTPUT}" "${CAPTION}" ${WIDTH} ${height} \
+   "${OUTPUT}" "${CAPTION}" "${WIDTH}" "${height}" \
    "Noto Sans Bold" 55 \
    "#02266b" "#ffd700" 26
