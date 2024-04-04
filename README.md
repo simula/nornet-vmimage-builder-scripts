@@ -165,7 +165,7 @@ The "KDE" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
 * The [KDE Plasma Desktop](https://kde.org/plasma-desktop/) with Oxygen theme and [SDDM](https://github.com/sddm/sddm)
-* [Dia](https://wiki.gnome.org/Apps/Dia )(drawing tool)
+* [Dia](https://wiki.gnome.org/Apps/Dia) (drawing tool)
 * [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
 * [FractGen](https://www.nntb.no/~dreibh/fractalgenerator/) (fractal generator)
 * [LibreOffice](https://www.libreoffice.org/) (office suite)
