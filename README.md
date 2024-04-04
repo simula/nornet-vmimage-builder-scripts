@@ -74,8 +74,8 @@ Details can be found in the directories [installer](https://github.com/simula/no
 General settings:
 * Base: Ubuntu Server ISO
 * EFI boot
-* Using BTRFS for / and /home, with subvolumes @ and @home.
-* Added Launchpad PPA dreibh/ppa (<https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages>).
+* Using BTRFS for / and /home, with subvolumes @ and @home
+* Added Launchpad PPA dreibh/ppa (<https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages>)
 * Purged and blocked snapd. To install snapd again, remove /etc/apt/preferences.d/block-snapd.pref!
 
 ## Debian Linux
@@ -83,21 +83,22 @@ General settings:
 General settings:
 * Base: Debian Netinstall ISO
 * EFI boot
-* Using BTRFS for / and /home, with subvolumes @ and @home.
+* Using BTRFS for / and /home, with subvolumes @ and @home
 
 ## Fedora Core Linux
 
 General settings:
 * Base: Fedora Core Netinstall ISO
 * EFI boot
-* Added COPR PPA dreibh/ppa (<https://copr.fedorainfracloud.org/coprs/dreibh/ppa/>).
+* Using XFS for / and /home
+* Added COPR PPA dreibh/ppa (<https://copr.fedorainfracloud.org/coprs/dreibh/ppa/>)
 
 ## FreeBSD
 
 General settings:
 * Base: FreeBSD installation ISO
 * EFI boot
-* Using ZFS for / and /home.
+* Using ZFS for / and /home
 
 
 # Projects
