@@ -213,8 +213,7 @@ It must contain the following libraries and development files:
 * SCTP development files (if needed)
 
 Further properties:
-* Password-less sudo calls
-  WARNING: Development settings are intended for developers only!
+* Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
 * Source packages enabled from package manager (if available)
 
 
