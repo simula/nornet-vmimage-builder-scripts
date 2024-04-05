@@ -127,6 +127,17 @@ EOF
 fi
 
 
+# ====== Set FreeBSD console resolution =====================================
+if [ "${UNAME}" == "FreeBSD" ] ; then
+   if [ "${VIDEO}" != "" ] ; then
+      cat >>/boot/loader.conf <<EOF
+efi_max_resolution="${VIDEO}"
+screen.font="10x18"   # "8x14"
+EOF
+   fi
+fi
+
+
 # ====== Hardened SSH server configuration ==================================
 cat >/etc/ssh/sshd_config <<EOF
 Protocol 2
