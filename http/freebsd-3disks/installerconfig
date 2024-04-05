@@ -93,11 +93,16 @@ pkg upgrade -y
 pkg install -y bash curl gnupg sudo virt-what
 
 # ====== Bash profile link ==================================================
-# Bash does not use /etc/profile, only /usr/local/etc/profile
-# => create symlink, to ensure that Bash processes system-wide shell profile.
+# Bash does not use /etc/profile, only /usr/local/etc/profile. This needs to
+# be created, in order to get /etc/profile loaded!
 # See: https://forums.freebsd.org/threads/what-happened-to-etc-profile.78406/
-ln -s /etc/profile /usr/local/etc/
-
+cat >/usr/local/etc/profile <<EOF
+if [ "\${_loaded}" = "" ] ; then
+   if [ -e /etc/profile ] ; then
+      . /etc/profile
+   fi
+fi
+EOF
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
