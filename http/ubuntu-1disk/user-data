@@ -184,12 +184,11 @@ autoinstall:
     geoip: true
     primary:
       - arches: [default]
-        uri: "http://archive.ubuntu.com/ubuntu"
+        uri: "http://dk.archive.ubuntu.com/ubuntu"
     sources:
       dreibh-ppa:
         source: ppa:dreibh/ppa
   packages:
-    - joe
     - qemu-guest-agent
     - virt-what
   ssh:

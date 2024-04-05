@@ -90,7 +90,7 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # Install some basic packages:
 pkg update
 pkg upgrade -y
-pkg install -y bash curl gnupg sudo virt-what
+pkg install -y bash sudo virt-what
 
 # ====== Bash profile link ==================================================
 # Bash does not use /etc/profile, only /usr/local/etc/profile. This needs to
