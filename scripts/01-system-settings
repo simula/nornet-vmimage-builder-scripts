@@ -74,7 +74,9 @@ if [ "${UNAME}" == "Linux" ] ; then
 sctp
 EOF
    # Remove blacklisting of SCTP in Fedora:
-   rm -f /etc/modprobe.d/sctp-blacklist.conf
+   if [ -e /etc/modprobe.d/sctp-blacklist.conf ] ; then
+      sed -e 's/^blacklist sctp/# blacklist sctp/g' -i /etc/modprobe.d/sctp-blacklist.conf
+   fi
 fi
 
 
