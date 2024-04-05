@@ -73,12 +73,11 @@ if [ "${UNAME}" == "Linux" ] ; then
    cat >/etc/modules-load.d/sctp.conf <<EOF
 sctp
 EOF
+
    # Remove blacklisting of SCTP in Fedora:
-   if [ -e /etc/modprobe.d/sctp-blacklist.conf ] ; then
-      # Just removing the blacklist file is not sufficient, since it would be
-      # installed again by an update of kernel-modules-extra!
-      sed -e 's/^blacklist sctp/# blacklist sctp/g' -i /etc/modprobe.d/sctp-blacklist.conf
-   fi
+   # Just removing the blacklist file is not sufficient, since it would be
+   # installed again by an update of kernel-modules-extra!
+   sed -e 's/^blacklist sctp/# blacklist sctp/g' -i /etc/modprobe.d/sctp-blacklist.conf
 fi
 
 

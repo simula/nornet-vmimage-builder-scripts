@@ -78,6 +78,7 @@ elif [ -e /usr/bin/dnf ] ; then
       curl
       git
       gpg
+      kernel-modules-extra
       sudo
       virt-what
    "
