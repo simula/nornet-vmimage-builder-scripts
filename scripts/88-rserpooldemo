@@ -70,6 +70,7 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      pygtk2
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
@@ -87,9 +88,12 @@ elif [ -e /usr/sbin/pkg ] ; then
    cd "/home/${USER_NAME}/src/rserpooldemo"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
    sudo -u "${USER_NAME}" make -j${cores}
-   sudo make install
-   sudo update-mime-database /usr/local/share/mime
-   sudo update-desktop-database
+   make install
+   update-mime-database /usr/local/share/mime
+   update-desktop-database
+   if [ ! -e /usr/share/rserpooldemo ] ; then
+      sudo ln -s /usr/local/share/rserpooldemo /usr/share/rserpooldemo
+   fi
 
 fi
 
