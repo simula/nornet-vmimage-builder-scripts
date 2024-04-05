@@ -124,10 +124,10 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
    if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
-      # NOTE: qemu-guest-agent may have been installed as part of th
-      #       initial setup, since e.g. the Proxmox builder may expect it!
+      # NOTE: qemu-guest-agent may have been installed as part of the
+      #       initial setup, since e.g. the Proxmox builder expects it!
       /usr/sbin/pkg remove -y qemu-guest-agent
-      sysrc qemu_guest_agent_enable="NO"
+      sysrc -x qemu_guest_agent_enable
    fi
 
 fi
