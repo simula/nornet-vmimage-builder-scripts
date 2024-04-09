@@ -60,11 +60,14 @@ if [ -e /usr/bin/apt-get ] ; then
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
+      rsplib-registrar
    "
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
+   systemctl stop rspregistrar
+   systemctl disable rspregistrar
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
@@ -74,11 +77,14 @@ elif [ -e /usr/bin/dnf ] ; then
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
+      rsplib-registrar
    "
 
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
+   systemctl stop rspregistrar
+   systemctl disable rspregistrar
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
@@ -107,4 +113,7 @@ fi
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
 if [ -e ${usrPrefix}/share/rserpooldemo/local-scenario/local-setup.xml ] ; then
    sudo -u "${USER_NAME}" ln -s ${usrPrefix}/share/rserpooldemo/local-scenario/local-setup.xml "/home/${USER_NAME}/Desktop/" || true
+fi
+if [ -e ${usrPrefix}/share/rserpooldemo/nornet-mec-scenario/nornet-mec-setup-localonly.xml ] ; then
+   sudo -u "${USER_NAME}" ln -s ${usrPrefix}/share/rserpooldemo/nornet-mec-scenario/nornet-mec-setup-localonly.xml "/home/${USER_NAME}/Desktop/" || true
 fi
