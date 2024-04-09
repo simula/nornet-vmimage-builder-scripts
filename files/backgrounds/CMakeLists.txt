@@ -110,15 +110,6 @@ IF(NOT GIMP)
            " * FreeBSD:       sudo pkg install -y gimp")
 ENDIF()
 
-FIND_PROGRAM(INKSCAPE inkscape PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT INKSCAPE)
-   MESSAGE(FATAL_ERROR
-           " Cannot find Gimp! Try:\n"
-           " * Ubuntu/Debian: sudo apt install -y inkscape\n"
-           " * Fedora:        sudo dnf install -y inkscape\n"
-           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool")
-ENDIF()
-
 # NOTE: exiftool fails to handle GIMP-generated JPEG files under
 # Debian Stretch and Ubuntu Trusty. Errors are just ignored in this case
 # (i.e. the EXIF information will not be updated).
