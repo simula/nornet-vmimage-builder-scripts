@@ -96,7 +96,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
       # ------ Ubuntu: Get Firefox from PPA, not via Snap -------------------
       if [ "${ID}" == "ubuntu" ] ; then
-         # shellcheck disable=SC2072
+         # shellcheck disable=SC2072,SC2071
          if [[ "${VERSION_ID}" > "21.10" ]] ; then
             cat >/etc/apt/preferences.d/firefox.pref <<EOF
 # Use Firefox from PPA, instead of installing it via Snap!

@@ -56,18 +56,42 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ -e /usr/bin/apt-get ] ; then
 
-   packages="
-      rserpooldemo-desktop
-      rserpooldemo-development
-      rserpooldemo-tool
-      rsplib-registrar
-   "
+   # ------ Debian ----------------------------------------------------------
+   . /etc/os-release
+   if [ "${ID}" == "debian" ] ; then
 
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      # FIXME! Work-around for RSerPool Demo not (yet) in Debian:
+      packages="rsplib-registrar"
+      # shellcheck disable=SC2086
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      systemctl stop rsplib-registrar    || true
+      systemctl disable rsplib-registrar || true
+      systemctl stop rspregistrar        || true
+      systemctl disable rspregistrar     || true
 
-   systemctl stop rspregistrar
-   systemctl disable rspregistrar
+      cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
+      cd "/home/${USER_NAME}/src/rserpooldemo"
+      sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
+      sudo -u "${USER_NAME}" make -j"${cores}"
+      make install
+      update-mime-database /usr/share/mime
+      update-desktop-database
+
+   # ------ Ubuntu ----------------------------------------------------------
+   else
+      packages="
+         rserpooldemo-desktop
+         rserpooldemo-development
+         rserpooldemo-tool
+         rsplib-registrar
+      "
+
+      # shellcheck disable=SC2086
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+      systemctl stop rspregistrar
+      systemctl disable rspregistrar
+   fi
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
@@ -93,7 +117,7 @@ elif [ -e /usr/sbin/pkg ] ; then
    cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
    cd "/home/${USER_NAME}/src/rserpooldemo"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
-   sudo -u "${USER_NAME}" make -j${cores}
+   sudo -u "${USER_NAME}" make -j"${cores}"
    make install
    update-mime-database /usr/local/share/mime
    update-desktop-database
