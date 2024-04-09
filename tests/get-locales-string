@@ -1,0 +1,28 @@
+#!/bin/sh
+
+locales="
+   ar_SA.UTF-8
+   ar_YE.UTF-8
+   bs_BA.UTF-8
+   de_AT.UTF-8
+   de_CH.UTF-8
+   de_DE.UTF-8
+   el_GR.UTF-8
+   es_CO.UTF-8
+   es_ES.UTF-8
+   en_AU.UTF-8
+   en_GB.UTF-8
+   en_IE.UTF-8
+   en_US.UTF-8
+   da_DK.UTF-8
+   en_DK.UTF-8
+   fr_FR.UTF-8
+   nb_NO.UTF-8
+   nn_NO.UTF-8
+   ro_RO.UTF-8
+   sk_SK.UTF-8
+   zh_CN.UTF-8
+"
+
+echo "${locales}" | sort -u | xargs
+echo "${locales}" | sort -u | xargs -n1 | sed -e 's/\.UTF-8$//g' | xargs | tr ' ' ','
