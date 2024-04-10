@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -e
+set -ex
 
 
 # ====== Check environment variables ========================================

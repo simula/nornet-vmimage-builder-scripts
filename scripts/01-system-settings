@@ -202,6 +202,7 @@ directories="
    desktop-backgrounds
    face-icons
    system-info
+   wireshark
 "
 for directory in ${directories} ; do
    mkdir -p "/tmp/${directory}"

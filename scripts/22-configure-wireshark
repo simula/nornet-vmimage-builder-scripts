@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# NOTE:
+# Non-root user permission will be given in 31-allow-wireshark-as-user, not here!
+
+
+# ====== Wireshark filter rules =============================================
+cd /tmp/wireshark
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/wireshark"
+sudo -u "${USER_NAME}" cp colorfilters dfilters preferences "/home/${USER_NAME}/.config/wireshark"
+mkdir -p /root/.config/wireshark
+cp colorfilters dfilters preferences /root/.config/wireshark
