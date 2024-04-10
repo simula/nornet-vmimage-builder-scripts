@@ -174,6 +174,7 @@ It must contain the following packages:
 * [Kate](https://kate-editor.org/) (editor)
 * [Kile](https://kile.sourceforge.io/) (LaTeX editor)
 * [Konsole](https://konsole.kde.org/) (console)
+* [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
 * [R](https://www.r-project.org/) (statistical computing suite)
 * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
