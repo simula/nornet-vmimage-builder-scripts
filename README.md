@@ -185,6 +185,7 @@ Further properties:
 * Configured switchable keyboard layouts
 * Configured Konsole keyboard shortcuts
 * Configured Firefox (hardened settings, enhanced privacy settings, as well as some add-ons like NoScript, uBlock Origin, etc.)
+* Configured Wireshark (predefined filters, coloring rules, etc.)
 * Ubuntu 22.04+: Firefox is installed from PPA mozillateam/ppa (<https://launchpad.net/~mozillateam/+archive/ubuntu/ppa/+packages>), instead of using the Snap package.
 
 
