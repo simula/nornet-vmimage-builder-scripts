@@ -150,3 +150,11 @@ fi
 if [ -e ${usrPrefix}/share/rserpooldemo/nornet-mec-scenario/nornet-mec-setup-localonly.xml ] ; then
    sudo -u "${USER_NAME}" ln -s ${usrPrefix}/share/rserpooldemo/nornet-mec-scenario/nornet-mec-setup-localonly.xml "/home/${USER_NAME}/Desktop/" || true
 fi
+
+
+# ====== Wireshark filter rules =============================================
+cd "/home/${USER_NAME}/src/rsplib/src/wireshark"
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/wireshark"
+sudo -u "${USER_NAME}" cp colorfilters dfilters preferences "/home/${USER_NAME}/.config/wireshark"
+mkdir -p /root/.config/wireshark
+cp colorfilters dfilters preferences /root/.config/wireshark
