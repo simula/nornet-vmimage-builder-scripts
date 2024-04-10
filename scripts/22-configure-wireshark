@@ -26,9 +26,18 @@ set -ex
 # Non-root user permission will be given in 31-allow-wireshark-as-user, not here!
 
 
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+
 # ====== Wireshark filter rules =============================================
-cd /tmp/wireshark
-sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/wireshark"
-sudo -u "${USER_NAME}" cp colorfilters dfilters preferences "/home/${USER_NAME}/.config/wireshark"
 mkdir -p /root/.config/wireshark
-cp colorfilters dfilters preferences /root/.config/wireshark
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/wireshark"
+for file in colorfilters dfilters preferences ; do
+   cp "/tmp/wireshark/${file}" /root/.config/wireshark
+   sudo -u "${USER_NAME}" cp "/tmp/wireshark/${file}" "/home/${USER_NAME}/.config/wireshark"
+done
