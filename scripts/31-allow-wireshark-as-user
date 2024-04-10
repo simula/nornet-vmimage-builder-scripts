@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -e
+
+
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+
+# ====== Allow Wireshark/T-Shark as regular user ============================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ -e /usr/bin/apt-get ] ; then
+
+   echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+   dpkg-reconfigure wireshark-common -fnoninteractive
+
+# ------ Fedora -------------------------------------------------------------
+elif [ -e /usr/bin/dnf ] ; then
+
+   # Allow Wireshark/T-Shark as regular user:
+   usermod -a -G wireshark "${USER_NAME}"
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ -e /usr/sbin/pkg ] ; then
+
+   # Allow Wireshark/T-Shark as regular user:
+   # The user is already in group "wheel". Allow it to read from /dev/bpf:
+   chmod g+r /dev/bpf
+
+fi
