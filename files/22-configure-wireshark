@@ -1,0 +1,4 @@
+# Wireshark configuration files:
+22-configure-wireshark.files/colorfilters  /tmp/wireshark/
+22-configure-wireshark.files/dfilters      /tmp/wireshark/
+22-configure-wireshark.files/preferences   /tmp/wireshark/
