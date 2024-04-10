@@ -32,6 +32,9 @@ set -ex
 
 # ====== Basic configuration ================================================
 
+# Set time zone
+ln -s /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+
 # Initialise IPv4 and IPv6 networking:
 interface="`ifconfig -l | cut -d' ' -f1`"
 sysrc ifconfig_$interface="dhcp"
