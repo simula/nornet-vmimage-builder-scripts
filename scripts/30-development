@@ -50,6 +50,7 @@ set -e
 #
 # Further properties:
 # * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
+# * Wireshark as regular user is allowed. ⚠WARNING: Development settings are intended for developers only!
 # * Source packages enabled from package manager (if available)
 # ###########################################################################
 
@@ -131,6 +132,9 @@ if [ -e /usr/bin/apt-get ] ; then
    done
    find /etc/apt/sources.list.d -name "*.sources" -exec sed -e 's/^Types: deb[ \t]*$/Types: deb deb-src/g' -i {} \;
 
+   # Allow Wireshark/T-Shark as regular user:
+   echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
+   dpkg-reconfigure wireshark-common -fnoninteractive
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
@@ -230,6 +234,10 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+
+   # Allow Wireshark/T-Shark as regular user:
+   # The user is already in group "wheel". Allow it to read from /dev/bpf:
+   chmod g+r /dev/bpf
 
    # Fetch and check out the FreeBSD Sources:
    . /etc/os-release

@@ -217,6 +217,7 @@ It must contain the following libraries and development files:
 
 Further properties:
 * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
+* Wireshark as regular user is allowed. ⚠WARNING: Development settings are intended for developers only!
 * Source packages enabled from package manager (if available)
 
 
