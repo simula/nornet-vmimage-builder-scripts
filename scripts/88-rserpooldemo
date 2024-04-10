@@ -84,6 +84,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
       mkdir -p /boot/RSerPoolDemo
       cp /usr/share/rserpooldemo/splash/Zollverein-*.jpeg /boot/RSerPoolDemo
+      update-grub
 
    # ------ Ubuntu ----------------------------------------------------------
    else
