@@ -61,7 +61,12 @@ if [ -e /usr/bin/apt-get ] ; then
    if [ "${ID}" == "debian" ] ; then
 
       # FIXME! Work-around for RSerPool Demo not (yet) in Debian:
-      packages="rsplib-registrar"
+      packages="
+         desktop-file-utils
+         rsplib-fgp-cfgfiles
+         rsplib-registrar
+         rsplib-services
+      "
       # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
       systemctl stop rsplib-registrar    || true
@@ -76,6 +81,9 @@ if [ -e /usr/bin/apt-get ] ; then
       make install
       update-mime-database /usr/share/mime
       update-desktop-database
+
+      mkdir -p /boot/RSerPoolDemo
+      cp /usr/share/rserpooldemo/splash/Zollverein-*.jpeg /boot/RSerPoolDemo
 
    # ------ Ubuntu ----------------------------------------------------------
    else
