@@ -67,7 +67,7 @@ function process-result ()
 # ###### Find ISOs ##########################################################
 function find-isos ()
 {
-   echo "Checking for $major.$minor ..."
+   echo "Checking for ${major}.${minor} ..."
 
    # ====== Look for checksums file =========================================
    location=""
@@ -105,42 +105,52 @@ function find-isos ()
       fi
 
       # ====== Get ISO checksum =============================================
-      latestURL="${location}/${iso}"
       if [[ "${checksums}" =~ FreeBSD ]] ; then
-         latestChecksum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
+         sum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
+      elif [[ "${iso}" =~ ubuntu ]] ; then
+         i2="${iso//\.0-/-}"
+         sum="$(grep "${i2}$" "${checksums}" | cut -d' ' -f1)"
       else
-         latestChecksum="$(grep "${iso}$" "${checksums}" | cut -d' ' -f1)"
+         sum="$(grep "${iso}$" "${checksums}" | cut -d' ' -f1)"
       fi
-      latestMajor=${major}
-      latestMinor=${minor}
-      rm -f "${checksums}" "${signature}"
 
-      # ====== Increment minor version ======================================
-      minor=$((minor+1))
-      if [ "${system}" == "Debian" ] && [ "${major}.${minor}" == "12.3" ] ; then
-         minor=4   # Fix: Debian 12.3 does not exist!
+      # ====== Found newer ISO ==============================================
+      if [ "${sum}" != "" ] ; then
+         latestURL="${location}/${iso}"
+         latestChecksum="${sum}"
+         latestMajor=${major}
+         latestMinor=${minor}
+         rm -f "${checksums}" "${signature}"
+
+         # ====== Increment minor version ===================================
+         minor=$((minor+1))
+         if [ "${system}" == "Debian" ] && [ "${major}.${minor}" == "12.3" ] ; then
+            minor=4   # Fix: Debian 12.3 does not exist!
+         fi
+
+         return 0
       fi
+
+   fi
 
    # ====== No checksums file => try next major version =====================
+   rm -f "${checksums}"
+   if [ ${minor} -gt 0 ] ; then
+      process-result
    else
-      rm -f "${checksums}"
-      if [ ${minor} -gt 0 ] ; then
-         process-result
-      else
-         return 1
-      fi
-      if [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
-         a="${major//[\.]*/}"
-         b="${major//[0-9]*\./}"
-
-         # NOTE: Iterating LTS versions only!
-         a=$((a+2))
-         major="${a}.${b}"
-      else
-         major=$((major+1))   # Debian version: just a number
-      fi
-      minor=0
+      return 1
    fi
+   if [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
+      a="${major//[\.]*/}"
+      b="${major//[0-9]*\./}"
+
+      # NOTE: Iterating LTS versions only!
+      a=$((a+2))
+      major="${a}.${b}"
+   else
+      major=$((major+1))   # Debian version: just a number
+   fi
+   minor=0
 }
 
 
@@ -178,7 +188,7 @@ function find-ubuntu-isos ()
    latestMinor=""
    while true ; do
       location1="https://releases.ubuntu.com/${major}.${minor}"
-      location2="https://old-releases.ubuntu.com/releases/${major}.${minor}"
+      location2="https://old-releases.ubuntu.com/releases/${major}"
       iso1="ubuntu-${major}.${minor}-live-server-amd64.iso"
       algorithm="sha256"
       checksums="SHA256SUMS"
@@ -249,7 +259,7 @@ function find-freebsd-isos ()
 
 
 # ###### Main program #######################################################
-find-debian-isos
-find-ubuntu-isos
+# find-debian-isos
+# find-ubuntu-isos
 find-fedora-isos
-find-freebsd-isos RELEASE
+# find-freebsd-isos RELEASE
