@@ -221,6 +221,7 @@ function find-fedora-isos ()
          iso="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e "s/.*(\(.*\)) = .*/\1/g")"
          latestURL="${location}/${iso}"
          latestChecksum="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e 's/^.* = //g')"
+         algorithm="$(grep "^SHA.*${isoPattern}" "${checksums}" | cut -d' ' -f1 | tr [:upper:] [:lower:])"
 
          process-result
          rm -rf "F${major}"
@@ -259,7 +260,7 @@ function find-freebsd-isos ()
 
 
 # ###### Main program #######################################################
-# find-debian-isos
-# find-ubuntu-isos
+find-debian-isos
+find-ubuntu-isos
 find-fedora-isos
-# find-freebsd-isos RELEASE
+find-freebsd-isos RELEASE

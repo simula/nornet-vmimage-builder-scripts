@@ -20,7 +20,7 @@
   // ====== ISO settings ====================================================
   // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep noble-live-server-amd64.iso
   "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/noble-live-server-amd64.iso",
-  "iso_checksum": "sha256:4e73e1ebc672567376bfe0d8e43319210405bff260acbbccfb48b8849ff97692",
+  "iso_checksum": "sha256:884667782ef3f3237695c68725f9f1f79d2d1cf2db94d3eb9d64a018341e87ee",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
