@@ -75,6 +75,13 @@ cat >"/home/${USER_NAME}/.config/kscreenlockerrc" <<EOF
 [\$Version]
 update_info=kscreenlocker.upd:0.1-autolock
 
+[Daemon]
+LockGrace=60
+Timeout=10
+
+[Greeter]
+WallpaperPlugin=org.kde.image
+
 [Greeter][Wallpaper][org.kde.image][General]
 Image=file://${BACKGROUND_LOCKSCREEN}
 EOF
