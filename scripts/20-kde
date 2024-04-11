@@ -113,6 +113,11 @@ EOF
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
 
+   # FIXME: Ubuntu 20.04 triggers GNOME Desktop as "recommends".
+   #        Fix should be to use --no-install-recommends!
+   # Work-around: disable GDM, to get SDDM working:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y gdm3 || true
+
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
 
