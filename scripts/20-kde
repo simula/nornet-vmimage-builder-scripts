@@ -141,12 +141,12 @@ elif [ -e /usr/bin/dnf ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install -y --allowerasing ${packages}
 
    # FIXME!
    # 2024/03: Wayland is still completely unusable in VirtualBox!
    # SDDM on Wayland just produces a black screen -> use X11 instead!
-   /usr/bin/dnf install -y sddm-x11 --allowerasing
+   /usr/bin/dnf install -y --allowerasing sddm-x11
 
    systemctl enable sddm.service
    systemctl start sddm.service
