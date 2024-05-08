@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -e
+set -ex
 
 
 # Documentation:
@@ -118,7 +118,10 @@ function install-xpi ()
    echo "Processing ${URL1} ..."
 
    MY_XPI=$(mktemp)
-   wget --quiet -O "${MY_XPI}" "${URL1}" || wget --quiet -O "${MY_XPI}" "${URL2}"
+   wget -O "${MY_XPI}" "${URL1}" || \
+      wget -O "${MY_XPI}" "${URL2}" || \
+      curl --location --output "${MY_XPI}" "${URL1}" || \
+      curl --location --output "${MY_XPI}" "${URL2}"
 
    MY_UID=$(get-xpi-uid "${MY_XPI}")
    MY_NAME=$(get-xpi-name "${MY_XPI}")
