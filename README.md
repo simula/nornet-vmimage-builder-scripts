@@ -148,6 +148,7 @@ It must contain the following packages:
 * Manual page utilities (manual page viewer)
 * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
 * [NetPlan](https://netplan.io/) (network configuration; on Linux systems only!)
+* [OpenSSL](https://openssl.org/) (Cryptography and TLS toolkit)
 * Ping, Traceroute, ifconfig (basic networking tools)
 * [PLocate](https://plocate.sesse.net/) ("locate" command for finding files)
 * PwGen (password generator)
