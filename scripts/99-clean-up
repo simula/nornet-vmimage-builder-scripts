@@ -25,6 +25,19 @@ set -ex
 UNAME="$(uname)"
 
 
+# ====== Reset machine identity =============================================
+if [ -e /etc/machine-id ] ; then
+   # Ensure to create a new machine ID on the next boot.
+   # The machine ID is used e.g. as DHCP Identifier, it must be unique to
+   # avoid assigning the same IP address to multiple VMs!
+   echo -n | sudo tee /etc/machine-id
+   if [ -e /var/lib/dbus/machine-id ] ; then
+      sudo rm /var/lib/dbus/machine-id
+      sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
+   fi
+fi
+
+
 # ====== Clean up packages  =================================================
 if [ "${UNAME}" == "Linux" ] ; then
    # ------ Ubuntu ----------------------------------------------------------
