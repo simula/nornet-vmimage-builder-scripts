@@ -159,7 +159,6 @@ ClientAliveInterval       60
 ClientAliveCountMax       3
 
 AcceptEnv                 LANG LC_*
-
 EOF
 for sftp in /usr/lib/openssh/sftp-server /usr/libexec/sftp-server ; do
    if [ -e "$sftp" ] ; then
