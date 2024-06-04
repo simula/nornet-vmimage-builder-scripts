@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+
+# ====== Prepare source repositories ========================================
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+cd "/home/${USER_NAME}/src"
+
+if [ ! -e hipercontracer ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/hipercontracer
+fi
+if [ ! -e system-tools ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/system-tools
+fi
+if [ ! -e vmimage-builder-scripts ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+fi
+
+
+# ====== Build ==============================================================
+cd "/home/${USER_NAME}/src/hipercontracer"
+if [ -e /usr/bin/apt-get ] ; then
+   ci/get-dependencies ubuntu --install
+   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+elif [ -e /usr/bin/dnf ] ; then
+   ci/get-dependencies fedora --install
+   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+elif [ -e /usr/sbin/pkg ] ; then
+   ci/get-dependencies freebsd --install
+   cores="$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")"
+fi
+sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
+sudo -u "${USER_NAME}" make -j"${cores}"
+make install
