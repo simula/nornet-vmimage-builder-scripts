@@ -23,9 +23,9 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-12   Fedora-38 Fedora-39   FreeBSD-14.0-RELEASE FreeBSD-14.0-STABLE"
+SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Debian-12   Fedora-39 Fedora-40   FreeBSD-14.1-RELEASE FreeBSD-14.1-STABLE"
 # SYSTEMS="Ubuntu-24.04-LTS"
-# SYSTEMS="FreeBSD-14.0-STABLE"
+# SYSTEMS="FreeBSD-14.1-STABLE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="RSerPoolDemo"
