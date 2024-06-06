@@ -179,7 +179,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       openssl
       plocate
       pwgen
-      py39-fail2ban
+      py311-fail2ban
       python3
       rsplib
       subnetcalc
