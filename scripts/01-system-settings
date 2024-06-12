@@ -133,7 +133,7 @@ if [ "${UNAME}" == "FreeBSD" ] ; then
    if [ "${VIDEO}" != "" ] ; then
       cat >>/boot/loader.conf <<EOF
 efi_max_resolution="${VIDEO}"
-screen.font="8x14"
+# screen.font="8x14"
 EOF
    fi
 fi
