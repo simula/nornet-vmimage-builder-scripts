@@ -160,7 +160,7 @@ elif [ -e /usr/bin/dnf ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y sddm ${packages}
+   /usr/bin/dnf install -y ${packages}
 
 
 # ------ FreeBSD ------------------------------------------------------------
