@@ -48,6 +48,9 @@ cd ~/src
 if [ ! -e bibtexconv ] ; then
    git clone https://dreibh@github.com/dreibh/bibtexconv.git
 fi
+if [ ! -e build-tools ] ; then
+   git clone https://dreibh@github.com/dreibh/build-tools.git
+fi
 if [ ! -e fractgen ] ; then
    git clone https://dreibh@github.com/dreibh/fractgen.git
 fi
