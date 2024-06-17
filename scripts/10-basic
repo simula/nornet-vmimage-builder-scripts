@@ -162,6 +162,16 @@ elif [ -e /usr/bin/dnf ] ; then
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
+   # Use SystemD NetworkD:
+   systemctl disable NetworkManager  || true
+   systemctl disable network         || true
+   systemctl enable systemd-networkd || true
+   systemctl start systemd-networkd  || true
+   systemctl enable systemd-resolved || true
+   systemctl start systemd-resolved  || true
+   rm -f /etc/resolv.conf
+   ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ -e /usr/sbin/pkg ] ; then
@@ -171,6 +181,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       bwm-ng
       cmake
       curl
+      gawk
       gdisk
       gmake
       hipercontracer
