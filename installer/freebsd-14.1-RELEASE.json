@@ -28,7 +28,15 @@
   // No shutdown_command needed!
 
   // ====== Boot into installer =============================================
-  "vboxmanage": [ [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ] ],
+  // !!! IMPORTANT: The "vboxmanage" here will REPLACE all "vboxmanage"
+  //                settings from vmsetup/virtualbox*.json!
+  "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ],
+    [ "modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
+    [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
+    [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
+    [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
+  ],
   "boot_wait": "60s",
   "boot_command": [
     "s<enter><wait>",
