@@ -64,6 +64,7 @@
   ],
   "sound": "pulse",
   "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
     [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
     [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
