@@ -52,6 +52,7 @@ set -ex
 # * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 # * Tree (tree view of directory hierachy)
 # * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
+# * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
 # ###########################################################################
 
 
@@ -113,6 +114,7 @@ if [ -e /usr/bin/apt-get ] ; then
       traceroute
       tree
       tshark
+      uuid
       wget
    "
 
@@ -155,6 +157,7 @@ elif [ -e /usr/bin/dnf ] ; then
       td-system-tools-configure-grub
       traceroute
       tree
+      uuid
       wget
       wireshark-cli
    "
@@ -190,6 +193,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       jq
       netperfmeter
       nmap
+      ossp-uuid
       openssl
       plocate
       pwgen
@@ -213,7 +217,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap openssl ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark wget ; do
+for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap openssl ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
