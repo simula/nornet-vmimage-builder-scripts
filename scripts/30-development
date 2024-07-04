@@ -213,7 +213,7 @@ elif [ -e /usr/sbin/pkg ] ; then
       noto
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
-      py39-yamllint
+      py311-yamllint
       python
       R
       urw-base35-fonts
