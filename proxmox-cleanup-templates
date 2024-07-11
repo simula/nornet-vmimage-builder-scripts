@@ -35,7 +35,7 @@ fi
 
 # ====== Identify templates and VMs for removal =============================
 echo -e "\x1b[34mLooking for VMs/templates to clean up ...\x1b[0m"
-qm list | sort -k2 -k1nr | awk '
+qm list | sort -k2,2 -k1,1rn | awk '
 BEGIN {
    lastName="";
    lastID=-1;
@@ -58,7 +58,7 @@ BEGIN {
                print "" id " " name " " status;
             }
             else {
-               print "Something is wrong!" | "cat 1>&2"
+               print "Something is wrong! id:" id " >= lastID:" lastID | "cat 1>&2"
                exit 1;
             }
          }
