@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Proxmox"
-SYSTEMS="FreeBSD-14.0-RELEASE FreeBSD-13.3-RELEASE"
+SYSTEMS="FreeBSD-14.1-RELEASE FreeBSD-13.3-RELEASE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal Basic Development KDE KDE+Development"   # Minimal Basic Development KDE KDE+Development
