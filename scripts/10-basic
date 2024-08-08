@@ -111,7 +111,6 @@ if [ -e /usr/bin/apt-get ] ; then
       rsplib-tools
       rsync
       subnetcalc
-      systemd-resolved
       td-system-configure-grub
       td-system-tools
       traceroute
