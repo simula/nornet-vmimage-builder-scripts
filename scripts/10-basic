@@ -26,6 +26,7 @@ set -ex
 # The "Basic" installation is based on the "Minimal" installation.
 # It must contain the following packages:
 # * Base64 (base64 tool)
+# * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 # * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 # * [BZip2](https://sourceware.org/bzip2/) (compression tool)
 # * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
@@ -84,6 +85,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
    packages="
       apt-file
+      bind9-dnsutils
       bwm-ng
       bzip2
       cloud-guest-utils
@@ -109,6 +111,7 @@ if [ -e /usr/bin/apt-get ] ; then
       rsplib-tools
       rsync
       subnetcalc
+      systemd-resolved
       td-system-configure-grub
       td-system-tools
       traceroute
@@ -126,6 +129,7 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      bind-utils
       bwm-ng
       bzip2
       cmake
@@ -181,6 +185,7 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    packages="
       base64
+      bind-tools
       bwm-ng
       cmake
       curl
@@ -217,7 +222,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap openssl ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget ; do
+for command in awk base64 bwm-ng bzip2 dig delv curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap openssl ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
@@ -240,4 +245,18 @@ fi
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
+fi
+
+
+# ====== Enable DNSSEC ======================================================
+resolvedConf=""
+if [ -e /etc/systemd/resolved.conf ] ; then
+   resolvedConf="/etc/systemd/resolved.conf"
+elif [ -e /usr/lib/systemd/resolved.conf ] ; then
+   resolvedConf="/usr/lib/systemd/resolved.conf"
+fi
+if [ "${resolvedConf}" != "" ] ; then
+   sed -e "s/^#DNSSEC=.*$/DNSSEC=yes/g" <${resolvedConf} >${resolvedConf}.new
+   mv ${resolvedConf}.new ${resolvedConf}
+   service systemd-resolved restart
 fi

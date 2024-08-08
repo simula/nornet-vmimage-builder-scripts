@@ -133,6 +133,7 @@ The "Basic" installation is based on the [Minimal](#minimal) installation.
 
 It must contain the following packages:
 * Base64 (base64 tool)
+* [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 * [BZip2](https://sourceware.org/bzip2/) (compression tool)
 * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
