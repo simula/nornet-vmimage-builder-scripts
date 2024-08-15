@@ -50,6 +50,8 @@ cd "/home/${USER_NAME}/src/hipercontracer"
 if [ -e /usr/bin/apt-get ] ; then
    ci/get-dependencies ubuntu --install
    cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+   rm -f /etc/apt/preferences.d/block-snapd.pref
+   snap install dbeaver-ce
 elif [ -e /usr/bin/dnf ] ; then
    ci/get-dependencies fedora --install
    cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
