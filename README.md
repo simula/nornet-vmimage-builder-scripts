@@ -140,6 +140,7 @@ It must contain the following packages:
 * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
 * GrowPart (Partition growing tool; on Linux systems only!)
+* [IDN](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html) (Internationalised Domain Names command line tool)
 * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
 * [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/) (high-performance network tracing tool)
 * [HTop](https://htop.dev/) (process monitor)
