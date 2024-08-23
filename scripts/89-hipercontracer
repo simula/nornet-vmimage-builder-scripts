@@ -47,17 +47,28 @@ fi
 
 # ====== Build ==============================================================
 cd "/home/${USER_NAME}/src/hipercontracer"
-if [ -e /usr/bin/apt-get ] ; then
-   ci/get-dependencies ubuntu --install
-   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
-   rm -f /etc/apt/preferences.d/block-snapd.pref
-   snap install dbeaver-ce
-elif [ -e /usr/bin/dnf ] ; then
-   ci/get-dependencies fedora --install
-   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
-elif [ -e /usr/sbin/pkg ] ; then
-   ci/get-dependencies freebsd --install
-   cores="$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")"
+cores=1
+if [ -e /etc/os-release ] ; then
+   . /etc/os-release
+   if [ "${ID}" == "debian" ] ; then
+      ci/get-dependencies debian --install
+      cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends flatpak
+      sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      flatpak install -y flathub io.dbeaver.DBeaverCommunity
+   elif [ "${ID}" == "ubuntu" ] ; then
+      ci/get-dependencies ubuntu --install
+      cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+      rm -f /etc/apt/preferences.d/block-snapd.pref
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends snap
+      snap install dbeaver-ce
+   elif [ "${ID}" == "fedora" ] ; then
+      ci/get-dependencies ubuntu --install
+      cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+   elif [ "${ID}" == "freebsd" ] ; then
+      ci/get-dependencies freebsd --install
+      cores="$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")"
+   fi
 fi
 sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 sudo -u "${USER_NAME}" make -j"${cores}"
