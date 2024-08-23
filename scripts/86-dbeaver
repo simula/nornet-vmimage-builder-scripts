@@ -45,7 +45,8 @@ elif [ "${ID}" == "ubuntu" ] ; then
    env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends snapd
    snap install dbeaver-ce
 elif [ "${ID}" == "fedora" ] ; then
-   true   # FIXME!
+   wget -O /tmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
+   sudo dnf install -y /tmp/dbeaver.rpm
 elif [ "${ID}" == "freebsd" ] ; then
    true   # FIXME!
 else

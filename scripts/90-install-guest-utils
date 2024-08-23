@@ -31,6 +31,15 @@ if [ "${UNAME}" == "Linux" ] ; then
    if [ -e /usr/bin/apt-get ] ; then
       /usr/bin/apt-get update
 
+      # ------ Prevent suspend/hibernation ----------------------------------
+     if [ "${HYPERVISOR}" != "" ] ; then
+        if [ -e /etc/systemd/sleep.conf ] ; then
+           sed -e "s/^#AllowSuspend=.*$/AllowSuspend=no/" \
+               -e "s/^#AllowHibernation=.*$/AllowHibernation=no/" \
+               -i /etc/systemd/sleep.conf
+        fi
+     fi
+
       # ------ VirtualBox ---------------------------------------------------
       if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
          # NOTE: virtualbox-guest-dkms is obsolete now!
