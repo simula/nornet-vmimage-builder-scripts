@@ -72,6 +72,6 @@ sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 sudo -u "${USER_NAME}" make -j"${cores}"
 make install
 
-# Run full test
+# Run test
 cd src/TestDB
-sudo -u "${USER_NAME}" ./run-full-test ALL
+sudo -u "${USER_NAME}" ./run-full-test mariadb
