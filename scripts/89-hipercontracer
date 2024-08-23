@@ -47,6 +47,11 @@ fi
 
 # ====== Build ==============================================================
 cd "/home/${USER_NAME}/src/hipercontracer"
+
+# Build the upcoming version 2.0
+sudo -u "${USER_NAME}" git checkout dreibh/udpping
+
+# ------ Install DBeaver CE and prepare build -------------------------------
 cores=1
 if [ -e /etc/os-release ] ; then
    . /etc/os-release
@@ -70,6 +75,8 @@ if [ -e /etc/os-release ] ; then
       cores="$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")"
    fi
 fi
+
+# ------ Build and install --------------------------------------------------
 sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 sudo -u "${USER_NAME}" make -j"${cores}"
 make install
