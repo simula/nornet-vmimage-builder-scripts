@@ -65,7 +65,7 @@ if [ -e /etc/os-release ] ; then
       ci/get-dependencies ubuntu --install
       cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
       rm -f /etc/apt/preferences.d/block-snapd.pref
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends snap
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends snapd
       snap install dbeaver-ce
    elif [ "${ID}" == "fedora" ] ; then
       ci/get-dependencies ubuntu --install
