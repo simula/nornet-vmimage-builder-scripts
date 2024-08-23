@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -ex
+
+
+# ====== Check environment variables ========================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release is not available!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Install DBeaver Community Edition ==================================
+if [ "${ID}" == "debian" ] ; then
+   env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends flatpak
+   flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+   flatpak install -y flathub io.dbeaver.DBeaverCommunity
+elif [ "${ID}" == "ubuntu" ] ; then
+   rm -f /etc/apt/preferences.d/block-snapd.pref
+   env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends snapd
+   snap install dbeaver-ce
+elif [ "${ID}" == "fedora" ] ; then
+   true   # FIXME!
+elif [ "${ID}" == "freebsd" ] ; then
+   true   # FIXME!
+else
+   echo >&2 "ERROR: No installation recipe for DBeaver CE for ID=${ID}!"
+   exit 1
+fi
