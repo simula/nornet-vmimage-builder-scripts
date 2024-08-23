@@ -49,6 +49,6 @@ elif [ "${ID}" == "fedora" ] ; then
 elif [ "${ID}" == "freebsd" ] ; then
    true   # FIXME!
 else
-   echo >&2 "ERROR: No installation recipe for DBeaver CE for ID=${ID}!"
+   echo >&2 "ERROR: No DBeaver CE installation recipe for ID=${ID}!"
    exit 1
 fi

@@ -42,17 +42,17 @@ cd "/home/${USER_NAME}/src"
 if [ ! -e hipercontracer ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/hipercontracer
 else
-   pushd && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
+   pushd hipercontracer && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e system-tools ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/system-tools
 else
-   pushd && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
+   pushd system-tools && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 else
-   pushd && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
+   pushd vmimage-builder-scripts && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 
 
