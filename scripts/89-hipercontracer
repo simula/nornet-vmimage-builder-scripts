@@ -61,6 +61,7 @@ cd "/home/${USER_NAME}/src/hipercontracer"
 
 # NOTE: Build the upcoming version 2.0
 sudo -u "${USER_NAME}" git checkout dreibh/udpping
+sudo -u "${USER_NAME}" git pull
 
 # ------ Build and install --------------------------------------------------
 cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || \
