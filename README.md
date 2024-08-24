@@ -154,6 +154,7 @@ It must contain the following packages:
 * PwGen (password generator)
 * [Python](https://www.python.org/) (Python 3 interpreter)
 * [RSPLIB RSerPool](https://www.nntb.no/~dreibh/rserpool/) Tools (RSerPool testing tools)
+* [RSync](https://rsync.samba.org/) Tools (file synchronisation)
 * [SubNetCalc](https://www.nntb.no/~dreibh/subnetcalc/) (address calculator)
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 * Tree (tree view of directory hierachy)
