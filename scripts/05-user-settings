@@ -26,9 +26,9 @@ UNAME="$(uname)"
 
 
 # ====== Check environment variables ========================================
-if [ "${USER_NAME}" == "" ] ; then
-   echo >&2 "Usage: env USER_NAME=<user> $0"
-   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+if [ "${USER_NAME}" == "" ] || [ "${USER_REALNAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> USER_REALNAME=\"<full user name>\" $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp USER_REALNAME=\"NorNet Praesum Presum\" $0"
    exit 1
 fi
 
@@ -81,6 +81,21 @@ sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.ssh"
 sudo -u "${USER_NAME}" touch "/home/${USER_NAME}/.ssh/authorized_keys"
 sudo -u "${USER_NAME}" chmod 600 "/home/${USER_NAME}/.ssh/authorized_keys"
 
+
+# ====== Git configuration file =============================================
+(
+cat <<EOF
+[user]
+        name = ${USER_REALNAME}
+        email = ${USER_NAME}@$(hostname -f)
+[push]
+        default = simple
+[color]
+        ui = auto
+[pull]
+        rebase = false
+EOF
+) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
 
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then

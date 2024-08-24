@@ -294,6 +294,7 @@ user_pref("browser.cache.offline.enable", false);
 user_pref("loop.enabled", false);
 user_pref("extensions.pocket.enabled", false);
 
+user_pref("browser.sessionstore.resume_from_crash", false);
 user_pref("browser.selfsupport.url", "");
 user_pref("browser.aboutHomeSnippets.updateUrL", "");
 user_pref("browser.startup.homepage_override.mstone", "");

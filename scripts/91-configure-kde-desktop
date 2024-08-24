@@ -696,6 +696,13 @@ EOF
 cat >"/home/${USER_NAME}/.config/konsolerc" <<EOF
 [Desktop Entry]
 DefaultProfile=Profile 1.profile
+
+[General]
+ConfigVersion=1
+
+[MainWindow]
+MenuBar=Enabled
+ToolBarsMovable=Disabled
 EOF
 
 

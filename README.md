@@ -133,12 +133,15 @@ The "Basic" installation is based on the [Minimal](#minimal) installation.
 
 It must contain the following packages:
 * Base64 (base64 tool)
+* [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 * [BZip2](https://sourceware.org/bzip2/) (compression tool)
 * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
 * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
 * GrowPart (Partition growing tool; on Linux systems only!)
+* [IDN](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html) (Internationalised Domain Names command line tool)
+* [GNU Parallel](https://www.gnu.org/software/parallel/) (Parallel job execution)
 * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
 * [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/) (high-performance network tracing tool)
 * [HTop](https://htop.dev/) (process monitor)
@@ -159,6 +162,7 @@ It must contain the following packages:
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 * Tree (tree view of directory hierachy)
 * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
+* [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
 
 
 ## KDE

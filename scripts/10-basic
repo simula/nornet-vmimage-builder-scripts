@@ -26,12 +26,15 @@ set -ex
 # The "Basic" installation is based on the "Minimal" installation.
 # It must contain the following packages:
 # * Base64 (base64 tool)
+# * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 # * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 # * [BZip2](https://sourceware.org/bzip2/) (compression tool)
 # * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
 # * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 # * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
 # * GrowPart (Partition growing tool; on Linux systems only!)
+# * [IDN](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html) (Internationalised Domain Names command line tool)
+# * [GNU Parallel](https://www.gnu.org/software/parallel/) (Parallel job execution)
 # * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
 # * [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/) (high-performance network tracing tool)
 # * [HTop](https://htop.dev/) (process monitor)
@@ -52,6 +55,7 @@ set -ex
 # * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 # * Tree (tree view of directory hierachy)
 # * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
+# * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
 # ###########################################################################
 
 
@@ -83,6 +87,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
    packages="
       apt-file
+      bind9-dnsutils
       bwm-ng
       bzip2
       cloud-guest-utils
@@ -93,6 +98,7 @@ if [ -e /usr/bin/apt-get ] ; then
       gpm
       hipercontracer
       htop
+      idn
       iputils-ping
       joe
       jq
@@ -103,6 +109,7 @@ if [ -e /usr/bin/apt-get ] ; then
       net-tools
       nmap
       openssl
+      parallel
       pwgen
       python3
       rsplib-tools
@@ -113,6 +120,7 @@ if [ -e /usr/bin/apt-get ] ; then
       traceroute
       tree
       tshark
+      uuid
       wget
    "
 
@@ -124,6 +132,7 @@ if [ -e /usr/bin/apt-get ] ; then
 elif [ -e /usr/bin/dnf ] ; then
 
    packages="
+      bind-utils
       bwm-ng
       bzip2
       cmake
@@ -138,6 +147,7 @@ elif [ -e /usr/bin/dnf ] ; then
       iputils
       joe
       jq
+      libidn
       make
       netperfmeter
       netplan
@@ -145,6 +155,7 @@ elif [ -e /usr/bin/dnf ] ; then
       net-tools
       nmap
       openssl
+      parallel
       plocate
       pwgen
       python3
@@ -155,6 +166,7 @@ elif [ -e /usr/bin/dnf ] ; then
       td-system-tools-configure-grub
       traceroute
       tree
+      uuid
       wget
       wireshark-cli
    "
@@ -178,6 +190,7 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    packages="
       base64
+      bind-tools
       bwm-ng
       cmake
       curl
@@ -188,9 +201,12 @@ elif [ -e /usr/sbin/pkg ] ; then
       htop
       joe
       jq
+      libidn
       netperfmeter
       nmap
+      ossp-uuid
       openssl
+      parallel
       plocate
       pwgen
       py311-fail2ban
@@ -213,7 +229,7 @@ fi
 # ====== Verify command availability ========================================
 echo "Verifying command availability:"
 errors=0
-for command in awk base64 bwm-ng bzip2 curl gdisk hipercontracer htop ifconfig joe jq locate man netperfmeter nmap openssl ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark wget ; do
+for command in awk base64 bwm-ng bzip2 dig delv curl gdisk hipercontracer htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget ; do
    echo -n "${command}: "
    if which ${command} >/dev/null ; then
       echo "OK"
@@ -236,4 +252,18 @@ fi
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1
+fi
+
+
+# ====== Enable DNSSEC ======================================================
+resolvedConf=""
+if [ -e /etc/systemd/resolved.conf ] ; then
+   resolvedConf="/etc/systemd/resolved.conf"
+elif [ -e /usr/lib/systemd/resolved.conf ] ; then
+   resolvedConf="/usr/lib/systemd/resolved.conf"
+fi
+if [ "${resolvedConf}" != "" ] ; then
+   sed -e "s/^#DNSSEC=.*$/DNSSEC=yes/g" <${resolvedConf} >${resolvedConf}.new
+   mv ${resolvedConf}.new ${resolvedConf}
+   service systemd-resolved restart
 fi

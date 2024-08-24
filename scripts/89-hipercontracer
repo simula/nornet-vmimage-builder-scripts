@@ -28,6 +28,11 @@ if [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release is not available!"
+   exit 1
+fi
+. /etc/os-release
 
 
 # ====== Prepare source repositories ========================================
@@ -36,27 +41,37 @@ cd "/home/${USER_NAME}/src"
 
 if [ ! -e hipercontracer ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/hipercontracer
+else
+   pushd hipercontracer && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e system-tools ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/system-tools
+else
+   pushd system-tools && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+else
+   pushd vmimage-builder-scripts && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 
 
 # ====== Build ==============================================================
 cd "/home/${USER_NAME}/src/hipercontracer"
-if [ -e /usr/bin/apt-get ] ; then
-   ci/get-dependencies ubuntu --install
-   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
-elif [ -e /usr/bin/dnf ] ; then
-   ci/get-dependencies fedora --install
-   cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
-elif [ -e /usr/sbin/pkg ] ; then
-   ci/get-dependencies freebsd --install
-   cores="$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")"
-fi
+
+# NOTE: Build the upcoming version 2.0
+sudo -u "${USER_NAME}" git checkout dreibh/udpping
+sudo -u "${USER_NAME}" git pull
+
+# ------ Build and install --------------------------------------------------
+cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || \
+           sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || \
+              echo "1")
+ci/get-dependencies "${ID}" --install
 sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 sudo -u "${USER_NAME}" make -j"${cores}"
 make install
+
+# Run test
+cd src/TestDB
+sudo -u "${USER_NAME}" ./run-full-test mariadb
