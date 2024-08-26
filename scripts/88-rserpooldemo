@@ -28,6 +28,11 @@ if [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release is not available!"
+   exit 1
+fi
+. /etc/os-release
 
 
 # ====== Prepare source repositories ========================================
@@ -36,74 +41,80 @@ cd "/home/${USER_NAME}/src"
 
 if [ ! -e rsplib ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+else
+   pushd rsplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e rserpooldemo ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
+else
+   pushd rserpooldemo && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
-if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+if [ ! -e sctplib ] ; then
+   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/sctplib
+else
+   pushd sctplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e socketapi ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
+else
+   pushd socketapi && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
    sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+else
+   pushd vmimage-builder-scripts && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 
 
 # ====== Package installation ===============================================
 
-# ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+# ------ Debian -------------------------------------------------------------
+if [ "${ID}" == "debian" ] ; then
 
-   # ------ Debian ----------------------------------------------------------
-   . /etc/os-release
-   if [ "${ID}" == "debian" ] ; then
+   # FIXME! Work-around for RSerPool Demo not (yet) in Debian:
+   packages="
+      desktop-file-utils
+      rsplib-fgp-cfgfiles
+      rsplib-registrar
+      rsplib-services
+   "
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   systemctl stop rsplib-registrar    || true
+   systemctl disable rsplib-registrar || true
+   systemctl stop rspregistrar        || true
+   systemctl disable rspregistrar     || true
 
-      # FIXME! Work-around for RSerPool Demo not (yet) in Debian:
-      packages="
-         desktop-file-utils
-         rsplib-fgp-cfgfiles
-         rsplib-registrar
-         rsplib-services
-      "
-      # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
-      systemctl stop rsplib-registrar    || true
-      systemctl disable rsplib-registrar || true
-      systemctl stop rspregistrar        || true
-      systemctl disable rspregistrar     || true
+   cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
+   cd "/home/${USER_NAME}/src/rserpooldemo"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
+   update-mime-database /usr/share/mime
+   update-desktop-database
 
-      cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
-      cd "/home/${USER_NAME}/src/rserpooldemo"
-      sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
-      sudo -u "${USER_NAME}" make -j"${cores}"
-      make install
-      update-mime-database /usr/share/mime
-      update-desktop-database
+   mkdir -p /boot/RSerPoolDemo
+   cp /usr/share/rserpooldemo/splash/Zollverein-*.jpeg /boot/RSerPoolDemo
+   update-grub
 
-      mkdir -p /boot/RSerPoolDemo
-      cp /usr/share/rserpooldemo/splash/Zollverein-*.jpeg /boot/RSerPoolDemo
-      update-grub
+# ------ Ubuntu -------------------------------------------------------------
+elif [ "${ID}" == "ubuntu" ] ; then
 
-   # ------ Ubuntu ----------------------------------------------------------
-   else
-      packages="
-         rserpooldemo-desktop
-         rserpooldemo-development
-         rserpooldemo-tool
-         rsplib-registrar
-      "
+   packages="
+      rserpooldemo-desktop
+      rserpooldemo-development
+      rserpooldemo-tool
+      rsplib-registrar
+   "
 
-      # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
-      systemctl stop rspregistrar
-      systemctl disable rspregistrar
-   fi
+   systemctl stop rspregistrar
+   systemctl disable rspregistrar
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    packages="
       pygtk2
@@ -120,7 +131,7 @@ elif [ -e /usr/bin/dnf ] ; then
    systemctl disable rspregistrar
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
    cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
@@ -134,11 +145,14 @@ elif [ -e /usr/sbin/pkg ] ; then
       sudo ln -s /usr/local/share/rserpooldemo /usr/share/rserpooldemo
    fi
 
+else
+   echo >&2 "ERROR: No RSerPoolDemo installation recipe for ID=${ID}!"
+   exit 1
 fi
 
 
 # ====== Add demo scenario icon to desktop ==================================
-if [ "$(uname)" == "FreeBSD" ] ; then
+if [ "${ID}" == "freebsd" ] ; then
    usrPrefix="/usr/local"
 else
    usrPrefix="/usr"

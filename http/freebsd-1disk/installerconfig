@@ -87,6 +87,8 @@ dhclient $interface
 sysrc zfs_enable="YES"
 sysrc sshd_enable="YES"
 sysrc ntpd_enable="YES"
+sysrc ntp_leapfile_sources="https://data.iana.org/time-zones/data/leap-seconds.list"
+sysrc ntp_leapfile_fetch_verbose="YES"
 # sysrc powerd_enable="YES"
 
 # Set autoboot delay:

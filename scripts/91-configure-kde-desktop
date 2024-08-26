@@ -318,6 +318,7 @@ plugin=org.kde.plasma.keyboardlayout
 PreloadWeight=42
 
 [Containments][7][Applets][21][Configuration][General]
+displayStyle=Flag
 showFlag=true
 
 [Containments][7][Configuration]
@@ -696,6 +697,13 @@ EOF
 cat >"/home/${USER_NAME}/.config/konsolerc" <<EOF
 [Desktop Entry]
 DefaultProfile=Profile 1.profile
+
+[General]
+ConfigVersion=1
+
+[MainWindow]
+MenuBar=Enabled
+State=AAAA/wAAAAD9AAAAAQAAAAAAAAAAAAAAAPwCAAAAAvsAAAAiAFEAdQBpAGMAawBDAG8AbQBtAGEAbgBkAHMARABvAGMAawAAAAAA/////wAAAW4BAAAF+wAAABwAUwBTAEgATQBhAG4AYQBnAGUAcgBEAG8AYwBrAAAAAAD/////AAABDAEAAAUAAAX5AAACrQAAAAQAAAAEAAAACAAAAAj8AAAAAQAAAAIAAAACAAAAFgBtAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAAAAABwAcwBlAHMAcwBpAG8AbgBUAG8AbwBsAGIAYQByAAAAAAD/////AAAAAAAAAAA=
 EOF
 
 
