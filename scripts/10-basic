@@ -72,8 +72,17 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # ------ Work-around for missing System-Tools in Debian ------------------
+   # ------ Debian ----------------------------------------------------------
    if [ "${ID}" == "debian" ] ; then
+      # ------ Add Debian FastTrack repository ------------------------------
+      DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
+      cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
+deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+# deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+EOF
+      /usr/bin/apt-get update
+
+      # ------ Work-around for missing System-Tools in Debian ---------------
       # FIXME! This is not the best solution. Ideally, there should be a
       #        Debian PPA for System-Tools!
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
@@ -82,8 +91,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
       find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
    fi
-
-   # ------------------------------------------------------------------------
 
    # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
    # Try PLocate first, then MLocate, then findutils:
