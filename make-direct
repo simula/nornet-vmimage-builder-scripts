@@ -28,6 +28,7 @@ if [ $# -lt 1 ] ; then
    exit 1
 fi
 
+VIDEO="1024x768"
 USER_NAME="nornetpp"
 USER_REALNAME="NorNet Praesum Presum"
 
@@ -75,6 +76,7 @@ for provisioner in ${PROVISIONERS} ; do
    fi
 
    sudo env \
+      VIDEO="${VIDEO}" \
       USER_NAME="${USER_NAME}" \
       USER_REALNAME="${USER_REALNAME}" \
       BOOTSPLASH="${BOOTSPLASH}" \
@@ -82,4 +84,5 @@ for provisioner in ${PROVISIONERS} ; do
       BACKGROUND_LOCKSCREEN="${BACKGROUND_LOCKSCREEN}" \
       BACKGROUND_DESKTOP="${BACKGROUND_DESKTOP}" \
       "scripts/${provisioner}"
+
 done
