@@ -29,7 +29,7 @@ if [ ! -e /etc/os-release ] ; then
 fi
 . /etc/os-release
 UNAME="$(uname)"
-HYPERVISOR="$(virt-what | xargs) "
+HYPERVISOR=" $(virt-what | xargs) "
 
 
 # ====== Package installation ===============================================
