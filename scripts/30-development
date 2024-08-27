@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ###########################################################################
@@ -55,10 +55,18 @@ set -ex
 # ###########################################################################
 
 
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Programs:
    packages="
@@ -133,8 +141,9 @@ if [ -e /usr/bin/apt-get ] ; then
    done
    find /etc/apt/sources.list.d -name "*.sources" -exec sed -e 's/^Types: deb[ \t]*$/Types: deb deb-src/g' -i {} \;
 
+
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    # Programs:
    packages="
@@ -195,7 +204,7 @@ elif [ -e /usr/bin/dnf ] ; then
 
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    # Programs:
    packages="
@@ -252,6 +261,13 @@ elif [ -e /usr/sbin/pkg ] ; then
    git fetch --all
    git checkout main
    git pull
+
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
 
 fi
 

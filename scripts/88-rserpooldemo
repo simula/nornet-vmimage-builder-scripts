@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ====== Check environment variables ========================================
@@ -145,9 +145,12 @@ elif [ "${ID}" == "freebsd" ] ; then
       sudo ln -s /usr/local/share/rserpooldemo /usr/share/rserpooldemo
    fi
 
+# ------ Unknown ------------------------------------------------------------
 else
-   echo >&2 "ERROR: No RSerPoolDemo installation recipe for ID=${ID}!"
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
    exit 1
+
 fi
 
 

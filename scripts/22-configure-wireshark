@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # NOTE:
@@ -27,7 +27,7 @@ set -ex
 
 
 # ====== Check environment variables ========================================
-if [ "${USER_NAME}" == "" ] ; then
+if [ ! -v USER_NAME ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1

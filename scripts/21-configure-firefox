@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # Documentation:
@@ -31,6 +31,7 @@ set -ex
 # * https://github.com/K3V1991/Disable-Firefox-Telemetry-and-Data-Collection
 
 
+# ====== Check/set environment variables ====================================
 HOMEPAGE="https://www.nntb.no/~dreibh"
 
 

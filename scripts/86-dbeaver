@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ====== Check environment variables ========================================
@@ -36,20 +36,36 @@ fi
 
 
 # ====== Install DBeaver Community Edition ==================================
+
+# ------ Debian -------------------------------------------------------------
 if [ "${ID}" == "debian" ] ; then
+
    env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends flatpak
    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
    flatpak install -y flathub io.dbeaver.DBeaverCommunity
+
+# ------ Ubuntu -------------------------------------------------------------
 elif [ "${ID}" == "ubuntu" ] ; then
+
    rm -f /etc/apt/preferences.d/block-snapd.pref
    env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends snapd
    snap install dbeaver-ce
+
+# ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
+
    wget -O /tmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
    sudo dnf install -y /tmp/dbeaver.rpm
+
+# ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
+
    true   # FIXME!
+
+# ------ Unknown ------------------------------------------------------------
 else
-   echo >&2 "ERROR: No DBeaver CE installation recipe for ID=${ID}!"
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
    exit 1
+
 fi

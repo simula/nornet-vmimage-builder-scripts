@@ -19,36 +19,47 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ====== Check environment variables ========================================
-if [ "${USER_NAME}" == "" ] ; then
+if [ ! -v USER_NAME ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
 
 
 # ====== Allow Wireshark/T-Shark as regular user ============================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
    dpkg-reconfigure wireshark-common -fnoninteractive
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    # Allow Wireshark/T-Shark as regular user:
    usermod -a -G wireshark "${USER_NAME}"
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    # Allow Wireshark/T-Shark as regular user:
    # The user is already in group "wheel". Allow it to read from /dev/bpf:
    chmod g+r /dev/bpf
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
 
 fi
