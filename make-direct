@@ -21,12 +21,6 @@
 set -eu
 
 
-# ###### Handle command-line parameters #####################################
-if [ $# -lt 1 ] ; then
-   echo >&2 "Usage: $0 project"
-   echo >&2 "Example: $0 HiPerConTracer"
-   exit 1
-fi
 
 VIDEO="1024x768"
 USER_NAME="nornetpp"
@@ -38,9 +32,72 @@ BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 
 
+# ###### Handle command-line parameters #####################################
+if [ $# -lt 1 ] ; then
+   echo >&2 "Usage: $0 project"
+   echo >&2 "Example: $0 HiPerConTracer"
+   exit 1
+fi
+PROJECT="$1"
+shift 1
+while [ $# -gt 0 ] ; do
+   if [ "$1" == "--video" ] || [ "$1" == "-V" ] ; then
+      VIDEO="$2"
+      if [ "${VIDEO}" == "XGA" ] ; then
+         VIDEO="1024x768"   # Standard, 4:3
+      elif [ "${VIDEO}" == "SXGA" ] ; then
+         VIDEO="1280x960"   # SXGA, 4:3
+      elif [ "${VIDEO}" == "HD" ] ; then
+         VIDEO="1280x720"   # HD, 16:9
+      elif [ "${VIDEO}" == "HD+" ] ; then
+         VIDEO="1600x900"   # HD+, 16:9
+      elif [ "${VIDEO}" == "FHD" ] ; then
+         VIDEO="1920x1080"  # Full HD, 16:9
+      elif [ "${VIDEO}" == "UHD" ] ; then
+         VIDEO="3840x2160"  # 4K, 16:9
+      fi
+      if [ "${VIDEO}" != "NA" ] ; then
+         if [[ ! "${VIDEO}" =~ ^[0-9]+x[0-9]+$ ]] ; then
+            echo >&2 "ERROR: Bad video setting: ${VIDEO}"
+            exit 1
+         fi
+      fi
+      shift
+   elif [ "$1" == "--username" ] || [ "$1" == "-u" ] ; then
+      USER_NAME="$2"
+      shift
+   elif [ "$1" == "--realname" ] || [ "$1" == "-r" ] ; then
+      USER_REALNAME="$2"
+      shift
+   elif [ "$1" == "--bootsplash" ] || [ "$1" == "-BB" ] ; then
+      BOOTSPLASH="$2"
+      shift
+   elif [ "$1" == "--background-sddm" ] || [ "$1" == "-BS" ] ; then
+      BACKGROUND_SDDM="$2"
+      shift
+   elif [ "$1" == "--background-lockscreen" ] || [ "$1" == "-BL" ] ; then
+      BACKGROUND_LOCKSCREEN="$2"
+      shift
+   elif [ "$1" == "--background-desktop" ] || [ "$1" == "-BD" ] ; then
+      BACKGROUND_DESKTOP="$2"
+      shift
+   else
+      echo >&2 "ERROR: Unknown option $1!"
+      echo >&2 "Usage: $0"
+      echo >&2 "   [--user|-u username]"
+      echo >&2 "   [--realname|-r real_user_name]"
+      echo >&2 "   [--background-sddm|-BD image_file]"
+      echo >&2 "   [--background-lockscreen|-BL image_file]"
+      echo >&2 "   [--background-desktop|-BD image_file]"
+      exit 1
+   fi
+   shift
+done
+
+
 # ###### Get provisioners ###################################################
 pushd >/dev/null projects
-CONFIG="$1.config"
+CONFIG="${PROJECT}.config"
 if [ ! -e "${CONFIG}" ] ; then
    echo >&2: "ERROR: Project configuration ${CONFIG} not found!"
    exit 1
