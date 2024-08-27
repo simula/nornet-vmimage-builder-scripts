@@ -28,6 +28,7 @@ if [ ! -e /etc/os-release ] ; then
    exit 1
 fi
 . /etc/os-release
+UNAME="$(uname)"
 HYPERVISOR="$(virt-what | xargs) "
 
 
@@ -81,37 +82,27 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-      # ------ VirtualBox ---------------------------------------------------
-      if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-         /usr/bin/dnf install -y virtualbox-guest-additions
-      # ------ vSphere ------------------------------------------------------
-      elif [ "${HYPERVISOR}" == "vmware" ] ; then
-         /usr/bin/dnf install -y open-vm-tools
-         if [ -e /usr/lib/systemd/system/sddm.service ] ; then
-            # System has X11 -> also install X11 utilities as well:
-            /usr/bin/dnf install -y open-vm-tools-desktop
-         fi
-      # ------ QEMU ---------------------------------------------------------
-      elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-         /usr/bin/dnf install -y  qemu-guest-agent
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      /usr/bin/dnf install -y virtualbox-guest-additions
+   # ------ vSphere ---------------------------------------------------------
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
+      /usr/bin/dnf install -y open-vm-tools
+      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+         # System has X11 -> also install X11 utilities as well:
+         /usr/bin/dnf install -y open-vm-tools-desktop
       fi
-
-      # ------ Not in QEMU -> remove qemu-guest-agent -----------------------
-      if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
-         # NOTE: qemu-guest-agent may have been installed as part of th
-         #       initial setup, since e.g. the Proxmox builder may expect it!
-         /usr/bin/dnf remove -y qemu-guest-agent
-      fi
-
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      /usr/bin/dnf install -y  qemu-guest-agent
    fi
 
-   # ====== Fix for multipathd error messages ===============================
-   cat <<EOF | tee -a /etc/multipath.conf
-
-blacklist {
-  devnode "^sd[a-z]"
-}
-EOF
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of th
+      #       initial setup, since e.g. the Proxmox builder may expect it!
+      /usr/bin/dnf remove -y qemu-guest-agent
+   fi
 
 
 # ------ FreeBSD ------------------------------------------------------------
@@ -152,4 +143,15 @@ else
    echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
    exit 1
 
+fi
+
+
+# ====== Fix for multipathd error messages ==================================
+if [ "${UNAME}" == "Linux" ] ; then
+   cat <<EOF | tee -a /etc/multipath.conf
+
+blacklist {
+devnode "^sd[a-z]"
+}
+EOF
 fi
