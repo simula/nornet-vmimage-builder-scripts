@@ -128,6 +128,7 @@ EOF
       rsplib-tools
       rsync
       subnetcalc
+      systemd-timesyncd
       td-system-configure-grub
       td-system-tools
       traceroute
@@ -187,15 +188,16 @@ elif [ "${ID}" == "fedora" ] ; then
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
-   # Use SystemD NetworkD:
-   systemctl disable NetworkManager  || true
-   systemctl disable network         || true
-   systemctl enable systemd-networkd || true
-   systemctl start systemd-networkd  || true
-   systemctl enable systemd-resolved || true
-   systemctl start systemd-resolved  || true
-   rm -f /etc/resolv.conf
-   ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+# FIXME!
+#    # Use SystemD NetworkD:
+#    systemctl disable NetworkManager  || true
+#    systemctl disable network         || true
+#    systemctl enable systemd-networkd || true
+#    systemctl start systemd-networkd  || true
+#    systemctl enable systemd-resolved || true
+#    systemctl start systemd-resolved  || true
+#    rm -f /etc/resolv.conf
+#    ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 
 # ------ FreeBSD ------------------------------------------------------------
