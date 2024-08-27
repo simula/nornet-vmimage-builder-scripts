@@ -28,14 +28,22 @@ if [ ! -v USER_NAME ] || [ ! -v USER_REALNAME ] ; then
    echo >&2 "Example: sudo env USER_NAME=nornetpp USER_REALNAME=\"NorNet Praesum Presum\" $0"
    exit 1
 fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
 UNAME="$(uname)"
 
 
 # ====== Initial .bashrc ====================================================
-if [ "${UNAME}" == "FreeBSD" ] ; then
+if [ "${ID}" == "freebsd" ] || [ "${ID}" == "fedora" ] ; then
    if [ ! -e "/home/${USER_NAME}/.bashrc" ] ; then
       cp /tmp/configuration-files/bashrc "/home/${USER_NAME}/.bashrc"
+      cp /tmp/configuration-files/bashrc /etc/skel/.bashrc
    fi
+fi
+if [ "${ID}" == "freebsd" ] ; then
    if [ ! -e "/home/${USER_NAME}/.bash_profile" ] ; then
       cat >"/home/${USER_NAME}/.bash_profile" <<EOF
 test -f ~/.bashrc && source ~/.bashrc
