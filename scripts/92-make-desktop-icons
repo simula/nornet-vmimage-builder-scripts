@@ -65,7 +65,7 @@ APPLICATIONS="
    org.kde.okular
    org.wireshark.Wireshark
    R
-   io.dbeaver.DBeaverCommunity.desktop
+   io.dbeaver.DBeaverCommunity
    dbeaver-ce_dbeaver-ce
 "
 
@@ -97,5 +97,5 @@ for application in ${APPLICATIONS} ; do
             break
          fi
       fi
-   fi
+   done
 done

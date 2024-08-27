@@ -171,7 +171,7 @@ while [ $# -gt 0 ] ; do
       if [ "${VM_CORES}" == "NA" ] ; then
          VM_CORES=1
       fi
-      if [ ${VM_CORES} -lt 1 ] ; then
+      if [ "${VM_CORES}" -lt 1 ] ; then
          VM_CORES=1
       fi
       shift
@@ -250,7 +250,7 @@ while [ $# -gt 0 ] ; do
       elif [ "${VIDEO}" == "UHD" ] ; then
          VIDEO="3840x2160"  # 4K, 16:9
       fi
-      if [ ${VIDEO} != "NA" ] ; then
+      if [ "${VIDEO}" != "NA" ] ; then
          if [[ ! "${VIDEO}" =~ ^[0-9]+x[0-9]+$ ]] ; then
             echo >&2 "ERROR: Bad video setting: ${VIDEO}"
             exit 1
@@ -586,17 +586,17 @@ if [ "${HYPERVISOR}" == "Docker" ] ; then
 else
    BUILDER_INSTALLTYPE="installer"
 fi
-if [ ! -e ${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json ] ; then
+if [ ! -e ${BUILDER_INSTALLTYPE}/"${BUILDER_INSTALL}".json ] ; then
    echo >&2 "ERROR: ${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json does not exist!"
    exit 1
 fi
 (
-   insert-json vmsetup/${BUILDER_VMSETUP}.json
+   insert-json "vmsetup/${BUILDER_VMSETUP}.json"
    echo ","
    if [ "${BUILDER_INSTALLTYPE}" == "installer" ] ; then
       echo "\"http_directory\": \"http\","
    fi
-   insert-json ${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json
+   insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json"
 cat <<EOF
     }
   ],
@@ -690,7 +690,7 @@ EOF
    fi
 done
 
-   if [ ${found} -eq 0 ] ; then
+   if [ "${found}" -eq 0 ] ; then
       echo >&2 "ERROR: Did not found provisioner ${provisioner}!"
       exit 1
    fi
