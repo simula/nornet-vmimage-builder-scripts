@@ -165,7 +165,6 @@ elif [ "${ID}" == "fedora" ] ; then
       make
       netperfmeter
       netplan
-      netplan-default-backend-networkd
       net-tools
       nmap
       openssl
@@ -187,17 +186,6 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
-
-# FIXME!
-#    # Use SystemD NetworkD:
-#    systemctl disable NetworkManager  || true
-#    systemctl disable network         || true
-#    systemctl enable systemd-networkd || true
-#    systemctl start systemd-networkd  || true
-#    systemctl enable systemd-resolved || true
-#    systemctl start systemd-resolved  || true
-#    rm -f /etc/resolv.conf
-#    ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 
 # ------ FreeBSD ------------------------------------------------------------
