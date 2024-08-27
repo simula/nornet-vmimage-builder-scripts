@@ -56,6 +56,24 @@ for provisioner in ${PROVISIONERS} ; do
    echo -e "\x1b[34mRunning ${provisioner} ...\x1b[0m"
    echo ""
 
+   if [ -e "files/${provisioner}" ] ; then
+      while read -r s destination ; do
+         if [ "${s}" != "" ] && [[ ! "${s}" =~ ^# ]] ; then
+            source="$(realpath files/"${s}")"
+            if [ ! -e "${source}" ] ; then
+               echo >&2 "ERROR: Cannot find source file ${source} in files/${provisioner}!"
+               exit 1
+            fi
+            if [ "${destination}" == "" ] ; then
+               echo >&2 "ERROR: Destination has to be provided in files/${provisioner}!"
+               exit 1
+            fi
+            mkdir -p "${destination}"
+            cp "${source}" "${destination}"
+         fi
+      done <"files/${provisioner}"
+   fi
+
    sudo env \
       USER_NAME="${USER_NAME}" \
       USER_REALNAME="${USER_REALNAME}" \
