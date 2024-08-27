@@ -65,6 +65,8 @@ APPLICATIONS="
    org.kde.okular
    org.wireshark.Wireshark
    R
+   io.dbeaver.DBeaverCommunity.desktop
+   dbeaver-ce_dbeaver-ce
 "
 
 
@@ -86,20 +88,14 @@ done
 
 
 # ====== Create directorys for applications =================================
-if [ "$(uname)" == "FreeBSD" ] ; then
-   source="/usr/local/share/applications"
-else
-   source="/usr/share/applications"
-fi
 for application in ${APPLICATIONS} ; do
-   if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
-      echo "Creating desktop link for application ${application} ..."
-      if [ -e "${source}/${application}.desktop" ] ; then
-         ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
-      else
-         echo "WARNING: ${source}/${application}.desktop does not exist!"
+   for source in /usr/share/applications /usr/local/share/applications /var/lib/snapd/desktop/applications /var/lib/flatpak/exports/share/applications ; do
+      if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
+         if [ -e "${source}/${application}.desktop" ] ; then
+            echo "Creating desktop link for application ${application} (in ${source}) ..."
+            ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
+            break
+         fi
       fi
    fi
 done
-
-echo "Done!"
