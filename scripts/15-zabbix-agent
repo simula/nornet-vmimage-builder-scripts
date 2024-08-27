@@ -35,13 +35,17 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   if [ "${ID}" == "ubuntu" ] ; then
-      cat >/etc/apt/sources.list.d/zabbix.list <<EOF
-deb https://repo.zabbix.com/zabbix/7.0/ubuntu ${VERSION_CODENAME} main
-# deb-src https://repo.zabbix.com/zabbix/7.0/ubuntu ${VERSION_CODENAME} main
+   # ------ Add Zabbix Official Repository ----------------------------------
+   cat >/etc/apt/sources.list.d/zabbix.list <<EOF
+deb https://repo.zabbix.com/zabbix/7.0/${ID} ${VERSION_CODENAME} main
+# deb-src https://repo.zabbix.com/zabbix/7.0/${ID} ${VERSION_CODENAME} main
 EOF
-   fi
+   rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+   curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
+      sudo gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+   /usr/bin/apt-get update
 
+   # ------ Install ---------------------------------------------------------
    packages="zabbix-agent"
 
    # shellcheck disable=SC2086
