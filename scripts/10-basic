@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ###########################################################################
@@ -59,24 +59,30 @@ set -ex
 # ###########################################################################
 
 
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Work-around for missing System-Tools in Debian ------------------
-   if [ -e /etc/os-release ] ; then
-      . /etc/os-release
-      if [ "${ID}" == "debian" ] ; then
-         # FIXME! This is not the best solution. Ideally, there should be a
-         #        Debian PPA for System-Tools!
-         #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
-         cd /tmp
-         wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-         find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
-      fi
+   if [ "${ID}" == "debian" ] ; then
+      # FIXME! This is not the best solution. Ideally, there should be a
+      #        Debian PPA for System-Tools!
+      #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
+      cd /tmp
+      wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
+      find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
    fi
+
    # ------------------------------------------------------------------------
 
    # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
@@ -129,7 +135,7 @@ if [ -e /usr/bin/apt-get ] ; then
 
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    packages="
       bind-utils
@@ -186,7 +192,7 @@ elif [ -e /usr/bin/dnf ] ; then
 
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    packages="
       base64
@@ -222,6 +228,13 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation scripts may need an update for supporting this system!"
+   exit 1
 
 fi
 

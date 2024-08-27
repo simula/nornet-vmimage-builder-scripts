@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ###########################################################################
@@ -35,19 +35,28 @@ set -ex
 # * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 #
 # Further properties:
-# - Bash as default shell
-# - ECN enabled
-# - SCTP enabled
-# - SSH server enabled
-# - Hardened SSH server and client settings
-# - UTF-8 character encoding
+# * /etc/os-release with operating system information exists
+# * Bash as default shell
+# * ECN enabled
+# * SCTP enabled
+# * SSH server enabled
+# * Hardened SSH server and client settings
+# * UTF-8 character encoding
 # ###########################################################################
+
+
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
 
 
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Make 3 APT package download retries, in case of network problems:
    echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
@@ -70,7 +79,7 @@ if [ -e /usr/bin/apt-get ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    packages="
       bash
@@ -87,7 +96,7 @@ elif [ -e /usr/bin/dnf ] ; then
    /usr/bin/dnf install -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    packages="
       bash
@@ -123,6 +132,12 @@ elif [ -e /usr/sbin/pkg ] ; then
    # Not running this here:
    # /usr/local/bin/git fetch freebsd
    # /usr/local/bin/git checkout main
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation scripts may need an update for supporting this system!"
+   exit 1
 
 fi
 

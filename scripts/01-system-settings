@@ -19,18 +19,16 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
-UNAME="$(uname)"
-
-
-# ====== Check environment variables ========================================
+# ====== Check/set environment variables ====================================
 if [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+UNAME="$(uname)"
 
 
 # ====== Set timezone =======================================================

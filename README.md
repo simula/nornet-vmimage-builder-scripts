@@ -119,6 +119,7 @@ Provided packages:
 * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
 Further properties:
+* /etc/os-release with operating system information exists
 * Bash as default shell
 * Explicit Congestion Notification (ECN, RFC 3168) enabled
 * Stream Control Transmission Protocol (SCTP, RFC 4960) enabled
