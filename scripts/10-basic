@@ -240,7 +240,7 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ Unknown ------------------------------------------------------------
 else
 
-   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation scripts may need an update for supporting this system!"
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
    exit 1
 
 fi

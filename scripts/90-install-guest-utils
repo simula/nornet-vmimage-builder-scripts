@@ -22,59 +22,64 @@
 set -ex
 
 
-UNAME="$(uname)"
-HYPERVISOR=" $(virt-what | xargs) "
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+HYPERVISOR="$(virt-what | xargs) "
 
 
-if [ "${UNAME}" == "Linux" ] ; then
-   # ====== Ubuntu/Debian Linux =============================================
-   if [ -e /usr/bin/apt-get ] ; then
-      /usr/bin/apt-get update
+# ====== Package installation ===============================================
 
-      # ------ Prevent suspend/hibernation ----------------------------------
-     if [ "${HYPERVISOR}" != "" ] ; then
-        if [ -e /etc/systemd/sleep.conf ] ; then
-           sed -e "s/^#AllowSuspend=.*$/AllowSuspend=no/" \
-               -e "s/^#AllowHibernation=.*$/AllowHibernation=no/" \
-               -i /etc/systemd/sleep.conf
-        fi
-     fi
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-      # ------ VirtualBox ---------------------------------------------------
-      if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-         # NOTE: virtualbox-guest-dkms is obsolete now!
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-            virtualbox-guest-utils || true
-         if [ -e /usr/lib/systemd/system/sddm.service ] ; then
-            # System has X11 -> also install X11 utilities as well:
-            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-               virtualbox-guest-x11 || true
-         fi
-      # ------ vSphere ------------------------------------------------------
-      elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-            open-vm-tools
-         if [ -e /usr/lib/systemd/system/sddm.service ] ; then
-            # System has X11 -> also install X11 utilities as well:
-            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-               open-vm-tools-desktop || true
-         fi
-      # ------ QEMU ---------------------------------------------------------
-      elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-            qemu-guest-agent
+   # ------ Prevent suspend/hibernation -------------------------------------
+   if [ "${HYPERVISOR}" != "" ] ; then
+      if [ -e /etc/systemd/sleep.conf ] ; then
+         sed -e "s/^#AllowSuspend=.*$/AllowSuspend=no/" \
+            -e "s/^#AllowHibernation=.*$/AllowHibernation=no/" \
+            -i /etc/systemd/sleep.conf
       fi
+   fi
 
-      # ------ Not in QEMU -> remove qemu-guest-agent -----------------------
-      if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
-         # NOTE: qemu-guest-agent may have been installed as part of th
-         #       initial setup, since e.g. the Proxmox builder may expect it!
-         /usr/bin/apt-get autoremove -y --purge qemu-guest-agent
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      # NOTE: virtualbox-guest-dkms is obsolete now!
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+         virtualbox-guest-utils || true
+      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+         # System has X11 -> also install X11 utilities as well:
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+            virtualbox-guest-x11 || true
       fi
+   # ------ vSphere ---------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+         open-vm-tools
+      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+         # System has X11 -> also install X11 utilities as well:
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+            open-vm-tools-desktop || true
+      fi
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+         qemu-guest-agent
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of th
+      #       initial setup, since e.g. the Proxmox builder may expect it!
+      /usr/bin/apt-get autoremove -y --purge qemu-guest-agent
+   fi
 
 
-   # ====== Fedora Linux ====================================================
-   elif [ -e /usr/bin/dnf ] ; then
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
 
       # ------ VirtualBox ---------------------------------------------------
       if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
@@ -108,8 +113,9 @@ blacklist {
 }
 EOF
 
-# ====== FreeBSD ============================================================
-elif [ "${UNAME}" == "FreeBSD" ] ; then
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
@@ -138,5 +144,12 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
       /usr/sbin/pkg remove -y qemu-guest-agent
       sysrc -x qemu_guest_agent_enable
    fi
+
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
 
 fi
