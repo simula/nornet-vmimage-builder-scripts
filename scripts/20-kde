@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
 # ###########################################################################
@@ -52,10 +52,18 @@ set -ex
 # ###########################################################################
 
 
-# ====== NorNet Desktop package installation ================================
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    packages="
       dia
@@ -76,37 +84,33 @@ if [ -e /usr/bin/apt-get ] ; then
       wireshark
    "
 
-   if [ -e /etc/os-release ] ; then
-      . /etc/os-release
+   # ------ Distribution-specific KDE meta package --------------------------
+   # if [ "${ID}" == "debian" ] ; then
+   #    # See also: https://wiki.debian.org/KDE
+   #    packages="${packages} kde-standard"
+   # else
+   #    packages="${packages} kubuntu-desktop"
+   # fi
 
-      # ------ Distribution-specific KDE meta package -----------------------
-      # if [ "${ID}" == "debian" ] ; then
-      #    # See also: https://wiki.debian.org/KDE
-      #    packages="${packages} kde-standard"
-      # else
-      #    packages="${packages} kubuntu-desktop"
-      # fi
+   # ------ Add Firefox package ---------------------------------------------
+   if [ "${ID}" == "debian" ] ; then
+      # Debian: firefox-esr instead of firefox!
+      packages="${packages} firefox-esr"
+   else
+      packages="${packages} firefox"
+   fi
 
-      # ------ Add Firefox package ------------------------------------------
-      if [ "${ID}" == "debian" ] ; then
-         # Debian: firefox-esr instead of firefox!
-         packages="${packages} firefox-esr"
-      else
-         packages="${packages} firefox"
-      fi
-
-      # ------ Ubuntu: Get Firefox from PPA, not via Snap -------------------
-      if [ "${ID}" == "ubuntu" ] ; then
-         # shellcheck disable=SC2072,SC2071
-         if [[ "${VERSION_ID}" > "21.10" ]] ; then
-            cat >/etc/apt/preferences.d/firefox.pref <<EOF
+   # ------ Ubuntu: Get Firefox from PPA, not via Snap ----------------------
+   if [ "${ID}" == "ubuntu" ] ; then
+      # shellcheck disable=SC2072,SC2071
+      if [[ "${VERSION_ID}" > "21.10" ]] ; then
+         cat >/etc/apt/preferences.d/firefox.pref <<EOF
 # Use Firefox from PPA, instead of installing it via Snap!
 Package: firefox
 Pin: release o=LP-PPA-mozillateam
 Pin-Priority: 1024
 EOF
-            sudo add-apt-repository -sy ppa:mozillateam/ppa
-         fi
+         sudo add-apt-repository -sy ppa:mozillateam/ppa
       fi
    fi
 
@@ -118,8 +122,9 @@ EOF
    # Work-around: disable GDM, to get SDDM working:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y gdm3 || true
 
+
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    packages="
       dia
@@ -152,8 +157,9 @@ elif [ -e /usr/bin/dnf ] ; then
    systemctl start sddm.service
    systemctl set-default graphical.target
 
+
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    packages="
       dia
@@ -180,4 +186,12 @@ elif [ -e /usr/sbin/pkg ] ; then
 
    sysrc dbus_enable="YES" ; service dbus start || true
    sysrc sddm_enable="YES" ; service sddm start || true
+
+
+   # ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
+
 fi

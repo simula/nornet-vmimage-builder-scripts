@@ -19,11 +19,15 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
+
+
+# ====== Check/set environment variables ====================================
+UNAME="$(uname)"
 
 
 # ====== Configure System-Info ==============================================
-if [ "$(uname)" == "FreeBSD" ] ; then
+if [ "${UNAME}" == "FreeBSD" ] ; then
    systemInfoDirectory="/usr/local/etc/system-info.d"
 
    # FIXME! This can be removed when the td-system-tools port got updated!

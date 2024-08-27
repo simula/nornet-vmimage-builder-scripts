@@ -19,9 +19,15 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -ex
+set -exu
 
 
+# ====== Check/set environment variables ====================================
+if [ ! -v BOOTSPLASH ] ; then
+   echo >&2 "Usage: env BOOTSPLASH=<bootsplash> $0"
+   echo >&2 "Example: sudo env BOOTSPLASH=/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg $0"
+   exit 1
+fi
 UNAME="$(uname)"
 
 
