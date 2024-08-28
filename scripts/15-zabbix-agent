@@ -51,6 +51,9 @@ EOF
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
+   systemctl enable zabbix-agent
+   systemctl start  zabbix-agent
+
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
@@ -59,12 +62,18 @@ elif [ "${ID}" == "fedora" ] ; then
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
+   systemctl enable zabbix-agent
+   systemctl start  zabbix-agent
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
    packages="zabbix7-agent"
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+
+   sysrc zabbix_agentd_enable="YES"
+   service zabbix_agentd start
 
 # ------ Unknown ------------------------------------------------------------
 else
