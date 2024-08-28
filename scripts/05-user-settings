@@ -40,7 +40,11 @@ UNAME="$(uname)"
 if [ "${ID}" == "freebsd" ] || [ "${ID}" == "fedora" ] ; then
    if [ ! -e "/home/${USER_NAME}/.bashrc" ] ; then
       cp /tmp/configuration-files/bashrc "/home/${USER_NAME}/.bashrc"
-      cp /tmp/configuration-files/bashrc /etc/skel/.bashrc
+      if [ "${ID}" == "freebsd" ]  ; then
+         cp /tmp/configuration-files/bashrc /usr/share/skel/.bashrc
+      elif [ "${ID}" == "fedora" ] ; then
+         cp /tmp/configuration-files/bashrc /etc/skel/.bashrc
+      fi
    fi
 fi
 if [ "${ID}" == "freebsd" ] ; then
