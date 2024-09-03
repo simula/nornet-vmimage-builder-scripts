@@ -843,7 +843,7 @@ MinimumUid=1000
 EOF
 
 
-sddmThemeConfig="${usrPrefix}/share/sddm/themes/breeze/theme.conf"
+sddmThemeConfig="${usrPrefix}/share/sddm/themes/breeze/theme.conf.user"
 mkdir -p "$(dirname "${sddmThemeConfig}")"
 
 cat >${sddmThemeConfig} <<EOF
