@@ -39,6 +39,7 @@ set -exu
 # * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 # * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
 # * [R](https://www.r-project.org/) (statistical computing suite)
+# * [Strawberry Music Player](https://www.strawberrymusicplayer.org/) (audio player)
 # * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 #
 # Further properties:
@@ -71,6 +72,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       kde-plasma-desktop
       kde-style-oxygen-qt5
       gimp
+      gstreamer1.0-libav
       inkscape
       kate
       kile
@@ -81,6 +83,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       plasma-theme-oxygen
       sddm
       sddm-theme-breeze
+      strawberry
       wireshark
    "
 
@@ -142,6 +145,7 @@ elif [ "${ID}" == "fedora" ] ; then
       oxygen-icon-theme
       plasma-oxygen
       qt5-style-oxygen
+      strawberry
       wireshark
    "
 
@@ -176,6 +180,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       plasma5-sddm-kcm
       R
       sddm
+      strawberry
       wireshark
       xf86-video-vmware
       xorg
