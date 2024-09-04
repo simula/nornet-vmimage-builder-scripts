@@ -498,6 +498,7 @@ Theme=oxygen
 [KDE]
 ColorScheme=Breeze
 LookAndFeelPackage=org.kde.breeze.desktop
+SingleClick=false
 contrast=4
 widgetStyle=Oxygen
 
