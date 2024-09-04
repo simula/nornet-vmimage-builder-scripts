@@ -25,9 +25,10 @@ set -e
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-40   Debian-12"
 SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
+SYSTEMS="Debian-12 Ubuntu-18.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="KDE+Development"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="KDE"   # Minimal Basic Development KDE KDE+Development
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
