@@ -187,6 +187,12 @@ elif [ "${ID}" == "fedora" ] ; then
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
 
+   # FIXME!
+   # Fedora is buggy, preventing NetworkManager startup with NetPlan:
+   # https://bugzilla.redhat.com/show_bug.cgi?id=2308655
+   # Work-around is to turn SELinux into "permissive" mode:
+   sed -e "s/^SELINUX=.*/SELINUX=permissive/" -i /etc/selinux/config
+
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
