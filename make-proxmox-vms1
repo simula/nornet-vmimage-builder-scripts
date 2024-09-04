@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-12   Fedora-40"
+SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-12   Fedora-40"
 # SYSTEMS="Ubuntu-24.04-LTS Debian-12 Fedora-40"
 
 # ------ Parameters ---------------------------------------
