@@ -126,6 +126,7 @@ Further properties:
 * SSH server enabled
 * Hardened SSH server and client settings (weak algorithms disabled)
 * UTF-8 character encoding
+* Enabled automatic installation of updates
 
 
 ## Basic

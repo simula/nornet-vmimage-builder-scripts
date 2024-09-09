@@ -42,6 +42,7 @@ set -exu
 # * SSH server enabled
 # * Hardened SSH server and client settings
 # * UTF-8 character encoding
+# * Enabled automatic installation of updates
 # ###########################################################################
 
 
@@ -85,6 +86,7 @@ elif [ "${ID}" == "fedora" ] ; then
       bash
       bash-completion
       curl
+      dnf-automatic
       git
       gpg
       kernel-modules-extra

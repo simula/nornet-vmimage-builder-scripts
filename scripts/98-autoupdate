@@ -35,7 +35,7 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # Ensure "unattended-upgrades" is active and handles the PPAs:
+   # Ensure that "unattended-upgrades" is active and handles the PPAs:
    if [ "${ID}" == "ubuntu" ] ; then
       # Ubuntu:
       sed \
@@ -51,12 +51,17 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    diff --color /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d//50unattended-upgrades.new || true
    mv /etc/apt/apt.conf.d//50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
 
+   # Run now:
    unattended-upgrade --verbose
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   true    # FIXME: TDB!
+   # Ensure that "dnf-automatic" timer is active for downloading and installing updates:
+   systemctl enable --now dnf-automatic-install.timer
+
+   # Run now:
+   systemctl start dnf-automatic-install.service
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
