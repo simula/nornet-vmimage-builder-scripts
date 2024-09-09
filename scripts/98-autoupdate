@@ -39,17 +39,17 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    if [ "${ID}" == "ubuntu" ] ; then
       # Ubuntu: allow updates to be installed automatically, including updates from PPAs
       sed \
-         -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";#' \
-         </etc/apt/apt.conf.d/50unattended-upgrades | tee /tmp/50unattended-upgrades.new >/dev/null
+         -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";\n\t"Zabbix:${distro_codename}";#' \
+         </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
    else
       # Debian: allow updates to be installed automatically
       sed \
-         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1#' \
-         </etc/apt/apt.conf.d/50unattended-upgrades | tee /tmp/50unattended-upgrades.new >/dev/null
+         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t"Zabbix:${distro_codename}";#' \
+         </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
    fi
 
-   diff --color /etc/apt/apt.conf.d/50unattended-upgrades /tmp/50unattended-upgrades.new || true
-   mv /tmp/50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
+   diff --color /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d//50unattended-upgrades.new || true
+   mv /etc/apt/apt.conf.d//50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
 
    unattended-upgrade --verbose
 
