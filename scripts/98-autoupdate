@@ -44,7 +44,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    else
       # Debian:
       sed \
-         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t""origin=Zabbix,codename=${distro_codename}";";#' \
+         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t"origin=Zabbix,codename=${distro_codename}";#' \
          </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
    fi
 
