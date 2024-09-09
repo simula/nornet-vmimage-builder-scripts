@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -exu
+
+
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Package installation ===============================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+   # Ensure "unattended-upgrades" is active and handles the PPAs:
+   if [ "${ID}" == "ubuntu" ] ; then
+      # Ubuntu: allow updates to be installed automatically, including updates from PPAs
+      sed \
+         -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";#' \
+         </etc/apt/apt.conf.d/50unattended-upgrades | tee /tmp/50unattended-upgrades.new >/dev/null
+   else
+      # Debian: allow updates to be installed automatically
+      sed \
+         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1#' \
+         </etc/apt/apt.conf.d/50unattended-upgrades | tee /tmp/50unattended-upgrades.new >/dev/null
+   fi
+
+   diff --color /etc/apt/apt.conf.d/50unattended-upgrades /tmp/50unattended-upgrades.new || true
+   mv /tmp/50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
+
+   # Test with: sudo unattended-upgrade –-dry-run --verbose
+   unattended-upgrade –-dry-run --verbose
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
+
+   true    # FIXME: TDB!
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
+
+   true    # FIXME: TDB!
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
+
+fi
