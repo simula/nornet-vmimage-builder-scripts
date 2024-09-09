@@ -498,6 +498,7 @@ Theme=oxygen
 [KDE]
 ColorScheme=Breeze
 LookAndFeelPackage=org.kde.breeze.desktop
+SingleClick=false
 contrast=4
 widgetStyle=Oxygen
 
@@ -843,7 +844,7 @@ MinimumUid=1000
 EOF
 
 
-sddmThemeConfig="${usrPrefix}/share/sddm/themes/breeze/theme.conf"
+sddmThemeConfig="${usrPrefix}/share/sddm/themes/breeze/theme.conf.user"
 mkdir -p "$(dirname "${sddmThemeConfig}")"
 
 cat >${sddmThemeConfig} <<EOF

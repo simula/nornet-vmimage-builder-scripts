@@ -63,6 +63,7 @@ APPLICATIONS="
    org.kde.kile
    org.kde.konsole
    org.kde.okular
+   org.strawberrymusicplayer.strawberry
    org.wireshark.Wireshark
    R
    io.dbeaver.DBeaverCommunity

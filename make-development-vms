@@ -22,15 +22,13 @@ set -e
 
 . ./vm-build-helper
 
-HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Ubuntu-23.10   Fedora-38 Fedora-39"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS   Ubuntu-23.10   Fedora-38 Fedora-39"
-SYSTEMS="Ubuntu-22.04-LTS"
+HYPERVISOR="VirtualBox"
+SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-40   Debian-12"
+# SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet NorNet-Desktop"
-
-HOSTNAME="akerbrygge.simula.nornet"
+PROJECTS="Development"   # Minimal Basic Development KDE KDE+Development
+HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
@@ -38,18 +36,18 @@ USER_REALNAME="NorNet Praesum Presum"
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
-MEMORY=3072
+MEMORY=2048
 BALLOON=1024
-DISK_ROOT=16384
-DISK_HOME=8192
+DISK_ROOT=32768
+DISK_HOME=16384
 DISK_SWAP=2048
-VIDEO="FHD"
-OPTIONS="--proxmox $HOME/.config/proxmox.config"
+VIDEO="HD+"
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
-BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
-BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
-BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
+BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
+BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
+BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
+OPTIONS=""
 # ---------------------------------------------------------
 
 files/generate-backgrounds
-build-defined-vms 30
+build-defined-vms
