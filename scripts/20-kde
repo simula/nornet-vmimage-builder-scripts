@@ -83,7 +83,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       plasma-theme-oxygen
       sddm
       sddm-theme-breeze
-      strawberry
       wireshark
    "
 
@@ -119,6 +118,10 @@ EOF
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+
+   # Only newer system versions have Strawberry, install Clementine instead:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y strawberry ||
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y clementine
 
    # FIXME: Ubuntu 20.04 triggers GNOME Desktop as "recommends".
    #        Fix should be to use --no-install-recommends!
