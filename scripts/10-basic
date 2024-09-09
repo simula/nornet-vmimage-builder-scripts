@@ -128,7 +128,6 @@ EOF
       rsplib-tools
       rsync
       subnetcalc
-      systemd-timesyncd
       td-system-configure-grub
       td-system-tools
       traceroute
