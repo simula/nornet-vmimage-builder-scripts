@@ -51,8 +51,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    diff --color /etc/apt/apt.conf.d/50unattended-upgrades /tmp/50unattended-upgrades.new || true
    mv /tmp/50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
 
-   # Test with: sudo unattended-upgrade –-dry-run --verbose
-   unattended-upgrade –-dry-run --verbose
+   unattended-upgrade --verbose
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
