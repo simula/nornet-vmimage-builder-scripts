@@ -100,11 +100,11 @@ EOF
 
    packages="
       apt-file
-      bind9-dnsutils
       bwm-ng
       bzip2
       cloud-guest-utils
       curl
+      dnsutils
       ethtool
       fail2ban
       gdisk
@@ -140,6 +140,9 @@ EOF
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+   # Only newer system versions have "systemd-timesyncd"!
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends systemd-timesyncd || true
 
 
 # ------ Fedora -------------------------------------------------------------
