@@ -70,8 +70,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       bash-completion
       curl
       git
-      gpg
-      gpg-agent
+      gnupg
       sudo
       virt-what
    "
