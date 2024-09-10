@@ -264,7 +264,7 @@ Basic NorNet VMs for general-purpose desktop usage. They base on the NorNet imag
 
 ### NEAT
 
-Basic for general-purpose desktop usage, particularly for working with NEAT <https://www.neat-project.org>. They base on the NorNet-Desktop images, with NEAT packages and build environment.
+Basic for general-purpose desktop usage, particularly for working with NEAT <https://neat.nntb.no>. They base on the NorNet-Desktop images, with NEAT packages and build environment.
 
 Features:
 * [NEAT](https://github.com/NEAT-project/neat) installed (NEAT library as well as NEAT sockets API library).
