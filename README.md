@@ -256,7 +256,7 @@ The "KDE+Development" installation is based on the [KDE](#kde) and [Development]
 
 ### NorNet
 
-Basic for general-purpose server usage, particularly for working with NorNet <https://www.nntb.no> purposes.
+Basic for general-purpose server usage, particularly for working with [NorNet](https://www.nntb.no/) purposes.
 
 ### NorNet-Desktop
 
@@ -264,7 +264,7 @@ Basic NorNet VMs for general-purpose desktop usage. They base on the NorNet imag
 
 ### NEAT
 
-Basic for general-purpose desktop usage, particularly for working with NEAT <https://neat.nntb.no>. They base on the NorNet-Desktop images, with NEAT packages and build environment.
+Basic for general-purpose desktop usage, particularly for working with [NEAT](https://neat.nntb.no/). They base on the NorNet-Desktop images, with NEAT packages and build environment.
 
 Features:
 * [NEAT](https://github.com/NEAT-project/neat) installed (NEAT library as well as NEAT sockets API library).
@@ -272,7 +272,7 @@ Features:
 
 ### RSerPoolDemo
 
-Basic for general-purpose desktop usage, particularly for working with RSerPool <https://www.nntb.no/~dreibh/rserpool/>,
+Basic for general-purpose desktop usage, particularly for working with [RSerPool](https://www.nntb.no/~dreibh/rserpool/),
 based on the [KDE+Development](#kdedevelopment) installation.
 
 Features:
