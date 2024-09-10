@@ -52,6 +52,7 @@ DIRECTORIES="
 
 # Applications to be directoryed:
 APPLICATIONS="
+   clementine
    dia
    firefox
    firefox-esr
