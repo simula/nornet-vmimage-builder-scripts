@@ -33,7 +33,23 @@ VM Image Builder Scripts
 
 # Introduction
 
-This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
+This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, basic console setups, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
+
+As part of the VM setup process, it is also possible to set custom bootsplashes and desktop/screen locker/login background images for customisation.
+
+
+# Requirements
+
+* [Packer](https://www.packer.io) (get up-to-date version from <https://www.packer.io>, the Ubuntu-provided package or snap is out-of-date!)
+* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), for building the background images. Basically (on a Ubuntu/Debian system): ```sudo apt install -y cmake fonts-noto gimp graphicsmagick libimage-exiftool-perl```. Take a look at the scripts [20-kde](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/20-kde) and [30-development](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/30-development) for installing the dependencies.
+
+To start a VM build, run one the the "make" scripts:
+```
+./make-<PROJECT>
+```
+with <PROJECT> e.g. "minimal", "basic", "development", "kde", "kde+development", "hipercontracer", etc.!
+
+See further details about the different VM types (hypervisor variants) and projcts (choice of packages to install) below!
 
 
 # VM Types

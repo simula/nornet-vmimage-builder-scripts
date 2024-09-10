@@ -1,5 +1,0 @@
-FreeBSD TODO:
-- chsh to bash
-- .bashrc is named .bash_profile
-- Call System-Info in /usr/local/etc/profile!
-- /etc/profile.d: https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=229473
