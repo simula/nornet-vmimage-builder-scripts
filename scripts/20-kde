@@ -116,8 +116,10 @@ EOF
       fi
    fi
 
+   # NOTE: Try IPv4-only, if there is a problem. This seems to be necessary for Ubuntu 18.04.
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -o Acquire::ForceIPv4=true -y ${packages}
 
    # Only newer system versions have Strawberry, install Clementine instead:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y strawberry ||
