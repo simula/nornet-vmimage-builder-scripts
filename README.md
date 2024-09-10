@@ -49,10 +49,10 @@ To start a VM build, run one the the "make" scripts:
 ```
 with <PROJECT> e.g. "minimal", "basic", "development", "kde", "kde+development", "hipercontracer", etc.!
 
-See further details about the different VM types (hypervisor variants) and projcts (choice of packages to install) below!
+See further details about the different VM hypervisor variants, systems, and projcts (choice of packages to install) below!
 
 
-# VM Types
+# Hypervisors
 
 ## VirtualBox
 
@@ -77,7 +77,7 @@ Containers for usage in Docker.
 
 # Systems
 
-The following operating systems are provided:
+The following operating systems are currently supported as VM guests:
 * [Ubuntu Linux](https://ubuntu.com/)
 * [Debian Linux](https://www.debian.org/)
 * [Fedora Core Linux](https://getfedora.org/de/)
