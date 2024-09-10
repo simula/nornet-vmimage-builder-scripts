@@ -38,13 +38,13 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Ensure that "unattended-upgrades" is active and handles the PPAs:
    if [ "${ID}" == "ubuntu" ] ; then
       # Ubuntu:
-      sed \
-         -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";\n\t"Zabbix:${distro_codename}";#' \
+      # shellcheck disable=SC2016
+      sed -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";\n\t"Zabbix:${distro_codename}";#' \
          </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
    else
       # Debian:
-      sed \
-         -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t"origin=Zabbix,codename=${distro_codename}";#' \
+      # shellcheck disable=SC2016
+      sed -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t"origin=Zabbix,codename=${distro_codename}";#' \
          </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
    fi
 
