@@ -274,7 +274,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 dig delv curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
+programs="awk base64 bwm-ng bzip2 dig curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
