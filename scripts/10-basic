@@ -89,7 +89,7 @@ EOF
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
       cd /tmp
-      wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
+      wget -4 -r --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
       find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
    fi
 
@@ -104,7 +104,6 @@ EOF
       fail2ban
       gdisk
       gpm
-      hipercontracer
       htop
       idn
       iputils-ping
@@ -119,7 +118,6 @@ EOF
       parallel
       pwgen
       python3
-      rsplib-tools
       rsync
       subnetcalc
       td-system-configure-grub
@@ -132,9 +130,11 @@ EOF
    "
 
    # ------ Ubuntu ----------------------------------------------------------
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] ; then
-      # Old Ubuntu versions 12.04/14.04 do not have "hipercontracer"!
-      echo "NOTE: HiPerConTracer is not available in this Ubuntu version!"
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] || \
+      [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+      # Old Ubuntu versions 12.04/14.04 and Debian versions 10/11
+      # do not have "hipercontracer"!
+      echo "NOTE: HiPerConTracer is not available in this Ubuntu/Debian version!"
    else
       packages="${packages} hipercontracer"
    fi
@@ -143,6 +143,11 @@ EOF
       echo "NOTE: NetPlan is not available in this Ubuntu version!"
    else
       packages="${packages} netplan.io"
+   fi
+   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+      echo "NOTE: RSPLIB is not available in this Debian version!"
+   else
+      packages="${packages} rsplib-tools"
    fi
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2468]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04/18.04 do not have "systemd-timesyncd"!
@@ -268,15 +273,21 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 dig delv curl gdisk hipercontracer htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
+programs="awk base64 bwm-ng bzip2 dig delv curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
+if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] || \
+   [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+   true
+else
+   programs="${programs} hipercontracer"
+fi
 if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
    programs="${programs} netplan"
 fi
-if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] ; then
-   programs="${programs} hipercontracer"
-fi
 if [ "$(uname)" == "Linux" ] ; then
    programs="${programs} ethtool growpart"
+fi
+if [ ! "${ID}" == "debian" ] || [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+   packages="${packages} rspserver rspterminal"
 fi
 
 echo "Verifying command availability:"
