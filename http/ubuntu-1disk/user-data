@@ -185,9 +185,9 @@ autoinstall:
     primary:
       - arches: [default]
         uri: "http://dk.archive.ubuntu.com/ubuntu"
-    sources:
-      dreibh-ppa:
-        source: ppa:dreibh/ppa
+    # sources:
+    #   dreibh-ppa:
+    #     source: ppa:dreibh/ppa
   packages:
     - qemu-guest-agent
     - virt-what

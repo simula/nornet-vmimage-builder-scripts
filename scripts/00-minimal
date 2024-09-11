@@ -62,8 +62,16 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Make 3 APT package download retries, in case of network problems:
    echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
 
-   # Ensure that the package database is up-to-date:
+   # Ubuntu: add PPA dreibh/ppa
+   if [ "${ID}" == "ubuntu" ] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends software-properties-common
+      /usr/bin/apt-add-repository -y ppa:dreibh/ppa
+   fi
+
+   # Ensure that the installed packages are up-to-date:
    /usr/bin/apt-get update
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
 
    packages="
       bash
@@ -88,6 +96,12 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
+   # Add COPR PPA dreibh/ppa:
+   /usr/bin/dnf copr enable -y dreibh/ppa
+
+   # Ensure that the installed packages are up-to-date:
+   /usr/bin/dnf upgrade -y
+
    packages="
       bash
       bash-completion
@@ -105,6 +119,9 @@ elif [ "${ID}" == "fedora" ] ; then
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
+
+   # Ensure that the installed packages are up-to-date:
+   /usr/sbin/pkg upgrade -y
 
    packages="
       bash

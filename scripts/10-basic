@@ -130,7 +130,7 @@ EOF
    "
 
    # ------ Ubuntu ----------------------------------------------------------
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] || \
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
       [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04 and Debian versions 10/11
       # do not have "hipercontracer"!
@@ -138,7 +138,7 @@ EOF
    else
       packages="${packages} hipercontracer"
    fi
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04 do not have "netplan"!
       echo "NOTE: NetPlan is not available in this Ubuntu version!"
    else
@@ -149,14 +149,15 @@ EOF
    else
       packages="${packages} rsplib-tools"
    fi
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2468]\.[01][04]$ ]] ; then
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[23456789]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04/18.04 do not have "systemd-timesyncd"!
       echo "NOTE: systemd-timesyncd is not available in this Ubuntu version!"
    else
       packages="${packages} systemd-timesyncd"
    fi
-   if [ "${ID}" == "ubuntu" ] &&  [[ "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
-      # Old Ubuntu Versions 12.04/14.04/16.04 have "delv" is in the "bind9" package!
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+      # Old Ubuntu version 16.04 has "delv" is in the "bind9" package!
+      echo "NOTE: delv is not available in this Ubuntu version!"
       packages="${packages} bind9"
    fi
 
@@ -274,14 +275,22 @@ fi
 # ====== Verify command availability ========================================
 
 programs="awk base64 bwm-ng bzip2 dig delv curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
-if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] || \
+if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+   true
+else
+   programs="${programs} delv"
+fi
+
+if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
    [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true
 else
    programs="${programs} hipercontracer"
 fi
-if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
-   programs="${programs} netplan"
+if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
+   if [ "${ID}" != "freebsd" ] ; then
+      programs="${programs} netplan"
+   fi
 fi
 if [ "$(uname)" == "Linux" ] ; then
    programs="${programs} ethtool growpart"
