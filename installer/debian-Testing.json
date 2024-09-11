@@ -30,7 +30,11 @@
   // ====== Boot into installer =============================================
   "boot_wait": "10s",
   "boot_command": [
-    "e<down><down><down><end>priority=critical",
+    // !!! Select console-based installer !!!
+    "<down>",
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    "e<down><down><down><end>",
+    "priority=critical",
     " auto=true",
     " debconf/frontend=noninteractive",
     " console-setup/ask_detect=false",

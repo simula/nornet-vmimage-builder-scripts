@@ -74,12 +74,15 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
-      cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
+      # FIXME! Debian Trixie is not released yet => no FastTrack repository!
+      if [ "${VERSION_CODENAME}" != "trixie" ] && [ "${VERSION_CODENAME}" != "sid" ] ; then
+         DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
+         cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
 deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 # deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 EOF
-      /usr/bin/apt-get update
+         /usr/bin/apt-get update
+      fi
    fi
 
    # ------ Work-around for missing System-Tools in Debian ------------------
