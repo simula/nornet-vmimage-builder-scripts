@@ -75,6 +75,13 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       virt-what
    "
 
+   # Old Ubuntu versions 12.04/14.04/16.04 show a splash image during boot,
+   # which may lead to a blank screen -> turning splash off as work-around:
+   if [ "${ID}" == "ubuntu" ] && [[  "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
+      sed -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=\(.*\) splash\(.*\)$/GRUB_CMDLINE_LINUX_DEFAULT=\1\2/' -i /etc/default/grub
+      update-grub
+   fi
+
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 

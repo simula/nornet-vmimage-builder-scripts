@@ -72,31 +72,26 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # ------ Debian ----------------------------------------------------------
+   # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      # ------ Add Debian FastTrack repository ------------------------------
       DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
       cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
 deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 # deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 EOF
       /usr/bin/apt-get update
+   fi
 
-      # ------ Work-around for missing System-Tools in Debian ---------------
+   # ------ Work-around for missing System-Tools in Debian ------------------
+   if [ "${ID}" == "debian" ] ; then
       # FIXME! This is not the best solution. Ideally, there should be a
       #        Debian PPA for System-Tools!
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y  --no-install-recommends wget
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
       cd /tmp
       wget -4 -r --no-parent --accept-regex '.*noble.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
       find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
    fi
-
-   # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
-   # Try PLocate first, then MLocate, then findutils:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends mlocate || \
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
 
    packages="
       apt-file
@@ -118,7 +113,6 @@ EOF
       make
       man
       netperfmeter
-      netplan.io
       net-tools
       nmap
       openssl
@@ -137,11 +131,39 @@ EOF
       wget
    "
 
+   # ------ Ubuntu ----------------------------------------------------------
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] ; then
+      # Old Ubuntu versions 12.04/14.04 do not have "hipercontracer"!
+      echo "NOTE: HiPerConTracer is not available in this Ubuntu version!"
+   else
+      packages="${packages} hipercontracer"
+   fi
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
+      # Old Ubuntu versions 12.04/14.04/16.04 do not have "netplan"!
+      echo "NOTE: NetPlan is not available in this Ubuntu version!"
+   else
+      packages="${packages} netplan.io"
+   fi
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2468]\.[01][04]$ ]] ; then
+      # Old Ubuntu versions 12.04/14.04/16.04/18.04 do not have "systemd-timesyncd"!
+      echo "NOTE: systemd-timesyncd is not available in this Ubuntu version!"
+   else
+      packages="${packages} systemd-timesyncd"
+   fi
+   if [ "${ID}" == "ubuntu" ] &&  [[ "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
+      # Old Ubuntu Versions 12.04/14.04/16.04 have "delv" is in the "bind9" package!
+      packages="${packages} bind9"
+   fi
+
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
-   # Only newer system versions have "systemd-timesyncd"!
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends systemd-timesyncd || true
+   # ------ Locate ----------------------------------------------------------
+   # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
+   # Try PLocate first, then MLocate, then findutils:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends mlocate || \
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
 
 
 # ------ Fedora -------------------------------------------------------------
@@ -245,28 +267,29 @@ fi
 
 
 # ====== Verify command availability ========================================
+
+programs="awk base64 bwm-ng bzip2 dig delv curl gdisk hipercontracer htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
+if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
+   programs="${programs} netplan"
+fi
+if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[24]\.[01][04]$ ]] ; then
+   programs="${programs} hipercontracer"
+fi
+if [ "$(uname)" == "Linux" ] ; then
+   programs="${programs} ethtool growpart"
+fi
+
 echo "Verifying command availability:"
 errors=0
-for command in awk base64 bwm-ng bzip2 dig delv curl gdisk hipercontracer htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rspserver rspterminal rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget ; do
+for command in ${programs} ; do
    echo -n "${command}: "
-   if which ${command} >/dev/null ; then
+   if which "${command}" >/dev/null ; then
       echo "OK"
    else
       echo "FAILED!"
       errors=$((errors+1))
    fi
 done
-if [ "$(uname)" == "Linux" ] ; then
-   for command in ethtool growpart netplan ; do
-      echo -n "${command}: "
-      if which ${command} >/dev/null ; then
-         echo "OK"
-      else
-         echo "FAILED!"
-         errors=$((errors+1))
-      fi
-   done
-fi
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} packages are missing!"
    exit 1

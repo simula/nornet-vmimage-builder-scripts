@@ -52,7 +52,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    mv /etc/apt/apt.conf.d//50unattended-upgrades.new /etc/apt/apt.conf.d/50unattended-upgrades
 
    # Run now:
-   unattended-upgrade --verbose
+   unattended-upgrade --verbose || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
