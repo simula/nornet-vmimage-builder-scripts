@@ -111,14 +111,12 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libboost-all-dev
       libbz2-dev
       libc-ares-dev
-      libcpprspserver-dev
       libcurl4-openssl-dev
       libgeoip-dev
       liblzma-dev
+      libmariadb-dev
       libmongoc-dev
-      libmysqlcppconn-dev
       libpqxx-dev
-      librsplib-dev
       libsctp-dev
       libssl-dev
       qtbase5-dev
@@ -127,6 +125,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       qttools5-dev
       zlib1g-dev
    "
+   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+      echo "NOTE: RSPLIB is not available in this Debian version!"
+   else
+      packages="${packages} libcpprspserver-dev librsplib-dev"
+   fi
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
@@ -191,6 +194,7 @@ elif [ "${ID}" == "fedora" ] ; then
       libcurl-devel
       libpqxx-devel
       lksctp-tools-devel
+      mariadb-connector-c-devel
       mongo-c-driver-devel
       openssl-devel
       qt5-qtbase-devel
@@ -237,7 +241,6 @@ elif [ "${ID}" == "freebsd" ] ; then
    packages="${packages}
       boost-all
       mongo-c-driver
-      mysql-connector-c++
       postgresql-libpqxx
       qt5
    "
