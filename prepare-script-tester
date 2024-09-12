@@ -35,7 +35,7 @@ fi
 ssh-copy-id -oStrictHostKeyChecking=no "${user}@${address}"
 ssh -t "${user}@${address}" '
 echo "nornetpp ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/99-nornetpp
-if ! which git ; then
+if ! which git || ! which joe ; then
    if [ -x /usr/bin/apt ] ; then
       sudo /usr/bin/apt install -y git joe
    elif [ -x /usr/bin/dnf ] ; then
