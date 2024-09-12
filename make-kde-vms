@@ -23,7 +23,7 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-40   Debian-12"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-14.1-RELEASE"
 # SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
 
 # ------ Parameters ---------------------------------------
@@ -36,7 +36,7 @@ USER_REALNAME="NorNet Praesum Presum"
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
-MEMORY=2048
+MEMORY=3072
 BALLOON=1024
 DISK_ROOT=32768
 DISK_HOME=16384
