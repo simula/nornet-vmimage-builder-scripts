@@ -19,7 +19,7 @@
 # Contact: dreibh@simula.no
 
 # Bash options:
-set -exu
+set -eu
 
 
 # Documentation:
@@ -59,6 +59,11 @@ if [ -x /usr/bin/lsb_release ] ; then
       echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
       exit 0
    fi
+fi
+
+if ! which unzip ; then
+   echo >&2 "ERROR: unzip command is not available!"
+   exit 1
 fi
 
 
@@ -118,20 +123,25 @@ function install-xpi ()
 
    echo "Processing ${URL1} ..."
 
-   MY_XPI=$(mktemp)
-   wget -O "${MY_XPI}" "${URL1}" || \
+   MY_XPI="$(mktemp)"
+   wget -q -O "${MY_XPI}" "${URL1}" || \
       wget -O "${MY_XPI}" "${URL2}" || \
-      curl --location --output "${MY_XPI}" "${URL1}" || \
+      curl --silent --location --output "${MY_XPI}" "${URL1}" || \
       curl --location --output "${MY_XPI}" "${URL2}"
 
    MY_UID=$(get-xpi-uid "${MY_XPI}")
    MY_NAME=$(get-xpi-name "${MY_XPI}")
    echo " * Name: ${MY_NAME}"
    echo " * UID:  ${MY_UID}"
+   if [ "${MY_NAME}" == "" ] || [ "${MY_UID}" == "" ] ; then
+      echo >&2 "ERROR: Name or UID unknown -> something is wrong in ${MY_XPI}!"
+      exit 1
+   fi
 
    for profilePath in ${profilePaths} ; do
       cp "${MY_XPI}" "${profilePath}/extensions/${MY_UID}.xpi"
    done
+   rm -rf "${MY_XPI}"
 }
 
 
@@ -367,9 +377,7 @@ for profilePath in ${PROFILE_PATHS} ; do
    # reapplying everything each time Firefox gets started:
    mv "${profilePath}/user.js"  "${profilePath}/user.js-configure-firefox"
    # Make a backup of prefs.js:
-   if [ -e "${profilePath}/prefs.js" ] ; then
-      cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
-   fi
+   cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
 
    # ------ Activate the newly installed extensions -------------------------
    echo "Updating ${profilePath}/extensions.json ..."
