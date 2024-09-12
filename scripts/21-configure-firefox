@@ -159,7 +159,7 @@ function run-firefox-headless ()
    firefox -P default-release --headless --no-remote &
    pid=$!
    echo "Waiting a moment to let Firefox initialise the profile (PID ${pid}) ..."
-   sleep 60
+   sleep 45
    echo "Stopping Firefox ..."
    kill -s TERM ${pid}   # Executable is /usr/lib*/firefox/firefox
 

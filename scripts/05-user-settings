@@ -91,6 +91,9 @@ sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.ssh"
 sudo -u "${USER_NAME}" touch "/home/${USER_NAME}/.ssh/authorized_keys"
 sudo -u "${USER_NAME}" chmod 600 "/home/${USER_NAME}/.ssh/authorized_keys"
 
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.cache"
+sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.cache"
+
 
 # ====== Git configuration file =============================================
 (
@@ -106,6 +109,7 @@ cat <<EOF
         rebase = false
 EOF
 ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
+
 
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then
