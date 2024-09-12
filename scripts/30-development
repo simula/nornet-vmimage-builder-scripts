@@ -125,7 +125,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       qttools5-dev
       zlib1g-dev
    "
-   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+   if [ "${ID}" == "debian" ] && [ -v VERSION_ID ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
       echo "NOTE: RSPLIB is not available in this Debian version!"
    else
       packages="${packages} libcpprspserver-dev librsplib-dev"
