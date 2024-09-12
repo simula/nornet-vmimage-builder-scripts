@@ -82,8 +82,24 @@ cap_mkdb /etc/login.conf
 
 # ====== Basic packages =====================================================
 
-# Get latest updates, instead of quarterly updates:
-sed -e $'s#\\(url:.*".*\\)\\(/quarterly\\)"#\\1/latest"#g' </etc/pkg/FreeBSD.conf >/etc/pkg/FreeBSD.conf.updated && mv /etc/pkg/FreeBSD.conf.updated /etc/pkg/FreeBSD.conf
+# Get the latest updates:
+mkdir -p /usr/local/etc/pkg/repos
+cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
+# The quartery default repository is defined in /etc/pkg/FreeBSD.conf:
+FreeBSD: {
+  enabled: yes
+}
+
+# Define "Latest" repository with the latest updates:
+Latest: {
+  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/latest",
+  mirror_type: "srv",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/share/keys/pkg",
+  enabled: no
+}
+EOF
+# FIXME! Using default repository, due to problems with "Latest"!
 
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true

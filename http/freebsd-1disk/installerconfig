@@ -84,6 +84,7 @@ sysrc ipv6_privacy="YES"
 dhclient $interface
 
 # Enable basic daemons:
+sysrc dumpdev="AUTO"
 sysrc zfs_enable="YES"
 sysrc sshd_enable="YES"
 sysrc ntpd_enable="YES"
@@ -121,8 +122,24 @@ cap_mkdb /etc/login.conf
 
 # ====== Basic packages =====================================================
 
-# Get latest updates, instead of quarterly updates:
-sed -e $'s#\\(url:.*".*\\)\\(/quarterly\\)"#\\1/latest"#g' </etc/pkg/FreeBSD.conf >/etc/pkg/FreeBSD.conf.updated && mv /etc/pkg/FreeBSD.conf.updated /etc/pkg/FreeBSD.conf
+# Get the latest updates:
+mkdir -p /usr/local/etc/pkg/repos
+cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
+# The quartery default repository is defined in /etc/pkg/FreeBSD.conf:
+FreeBSD: {
+  enabled: yes
+}
+
+# Define "Latest" repository with the latest updates:
+Latest: {
+  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/latest",
+  mirror_type: "srv",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/share/keys/pkg",
+  enabled: no
+}
+EOF
+# FIXME! Using default repository, due to problems with "Latest"!
 
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
@@ -137,11 +154,16 @@ pkg upgrade -y
 pkg install -y bash sudo virt-what
 
 # ====== Bash profile link ==================================================
-# Bash does not use /etc/profile, only /usr/local/etc/profile
-# => create symlink, to ensure that Bash processes system-wide shell profile.
+# Bash does not use /etc/profile, only /usr/local/etc/profile. This needs to
+# be created, in order to get /etc/profile loaded!
 # See: https://forums.freebsd.org/threads/what-happened-to-etc-profile.78406/
-ln -s /etc/profile /usr/local/etc/
-
+cat >/usr/local/etc/profile <<EOF
+if [ "\${_loaded}" = "" ] ; then
+   if [ -e /etc/profile ] ; then
+      . /etc/profile
+   fi
+fi
+EOF
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
@@ -149,19 +171,6 @@ if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
    pkg install -y qemu-guest-agent
    sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
 fi
-
-
-# ====== Prepare FreeBSD Ports Collection ===================================
-# See: https://wiki.freebsd.org/Ports/GitQuickStart
-cd /usr/ports
-/usr/local/bin/git init -b main
-/usr/local/bin/git remote add freebsd https://git.freebsd.org/ports.git
-/usr/local/bin/git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
-/usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
-/usr/local/bin/git config pull.rebase true
-# Not running this here:
-# /usr/local/bin/git fetch freebsd
-# /usr/local/bin/git checkout main
 
 
 # ====== User ===============================================================
