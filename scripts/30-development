@@ -92,13 +92,12 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       graphicsmagick
       gsfonts
       libimage-exiftool-perl
-      libtool-bin
       manpages-dev
       python3-netifaces
       pbuilder
       pkg-config
-      python3-full
       python3-pip
+      python3-venv
       r-base
       reprepro
       shellcheck
@@ -114,7 +113,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libcurl4-openssl-dev
       libgeoip-dev
       liblzma-dev
-      libmariadb-dev
       libmongoc-dev
       libpqxx-dev
       libsctp-dev
@@ -125,10 +123,15 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       qttools5-dev
       zlib1g-dev
    "
-   if [ "${ID}" == "debian" ] && [ -v VERSION_ID ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
-      echo "NOTE: RSPLIB is not available in this Debian version!"
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+      # Ubuntu 12.04, 14.04:
+      packages="${packages} libtool libmariadbclient-dev"
+   elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
+      # Ubuntu 16.04:
+      packages="${packages} libtool-bin libmariadb-client-lgpl-dev"
    else
-      packages="${packages} libcpprspserver-dev librsplib-dev"
+      # Newer Ubuntu and Debian systems:
+      packages="${packages} libtool-bin libmariadb-dev"
    fi
 
    # shellcheck disable=SC2086
