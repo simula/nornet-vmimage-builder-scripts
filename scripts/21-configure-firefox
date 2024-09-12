@@ -367,7 +367,9 @@ for profilePath in ${PROFILE_PATHS} ; do
    # reapplying everything each time Firefox gets started:
    mv "${profilePath}/user.js"  "${profilePath}/user.js-configure-firefox"
    # Make a backup of prefs.js:
-   cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
+   if [ -e "${profilePath}/prefs.js" ] ; then
+      cp "${profilePath}/prefs.js" "${profilePath}/prefs.js-configure-firefox"
+   fi
 
    # ------ Activate the newly installed extensions -------------------------
    echo "Updating ${profilePath}/extensions.json ..."
