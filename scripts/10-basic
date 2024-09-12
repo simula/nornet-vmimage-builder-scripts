@@ -65,7 +65,7 @@ if [ ! -e /etc/os-release ] ; then
    exit 1
 fi
 . /etc/os-release
-if ! -v VERSION_ID ; then
+if [ ! -v VERSION_ID ] ; then
    VERSION_ID="99.99"
 fi
 
