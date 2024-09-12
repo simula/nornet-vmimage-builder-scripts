@@ -161,10 +161,13 @@ EOF
    else
       packages="${packages} systemd-timesyncd"
    fi
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
-      # Old Ubuntu version 16.04 has "delv" is in the "bind9" package!
-      echo "NOTE: delv is not available in this Ubuntu version!"
-      packages="${packages} bind9"
+   if [ "${ID}" == "ubuntu" ] ; then
+      if [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+         echo "NOTE: delv is not available in this Ubuntu version!"
+      elif [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
+         # Old Ubuntu version 16.04 has "delv" is in the "bind9" package!
+         packages="${packages} bind9"
+      fi
    fi
 
    # shellcheck disable=SC2086
