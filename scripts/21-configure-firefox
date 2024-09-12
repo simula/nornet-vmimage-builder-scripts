@@ -180,11 +180,12 @@ fi
 echo "Firefox configuration directory is ${FIREFOX_CONFIGDIR}"
 
 if [ ! -d "${FIREFOX_CONFIGDIR}" ] ; then
-   echo "###### Creating new profile setup! ######"
+   profileName="profile-$(dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"')"
+
+   echo "###### Creating new profile ${profileName}! ######"
    mkdir -p "${FIREFOX_CONFIGDIR}"
    pushd "${FIREFOX_CONFIGDIR}" >/dev/null
 
-   profileName="profile-$(dd if=/dev/urandom bs=16 count=1 status=none|hexdump -v -e '"%02X"')"
    mkdir "${profileName}"
    mkdir "${profileName}/extensions"
    cat >profiles.ini <<EOF
