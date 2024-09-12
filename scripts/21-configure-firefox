@@ -32,6 +32,11 @@ set -eu
 
 
 # ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
 HOMEPAGE="https://www.nntb.no/~dreibh"
 
 
@@ -53,9 +58,8 @@ else
    echo "Running as ${USER}! SUDO_USER=${SUDO_USER}"
 fi
 
-if [ -x /usr/bin/lsb_release ] ; then
-   release="$(/usr/bin/lsb_release -cs)"
-   if [ "${release}" == "precise" ] || [ "${release}" == "trusty" ] || [ "${release}" == "xenial" ]; then
+if [ "${ID}" == "ubuntu" ] ; then
+   if [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       echo >&2 "Not trying to configure Firefox, since the Ubuntu version is out of date!"
       exit 0
    fi
@@ -151,7 +155,6 @@ function run-firefox-headless ()
 {
    # ------ Initialise profile by a short Firefox run in headless mode ------
    echo "Starting Firefox in headless mode ..."
-   du -schk "${profilePath}"
 
    firefox -P default-release --headless --no-remote &
    pid=$!
@@ -160,9 +163,7 @@ function run-firefox-headless ()
    echo "Stopping Firefox ..."
    kill -s TERM ${pid}   # Executable is /usr/lib*/firefox/firefox
 
-   echo "Waiting for Firefox to finish ..."
    wait
-   echo "Done!"
 }
 
 
@@ -202,12 +203,14 @@ EOF
 fi
 
 
-# ====== Install extensions =================================================
+# ====== Detect profiles ====================================================
+echo "Detecting profiles:"
 PROFILE_PATHS=""
 if [ -e "${FIREFOX_CONFIGDIR}/profiles.ini" ] ; then
    profilePaths=$(grep "^Path=" "${FIREFOX_CONFIGDIR}/profiles.ini" | sed -e "s/^Path=//g")
    for profilePath in ${profilePaths} ; do
       if [ -d "${FIREFOX_CONFIGDIR}/${profilePath}/extensions/" ] ; then
+         echo " * ${profilePath}"
          PROFILE_PATHS="${PROFILE_PATHS} ${FIREFOX_CONFIGDIR}/${profilePath}"
       fi
    done
@@ -218,6 +221,7 @@ if [ "${PROFILE_PATHS}" == "" ] ; then
 fi
 
 
+# ====== Install extensions =================================================
 EXTENSIONS=""
 EXTENSIONS="${EXTENSIONS=} 607454"   # uBlock Origin
 EXTENSIONS="${EXTENSIONS=} 722"      # NoScript
@@ -233,7 +237,9 @@ done
 
 
 # ====== Enhance settings ===================================================
+echo "Updating profiles:"
 for profilePath in ${PROFILE_PATHS} ; do
+   echo " * Updating profile ${profilePath} ..."
 
    xpis=$(find "${profilePath}/extensions" -mindepth 1 -maxdepth 1 -name "*.xpi")
    uids=""
@@ -368,12 +374,13 @@ done
 
 
 # ====== Run Firefox to initialise ==========================================
+echo "Running Firefox with profiles to initialise the extensions:"
 for profilePath in ${PROFILE_PATHS} ; do
+   echo " * Running Firefox with profile ${profilePath} ..."
 
    # ------ Run Firefox in headless mode, to initialise the profile ---------
    run-firefox-headless
 
-   du -schk "${profilePath}"
    # The user.js has run (via run-firefox-headless) -> move it away, to avoid
    # reapplying everything each time Firefox gets started:
    mv "${profilePath}/user.js"  "${profilePath}/user.js-configure-firefox"
@@ -394,7 +401,7 @@ for profilePath in ${PROFILE_PATHS} ; do
             >"${profilePath}/extensions.json.new"
       mv "${profilePath}/extensions.json.new" "${profilePath}/extensions.json.work"
    done
-   diff "${profilePath}/extensions.json.old" "${profilePath}/extensions.json.work" || true
+   # diff "${profilePath}/extensions.json.old" "${profilePath}/extensions.json.work" || true
    mv "${profilePath}/extensions.json.work" "${profilePath}/extensions.json"
    echo "Updated ${profilePath}/extensions.json"
 
