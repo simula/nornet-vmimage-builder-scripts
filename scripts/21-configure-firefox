@@ -99,7 +99,7 @@ function get-xpi-name ()
    local LOC_NAME=""
 
    # get extension name from install.rdf in original format (<em:id>extension-uid</em:id>)
-   LOC_NAME=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "<em:name>" | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1)
+   LOC_NAME=$(unzip -qq  -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "<em:name>" | head -n 1 | cut -d'>' -f2 | cut -d'<' -f1)
 
    # if extension name not found, get it from install.rdf in new format (<RDF:Description ... em:name="extension-name" ...)
    [ "${LOC_NAME}" = "" ] && LOC_NAME=$(unzip -qq -p "${LOC_XPI}" install.rdf 2>/dev/null | grep "em:name=" | head -n 1 | sed "s/^.*em:name//" | cut -d'"' -f2)
@@ -118,17 +118,17 @@ function install-xpi ()
    local number="$1"
    local profilePaths="$2"
 
+   # ====== Download XPI ====================================================
+   # There are two different URLs to try:
    URL1="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
    URL2="https://addons.mozilla.org/firefox/downloads/file/${number}/"
+   MY_XPI="/tmp/${number}.xpi"
 
-   echo "Processing ${URL1} ..."
-
-   MY_XPI="$(mktemp)"
+   echo "Downloading add-on ${number} to ${MY_XPI} ..."
    wget -q -O "${MY_XPI}" "${URL1}" || \
-      wget -O "${MY_XPI}" "${URL2}" || \
-      curl --silent --location --output "${MY_XPI}" "${URL1}" || \
-      curl --location --output "${MY_XPI}" "${URL2}"
+      wget -q -O "${MY_XPI}" "${URL2}"
 
+   # ====== Check XPI =======================================================
    MY_UID=$(get-xpi-uid "${MY_XPI}")
    MY_NAME=$(get-xpi-name "${MY_XPI}")
    echo " * Name: ${MY_NAME}"
@@ -138,10 +138,11 @@ function install-xpi ()
       exit 1
    fi
 
+   # ====== Copy XPI ========================================================
    for profilePath in ${profilePaths} ; do
       cp "${MY_XPI}" "${profilePath}/extensions/${MY_UID}.xpi"
    done
-   rm -rf "${MY_XPI}"
+   rm -f "${MY_XPI}"
 }
 
 
