@@ -202,7 +202,7 @@ function find-ubuntu-isos ()
 function find-fedora-isos ()
 {
    system="Fedora"
-   major=38
+   major=40
    latestURL=""
    latestChecksum=""
    latestMajor=""
