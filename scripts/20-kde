@@ -185,7 +185,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       plasma5-sddm-kcm
       R
       sddm
-      strawberry
+
       wireshark
       xf86-video-vmware
       xorg
@@ -193,6 +193,8 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
+   # FIXME! Workaround for Strawberry missing in quarterly repository:
+   /usr/sbin/pkg install -y strawberry || true
 
    sysrc dbus_enable="YES" ; service dbus start || true
    sysrc sddm_enable="YES" ; service sddm start || true
