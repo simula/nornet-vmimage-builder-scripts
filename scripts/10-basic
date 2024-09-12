@@ -132,6 +132,7 @@ EOF
       traceroute
       tree
       tshark
+      unzip
       uuid
       wget
       zip
@@ -220,6 +221,7 @@ elif [ "${ID}" == "fedora" ] ; then
       td-system-tools-configure-grub
       traceroute
       tree
+      unzip
       uuid
       wget
       wireshark-cli
