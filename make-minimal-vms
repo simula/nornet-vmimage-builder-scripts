@@ -23,8 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-12.04-LTS Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-12   Fedora-39 Fedora-40"
-# SYSTEMS="Ubuntu-24.04-LTS"
+SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-14.1-RELEASE"
+# SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"
@@ -42,10 +42,12 @@ DISK_ROOT=16384
 DISK_HOME=8192
 DISK_SWAP=2048
 VIDEO="HD+"
+BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/nornet-desktop/Desktop-with-Logo/Server1-3840x2160-plain.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/nornet-desktop/Desktop-with-Logo/FileSrv1-3840x2160-plain.jpeg"
 BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x2160-plain.jpeg"
 OPTIONS=""
 # ---------------------------------------------------------
 
+# files/generate-backgrounds   # !!! Not necessary for Minimal !!!
 build-defined-vms
