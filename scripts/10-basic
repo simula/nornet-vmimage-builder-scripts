@@ -56,6 +56,7 @@ set -exu
 # * Tree (tree view of directory hierachy)
 # * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 # * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
+# * [Zip](https://infozip.sourceforge.net/Zip.html) (Zip compression tools)
 # ###########################################################################
 
 
@@ -133,6 +134,7 @@ EOF
       tshark
       uuid
       wget
+      zip
    "
 
    # ------ Ubuntu ----------------------------------------------------------
@@ -221,6 +223,7 @@ elif [ "${ID}" == "fedora" ] ; then
       uuid
       wget
       wireshark-cli
+      zip
    "
 
    # shellcheck disable=SC2086
@@ -266,6 +269,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       tree
       wget
       wireshark-nox11
+      zip
    "
 
    # shellcheck disable=SC2086
@@ -283,7 +287,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 dig curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark uuid wget"
+programs="awk base64 bwm-ng bzip2 dig curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
