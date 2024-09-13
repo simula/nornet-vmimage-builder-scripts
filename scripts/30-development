@@ -77,7 +77,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       build-essential
       clang
       cmake
-      extra-cmake-modules
       debhelper
       devscripts
       dpkg-dev
@@ -97,12 +96,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       pbuilder
       pkg-config
       python3-pip
-      python3-venv
       r-base
       reprepro
       shellcheck
       valgrind
-      yamllint
    "
 
    # Development files:
@@ -113,7 +110,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libcurl4-openssl-dev
       libgeoip-dev
       liblzma-dev
-      libmongoc-dev
       libpqxx-dev
       libsctp-dev
       libssl-dev
@@ -128,14 +124,14 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       packages="${packages} libtool libmariadbclient-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
       # Ubuntu 16.04:
-      packages="${packages} libtool-bin libmariadb-client-lgpl-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev"
    else
       # Newer Ubuntu and Debian systems:
-      packages="${packages} libtool-bin libmariadb-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev"
    fi
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
 
    for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
       grep "^deb \(.*\)$" "${list}" | \
@@ -283,11 +279,19 @@ fi
 
 
 # ====== Verify command availability ========================================
+
+programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb gm gs libtool make pkg-config shellcheck valgrind"
+if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+   true
+else
+   programs="${programs} yamllint"
+fi
+
 echo "Verifying command availability:"
 errors=0
-for command in autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb gm gs libtool make pkg-config shellcheck valgrind yamllint ; do
+for command in ${programs} ; do
    echo -n "${command}: "
-   if which ${command} >/dev/null ; then
+   if which "${command}" >/dev/null ; then
       echo "OK"
    else
       echo "FAILED!"
