@@ -27,7 +27,7 @@ SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubu
 # SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal Basic"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="Minimal Basic Development"   # Minimal Basic Development KDE KDE+Development
 
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
