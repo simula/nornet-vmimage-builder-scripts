@@ -29,7 +29,7 @@ SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   D
 # ------ Parameters ---------------------------------------
 PROJECTS="KDE"   # Minimal Basic Development KDE KDE+Development
 
-HOSTNAME="gressholmen.simula.nornet"
+HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
 USER_REALNAME="NorNet Praesum Presum"
