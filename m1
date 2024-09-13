@@ -25,10 +25,11 @@ set -e
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-40   Debian-12"
 SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
-SYSTEMS="Ubuntu-18.04-LTS"
+SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-14.1-RELEASE"
+SYSTEMS="Ubuntu-12.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="KDE"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
@@ -42,7 +43,7 @@ BALLOON=2048
 DISK_ROOT=16384
 DISK_HOME=8192
 DISK_SWAP=2048
-VIDEO="HD+"
+VIDEO="1024x768"
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
