@@ -19,7 +19,8 @@
 {
   // ====== ISO settings ====================================================
   "iso_url": "https://cdimage.debian.org/cdimage/daily-builds/daily/arch-latest/amd64/iso-cd/debian-testing-amd64-netinst.iso",
-  "iso_checksum": "sha256:44e89af91e16893f0899cb48c48496954ae4052730e3a633017d73ccbd2ba337",
+  // See: curl https://cdimage.debian.org/cdimage/daily-builds/daily/arch-latest/amd64/iso-cd/SHA256SUMS
+  "iso_checksum": "sha256:35d6345668121f32dc72e5fe06d550f76a72302b9a0eea9177053d48870c9890",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
