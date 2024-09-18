@@ -34,7 +34,7 @@ try-hard ()
       trials=$(( trials+1 ))
       echo "Trial ${trials}: $*"
       # shellcheck disable=SC2068
-      $@ && exit
+      $@ && return 0
       if [ ${trials} -ge "${max_trials}" ] ; then
          exit 1
       fi
