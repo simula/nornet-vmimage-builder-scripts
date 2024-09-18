@@ -27,15 +27,15 @@ try-hard ()
 {
    local max_trials=$1
    local delay=$2
-   local trials=0
    shift 2
 
+   local trial=0
    while true ; do
-      trials=$(( trials+1 ))
-      echo "Trial ${trials}: $*"
+      trial=$(( trial+1 ))
+      echo "Trial ${trial}: $*"
       # shellcheck disable=SC2068
       $@ && return 0
-      if [ ${trials} -ge "${max_trials}" ] ; then
+      if [ ${trial} -ge "${max_trials}" ] ; then
          exit 1
       fi
       echo "Waiting ${delay} s before next try ..."
