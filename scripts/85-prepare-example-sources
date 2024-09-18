@@ -22,58 +22,72 @@
 set -exu
 
 
-# ====== Ensure that script is ran by user account to provision =============
-if [ "$(id -u)" -eq 0 ] ; then
-   # Running by configuring sudo root. Run script again, but as user!
-   echo "Running as ROOT! SUDO_USER=${SUDO_USER}"
-   if [ "${SUDO_USER}" != "root" ] ; then
+# ###### Run a command, retry multiple times in case of an error ############
+try-hard ()
+{
+   local max_trials=$1
+   local delay=$2
+   shift 2
+
+   local trial=0
+   while true ; do
+      trial=$(( trial+1 ))
+      echo "Trial ${trial}: $*"
       # shellcheck disable=SC2068
-      sudo -u "${SUDO_USER}" "$0" $@ && exit 0
-      exit 1
+      $@ && return 0
+      if [ ${trial} -ge "${max_trials}" ] ; then
+         exit 1
+      fi
+      echo "Waiting ${delay} s before next try ..."
+      sleep "${delay}"
+   done
+}
+
+
+# ###### Clone or update Git repository #####################################
+clone-or-update ()
+{
+   local repository="$1"
+   local url="$2"
+   local clone_maxtrials=10
+   local clone_delay=60
+   if [ ! -e "${repository}" ] ; then
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
    else
-      # Prevent recursive invocation as "root" user:
-      echo >&2 "ERROR: Run this script either as user or with sudo."
-      exit 1
+      pushd "${repository}"
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git pull
+      popd
    fi
-else
-   # Echo running as user
-   echo "Running as ${USER}! SUDO_USER=${SUDO_USER}"
+}
+
+
+# ====== Check environment variables ========================================
+if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
 fi
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release is not available!"
+   exit 1
+fi
+. /etc/os-release
 
 
 # ====== Prepare source repositories ========================================
-mkdir -p ~/src
-cd ~/src
+sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+cd "/home/${USER_NAME}/src"
 
-if [ ! -e bibtexconv ] ; then
-   git clone https://dreibh@github.com/dreibh/bibtexconv.git
-fi
-if [ ! -e build-tools ] ; then
-   git clone https://dreibh@github.com/dreibh/build-tools.git
-fi
-if [ ! -e fractgen ] ; then
-   git clone https://dreibh@github.com/dreibh/fractgen.git
-fi
-if [ ! -e hipercontracer ] ; then
-   git clone https://dreibh@github.com/dreibh/hipercontracer.git
-fi
-if [ ! -e netperfmeter ] ; then
-   git clone https://dreibh@github.com/dreibh/netperfmeter.git
-fi
-if [ ! -e rsplib ] ; then
-   git clone https://dreibh@github.com/dreibh/rsplib.git
-fi
-if [ ! -e subnetcalc ] ; then
-   git clone https://dreibh@github.com/dreibh/subnetcalc.git
-fi
-if [ ! -e system-tools ] ; then
-   git clone https://dreibh@github.com/dreibh/system-tools.git
-fi
-if [ ! -e vmimage-builder-scripts ] ; then
-   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
-fi
+clone-or-update bibtexconv              https://dreibh@github.com/dreibh/bibtexconv
+clone-or-update build-tools             https://dreibh@github.com/dreibh/build-tools
+clone-or-update fractgen                https://dreibh@github.com/dreibh/fractgen
+clone-or-update hipercontracer          https://dreibh@github.com/dreibh/hipercontracer
+clone-or-update netperfmeter            https://dreibh@github.com/dreibh/netperfmeter
+clone-or-update rsplib                  https://dreibh@github.com/dreibh/rsplib
+clone-or-update subnetcalc              https://dreibh@github.com/dreibh/subnetcalc
+clone-or-update system-tools            https://dreibh@github.com/dreibh/system-tools
+clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts
 
 # HAW "Rechnernetze" exercise sources:
-if [ ! -e rn23 ] ; then
-   git clone https://dreibh@bitbucket.org/dreibh/rn23.git rn23
-fi
+clone-or-update rn23 https://dreibh@bitbucket.org/dreibh/rn23.git

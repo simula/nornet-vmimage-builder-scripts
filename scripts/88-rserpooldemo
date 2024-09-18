@@ -79,11 +79,11 @@ fi
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
 cd "/home/${USER_NAME}/src"
 
-clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
-clone-or-update rserpooldemo https://dreibh@github.com/dreibh/rserpooldemo
-clone-or-update sctplib https://dreibh@github.com/dreibh/sctplib
-clone-or-update socketapi https://dreibh@github.com/dreibh/socketapi
-clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git
+clone-or-update rsplib                  https://dreibh@github.com/dreibh/rsplib
+clone-or-update rserpooldemo            https://dreibh@github.com/dreibh/rserpooldemo
+clone-or-update sctplib                 https://dreibh@github.com/dreibh/sctplib
+clone-or-update socketapi               https://dreibh@github.com/dreibh/socketapi
+clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts
 
 
 # ====== Package installation ===============================================
