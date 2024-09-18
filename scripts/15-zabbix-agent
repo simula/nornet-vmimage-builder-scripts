@@ -42,7 +42,7 @@ deb https://repo.zabbix.com/zabbix/7.0/${ID} ${VERSION_CODENAME} main
 EOF
    rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
-      sudo gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+      gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    /usr/bin/apt-get update
 
    # ------ Install ---------------------------------------------------------
