@@ -22,6 +22,28 @@
 set -exu
 
 
+# ###### Run a command, retry multiple times in case of an error ############
+try-hard ()
+{
+   local max_trials=$1
+   local delay=$2
+   local trials=0
+   shift 2
+
+   while true ; do
+      trials=$(( trials+1 ))
+      echo "Trial ${trials}: $*"
+      # shellcheck disable=SC2068
+      $@ && exit
+      if [ ${trials} -ge "${max_trials}" ] ; then
+         exit 1
+      fi
+      echo "Waiting ${delay} s before next try ..."
+      sleep "${delay}"
+   done
+}
+
+
 # ====== Check environment variables ========================================
 if [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
@@ -40,27 +62,27 @@ sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
 cd "/home/${USER_NAME}/src"
 
 if [ ! -e rsplib ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
+   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
 else
    pushd rsplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e rserpooldemo ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
+   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
 else
    pushd rserpooldemo && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e sctplib ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/sctplib
+   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/sctplib
 else
    pushd sctplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e socketapi ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
+   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
 else
    pushd socketapi && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
 if [ ! -e vmimage-builder-scripts ] ; then
-   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
 else
    pushd vmimage-builder-scripts && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
 fi
