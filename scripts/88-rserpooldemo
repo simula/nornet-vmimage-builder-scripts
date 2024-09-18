@@ -44,6 +44,23 @@ try-hard ()
 }
 
 
+# ###### Clone or update Git repository #####################################
+clone-or-update ()
+{
+   local repository="$1"
+   local url="$2"
+   if [ ! -e "${repository}" ] ; then
+      # FIXME!
+      try-hard 10 60   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
+   else
+      pushd "${repository}"
+      try-hard 10 60   sudo -u "${USER_NAME}" git fetch --all
+      try-hard 10 60   sudo -u "${USER_NAME}" git pull
+      popd
+   fi
+}
+
+
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
@@ -61,31 +78,11 @@ fi
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
 cd "/home/${USER_NAME}/src"
 
-if [ ! -e rsplib ] ; then
-   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rsplib
-else
-   pushd rsplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
-fi
-if [ ! -e rserpooldemo ] ; then
-   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/rserpooldemo
-else
-   pushd rserpooldemo && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
-fi
-if [ ! -e sctplib ] ; then
-   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/sctplib
-else
-   pushd sctplib && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
-fi
-if [ ! -e socketapi ] ; then
-   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/dreibh/socketapi
-else
-   pushd socketapi && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
-fi
-if [ ! -e vmimage-builder-scripts ] ; then
-   try-hard 10 60   sudo -u "${USER_NAME}" git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
-else
-   pushd vmimage-builder-scripts && sudo -u "${USER_NAME}" git fetch --all && sudo -u "${USER_NAME}" git pull && popd
-fi
+clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
+clone-or-update rserpooldemo https://dreibh@github.com/dreibh/rserpooldemo
+clone-or-update sctplib https://dreibh@github.com/dreibh/sctplib
+clone-or-update socketapi https://dreibh@github.com/dreibh/socketapi
+clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git
 
 
 # ====== Package installation ===============================================
