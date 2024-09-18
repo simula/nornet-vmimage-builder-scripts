@@ -49,13 +49,14 @@ clone-or-update ()
 {
    local repository="$1"
    local url="$2"
+   local clone_maxtrials=10
+   local clone_delay=60
    if [ ! -e "${repository}" ] ; then
-      # FIXME!
-      try-hard 10 60   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
    else
       pushd "${repository}"
-      try-hard 10 60   sudo -u "${USER_NAME}" git fetch --all
-      try-hard 10 60   sudo -u "${USER_NAME}" git pull
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git pull
       popd
    fi
 }
