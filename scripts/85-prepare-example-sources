@@ -87,6 +87,7 @@ clone-or-update netperfmeter            https://dreibh@github.com/dreibh/netperf
 clone-or-update rsplib                  https://dreibh@github.com/dreibh/rsplib
 clone-or-update subnetcalc              https://dreibh@github.com/dreibh/subnetcalc
 clone-or-update system-tools            https://dreibh@github.com/dreibh/system-tools
+clone-or-update tsctp                   https://dreibh@github.com/dreibh/tsctp
 clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts
 
 # HAW "Rechnernetze" exercise sources:
