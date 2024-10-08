@@ -96,8 +96,20 @@ EOF
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
       cd /tmp
-      wget -4 -r --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-      find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*.deb" -print0 | xargs -r -0 env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends
+      wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
+      architecture="$(uname -m)"
+      if [ "${architecture}" == "x86_64" ] ; then
+         architecture="amd64"
+      fi
+      pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*_all.deb")"
+      pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*_${architecture}.deb")"
+      packages="${pkg1} ${pkg2}"
+      version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
+      echo "${packages}"
+      echo "${version}"
+      packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
+      echo "${packages}"
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
    fi
 
    packages="
