@@ -56,6 +56,11 @@ set -exu
 
 
 # ====== Check/set environment variables ====================================
+if [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
 if [ ! -e /etc/os-release ] ; then
    echo >&2 "ERROR: /etc/os-release does not exist!"
    exit 1
@@ -207,6 +212,9 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # shellcheck disable=SC2086
    /usr/bin/dnf install -y ${packages}
+
+   # Add user to "mock" group:
+   usermod -a -G mock "${USER_NAME}"
 
 
 # ------ FreeBSD ------------------------------------------------------------
