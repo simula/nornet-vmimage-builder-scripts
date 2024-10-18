@@ -78,6 +78,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       /usr/bin/apt-get autoremove -y --purge qemu-guest-agent
    fi
 
+   # ------ Not in QEMU -> remove open-vm-tools -----------------------------
+   if [ ! "${HYPERVISOR}" == "vmware" ] ; then
+      /usr/bin/apt-get autopurge open-vm-tools
+   fi
+
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -94,7 +99,7 @@ elif [ "${ID}" == "fedora" ] ; then
       fi
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-      /usr/bin/dnf install -y  qemu-guest-agent
+      /usr/bin/dnf install -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
