@@ -1,5 +1,5 @@
-// Ubuntu Server 24.10 "Oracular Oriole" with EFI Boot
-// Copyright (C) 2019-2024 by Thomas Dreibholz
+// Ubuntu Server 25.04 "Plucky Puffin" with EFI Boot
+// Copyright (C) 2019-2025 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://releases.ubuntu.com/oracular/ubuntu-24.10-live-server-amd64.iso",
-  "iso_checksum": "sha256:4fce7c02a5e5dbe3426da4aa0f8b7845e9a36aff29c5884d206a08e51b2c4c47",
+  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep plucky-live-server-amd64.iso
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/plucky-live-server-amd64.iso",
+  "iso_checksum": "none",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
