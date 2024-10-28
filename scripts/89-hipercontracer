@@ -87,8 +87,8 @@ clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-
 # ====== Build ==============================================================
 cd "/home/${USER_NAME}/src/hipercontracer"
 
-# NOTE: Build the upcoming version 2.0
-sudo -u "${USER_NAME}" git checkout dreibh/udpping
+# # NOTE: Build the upcoming version 3.0
+# sudo -u "${USER_NAME}" git checkout tartan
 sudo -u "${USER_NAME}" git pull
 
 # ------ Build and install --------------------------------------------------
