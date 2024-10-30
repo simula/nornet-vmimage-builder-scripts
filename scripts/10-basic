@@ -353,5 +353,6 @@ fi
 if [ "${resolvedConf}" != "" ] ; then
    sed -e "s/^#DNSSEC=.*$/DNSSEC=yes/g" <${resolvedConf} >${resolvedConf}.new
    mv ${resolvedConf}.new ${resolvedConf}
-   service systemd-resolved restart
+   # FIXME: Not restarting the service yet, it will be active after reboot.
+   # service systemd-resolved restart
 fi
