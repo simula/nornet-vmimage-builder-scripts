@@ -1,0 +1,48 @@
+// Fedora 41 Server with EFI Boot
+// Copyright (C) 2019-2024 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: dreibh@simula.no
+
+{
+  // ====== ISO settings ====================================================
+  "iso_url": "https://mirrors.xtom.de/fedora/releases/41/Server/x86_64/iso/Fedora-Server-netinst-x86_64-41-1.4.iso",
+  "iso_checksum": "sha256:630c52ba9e7a7f229b026e241ba74b9bc105e60ba5bf7b222693ae0e25f05c97",
+  "ssh_username": "{{user `user_name`}}",
+  "ssh_password": "{{user `user_password`}}",
+  "ssh_pty": true,
+  "ssh_timeout": "60m",
+  "ssh_handshake_attempts": "1024",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
+
+  // ====== Boot into installer =============================================
+  "boot_wait": "3s",
+  "boot_command": [
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<esc>c<wait>",
+    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+    "initrd /images/pxeboot/initrd.img<enter><wait>",
+    "boot<enter>"
+  ]
+}
