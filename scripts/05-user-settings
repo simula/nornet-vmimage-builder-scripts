@@ -113,9 +113,13 @@ EOF
 
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Tux.png "/home/${USER_NAME}/.face.icon"
+   if [ -e /tmp/face-icons/Face-Tux.png ] ; then
+      sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Tux.png "/home/${USER_NAME}/.face.icon"
+   fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
-   sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Beastie.png "/home/${USER_NAME}/.face.icon"
+   if [ -e /tmp/face-icons/Face-Beastie.png ] ; then
+      sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Beastie.png "/home/${USER_NAME}/.face.icon"
+   fi
 fi
 
 
