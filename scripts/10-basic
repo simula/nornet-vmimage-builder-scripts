@@ -109,6 +109,7 @@ EOF
       echo "${version}"
       packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
       echo "${packages}"
+      # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
    fi
 
