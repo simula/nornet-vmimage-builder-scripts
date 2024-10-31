@@ -38,7 +38,7 @@ UNAME="$(uname)"
 
 # ====== Initial .bashrc ====================================================
 if [ "${ID}" == "freebsd" ] || [ "${ID}" == "fedora" ] ; then
-   if [ ! -e "/home/${USER_NAME}/.bashrc" ] ; then
+   if [ -e /tmp/configuration-files/bashrc ] ; then
       cp /tmp/configuration-files/bashrc "/home/${USER_NAME}/.bashrc"
       if [ "${ID}" == "freebsd" ]  ; then
          cp /tmp/configuration-files/bashrc /usr/share/skel/.bashrc
