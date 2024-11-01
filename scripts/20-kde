@@ -141,7 +141,7 @@ elif [ "${ID}" == "fedora" ] ; then
       gimp
       inkscape
       kate
-      @KDE
+      @kde-desktop-environment
       kile
       konsole
       libreoffice
