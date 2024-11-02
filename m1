@@ -26,10 +26,10 @@ HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-40   Debian-12"
 SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
 SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-14.1-RELEASE"
-SYSTEMS="Ubuntu-14.04-LTS"
+SYSTEMS="Ubuntu-24.04-LTS FreeBSD-14.1-RELEASE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Development"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="HiPerConTracer"   # Minimal Basic Development KDE KDE+Development
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
@@ -40,8 +40,8 @@ FIRMWARE=efi
 CORES=4
 MEMORY=4096
 BALLOON=2048
-DISK_ROOT=16384
-DISK_HOME=8192
+DISK_ROOT=32768
+DISK_HOME=65536
 DISK_SWAP=2048
 VIDEO="1024x768"
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"

@@ -95,7 +95,7 @@ sudo -u "${USER_NAME}" git pull
 cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || \
            sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || \
               echo "1")
-ci/get-dependencies "${ID}" --install
+ci/get-dependencies --install
 sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 sudo -u "${USER_NAME}" make -j"${cores}"
 make install
