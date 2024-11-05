@@ -222,6 +222,7 @@ It must contain the following packages:
 * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
 * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 * [CMake](https://cmake.org/) (build tool)
+* [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
 * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
 * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
 * [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)

@@ -30,6 +30,7 @@ set -exu
 # * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 # * [CMake](https://cmake.org/) (build tool)
 # * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
+# * [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
 # * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
 # * [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
 # * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
@@ -84,6 +85,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       cmake
       debhelper
       devscripts
+      docker.io
+      docker-buildx
       dpkg-dev
       flex
       fonts-dejavu
@@ -138,6 +141,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
 
+   # Add user to "docker" group:
+   usermod -a -G docker "${USER_NAME}"
+
+   # Activate source repositories:
    for list in /etc/apt/sources.list $(find /etc/apt/sources.list.d -name "*.list"); do
       grep "^deb \(.*\)$" "${list}" | \
          sed -e "s/deb[ \t]*//g" | \
@@ -161,6 +168,7 @@ elif [ "${ID}" == "fedora" ] ; then
       bison
       clang
       cmake
+      docker-distribution
       flex
       g++
       gcc
@@ -215,6 +223,9 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"
+
+   # Add user to "docker" group:
+   usermod -a -G docker "${USER_NAME}"
 
 
 # ------ FreeBSD ------------------------------------------------------------
@@ -307,7 +318,7 @@ for command in ${programs} ; do
    fi
 done
 if [ "$(uname)" == "Linux" ] ; then
-   for command in reprepro pbuilder ; do
+   for command in docker reprepro pbuilder ; do
       echo -n "${command}: "
       if which ${command} >/dev/null ; then
          echo "OK"
