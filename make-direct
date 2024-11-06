@@ -126,8 +126,8 @@ for provisioner in ${PROVISIONERS} ; do
                echo >&2 "ERROR: Destination has to be provided in files/${provisioner}!"
                exit 1
             fi
-            mkdir -p "${destination}"
-            cp "${source}" "${destination}"
+            mkdir -p "$(dirname "${destination}")"
+            echo "Copying ${source} to ${destination} ..."
          fi
       done <"files/${provisioner}"
    fi
