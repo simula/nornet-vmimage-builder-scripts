@@ -63,10 +63,12 @@ elif [ "${ID}" == "fedora" ] ; then
    sed -e 's/^apply_updates = no/apply_updates = yes/' -i /etc/dnf/automatic.conf
 
    # Ensure that "dnf-automatic" timer is active for downloading and installing updates:
-   systemctl enable --now dnf5-automatic.timer
+   systemctl enable --now dnf-automatic-install.timer || true   # FIXME: legacy name?
+   systemctl enable --now dnf5-automatic.timer || true
 
    # Run now:
-   systemctl start dnf-automatic.service
+   systemctl start dnf-automatic-install.service || true   # FIXME: legacy name?
+   systemctl start dnf-automatic.service || true
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
