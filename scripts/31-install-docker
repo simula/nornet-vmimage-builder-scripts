@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -exu
+
+
+# ====== Package installation ===============================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+   # Add Docker's official GPG key:
+   apt-get update
+   apt-get install ca-certificates curl
+   install -m 0755 -d /etc/apt/keyrings
+   curl -fsSL "https://download.docker.com/linux/${ID}/gpg" -o /etc/apt/keyrings/docker.asc
+   chmod a+r /etc/apt/keyrings/docker.asc
+
+   # Add the repository to Apt sources:
+   echo \
+   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${ID} \
+   $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | \
+   tee /etc/apt/sources.list.d/docker.list > /dev/null
+   apt-get update
+
+   # Programs:
+   packages="
+      docker-ce
+      docker-ce-cli
+      containerd.io
+      docker-buildx-plugin
+      docker-compose-plugin
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
+
+   # Add user to "docker" group:
+   usermod -a -G docker "${USER_NAME}"
+
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
+
+   # Add Docker repository:
+   dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+
+   # Programs:
+   packages="
+      docker-ce
+      docker-ce-cli
+      containerd.io
+      docker-buildx-plugin
+      docker-compose-plugin
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y ${packages}
+
+   # Add user to "docker" group:
+   usermod -a -G docker "${USER_NAME}"
+
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
+
+   # There is no Docker in FreeBSD, yet!
+   true
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
+
+fi
+
+
+# ====== Verify command availability ========================================
+
+echo "Verifying command availability:"
+errors=0
+if [ "$(uname)" == "Linux" ] ; then
+   for command in docker ; do
+      echo -n "${command}: "
+      if which ${command} >/dev/null ; then
+         echo "OK"
+      else
+         echo "FAILED!"
+         errors=$((errors+1))
+      fi
+   done
+fi
+if [ ${errors} -gt 0 ] ; then
+   echo >&2 "ERROR: ${errors} packages are missing!"
+   exit 1
+fi

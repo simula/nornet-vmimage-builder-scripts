@@ -74,20 +74,6 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # Add Docker's official GPG key:
-   apt-get update
-   apt-get install ca-certificates curl
-   install -m 0755 -d /etc/apt/keyrings
-   curl -fsSL "https://download.docker.com/linux/${ID}/gpg" -o /etc/apt/keyrings/docker.asc
-   chmod a+r /etc/apt/keyrings/docker.asc
-
-   # Add the repository to Apt sources:
-   echo \
-   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${ID} \
-   $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | \
-   tee /etc/apt/sources.list.d/docker.list > /dev/null
-   apt-get update
-
    # Programs:
    packages="
       autoconf
@@ -99,11 +85,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       cmake
       debhelper
       devscripts
-      docker-ce
-      docker-ce-cli
-      containerd.io
-      docker-buildx-plugin
-      docker-compose-plugin
       dpkg-dev
       flex
       fonts-dejavu
@@ -158,15 +139,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
 
-   # Add user to "docker" group:
-   usermod -a -G docker "${USER_NAME}"
-
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
-
-   # Add Docker repository:
-   dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 
    # Programs:
    packages="
@@ -176,11 +151,6 @@ elif [ "${ID}" == "fedora" ] ; then
       bison
       clang
       cmake
-      docker-ce
-      docker-ce-cli
-      containerd.io
-      docker-buildx-plugin
-      docker-compose-plugin
       flex
       g++
       gcc
@@ -235,9 +205,6 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"
-
-   # Add user to "docker" group:
-   usermod -a -G docker "${USER_NAME}"
 
 
 # ------ FreeBSD ------------------------------------------------------------
@@ -330,7 +297,7 @@ for command in ${programs} ; do
    fi
 done
 if [ "$(uname)" == "Linux" ] ; then
-   for command in docker reprepro pbuilder ; do
+   for command in reprepro pbuilder ; do
       echo -n "${command}: "
       if which ${command} >/dev/null ; then
          echo "OK"
