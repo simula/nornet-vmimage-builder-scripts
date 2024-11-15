@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2024 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@simula.no
+
+# Bash options:
+set -exu
+
+
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Enable source repositories =========================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+   # Enable APT source repositories:
+   (
+      find /etc/apt -name sources.list
+      find /etc/apt/sources.list.d -mindepth 1 -maxdepth 1 -name "*.list" -or -name "*.sources"
+   ) | while read -r sourceFile ; do
+      if [[ "${sourceFile}" =~ .sources$ ]] ; then
+        echo >&2 "Processing sources file: ${sourceFile} ..."
+         while IFS= read -r line ; do
+            if [[ "${line}" =~ ^(Types:[ \t]) ]] ; then
+               types="$(echo "${line}" | cut -d' ' -f2- | xargs -n1 | sort -u | xargs)"
+               hasSrc=0
+               for type in ${types} ; do
+                  if [ "${type}" == "deb-src" ] ; then
+                     hasSrc=1
+                     break
+                  fi
+               done
+               if [ "${hasSrc}" -eq 0 ] ; then
+                  types="${types}  deb-src"
+               fi
+               echo "Types: ${types}"
+            else
+               echo "${line}"
+            fi
+         done <"${sourceFile}" >"${sourceFile}.new"
+         diff --color "${sourceFile}" "${sourceFile}.new" || true
+         mv "${sourceFile}.new" "${sourceFile}"
+      elif [[ "${sourceFile}" =~ .list$ ]] ; then
+         echo >&2 "Processing list file: ${sourceFile} ..."
+         activateSource=0
+         while IFS= read -r line ; do
+            if [[ "${line}" =~ ^(deb[ \t]) ]] ; then
+               echo "${line}"
+               activateSource=1
+            elif [[ "${line}" =~ ^(# deb-src[ \t]) ]] && [ ${activateSource} -eq 1 ] ; then
+               echo "${line}" | sed -e "s/^#[ \t]*//"
+               activateSource=0
+            else
+               echo "${line}"
+               activateSource=0
+            fi
+         done <"${sourceFile}" >"${sourceFile}.new"
+         diff --color "${sourceFile}" "${sourceFile}.new" || true
+         mv "${sourceFile}.new" "${sourceFile}"
+      fi
+   done
+
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
+
+   true
+
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
+
+   # Nothing to do here! FreeBSD sources = ports
+   true
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
+
+fi
