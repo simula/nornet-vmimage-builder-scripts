@@ -31,10 +31,10 @@ set -exu
 
 
 # ====== Make sure the background images are there ==========================
-if [ ! -v USER_NAME             ] ||
-   [ ! -v BACKGROUND_SDDM       ] ||
-   [ ! -v BACKGROUND_LOCKSCREEN ] ||
-   [ ! -v BACKGROUND_DESKTOP    ] ; then
+if [ ! -v USER_NAME             ] || [ "${USER_NAME}"             == "" ] ||
+   [ ! -v BACKGROUND_SDDM       ] || [ "${BACKGROUND_SDDM}"       == "" ] ||
+   [ ! -v BACKGROUND_LOCKSCREEN ] || [ "${BACKGROUND_LOCKSCREEN}" == "" ] ||
+   [ ! -v BACKGROUND_DESKTOP    ] || [ "${BACKGROUND_DESKTOP}"    == "" ] ; then
    echo >&2 "ERROR: Usage: env USER_NAME=<user> BACKGROUND_SDDM=<image> BACKGROUND_LOCKSCREEN=<image> BACKGROUND_DESKTOP=<image> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp BACKGROUND_SDDM=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_LOCKSCREEN=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_DESKTOP=/usr/share/desktop/Flåm-3840x2160-plain.jpeg $0"
    exit 1

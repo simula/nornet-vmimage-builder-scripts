@@ -23,7 +23,8 @@ set -exu
 
 
 # ====== Check/set environment variables ====================================
-if [ ! -v USER_NAME ] || [ ! -v USER_REALNAME ] ; then
+if [ ! -v USER_NAME ]     || [ "${USER_NAME}"     == "" ] || \
+   [ ! -v USER_REALNAME ] || [ "${USER_REALNAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> USER_REALNAME=\"<full user name>\" $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp USER_REALNAME=\"NorNet Praesum Presum\" $0"
    exit 1

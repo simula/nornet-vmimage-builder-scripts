@@ -70,6 +70,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
                echo "${line}"
                activateSource=1
             elif [[ "${line}" =~ ^(# deb-src[ \t]) ]] && [ ${activateSource} -eq 1 ] ; then
+               # shellcheck disable=SC2001
                echo "${line}" | sed -e "s/^#[ \t]*//"
                activateSource=0
             else

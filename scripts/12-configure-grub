@@ -23,7 +23,8 @@ set -exu
 
 
 # ====== Check/set environment variables ====================================
-if [ ! -v BOOTSPLASH ] || [ ! -v VIDEO ] ; then
+if [ ! -v BOOTSPLASH ] || [ "${BOOTSPLASH}" == "" ] ||
+   [ ! -v VIDEO ]      || [ "${VIDEO}"      == "" ] ; then
    echo >&2 "Usage: env BOOTSPLASH=<bootsplash> VIDEO=<widthxheight> $0"
    echo >&2 "Example: sudo env BOOTSPLASH=/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg VIDEO=1920x1080 $0"
    exit 1
