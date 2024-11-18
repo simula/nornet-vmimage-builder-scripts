@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Logo Script
-# Copyright (C) 2017-2024 by Thomas Dreibholz
+# Copyright (C) 2017-2025 by Thomas Dreibholz
 # Copyright (C) 1998 by Hrvoje Horvat (included GIMP script)
 # Copyright (C) 1995 by Spencer Kimball and Peter Mattis (included GIMP script)
 #
@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: dreibh@simula.no
+# Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
 set -e

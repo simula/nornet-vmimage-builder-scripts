@@ -1,5 +1,5 @@
 # Debian Preseed Configuration
-# Copyright (C) 2017-2024 by Thomas Dreibholz
+# Copyright (C) 2017-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: dreibh@simula.no
+# Contact: thomas.dreibholz@gmail.com
 
 # Preseed documentation:
 # https://help.ubuntu.com/lts/installation-guide/example-preseed.txt

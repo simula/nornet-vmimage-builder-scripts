@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Template VM Image Builder
-# Copyright (C) 2017-2024 by Thomas Dreibholz
+# Copyright (C) 2017-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,15 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Contact: dreibh@simula.no
+# Contact: thomas.dreibholz@gmail.com
 
 set -e
 
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-14.1-RELEASE"
-# SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.1-RELEASE"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-41 Fedora-40   FreeBSD-14.1-RELEASE"
+# SYSTEMS="Ubuntu-24.10 Fedora-41"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="KDE+Development"   # Minimal Basic Development KDE KDE+Development
