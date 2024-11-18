@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Autoinstall Scripts
-# Copyright (C) 2017-2024 by Thomas Dreibholz
+# Copyright (C) 2017-2025 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,9 +36,10 @@ fi
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Zabbix Official Repository ----------------------------------
+   local zabbixVersion="7.0"
    cat >/etc/apt/sources.list.d/zabbix.list <<EOF
-deb https://repo.zabbix.com/zabbix/7.0/${ID} ${VERSION_CODENAME} main
-# deb-src https://repo.zabbix.com/zabbix/7.0/${ID} ${VERSION_CODENAME} main
+deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
+# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
 EOF
    rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
