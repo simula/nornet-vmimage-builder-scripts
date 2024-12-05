@@ -226,6 +226,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       noto
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
+      py311-distro
       py311-netifaces
       py311-yamllint
       python
