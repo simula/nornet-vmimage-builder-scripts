@@ -23,8 +23,8 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40   FreeBSD-13.3-RELEASE FreeBSD-14.2-RELEASE"
-# SYSTEMS="Debian-12 Ubuntu-24.04-LTS Fedora-40 FreeBSD-14.2-RELEASE"
+SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-11 Debian-12   Fedora-40 Fedora-41   FreeBSD-13.4-RELEASE FreeBSD-14.2-RELEASE"
+# SYSTEMS="Ubuntu-24.04-LTS Fedora-41 Debian-12 FreeBSD-14.2-RELEASE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal Basic Development"   # Minimal Basic Development KDE KDE+Development
@@ -51,4 +51,4 @@ BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 # ---------------------------------------------------------
 
 files/generate-backgrounds
-build-defined-vms 90
+build-defined-vms 60
