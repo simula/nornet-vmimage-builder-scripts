@@ -128,6 +128,7 @@ for provisioner in ${PROVISIONERS} ; do
             fi
             mkdir -p "$(dirname "${destination}")"
             echo "Copying ${source} to ${destination} ..."
+            cp "${source}" "${destination}"
          fi
       done <"files/${provisioner}"
    fi
