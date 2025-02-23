@@ -79,6 +79,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       curl
       git
       gnupg
+      iputils-ping
+      openssh-server
       sudo
       virt-what
    "
@@ -86,8 +88,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Old Ubuntu versions 12.04/14.04/16.04 show a splash image during boot,
    # which may lead to a blank screen -> turning splash off as work-around:
    if [ "${ID}" == "ubuntu" ] && [[  "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
-      sed -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=\(.*\) splash\(.*\)$/GRUB_CMDLINE_LINUX_DEFAULT=\1\2/' -i /etc/default/grub
-      update-grub
+      if [ -e /etc/default/grub ] ; then
+         sed -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=\(.*\) splash\(.*\)$/GRUB_CMDLINE_LINUX_DEFAULT=\1\2/' -i /etc/default/grub
+         update-grub
+      fi
    fi
 
    # shellcheck disable=SC2086
@@ -95,6 +99,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
+
+   # Make sure that DNF has COPR support:
+   /usr/bin/dnf install -y 'dnf-command(copr)'
 
    # Add COPR PPA dreibh/ppa:
    /usr/bin/dnf copr enable -y dreibh/ppa
@@ -109,7 +116,9 @@ elif [ "${ID}" == "fedora" ] ; then
       dnf-automatic
       git
       gpg
+      iputils
       kernel-modules-extra
+      openssh-server
       sudo
       virt-what
    "
