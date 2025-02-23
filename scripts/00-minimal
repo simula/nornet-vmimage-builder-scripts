@@ -66,6 +66,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    if [ "${ID}" == "ubuntu" ] ; then
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends software-properties-common
+      if [ "${ID}" == "ubuntu" ] && [[  "${VERSION_ID}" =~ ^22\.[01][04]$ ]] ; then
+         # Ubuntu 22.04 fix: gpg-agent + dirmngr are needed.
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends gpg-agent dirmngr
+      fi
       /usr/bin/apt-add-repository -y ppa:dreibh/ppa
    fi
 
