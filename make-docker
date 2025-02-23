@@ -23,11 +23,12 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="Docker"
-SYSTEMS="Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Fedora-39 Fedora-40"
-# Debian-10 Debian-11 Debian-Testing
+SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40 Fedora-41"
+# SYSTEMS="Ubuntu-24.04-LTS Ubuntu-25.04   Debian-12   Fedora-41"
+# SYSTEMS="Ubuntu-24.04"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal NorNet"   # Minimal
+PROJECTS="Minimal"   # Minimal
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
@@ -38,6 +39,7 @@ CHIPSET="NA"
 FIRMWARE="NA"
 CORES="NA"
 MEMORY="0"
+BALLOON="NA"
 DISK_ROOT="NA"
 DISK_HOME="NA"
 DISK_SWAP="NA"

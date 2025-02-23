@@ -75,10 +75,10 @@ EOF
    else
       if [ -e /etc/modules ] ; then
          (
-            GREP -V "^SCTP" /ETC/MODULES
-            ECHO "SCTP"
-         ) >/ETC/MODULES.NEW
-         MV /ETC/MODULES.NEW /ETC/MODULES
+            grep -v "^sctp" /etc/modules
+            echo "sctp"
+         ) >/etc/modules.new
+         mv /etc/modules.new /etc/modules
       fi
    fi
 
