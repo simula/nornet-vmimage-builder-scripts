@@ -36,7 +36,7 @@ fi
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Zabbix Official Repository ----------------------------------
-   local zabbixVersion="7.0"
+   zabbixVersion="7.0"
    cat >/etc/apt/sources.list.d/zabbix.list <<EOF
 deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
 # deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
