@@ -22,17 +22,30 @@
 set -ex
 
 
-# ====== Install "sudo" =====================================================
-if [ -e /usr/bin/apt-get ] ; then
+# ====== Check/set environment variables ====================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Make sure that "sudo" is available =================================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # apt-show-versions does not work with compressed indices:
    # https://askubuntu.com/questions/916199/install-apt-show-versions-inside-an-ubuntu-docker-container
    rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
 
    /usr/bin/apt-get update -qq
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y sudo
-elif [ -e /usr/bin/dnf ] ; then
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
    dnf install -y sudo
 fi
+
 
 # ====== Create user ========================================================
 mkdir -p /home/"${USER_NAME}"
@@ -53,48 +66,28 @@ else
    usermod -aG wheel "${USER_NAME}"
 fi
 
+
 # ====== Create locales and time zone data ==================================
-if [ -e /usr/bin/apt-get ] ; then
-   # Debian/Ubuntu:
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y locales tzdata
    locale-gen en_US.UTF-8 en_GB.UTF-8 en_AU.UTF-8 nb_NO.UTF-8 de_DE.UTF-8 zh_CN.UTF-8
-elif [ -e /usr/bin/dnf ] ; then
-   # Fedora:
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
    dnf install -y glibc-locale-source
    localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 || true
 fi
 
-# ====== Install "systemctl" ================================================
-if [ -e /usr/bin/apt-get ] ; then
-   # Debian/Ubuntu:
+
+# ====== Make sure that "systemctl" is available ============================
+
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl || true
-elif [ -e /usr/bin/dnf ] ; then
-   # Fedora:
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
    dnf install -y systemd
-fi
-
-# ====== Add PPA dreibh/ppa =================================================
-if [ -e /usr/bin/apt-get ] ; then
-   # Debian/Ubuntu:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
-      apt-utils gpg-agent dirmngr || true
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
-      software-properties-common gnupg
-
-   # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
-   sudo -u "${USER_NAME}" gpg \
-      --homedir "/home/${USER_NAME}/.gnupg" \
-      --keyserver hkp://keyserver.ubuntu.com \
-      --recv-keys \
-         8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0
-   sudo -u "${USER_NAME}" gpg \
-      --homedir "/home/${USER_NAME}/.gnupg" \
-      --armor \
-      --export 8A8EAF3E2F2E3BB5C75F48C1CCEB82DF916C56E0 | apt-key add -
-   apt-add-repository -y ppa:dreibh/ppa
-
-elif [ -e /usr/bin/dnf ] ; then
-   # Fedora:
-   dnf install -y 'dnf-command(copr)'
-   dnf copr enable -y dreibh/ppa
 fi
