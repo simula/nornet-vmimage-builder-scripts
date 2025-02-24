@@ -23,8 +23,7 @@ set -exu
 
 
 # ====== Check/set environment variables ====================================
-if [ ! -v BOOTSPLASH ] || [ "${BOOTSPLASH}" == "" ] ||
-   [ ! -v VIDEO ]      || [ "${VIDEO}"      == "" ] ; then
+if [ ! -v BOOTSPLASH ] || [ ! -v VIDEO ] ; then
    echo >&2 "Usage: env BOOTSPLASH=<bootsplash> VIDEO=<widthxheight> $0"
    echo >&2 "Example: sudo env BOOTSPLASH=/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg VIDEO=1920x1080 $0"
    exit 1
@@ -64,14 +63,16 @@ if [ "${UNAME}" == "Linux" ] ; then
    fi
 
    # ------ Update GRUB configuration ---------------------------------------
-   if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
-      configure-grub /usr/share/configure-grub/grub-defaults-nornet \
-         -V "auto,${VIDEO},1024x768" \
-         -o /etc/default/grub
-      if [ -x /usr/sbin/grub2-mkconfig ] ; then
-         /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg || true
-      else
-         update-grub || true
+   if [ -e /etc/default/grub ] ; then
+      if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
+         configure-grub /usr/share/configure-grub/grub-defaults-nornet \
+            -V "auto,${VIDEO},1024x768" \
+            -o /etc/default/grub
+         if [ -x /usr/sbin/grub2-mkconfig ] ; then
+            /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg || true
+         else
+            update-grub || true
+         fi
       fi
    fi
 
