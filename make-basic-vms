@@ -24,8 +24,8 @@ set -e
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-40 Fedora-41   FreeBSD-13.4-RELEASE FreeBSD-14.2-RELEASE"
-SYSTEMS="Ubuntu-24.04-LTS Ubuntu-25.04   Debian-12   Fedora-41   FreeBSD-14.2-RELEASE"
-SYSTEMS="Ubuntu-25.04"
+# SYSTEMS="Ubuntu-24.04-LTS Ubuntu-25.04   Debian-12   Fedora-41   FreeBSD-14.2-RELEASE"
+# SYSTEMS="Ubuntu-25.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
