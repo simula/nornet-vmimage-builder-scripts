@@ -25,6 +25,7 @@ set -exu
 # ###########################################################################
 # The "Basic" installation is based on the "Minimal" installation.
 # It must contain the following packages:
+# * [ACL](https://savannah.nongnu.org/projects/acl/) (Tools for ACL configuration, particularly getfacl and setfacl commands)
 # * Base64 (base64 tool)
 # * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 # * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
@@ -114,6 +115,7 @@ EOF
    fi
 
    packages="
+      acl
       apt-file
       bwm-ng
       bzip2
@@ -201,6 +203,7 @@ EOF
 elif [ "${ID}" == "fedora" ] ; then
 
    packages="
+      acl
       bind-utils
       bwm-ng
       bzip2
@@ -305,7 +308,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 dig curl gdisk htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync subnetcalc System-Info System-Maintenance traceroute tree tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 dig curl gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance traceroute tree tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else

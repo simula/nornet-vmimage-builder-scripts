@@ -150,6 +150,7 @@ Further properties:
 The "Basic" installation is based on the [Minimal](#minimal) installation.
 
 It must contain the following packages:
+* [ACL](https://savannah.nongnu.org/projects/acl/) (Tools for ACL configuration, particularly getfacl and setfacl commands)
 * Base64 (base64 tool)
 * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
