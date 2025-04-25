@@ -46,7 +46,8 @@ fi
 # ====== Configure server ===================================================
 ssh-copy-id "${USER}@${SERVER}"
 # shellcheck disable=SC2029
-ssh "${USER}@${SERVER}" "
+ssh -t "${USER}@${SERVER}" "
+set -eu
 if [ ! -e .gitconfig ] ; then
    (
       echo \"[user]\"
@@ -73,6 +74,13 @@ fi
 cd files
 if [ -x /usr/bin/apt ] ; then
    sudo /usr/bin/apt install -y --no-install-recommends cmake gawk gcc gcc-multilib graphicsmagick gimp libimage-exiftool-perl make
+elif [ -x /usr/bin/dnf ] ; then
+   sudo /usr/bin/dnf install -y cmake gawk gcc GraphicsMagick gimp perl-Image-ExifTool make
+elif [ -x /usr/sbin/pkg ] ; then
+   sudo /usr/sbin/pkg install -y cmake flock gcc GraphicsMagick gimp p5-Image-ExifTool
+else
+   echo >&2 \"ERROR: Unknown package management system!\"
+   exit 1
 fi
 ./generate-backgrounds
 cd ..

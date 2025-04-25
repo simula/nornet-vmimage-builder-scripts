@@ -22,14 +22,14 @@ set -eu
 
 
 # ====== Handle arguments ===================================================
-if [ $# -lt 1 ] ; then
-   echo >&2 "Usage: $0 vm_address"
+if [ $# -ne 1 ] ; then
+   echo >&2 "Usage: $0 user@server"
    exit 1
 fi
-user="${1//@*/}"
-address="${1//*@/}"
-if [ "${user}" == "${address}" ] ; then
-   user="nornetpp"
+SERVER="${1//*@/}"
+USER="${1//@*/}"
+if [ "${USER}" == "${SERVER}" ] ; then
+   USER="nornetpp"
 fi
 
 # ====== Obtain name and e-mail for Git configuration =======================
@@ -43,26 +43,11 @@ else
 fi
 
 # ====== Configure server ===================================================
-ssh-copy-id -oStrictHostKeyChecking=no "${user}@${address}"
+ssh-copy-id -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
-ssh "${user}@${address}" "
-echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | sudo tee /etc/sudoers.d/99-nornetpp
-if ! which git || ! which joe ; then
-   if [ -x /usr/bin/apt ] ; then
-      sudo /usr/bin/apt install -y git joe
-   elif [ -x /usr/bin/dnf ] ; then
-      sudo /usr/bin/dnf install -y git joe
-   elif [ -x /usr/bin/pkg ] ; then
-      sudo /usr/bin/pkg install -y git joe
-   fi
-fi
-if [ ! -d ~/src/vmimage-builder-scripts ] ; then
-   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts ~/src/vmimage-builder-scripts
-   cd ~/src/vmimage-builder-scripts
-   git config pull.rebase true
-   # git checkout dreibh/freebsd
-fi
-if [ ! -e ~/.gitconfig ] ; then
+ssh -t "${USER}@${SERVER}" "
+set -eu
+if [ ! -e .gitconfig ] ; then
    (
       echo \"[user]\"
       echo \"        name = ${GIT_NAME}\"
@@ -76,7 +61,30 @@ if [ ! -e ~/.gitconfig ] ; then
       echo \"        ui = auto\"
    ) >.gitconfig
 fi
+echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | if [ -d /etc/sudoers.d ] ; then
+   sudo tee /etc/sudoers.d/99-nornetpp
+else
+   sudo tee /usr/local/etc/sudoers.d/99-nornetpp
+fi
+if ! which git || ! which joe ; then
+   if [ -x /usr/bin/apt ] ; then
+      sudo /usr/bin/apt install -y git joe
+   elif [ -x /usr/bin/dnf ] ; then
+      sudo /usr/bin/dnf install -y git joe
+   elif [ -x /usr/bin/pkg ] ; then
+      sudo /usr/bin/pkg install -y git joe
+   fi
+fi
+mkdir -p src
+cd src
+if [ -d vmimage-builder-scripts ] ; then
+   cd vmimage-builder-scripts
+   git pull
+else
+   git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
+   cd vmimage-builder-scripts
+fi
 "
 
 # ====== Connect to server ==================================================
-ssh "${user}@${address}"
+ssh "${USER}@${SERVER}"
