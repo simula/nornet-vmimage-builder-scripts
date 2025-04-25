@@ -100,7 +100,6 @@ sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.cache"
 if ! sudo -u "${USER_NAME}" test -e "/home/${USER_NAME}/.gitconfig" ; then
    (
       cat <<EOF
-# xxxx
 [user]
       name = ${USER_REALNAME}
       email = ${USER_NAME}@$(hostname -f)
