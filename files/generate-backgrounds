@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 
 cd "$(dirname "$0")"
@@ -43,7 +43,7 @@ flock backgrounds.lock bash -c '
    fi
    cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)
    if [ "${cores}" == "" ] ; then
-      cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || true)
+      cores=$(sysctl -a | grep "hw.ncpu" | cut -d ":" -f2 | tr -d " " || true)
    fi
    echo "This system has ${cores} cores!"
    make -j${cores}
