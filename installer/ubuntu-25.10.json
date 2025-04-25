@@ -18,8 +18,9 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://releases.ubuntu.com/plucky/ubuntu-25.04-live-server-amd64.iso",
-  "iso_checksum": "sha256:8b44046211118639c673335a80359f4b3f0d9e52c33fe61c59072b1b61bdecc5",
+  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep plucky-live-server-amd64.iso
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/plucky-live-server-amd64.iso",
+  "iso_checksum": "none",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
