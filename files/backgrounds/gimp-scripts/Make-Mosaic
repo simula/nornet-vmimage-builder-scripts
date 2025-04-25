@@ -92,8 +92,9 @@ rm -f "$OUTPUTFILENAME"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp --new-instance --no-interface --no-splash --batch - 2>&1 | \
-       ( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-gegl-operation.c-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|^$" || true )
+) | \
+env LANG=C HOME=/tmp gimp-console --batch-interpreter plug-in-script-fu-eval --new-instance --no-interface --no-splash --batch - 2>&1 | \
+( grep -vE "^ts>|(#t)|^Copyright|^Welcome|GLib-GObject-WARNING|GEGL-gegl-operation.c-WARNING|GEGL-CRITICAL|missing babl fast path|Missing fast-path babl|accelerates GEGL|first occurance of formats|programmatically by bab|GeglBuffers leaked|Failed to parse tag cache|Ignoring XMP|Exif.Canon.CRWParam|^$" || true )
 
 if [ ! -e "$OUTPUTFILENAME" ] ; then
    echo >&2 "ERROR: $OUTPUTFILENAME has not been produced. Something went wrong!"
