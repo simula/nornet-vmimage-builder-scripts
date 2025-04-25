@@ -96,7 +96,7 @@ fi
 # ====== Run fstrim =========================================================
 if [ "${UNAME}" == "Linux" ] ; then
    if [ -x /usr/bin/fstrim ] ; then
-      /usr/bin/fstrim -av
+      /usr/bin/fstrim -av || true
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    sudo zpool trim zroot
