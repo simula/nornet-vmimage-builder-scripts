@@ -96,7 +96,7 @@ FIND_PROGRAM(GM gm PATHS /bin /usr/bin /usr/local/bin)
 IF(NOT GM)
    MESSAGE(FATAL_ERROR
            " Cannot find GraphicsMagick! Try:\n"
-           " * Ubuntu/Debian: sudo apt install -y GraphicsMagick\n"
+           " * Ubuntu/Debian: sudo apt install -y graphicsmagick\n"
            " * Fedora:        sudo dnf install -y GraphicsMagick\n"
            " * FreeBSD:       sudo pkg install -y GraphicsMagick")
 ENDIF()
@@ -119,7 +119,7 @@ IF(NOT EXIFTOOL)
            " Cannot find ExifTool! Try:\n"
            " * Ubuntu/Debian: sudo apt install -y libimage-exiftool-perl\n"
            " * Fedora:        sudo dnf install -y perl-Image-ExifTool\n"
-           " * FreeBSD:       sudo pkg install -y inkscape")
+           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool")
 ENDIF()
 
 # ------ Required scripts ---------------------------------------------------
