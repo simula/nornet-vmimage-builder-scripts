@@ -105,10 +105,10 @@ cat <<EOF
 [push]
         default = simple
         autoSetupRemote = true
-[color]
-        ui = auto
 [pull]
         rebase = false
+[color]
+        ui = auto
 EOF
 ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
 
