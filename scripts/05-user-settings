@@ -97,20 +97,23 @@ sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.cache"
 
 
 # ====== Git configuration file =============================================
-(
-cat <<EOF
+if ! sudo -u "${USER_NAME}" test -e "/home/${USER_NAME}/.gitconfig" ; then
+   (
+      cat <<EOF
+# xxxx
 [user]
-        name = ${USER_REALNAME}
-        email = ${USER_NAME}@$(hostname -f)
+      name = ${USER_REALNAME}
+      email = ${USER_NAME}@$(hostname -f)
 [push]
-        default = simple
-        autoSetupRemote = true
+      default = simple
+      autoSetupRemote = true
 [pull]
-        rebase = false
+      rebase = false
 [color]
-        ui = auto
+      ui = auto
 EOF
-) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
+   ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
+fi
 
 
 # ====== User icon ==========================================================
