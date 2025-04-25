@@ -151,25 +151,29 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    # ------ Prepare FreeBSD Sources -----------------------------------------
    cd /usr/src
-   /usr/local/bin/git init -b main
-   /usr/local/bin/git remote add freebsd https://github.com/freebsd/freebsd.git
-   /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
-   /usr/local/bin/git config pull.rebase true
-   # Not running this here:
-   # /usr/local/bin/git fetch freebsd
-   # /usr/local/bin/git checkout main
+   if [ ! -e .git/config ] ; then
+      /usr/local/bin/git init -b main
+      /usr/local/bin/git remote add freebsd https://github.com/freebsd/freebsd.git
+      /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
+      /usr/local/bin/git config pull.rebase true
+      # Not running this here:
+      # /usr/local/bin/git fetch freebsd
+      # /usr/local/bin/git checkout main
+   fi
 
    # ------ Prepare FreeBSD Ports Collection --------------------------------
    # See: https://wiki.freebsd.org/Ports/GitQuickStart
    cd /usr/ports
-   /usr/local/bin/git init -b main
-   /usr/local/bin/git remote add freebsd https://git.freebsd.org/ports.git
-   /usr/local/bin/git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
-   /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
-   /usr/local/bin/git config pull.rebase true
-   # Not running this here:
-   # /usr/local/bin/git fetch freebsd
-   # /usr/local/bin/git checkout main
+   if [ ! -e .git/config ] ; then
+      /usr/local/bin/git init -b main
+      /usr/local/bin/git remote add freebsd https://git.freebsd.org/ports.git
+      /usr/local/bin/git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
+      /usr/local/bin/git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
+      /usr/local/bin/git config pull.rebase true
+      # Not running this here:
+      # /usr/local/bin/git fetch freebsd
+      # /usr/local/bin/git checkout main
+   fi
 
 # ------ Unknown ------------------------------------------------------------
 else
