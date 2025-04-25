@@ -44,8 +44,8 @@ fi
 
 # ====== Configure server ===================================================
 ssh-copy-id -oStrictHostKeyChecking=no "${user}@${address}"
-ssh "${user}@${address}" '
-echo "nornetpp ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/99-nornetpp
+ssh "${user}@${address}" "
+echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | sudo tee /etc/sudoers.d/99-nornetpp
 if ! which git || ! which joe ; then
    if [ -x /usr/bin/apt ] ; then
       sudo /usr/bin/apt install -y git joe
@@ -75,7 +75,7 @@ if [ ! -e ~/.gitconfig ] ; then
       echo \"        ui = auto\"
    ) >.gitconfig
 fi
-'
+"
 
 # ====== Connect to server ==================================================
 ssh "${user}@${address}"
