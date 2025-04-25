@@ -45,6 +45,7 @@ fi
 
 # ====== Configure server ===================================================
 ssh-copy-id "${USER}@${SERVER}"
+# shellcheck disable=SC2029
 ssh "${USER}@${SERVER}" "
 if [ ! -e .gitconfig ] ; then
    (

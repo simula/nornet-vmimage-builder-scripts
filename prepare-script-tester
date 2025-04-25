@@ -44,6 +44,7 @@ fi
 
 # ====== Configure server ===================================================
 ssh-copy-id -oStrictHostKeyChecking=no "${user}@${address}"
+# shellcheck disable=SC2029
 ssh "${user}@${address}" "
 echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | sudo tee /etc/sudoers.d/99-nornetpp
 if ! which git || ! which joe ; then
