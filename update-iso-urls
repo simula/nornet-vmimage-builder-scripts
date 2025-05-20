@@ -72,23 +72,31 @@ function find-isos ()
    # ====== Look for checksums file =========================================
    location=""
    iso="${iso1}"
+   echo -e "\e[37mTrying primary location ${location1}/${checksums} ...\e[0m"
    rm -f "${checksums}"
-   if wget -q "${location1}/${checksums}" -O "${checksums}" ; then
+   if wget -q --max-redirect 0 "${location1}/${checksums}" -O "${checksums}" ; then
       location="${location1}"
-   elif [ "${location2}" != "" ] && wget -q "${location2}/${checksums}" -O "${checksums}" ; then
-      location="${location2}"
-   elif [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
-      if [ "${minor}" -eq 0 ] ; then
-         l=$(echo "${location2}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
-         if wget -q "${l}/${checksums}" -O "${checksums}" ; then
-            location="${l}"
-            iso=$(echo "${iso1}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
+   elif [ "${location2}" != "" ] ; then
+      echo -e "\e[37mTrying secondary location ${location2}/${checksums} ...\e[0m"
+      rm -f "${checksums}"
+      if wget -q --max-redirect 0 "${location2}/${checksums}" -O "${checksums}" ; then
+         location="${location2}"
+      elif [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
+         if [ "${minor}" -eq 0 ] ; then
+            l=$(echo "${location2}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
+            echo -e "\e[37mTrying modified secondary location ${l}/${checksums} ...\e[0m"
+            rm -f "${checksums}"
+            if wget -q --max-redirect 0 "${l}/${checksums}" -O "${checksums}" ; then
+               location="${l}"
+               iso=$(echo "${iso1}" | sed -e 's/[\.]0\([-/]\)/\1/g' -e 's/\.0$//')
+            fi
          fi
       fi
    fi
 
    # ====== There is a checksums file =======================================
-   if [ "${location}" != "" ] ; then
+   if [ "${location}" != "" ] && [ -e "${checksums}" ] ; then
+      echo -e "\e[37mISO location is ${location} ...\e[0m"
 
       # ====== Look for signatures file =====================================
       if [ "${signature}" != "" ] ; then
