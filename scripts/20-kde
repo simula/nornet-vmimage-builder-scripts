@@ -176,13 +176,13 @@ elif [ "${ID}" == "freebsd" ] ; then
       fractgen
       gimp
       inkscape
-      kde5
+      kde
       kile
       libreoffice
       noto
       oxygen-fonts
-      plasma5-oxygen
-      plasma5-sddm-kcm
+      plasma6-oxygen
+      plasma6-sddm-kcm
       R
       sddm
 
