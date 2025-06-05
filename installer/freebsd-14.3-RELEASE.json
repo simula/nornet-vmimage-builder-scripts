@@ -1,4 +1,4 @@
-// FreeBSD 14.1 with EFI Boot
+// FreeBSD 14.2 with EFI Boot
 // Copyright (C) 2020-2025 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.1/FreeBSD-14.1-RELEASE-amd64-disc1.iso",
-  "iso_checksum": "sha512:aa48d6bababfdcd88f21eb732b0fbc3214f14707da7b473969557b73896112c094ab8e2a402c5a05bc2a3d14877a8929e680e9dcc2dbe42f78ef274270c5299b",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.3/FreeBSD-14.3-RC1-amd64-disc1.iso",
+  "iso_checksum": "sha512:9f0e0b8e47baa230f9d6527fec98f207c0b7a858ee6182b6cc3ce55feab3fb5627acc0e90b7f4baefaf9b153c47fdf49a3a8824750124a6902735c0d23e353db",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
