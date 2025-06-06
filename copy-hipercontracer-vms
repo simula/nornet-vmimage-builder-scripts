@@ -59,5 +59,6 @@ done
 if [ "${latest}" != "" ] ; then
    echo "Latest is: $latest"
    echo "cd ${DIRECTORY}/${PROJECT,,}/${vmDate} && rm -f latest && ln -s ${latest} latest"
+   # shellcheck disable=SC2029
    ssh nornetpp@${SERVER} "cd ${DIRECTORY}/${PROJECT,,}/ && rm -f latest && ln -s ${latest} latest"
 fi
