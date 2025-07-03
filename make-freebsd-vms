@@ -23,10 +23,10 @@ set -e
 . ./vm-build-helper
 
 HYPERVISOR="VirtualBox"   # "VirtualBox" "QEMU"
-SYSTEMS="FreeBSD-14.2-RELEASE"   # FreeBSD-14.1-STABLE"
+SYSTEMS="FreeBSD-14.3-RELEASE"   # FreeBSD-14.1-STABLE"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="KDE+Development"   # Minimal Basic Development KDE KDE+Development
+PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
 # PROJECTS="Minimal"
 
 HOSTNAME="burgsteinfurt.openstack"
@@ -38,6 +38,7 @@ CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
 MEMORY=4096
+BALLOON=1024
 DISK_ROOT=65536
 DISK_HOME=0   # Just one disk -> not used here!
 DISK_SWAP=0   # Just one disk -> not used here!
@@ -46,7 +47,7 @@ BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
 BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
-OPTIONS=""
+OPTIONS="--one-disk-only"
 # ---------------------------------------------------------
 
 files/generate-backgrounds
