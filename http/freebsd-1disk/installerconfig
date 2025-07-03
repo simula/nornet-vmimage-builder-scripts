@@ -128,7 +128,7 @@ mkdir -p /usr/local/etc/pkg/repos
 cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
 # The quartery default repository is defined in /etc/pkg/FreeBSD.conf:
 FreeBSD: {
-  enabled: yes
+  enabled: no
 }
 
 # Define "Latest" repository with the latest updates:
@@ -137,10 +137,9 @@ Latest: {
   mirror_type: "srv",
   signature_type: "fingerprints",
   fingerprints: "/usr/share/keys/pkg",
-  enabled: no
+  enabled: yes
 }
 EOF
-# FIXME! Using default repository, due to problems with "Latest"!
 
 # Run freebsd-update:
 env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
