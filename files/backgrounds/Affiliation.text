@@ -1,1 +1,1 @@
-${MAKE_TEXT} ${OUTPUT}   "Resilient Networks and Applications"   256 10 "Golden"   "DejaVu Sans"
+${MAKE_TEXT} ${OUTPUT}   "Resilient Networks and Applications"   256   --bordersize 10 --colorscheme "Golden" --font "DejaVu Sans"

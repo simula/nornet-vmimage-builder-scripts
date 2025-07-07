@@ -55,67 +55,67 @@ tempDirectory=$(mktemp -d simulamet-overlay-"${WIDTH}"x"${HEIGHT}".XXXXXXXXXXXXX
 # ------ Resize input images ------------------------------------------------
 ${GM} convert "$DIRECTORY"/Title.png -trim \
    -resize "${titleWidthValue}"x \
-   +compress "${tempDirectory}"/title.tiff
+   +compress "${tempDirectory}"/title.png
 ${GM} convert "$DIRECTORY"/Subtitle.png -trim \
    -resize "${subtitleWidthValue}"x \
    -bordercolor none -border 0x"${titleBorderValue}" \
-   +compress "${tempDirectory}"/subtitle.tiff
+   +compress "${tempDirectory}"/subtitle.png
 
 ${GM} convert "$DIRECTORY"/Name.png -trim \
    -resize x"${nameHeightValue}" \
-   +compress "${tempDirectory}"/name.tiff
+   +compress "${tempDirectory}"/name.png
 ${GM} convert "$DIRECTORY"/Affiliation.png -trim \
    -resize x"${nameHeightValue}" \
    -bordercolor none -border 0x"${nameBorderValue}" \
-   +compress "${tempDirectory}"/affiliation.tiff
+   +compress "${tempDirectory}"/affiliation.png
 ${GM} convert "$DIRECTORY"/URL.png -trim \
    -resize x"${nameHeightValue}" \
-   +compress "${tempDirectory}"/url.tiff
+   +compress "${tempDirectory}"/url.png
 
 # ------ Center title over subtitle -----------------------------------------
-th=$(gm identify -format "%h" "${tempDirectory}/title.tiff")
+th=$(gm identify -format "%h" "${tempDirectory}/title.png")
 # Size is ${subtitleWidthValue}x${th}:
 ${GM} composite -size "${subtitleWidthValue}"x"${th}" \
-   -gravity Center "${tempDirectory}"/title.tiff \
-   xc:none +compress "${tempDirectory}"/title-c.tiff
+   -gravity Center "${tempDirectory}"/title.png \
+   xc:none +compress "${tempDirectory}"/title-c.png
 
 ${GM} convert -background none -append \
-   "${tempDirectory}"/title-c.tiff \
-   "${tempDirectory}"/subtitle.tiff \
-   +compress "${tempDirectory}"/logo.tiff
+   "${tempDirectory}"/title-c.png \
+   "${tempDirectory}"/subtitle.png \
+   +compress "${tempDirectory}"/logo.png
 
 
 # ------ Center contact labels ----------------------------------------------
-nw=$(gm identify -format "%w" "${tempDirectory}/name.tiff")
-nh=$(gm identify -format "%h" "${tempDirectory}/name.tiff")
+nw=$(gm identify -format "%w" "${tempDirectory}/name.png")
+nh=$(gm identify -format "%h" "${tempDirectory}/name.png")
 
-aw=$(gm identify -format "%w" "${tempDirectory}/affiliation.tiff")
-ah=$(gm identify -format "%h" "${tempDirectory}/affiliation.tiff")
+aw=$(gm identify -format "%w" "${tempDirectory}/affiliation.png")
+ah=$(gm identify -format "%h" "${tempDirectory}/affiliation.png")
 
-uw=$(gm identify -format "%w" "${tempDirectory}/url.tiff")
-uh=$(gm identify -format "%h" "${tempDirectory}/url.tiff")
+uw=$(gm identify -format "%w" "${tempDirectory}/url.png")
+uh=$(gm identify -format "%h" "${tempDirectory}/url.png")
 
 cw=$(echo "$nw $aw $uw" | xargs -n1 echo | sort -n -r | head -n1)
-${GM} composite -size "${cw}"x"${nh}" -gravity Center "${tempDirectory}"/name.tiff xc:none +compress "${tempDirectory}"/name-c.tiff
-${GM} composite -size "${cw}"x"${ah}" -gravity Center "${tempDirectory}"/affiliation.tiff xc:none +compress "${tempDirectory}"/affiliation-c.tiff
-${GM} composite -size "${cw}"x"${uh}" -gravity Center "${tempDirectory}"/url.tiff xc:none +compress "${tempDirectory}"/url-c.tiff
+${GM} composite -size "${cw}"x"${nh}" -gravity Center "${tempDirectory}"/name.png xc:none +compress "${tempDirectory}"/name-c.png
+${GM} composite -size "${cw}"x"${ah}" -gravity Center "${tempDirectory}"/affiliation.png xc:none +compress "${tempDirectory}"/affiliation-c.png
+${GM} composite -size "${cw}"x"${uh}" -gravity Center "${tempDirectory}"/url.png xc:none +compress "${tempDirectory}"/url-c.png
 
 ${GM} convert -gravity Center -background none -append \
-   "${tempDirectory}"/name-c.tiff "${tempDirectory}"/affiliation-c.tiff "${tempDirectory}"/url-c.tiff \
-   +compress "${tempDirectory}"/contact.tiff
+   "${tempDirectory}"/name-c.png "${tempDirectory}"/affiliation-c.png "${tempDirectory}"/url-c.png \
+   +compress "${tempDirectory}"/contact.png
 
 
 # ------ Combine everything -------------------------------------------------
 ${GM} composite -size "${WIDTH}"x"${HEIGHT}" \
-   -gravity Center "${tempDirectory}"/logo.tiff \
-   xc:none +compress "${tempDirectory}"/layer-logo.tiff
+   -gravity Center "${tempDirectory}"/logo.png \
+   xc:none +compress "${tempDirectory}"/layer-logo.png
 ${GM} composite -size "${WIDTH}"x"${HEIGHT}" \
-   -gravity SouthEast -geometry +"${indentValue}"+"${indentValue}" "${tempDirectory}"/contact.tiff \
-   xc:none +compress "${tempDirectory}"/layer-contact.tiff
+   -gravity SouthEast -geometry +"${indentValue}"+"${indentValue}" "${tempDirectory}"/contact.png \
+   xc:none +compress "${tempDirectory}"/layer-contact.png
 
 
-# ${GM} composite ${tempDirectory}/layer-contact.tiff ${tempDirectory}/layer-logo.tiff "${OUTPUT}"
-cp "${tempDirectory}"/layer-logo.tiff "${OUTPUT}"
+# ${GM} composite ${tempDirectory}/layer-contact.png ${tempDirectory}/layer-logo.png "${OUTPUT}"
+cp "${tempDirectory}"/layer-logo.png "${OUTPUT}"
 
 
 rm -rf "${tempDirectory}"

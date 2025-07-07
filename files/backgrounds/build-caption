@@ -43,4 +43,4 @@ height=$((42*HEIGHT/768))   # Height "42" is designed for 1024x768
 ${MAKE_CAPTION} \
    "${OUTPUT}" "${CAPTION}" "${WIDTH}" "${height}" \
    "Noto Sans Bold" 55 \
-   "#02266b" "#ffd700" 26
+   --foreground "#02266b" --background "#ffd700" --transparency 26

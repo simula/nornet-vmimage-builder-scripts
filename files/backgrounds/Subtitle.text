@@ -1,1 +1,1 @@
-${MAKE_TEXT} ${OUTPUT}   "Simula Metropolitan Centre for Digital Engineering"   256 20 "Golden"   "DejaVu Sans"
+${MAKE_TEXT} ${OUTPUT}   "Simula Metropolitan Centre for Digital Engineering"   256   --bordersize 20 --colorscheme "Golden" --font "DejaVu Sans"

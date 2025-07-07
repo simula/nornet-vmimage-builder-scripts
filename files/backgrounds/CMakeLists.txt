@@ -250,7 +250,7 @@ FILE(MAKE_DIRECTORY ${GIMP_DIRECTORY})
 FILE(MAKE_DIRECTORY ${GIMP_DIRECTORY}/./gradients)   # For some reason, Gimp 2.10 does not create this directory but complains about it.
 SET(gimpDirStamp "${GIMP_DIRECTORY}/gimp.stamp")
 ADD_CUSTOM_COMMAND(OUTPUT  ${gimpDirStamp}
-                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${TEST_GIMP}
+                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${TEST_GIMP}
                    COMMAND touch ${gimpDirStamp})
 ADD_CUSTOM_TARGET(generate_gimpDirStamp DEPENDS ${gimpDirStamp})
 
@@ -262,7 +262,7 @@ FOREACH(textFile IN LISTS TDD_TEXT_FILES)
    GET_FILENAME_COMPONENT(textImage ${textImage} NAME)
 
    ADD_CUSTOM_COMMAND(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} MAKE_TEXT="${MAKE_TEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_TEXT="${MAKE_TEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
                       DEPENDS ${textFile}
                               generate_gimpDirStamp
                               ${gimpDirStamp})
@@ -289,7 +289,7 @@ FOREACH(image IN LISTS TDD_IMAGE_FILES)
       makeUniqueTarget(generate_hostnameImage "generate_${hostname}.png")
 
       ADD_CUSTOM_COMMAND(OUTPUT  ${hostnameImage}
-                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_TEXT} ${hostnameImage} "${hostname}" 256 10 "Brushed Aluminium" "Comic Sans MS"
+                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_TEXT} ${hostnameImage} "${hostname}" 256 10 "Brushed Aluminium" "Comic Sans MS"
                          DEPENDS generate_gimpDirStamp
                                  ${gimpDirStamp})
       ADD_CUSTOM_TARGET(${generate_hostnameImage} DEPENDS ${hostnameImage})
@@ -315,7 +315,7 @@ FOREACH(resolution IN LISTS TDD_BOOTSPLASH_RESOLUTIONS)
    STRING(REGEX REPLACE "x.*$" "" bootsplash_width  "${resolution}")
    STRING(REGEX REPLACE "^.*x" "" bootsplash_height "${resolution}")
    ADD_CUSTOM_COMMAND(OUTPUT  ${imageCaption}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} MAKE_CAPTION=${MAKE_CAPTION} ${BUILD_CAPTION} ${imageCaption} ${captionFile} ${bootsplash_width} ${bootsplash_height}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_CAPTION=${MAKE_CAPTION} ${BUILD_CAPTION} ${imageCaption} ${captionFile} ${bootsplash_width} ${bootsplash_height}
                       DEPENDS ${generate_captionFile}
                               ${captionFile}
                               generate_gimpDirStamp
@@ -349,7 +349,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
 
    # NOTE: Dependency on generate targets and files!
    ADD_CUSTOM_COMMAND(OUTPUT ${overlayImage}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${BUILD_OVERLAY} ${overlayImage} ${width} ${height} ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${BUILD_OVERLAY} ${overlayImage} ${width} ${height} ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text
                       DEPENDS generate_all_texts
                               ${all_texts}
                               ${BUILD_OVERLAY})
@@ -417,8 +417,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          IF(variant STREQUAL "plain")
             IF(imageExtension STREQUAL ".png")
                ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}    ${image} ${imageTemp2} ${aspectRatio} ${width}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_BACKGROUND} ${imageTemp2} ${imageTemp1}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}    ${image} ${imageTemp2} ${aspectRatio} ${width}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_BACKGROUND} ${imageTemp2} ${imageTemp1}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                   COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -427,7 +427,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                           ${gimpDirStamp})
             ELSE()
                ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp1} ${aspectRatio} ${width}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp1} ${aspectRatio} ${width}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                   COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -441,8 +441,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             EXECUTE_PROCESS(COMMAND ${AWK} "BEGIN { print int((8*${width})/1024 + 0.5) }" OUTPUT_VARIABLE maskSize OUTPUT_STRIP_TRAILING_WHITESPACE)
             # MESSAGE("Painting: ${width} -> ${maskSize}")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_PAINTING} ${imageTemp2} ${imageTemp1} ${makeSize}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_PAINTING} ${imageTemp2} ${imageTemp1} ${makeSize}
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -462,8 +462,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             ENDIF()
             # MESSAGE("Mosaic: ${width} ${height} -> ${tileSize} ${tileHeight}")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_MOSAIC}  ${imageTemp2} ${imageTemp1} ${tileSize} ${tileHeight} ${tileHeight} hexagons rough
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_MOSAIC}  ${imageTemp2} ${imageTemp1} ${tileSize} ${tileHeight} ${tileHeight} --type hexagons --surface rough
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -474,8 +474,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          # ------ Cloth -----------------------------------------------------
          ELSEIF(variant STREQUAL "cloth")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CLOTH}   ${imageTemp2} ${imageTemp1} 5
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CLOTH}   ${imageTemp2} ${imageTemp1} 5
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -486,8 +486,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          # ------ Old Photo -------------------------------------------------
          ELSEIF(variant STREQUAL "oldphoto")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OLDPHOTO} ${imageTemp2} ${imageTemp1} 20
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OLDPHOTO} ${imageTemp2} ${imageTemp1} 20
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
