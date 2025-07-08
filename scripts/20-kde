@@ -174,7 +174,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       dia
       firefox-esr
       fractgen
-      gimp
+      gimp3-app
       inkscape
       kde
       kile
