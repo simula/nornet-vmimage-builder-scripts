@@ -137,7 +137,6 @@ elif [ "${ID}" == "ubuntu" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    packages="
-      pygtk2
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
