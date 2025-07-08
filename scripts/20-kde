@@ -149,6 +149,7 @@ elif [ "${ID}" == "fedora" ] ; then
       oxygen-fonts
       oxygen-icon-theme
       plasma-oxygen
+      plasma-workspace-x11
       qt5-style-oxygen
       strawberry
       wireshark
