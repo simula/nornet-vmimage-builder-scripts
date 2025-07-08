@@ -98,9 +98,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       gsfonts
       libimage-exiftool-perl
       manpages-dev
-      python3-netifaces
       pbuilder
+      pdf2svg
       pkg-config
+      python3-netifaces
       python3-pip
       r-base
       reprepro
@@ -164,6 +165,7 @@ elif [ "${ID}" == "fedora" ] ; then
       mock
       pbuilder
       perl-Image-ExifTool
+      pdf2svg
       pkg-config
       python3
       python3-netifaces
@@ -226,6 +228,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       noto
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
+      pdf2svg
       py311-distro
       py311-netifaces
       py311-yamllint

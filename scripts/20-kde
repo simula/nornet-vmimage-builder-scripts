@@ -178,6 +178,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       inkscape
       kde
       kile
+      gstreamer1-plugins-soup
       libreoffice
       noto
       oxygen-fonts
