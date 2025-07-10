@@ -18,13 +18,14 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 . ./vm-build-helper
+. ./supported-systems.config
 
 HYPERVISOR="Proxmox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-11 Debian-12   Fedora-42   FreeBSD-13.5-RELEASE FreeBSD-14.3-RELEASE"
-# SYSTEMS="Ubuntu-24.04-LTS Fedora-42 Debian-12 FreeBSD-14.3-RELEASE"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+# SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
 # SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
