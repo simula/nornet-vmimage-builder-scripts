@@ -38,7 +38,10 @@ fi
 # ###### Build VMs ##########################################################
 build-defined-vms ()
 {
-   local delay="$1"
+   local delay=0
+   if [ $# -gt 0 ] ; then
+      delay="$1"
+   fi
    if [[ ! "${delay}" =~ ^[0-9]+$ ]] ; then
       delay=0
    fi
