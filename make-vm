@@ -747,9 +747,6 @@ vm_vendor="Simula Metropolitan Centre for Digital Engineering"
 vm_vendorurl="https://www.simula.no/people/dreibh"
 vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HYPERVISOR}."
 vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE//[ -]LTS/}"
-vm_tags="${vm_tags,,}"
-# vm_tags="${vm_tags//\./_}"
-# echo >&2 "Tags: ${vm_tags}"
 if [[ "${NAME}" =~ (-LTS)$ ]] ; then
    vm_tags="${vm_tags};LTS"
 elif [ "${DISTRIBUTION}" == "Debian" ] && [[ "${RELEASE}" =~ ^[0-9]+$ ]] ; then
@@ -757,6 +754,9 @@ elif [ "${DISTRIBUTION}" == "Debian" ] && [[ "${RELEASE}" =~ ^[0-9]+$ ]] ; then
 elif [ "${DISTRIBUTION}" == "FreeBSD" ] && [[ "${RELEASE}" =~ ^RELEASE- ]] ; then
    vm_tags="${vm_tags};LTS"
 fi
+# vm_tags="${vm_tags,,}"
+# vm_tags="${vm_tags//\./_}"
+# echo >&2 "Tags: ${vm_tags}"
 
 
 # ====== Print configuration ================================================
