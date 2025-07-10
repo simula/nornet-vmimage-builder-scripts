@@ -18,12 +18,13 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 . ./vm-build-helper
+. ./supported-systems.config
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS  Ubuntu-24.04-LTS   Fedora-39 Fedora-40"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
 # SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------

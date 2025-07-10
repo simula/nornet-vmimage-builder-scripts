@@ -18,13 +18,14 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 . ./vm-build-helper
+. ./supported-systems.config
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-Testing Debian-11 Debian-12   Fedora-41 Fedora-40   FreeBSD-14.3-RELEASE"
-# SYSTEMS="Ubuntu-24.10 Fedora-41"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+# SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="KDE"   # Minimal Basic Development KDE KDE+Development
