@@ -18,17 +18,18 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 . ./vm-build-helper
+. ./supported-systems.config
 
 HYPERVISOR="Docker"
-SYSTEMS="Ubuntu-14.04-LTS Ubuntu-16.04-LTS Ubuntu-18.04-LTS Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS   Debian-11 Debian-12   Fedora-40 Fedora-41"
-# SYSTEMS="Ubuntu-24.04-LTS Ubuntu-25.04   Debian-12   Fedora-41"
-# SYSTEMS="Ubuntu-25.04"
+SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT}"
+# SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT} ${DEFAULT_LINUX_SYSTEMS_LEGACY}"
+# SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal Basic"   # Minimal Basic Development
+PROJECTS="Minimal Basic Development"   # Minimal Basic Development
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
