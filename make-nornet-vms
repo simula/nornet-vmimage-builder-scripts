@@ -28,7 +28,7 @@ SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
 # SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet" # NorNet-Desktop"   # NorNet-Desktop"
+PROJECTS="NorNet"   # NorNet NorNet-Desktop
 HOSTNAME="akerbrygge.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"

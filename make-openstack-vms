@@ -18,16 +18,17 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 . ./vm-build-helper
+. ./supported-systems.config
 
 HYPERVISOR="QEMU"   # "VirtualBox" "QEMU"
-SYSTEMS="Ubuntu-20.04-LTS Ubuntu-22.04-LTS Ubuntu-24.04-LTS"
-# SYSTEMS="Ubuntu-24.04-LTS"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal 5gVINNI-OpenStack"
+PROJECTS="Minimal" #  5gVINNI-OpenStack"
 # PROJECTS="5gVINNI-OpenStack-Development"
 # PROJECTS="5gVINNI-OpenStack-Development 5gVINNI-OpenStack"
 
@@ -41,7 +42,7 @@ FIRMWARE=efi
 CORES=4
 MEMORY=4096
 BALLOON=2048
-DISK_ROOT=12288
+DISK_ROOT=16384
 DISK_HOME=0   # Just one disk -> not used here!
 DISK_SWAP=0   # Just one disk -> not used here!
 VIDEO="HD+"
