@@ -49,13 +49,13 @@ elif [ "${ID}" == "ubuntu" ] ; then
 
    rm -f /etc/apt/preferences.d/block-snapd.pref
    env DEBIAN_FRONTEND=noninteractive apt install -y  --no-install-recommends snapd
-   snap install dbeaver-ce
+   try-hard 3 60 -- snap install dbeaver-ce
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
    wget -O /tmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
-   sudo dnf install -y /tmp/dbeaver.rpm
+   dnf install -y /tmp/dbeaver.rpm
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

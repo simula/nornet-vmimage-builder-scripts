@@ -51,4 +51,4 @@ OPTIONS=""
 # ---------------------------------------------------------
 
 files/generate-backgrounds
-build-defined-vms 300
+build-defined-vms 30
