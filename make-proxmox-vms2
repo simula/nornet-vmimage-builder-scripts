@@ -28,7 +28,7 @@ SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
 # SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Development"   # Development KDE KDE+Development
+PROJECTS="Development KDE KDE+Development"   # Development KDE KDE+Development
 
 HOSTNAME="localhost"
 USER_NAME="nornetpp"

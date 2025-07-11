@@ -28,7 +28,7 @@ DIRECTORY="/var/www/packages.nntb.no"
 
 readmeFile=$(realpath web/${PROJECT}/README.html)
 
-VMs=$(find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-${PROJECT}*")
+VMs=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-${PROJECT}*")
 latest=""
 for vm in ${VMs} ; do
    if [ -e "${vm}/successfully-built.txt" ] ; then

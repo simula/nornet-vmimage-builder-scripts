@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 
 # Debian Images Key: https://keyring.debian.org/

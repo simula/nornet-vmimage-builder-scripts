@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -e
+set -eu
 
 SSH_PROXY="10.1.1.51"
 DESTINATIONS="nornetpp@10.132.11.8:images/"   # "nornetpp@odin.simula.nornet:images/ nornetpp@openstack.simula.nornet:images/"
@@ -27,10 +27,10 @@ WEBSERVER="nornetpp@kirkeveien.simula.nornet:/filesrv/adm/packages/openstack/"
 source ./directories.config
 
 
-readmeFile=$(realpath web/${PROJECT}/README.html)
+readmeFile=$(realpath web/"${PROJECT}"/README.html)
 
 imageFiles=""
-VMs=$(find ${OUTPUT_DIRECTORY} -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*")
+VMs=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "QEMU*OpenStack*")
 for vm in ${VMs} ; do
    pushd "${vm}" >/dev/null
    if [ -e "successfully-built.txt" ] ; then
