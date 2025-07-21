@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -exu
+set -eux
 
 
 # ====== Check environment variables ========================================
