@@ -80,14 +80,75 @@ sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
 cd "/home/${USER_NAME}/src"
 
 clone-or-update neat https://dreibh@github.com/NEAT-project/neat
-pushd neat
-git checkout dreibh/neat-socketapi
-popd
+# pushd neat
+# git checkout dreibh/neat-socketapi
+# popd
 
+clone-or-update neat-stuff    https://dreibh@bitbucket.org/dreibh/neat-stuff
 clone-or-update neat-examples https://dreibh@bitbucket.org/dreibh/neat-examples
 clone-or-update usrsctp-neat  https://dreibh@github.com/dreibh/usrsctp.git
 pushd usrsctp-neat
 git checkout dreibh/usrsctpForNeat-packaging
-git remote add upstream-sctplib https://github.com/sctplab/usrsctp.git
-git remote add upstream-neat    https://dreibh@github.com/NEAT-project/usrsctp-neat.git
+git remote add upstream-sctplib https://github.com/sctplab/usrsctp.git                  || true
+git remote add upstream-neat    https://dreibh@github.com/NEAT-project/usrsctp-neat.git || true
 popd
+
+
+# ====== Package installation ===============================================
+
+# ------ Debian -------------------------------------------------------------
+if [ "${ID}" == "debian" ] ; then
+
+   # FIXME! Work-around for NEAT Stuff not (yet) in Debian:
+   cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
+   cd "/home/${USER_NAME}/src/neat-stuff"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
+
+   mkdir -p /boot/NEAT
+   cp /usr/share/neat-desktop/splash/NEAT*1-*.jpeg /boot/NEAT
+   update-grub
+
+# ------ Ubuntu -------------------------------------------------------------
+elif [ "${ID}" == "ubuntu" ] ; then
+
+   packages="
+      neat-desktop
+      neat-development
+   "
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+# ------ Fedora -------------------------------------------------------------
+elif [ "${ID}" == "fedora" ] ; then
+
+   packages="
+      neat-stuff-desktop
+      neat-stuff-development
+   "
+
+   # shellcheck disable=SC2086
+   /usr/bin/dnf install -y ${packages}
+
+# ------ FreeBSD ------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
+
+   # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
+   cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
+   cd "/home/${USER_NAME}/src/neat-stuff"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
+   if [ ! -e /usr/share/neat-stuff ] ; then
+      sudo ln -s /usr/local/share/neat-stuff /usr/share/neat-stuff
+   fi
+
+# ------ Unknown ------------------------------------------------------------
+else
+
+   echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
+   exit 1
+
+fi
