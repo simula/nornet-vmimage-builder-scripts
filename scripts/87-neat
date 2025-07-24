@@ -101,10 +101,6 @@ if [ "${ID}" == "debian" ] ; then
 
    # FIXME! Work-around for NEAT Stuff not (yet) in Debian:
    cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
-
-   cd "/home/${USER_NAME}/src/neat"
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep .
-
    cd "/home/${USER_NAME}/src/neat-stuff"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
    sudo -u "${USER_NAME}" make -j"${cores}"
@@ -113,6 +109,12 @@ if [ "${ID}" == "debian" ] ; then
    mkdir -p /boot/NEAT
    cp /usr/share/neat-desktop/splash/NEAT*1-*.jpeg /boot/NEAT
    update-grub
+
+   cd "/home/${USER_NAME}/src/neat"
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y .
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
 
 # ------ Ubuntu -------------------------------------------------------------
 elif [ "${ID}" == "ubuntu" ] ; then
@@ -161,6 +163,11 @@ elif [ "${ID}" == "freebsd" ] ; then
    if [ ! -e /usr/share/neat-desktop ] ; then
       sudo ln -s /usr/local/share/neat-desktop /usr/share/neat-desktop
    fi
+
+   cd "/home/${USER_NAME}/src/neat"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
 
 # ------ Unknown ------------------------------------------------------------
 else
