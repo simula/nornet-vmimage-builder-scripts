@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+set -eu
+
+source ./directories.config
+PROJECT="NEAT"
+SERVER="voksenkollen.proxmox.crnalab.net"
+DIRECTORY="/var/www/packages.nntb.no"
+
+
+readmeFile=$(realpath web/${PROJECT}/README.html)
+
+VMs=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "VirtualBox-${PROJECT}*")
+latest=""
+for vm in ${VMs} ; do
+   if [ -e "${vm}/successfully-built.txt" ] ; then
+      image=$(find "${vm}" -mindepth 2 -maxdepth 2 -name "*.ova")
+      if [ -e "${image}" ] ; then
+         ls -l "${image}"
+         vmDate=$(date -r "${image}" +"%Y-%m-%d")
+         if [[ "${latest}" < "${vmDate}" ]] ; then
+            latest="${vmDate}"
+         fi
+
+         # ====== Sign the image ============================================
+         if [ ! -e "${image}.asc" ] ; then
+            echo "Signing ${image} ..."
+            gpg --sign --detach-sign --armor "${image}"
+         fi
+
+         # ====== Rsync the image ===========================================
+         rsync -a --partial --info=progress2 \
+            "$(realpath "${image}")" \
+            "$(realpath "${image}.asc")" \
+            "${readmeFile}" \
+            nornetpp@${SERVER}:${DIRECTORY}/${PROJECT,,}/"${vmDate}"/
+      fi
+   fi
+done
+
+if [ "${latest}" != "" ] ; then
+   echo "Latest is: $latest"
+   echo "cd ${DIRECTORY}/${PROJECT,,}/${vmDate} && rm -f latest && ln -s ${latest} latest"
+   # shellcheck disable=SC2029
+   ssh nornetpp@${SERVER} "cd ${DIRECTORY}/${PROJECT,,}/ && rm -f latest && ln -s ${latest} latest"
+fi
