@@ -405,6 +405,10 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="Docker"
+   VM_DISK_PREFIX=
+   VM_DISK_ROOT_DEVICE=
+   VM_DISK_HOME_DEVICE=
+   VM_DISK_SWAP_DEVICE=
    release="${RELEASE/-LTS/}"
    DOCKER_REPOSITORY="${DOCKER_REPOSITORY}/${PROJECT,,}-${DISTRIBUTION,,}"
    DOCKER_TAG="${release,,}"
