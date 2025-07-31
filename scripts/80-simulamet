@@ -22,9 +22,54 @@
 set -eux
 
 
-# ====== Check/set environment variables ====================================
+# ###### Run a command, retry multiple times in case of an error ############
+try-hard ()
+{
+   local max_trials=$1
+   local delay=$2
+   shift 2
+
+   local trial=0
+   while true ; do
+      trial=$(( trial+1 ))
+      echo "Trial ${trial}: $*"
+      # shellcheck disable=SC2068
+      $@ && return 0
+      if [ ${trial} -ge "${max_trials}" ] ; then
+         exit 1
+      fi
+      echo "Waiting ${delay} s before next try ..."
+      sleep "${delay}"
+   done
+}
+
+
+# ###### Clone or update Git repository #####################################
+clone-or-update ()
+{
+   local repository="$1"
+   local url="$2"
+   local clone_maxtrials=10
+   local clone_delay=60
+   if [ ! -e "${repository}" ] ; then
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
+   else
+      pushd "${repository}"
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git pull
+      popd
+   fi
+}
+
+
+# ====== Check environment variables ========================================
+if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
 if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
+   echo >&2 "ERROR: /etc/os-release is not available!"
    exit 1
 fi
 . /etc/os-release
@@ -32,8 +77,36 @@ fi
 
 # ====== Package installation ===============================================
 
-# ------ Ubuntu/Debian ------------------------------------------------------
-if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+# ------ Debian -------------------------------------------------------------
+if [ "${ID}" == "debian" ] ; then
+
+   # Work-around for SimulaMet Environment not (yet) in Debian:
+   packages="
+      texlive-full
+   "
+   # libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb hunspell-de-de hunspell-no hunspell-en-gb hunspell-en-us hunspell-en-au
+
+   # shellcheck disable=SC2086
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+   cd "/home/${USER_NAME}/src"
+   clone-or-update simulamet https://dreibh@github.com/dreibh/simulamet
+
+   cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
+   cd "/home/${USER_NAME}/src/simlamet"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFLAT_DIRECTORY_STRUCTURE=0 -DPRINT_A4=1 -DINSTALL_ORIGINALS=0 -DCMAKE_VERBOSE_MAKEFILE=OFF
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
+   cd "/home/${USER_NAME}/src"
+   rm -rf simlamet
+
+   mkdir -p /boot/SimulaMet
+   cp /usr/share/simulamet/Splash/*.jpeg /boot/SimulaMet
+   update-grub
+
+# ------ Ubuntu -------------------------------------------------------------
+elif [ "${ID}" == "ubuntu" ] ; then
 
    packages="
       simulamet-management
