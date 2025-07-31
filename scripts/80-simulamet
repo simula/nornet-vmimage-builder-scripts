@@ -94,12 +94,13 @@ if [ "${ID}" == "debian" ] ; then
    clone-or-update simulamet https://dreibh@github.com/dreibh/simulamet
 
    cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
-   cd "/home/${USER_NAME}/src/simlamet"
+   cd "/home/${USER_NAME}/src/simulamet"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr -DFLAT_DIRECTORY_STRUCTURE=0 -DPRINT_A4=1 -DINSTALL_ORIGINALS=0 -DCMAKE_VERBOSE_MAKEFILE=OFF
    sudo -u "${USER_NAME}" make -j"${cores}"
    make install
+
    cd "/home/${USER_NAME}/src"
-   rm -rf simlamet
+   rm -rf simulamet
 
    mkdir -p /boot/SimulaMet
    cp /usr/share/simulamet/Splash/*.jpeg /boot/SimulaMet
@@ -135,8 +136,22 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   # TBD!
-   true
+   # Work-around for SimulaMet Environment not (yet) in FreeBSD Ports Collection:
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
+   cd "/home/${USER_NAME}/src"
+   clone-or-update simulamet https://dreibh@github.com/dreibh/simulamet
+
+   cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
+   cd "/home/${USER_NAME}/src/simulamet"
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
+   sudo -u "${USER_NAME}" make -j"${cores}"
+   make install
+   if [ ! -e /usr/share/simulamet ] ; then
+      sudo ln -s /usr/local/share/simulamet /usr/share/simulamet
+   fi
+
+   cd "/home/${USER_NAME}/src"
+   rm -rf simulamet
 
 # ------ Unknown ------------------------------------------------------------
 else
