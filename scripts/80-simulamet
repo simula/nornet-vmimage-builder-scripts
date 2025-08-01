@@ -136,6 +136,9 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
+   # Ensure that fonts configuration is up-to-date:
+   fc-cache -fv
+
    # Work-around for SimulaMet Environment not (yet) in FreeBSD Ports Collection:
    sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
    cd "/home/${USER_NAME}/src"

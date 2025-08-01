@@ -151,6 +151,9 @@ elif [ "${ID}" == "freebsd" ] ; then
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
 
+   # Ensure that fonts configuration is up-to-date:
+   fc-cache -fv
+
    # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
    cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
    cd "/home/${USER_NAME}/src/neat-stuff"

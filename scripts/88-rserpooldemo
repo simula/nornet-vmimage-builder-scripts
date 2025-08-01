@@ -152,6 +152,9 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
+   # Ensure that fonts configuration is up-to-date:
+   fc-cache -fv
+
    # FIXME! Work-around for RSerPool Demo not (yet) in FreeBSD Ports Collection:
    cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
    cd "/home/${USER_NAME}/src/rserpooldemo"
