@@ -73,7 +73,7 @@ build-defined-vms ()
             fi
             isFirst=0
 
-            startTime=$(date)
+            startTime="$(date +"%Y-%m-%d %H:%M:%S")"
             echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
             mkdir -p "${OUTPUT_DIRECTORY}/${name}"
             (
@@ -100,7 +100,7 @@ build-defined-vms ()
                   result="FAILED!"
                   resultColor="37;41;97"
                fi
-               finishTime=$(date)
+               finishTime="$(date +"%Y-%m-%d %H:%M:%S")"
                echo -e "\x1b[${resultColor}m${finishTime}: Finished to build ${name} - ${result} -> ${logfile}\x1b[0m"
             ) &
          else
