@@ -26,7 +26,7 @@
 
   "firmware": "/usr/share/qemu/OVMF.fd",
   "cdrom_interface": "virtio",
-  "disk_interface": "virtio",
+  "disk_interface": "virtio-scsi",
   "disk_cache": "unsafe",
   "disk_discard": "unmap",
   "net_device": "virtio-net",
@@ -40,6 +40,6 @@
   ],
   "qemuargs": [
     [ "-machine", "type=q35,accel=kvm" ] ,
-    [ "-vga", "qxl" ]
+    [ "-vga", "virtio" ]
   ]
 }

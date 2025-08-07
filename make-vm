@@ -372,7 +372,7 @@ if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
 elif [ "${HYPERVISOR}" == "QEMU" ] ; then
    BUILDER_VMSETUP="qemu"
    NAME="QEMU"
-   VM_DISK_PREFIX="/dev/vd"   # Using /dev/vd<N> for disks!
+   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
    VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
    VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
    VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
