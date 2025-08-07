@@ -41,7 +41,22 @@ As part of the VM setup process, it is also possible to set custom bootsplashes 
 # Requirements
 
 * [Packer](https://www.packer.io) (get up-to-date version from <https://www.packer.io>, the Ubuntu-provided package or snap is out-of-date!)
-* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), for building the background images. Basically (on a Ubuntu/Debian system): ```sudo apt install -y cmake fonts-noto gimp graphicsmagick libimage-exiftool-perl```. Take a look at the scripts [20-kde](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/20-kde) and [30-development](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/30-development) for installing the dependencies.
+* Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g.&nbsp;VirtualBox, QEMU, Proxmox, ...
+
+    ```
+    packer plugin install github.com/hashicorp/virtualbox
+    packer plugin install github.com/hashicorp/proxmox
+    packer plugin install github.com/hashicorp/qemu
+    packer plugin install github.com/hashicorp/vsphere
+    packer plugin install github.com/hashicorp/docker
+    ...
+    ```
+
+* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), for building the background images. Basically (on a Ubuntu/Debian system):
+
+    ```sudo apt install -y cmake fonts-noto gimp graphicsmagick libimage-exiftool-perl```
+
+    Take a look at the scripts [20-kde](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/20-kde) and [30-development](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/30-development) for installing the dependencies.
 
 To start a VM build, run one the the "make" scripts:
 ```
@@ -70,6 +85,8 @@ The QEMU images use optimised settings for display, network and storage. Two dis
 
 VMs for usage in vSphere. They are basically like the VirtualBox variant, with the Open VM Tools installed.
 
+Note: The vSphere support of the scripts is *not* tested any more!
+
 ## Docker
 
 Containers for usage in Docker.
@@ -88,6 +105,7 @@ Details can be found in the directories [installer](https://github.com/simula/no
 ## Ubuntu Linux
 
 General settings:
+
 * Base: Ubuntu Server ISO
 * EFI boot
 * Using BTRFS for / and /home, with subvolumes @ and @home
@@ -97,6 +115,7 @@ General settings:
 ## Debian Linux
 
 General settings:
+
 * Base: Debian Netinstall ISO
 * EFI boot
 * Using BTRFS for / and /home, with subvolumes @ and @home
@@ -104,6 +123,7 @@ General settings:
 ## Fedora Core Linux
 
 General settings:
+
 * Base: Fedora Core Netinstall ISO
 * EFI boot
 * Using XFS for / and /home
@@ -112,6 +132,7 @@ General settings:
 ## FreeBSD
 
 General settings:
+
 * Base: FreeBSD installation ISO
 * EFI boot
 * Using ZFS for / and /home
@@ -126,6 +147,7 @@ Details can be found in the directory [projects](https://github.com/simula/norne
 The minimal installation for the system with the settings described above. This project is meant mainly for testing purposes. In most cases, you want the [Basic](#basic) project instead!
 
 Provided packages:
+
 * [Bash](https://www.gnu.org/software/bash/) (shell)
 * [cURL](https://curl.se/) (download tool)
 * [Git](https://git-scm.com/) (revision management)
@@ -135,6 +157,7 @@ Provided packages:
 * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
 Further properties:
+
 * /etc/os-release with operating system information exists
 * Bash as default shell
 * Explicit Congestion Notification (ECN, RFC 3168) enabled
@@ -150,6 +173,7 @@ Further properties:
 The "Basic" installation is based on the [Minimal](#minimal) installation.
 
 It must contain the following packages:
+
 * [ACL](https://savannah.nongnu.org/projects/acl/) (Tools for ACL configuration, particularly getfacl and setfacl commands)
 * Base64 (base64 tool)
 * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
@@ -189,6 +213,7 @@ It must contain the following packages:
 The "KDE" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
+
 * The [KDE Plasma Desktop](https://kde.org/plasma-desktop/) with Oxygen theme and [SDDM](https://github.com/sddm/sddm)
 * [Dia](https://wiki.gnome.org/Apps/Dia) (drawing tool)
 * [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
@@ -206,6 +231,7 @@ It must contain the following packages:
 * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 
 Further properties:
+
 * Configured KDE and SDDM login manager
 * Configured 4 virtual desktops
 * Configured switchable keyboard layouts
@@ -220,6 +246,7 @@ Further properties:
 The "Development" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
+
 * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
 * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 * [CMake](https://cmake.org/) (build tool)
@@ -244,6 +271,7 @@ It must contain the following libraries and development files:
 * SCTP development files (if needed)
 
 Further properties:
+
 * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
 * Wireshark as regular user is allowed. ⚠WARNING: Development settings are intended for developers only!
 * Source packages enabled from package manager (if available)
@@ -269,6 +297,7 @@ Basic NorNet VMs for general-purpose desktop usage. They base on the NorNet imag
 Basic for general-purpose desktop usage, particularly for working with [NEAT](https://neat.nntb.no/). They base on the NorNet-Desktop images, with NEAT packages and build environment.
 
 Features:
+
 * [NEAT](https://github.com/NEAT-project/neat) installed (NEAT library as well as NEAT sockets API library).
 * Source repositories cloned under ~/src. Build dependencies are already installed.
 
@@ -278,6 +307,7 @@ Basic for general-purpose desktop usage, particularly for working with [RSerPool
 based on the [KDE+Development](#kdedevelopment) installation.
 
 Features:
+
 * [RSPLIB](https://www.nntb.no/~dreibh/rserpool/index.html#Download) installed.
 * [RSerPoolDemo-Tool](https://www.nntb.no/~dreibh/rserpool/index.html#DemoTool) installed.
 * Source repositories cloned under ~/src. Build dependencies are already installed.
@@ -287,6 +317,7 @@ Features:
 These are SimulaMet desktop VMs, based on the [KDE+Development](#kdedevelopment) installation.
 
 Features:
+
 * Some [SimulaMet](https://code.simula.no/)-related source repositories cloned under ~/src.
 
 ### 5gVINNI
