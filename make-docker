@@ -53,4 +53,5 @@ BACKGROUND_DESKTOP="/usr/share/nornet-desktop/Desktop-with-Logo/Display1-3840x21
 OPTIONS="-1"
 # ---------------------------------------------------------
 
+files/generate-backgrounds
 build-defined-vms
