@@ -88,7 +88,7 @@
   "memory": "{{user `vm_memory`}}",
   "ballooning_minimum": "{{user `vm_balloon_min`}}",
   "vga": {
-     "type": "qxl",
+     "type": "virtio",
      "memory": 32
    }
 }
