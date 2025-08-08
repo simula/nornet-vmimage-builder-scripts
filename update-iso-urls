@@ -229,7 +229,7 @@ function find-fedora-isos ()
          iso="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e "s/.*(\(.*\)) = .*/\1/g")"
          latestURL="${location}/${iso}"
          latestChecksum="$(grep "^SHA.*${isoPattern}" "${checksums}" | sed -e 's/^.* = //g')"
-         algorithm="$(grep "^SHA.*${isoPattern}" "${checksums}" | cut -d' ' -f1 | tr [:upper:] [:lower:])"
+         algorithm="$(grep "^SHA.*${isoPattern}" "${checksums}" | cut -d' ' -f1 | tr '[:upper:]' '[:lower:]')"
 
          process-result
          rm -rf "F${major}"
@@ -248,7 +248,7 @@ function find-freebsd-isos ()
 {
    system="FreeBSD"
    major=13
-   minor=3
+   minor=5
    variant="$1"
    latestURL=""
    latestChecksum=""
