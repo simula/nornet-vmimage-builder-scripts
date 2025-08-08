@@ -195,7 +195,7 @@ function find-ubuntu-isos ()
    latestMajor=""
    latestMinor=""
    while true ; do
-      location1="https://releases.ubuntu.com/${major}.${minor}"
+      location1="https://releases.ubuntu.com/${major}"
       location2="https://old-releases.ubuntu.com/releases/${major}"
       iso1="ubuntu-${major}.${minor}-live-server-amd64.iso"
       algorithm="sha256"
@@ -268,7 +268,7 @@ function find-freebsd-isos ()
 
 
 # ###### Main program #######################################################
-find-debian-isos
 find-ubuntu-isos
+find-debian-isos
 find-fedora-isos
 find-freebsd-isos RELEASE
