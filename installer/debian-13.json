@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/cdimage/trixie_di_rc3/amd64/iso-cd/debian-trixie-DI-rc3-amd64-netinst.iso",
-  "iso_checksum": "sha512:5d80bb1986c550569e3bf51c186aefb2386b3b6bdbc1405b38b713ea90e8c12cb378ad61bb32cef2221e8ea62939d5d4c29a9a20bde491174fcf147162442993",
+  "iso_url": "https://cdimage.debian.org/cdimage/release/13.0.0/amd64/iso-cd/debian-13.0.0-amd64-netinst.iso",
+  "iso_checksum": "sha512:069d47e9013cb1d651d30540fe8ef6765e5d60c8a14c8854dfb82e50bbb171255d2e02517024a392e46255dcdd18774f5cbd7e9f3a47aa1b489189475de62675",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
