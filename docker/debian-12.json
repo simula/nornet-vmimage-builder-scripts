@@ -17,5 +17,5 @@
 // Contact: thomas.dreibholz@gmail.com
 
 {
-  "image": "debian:12"
+  "image": "debian:bookworm"
 }

@@ -17,5 +17,5 @@
 // Contact: thomas.dreibholz@gmail.com
 
 {
-  "image": "debian:10"
+  "image": "debian:buster"
 }
