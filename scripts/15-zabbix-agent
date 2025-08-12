@@ -36,11 +36,23 @@ fi
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Zabbix Official Repository ----------------------------------
-   zabbixVersion="7.0"
+   zabbixVersion="7.4"
    cat >/etc/apt/sources.list.d/zabbix.list <<EOF
-deb https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
-# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/${ID} ${VERSION_CODENAME} main
+deb https://repo.zabbix.com/zabbix/${zabbixVersion}/stable/${ID} ${VERSION_CODENAME} main
+# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/stable/${ID} ${VERSION_CODENAME} main
 EOF
+   cat >/etc/apt/sources.list.d/zabbix-release.list <<EOF
+deb https://repo.zabbix.com/zabbix/${zabbixVersion}/release/${ID} ${VERSION_CODENAME} main
+# deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/release/${ID} ${VERSION_CODENAME} main
+EOF
+   cat >/etc/apt/sources.list.d/zabbix-tools.list <<EOF
+deb https://repo.zabbix.com/zabbix-tools/debian-ubuntu ${VERSION_CODENAME} main
+deb-src https://repo.zabbix.com/zabbix-tools/debian-ubuntu ${VERSION_CODENAME} main
+EOF
+#    cat >/etc/apt/sources.list.d/zabbix-release.list <<EOF
+# # deb https://repo.zabbix.com/zabbix/${zabbixVersion}/unstable/${ID} ${VERSION_CODENAME} main
+# # deb-src https://repo.zabbix.com/zabbix/${zabbixVersion}/unstable/${ID} ${VERSION_CODENAME} main
+# EOF
    rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
       gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
