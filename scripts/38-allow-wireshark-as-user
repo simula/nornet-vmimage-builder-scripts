@@ -43,6 +43,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    echo "wireshark-common wireshark-common/install-setuid boolean true" | sudo debconf-set-selections
    dpkg-reconfigure wireshark-common -fnoninteractive
 
+   # Allow Wireshark/T-Shark as regular user:
+   usermod -a -G wireshark "${USER_NAME}"
+
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 

@@ -23,7 +23,7 @@ set -eux
 
 
 # NOTE:
-# Non-root user permission will be given in 31-allow-wireshark-as-user, not here!
+# Non-root user permission will be given in 38-allow-wireshark-as-user, not here!
 
 
 # ====== Check environment variables ========================================
