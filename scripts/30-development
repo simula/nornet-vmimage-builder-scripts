@@ -101,6 +101,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       pbuilder
       pdf2svg
       pkg-config
+      python3-distro
       python3-netifaces
       python3-pip
       r-base
