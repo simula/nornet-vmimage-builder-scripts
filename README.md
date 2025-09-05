@@ -213,8 +213,8 @@ It must contain the following packages:
 The "KDE" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
-
 * The [KDE Plasma Desktop](https://kde.org/plasma-desktop/) with Oxygen theme and [SDDM](https://github.com/sddm/sddm)
+* [DejaVu Fonts](https://dejavu-fonts.github.io/) ([DejaVu fonts)
 * [Dia](https://wiki.gnome.org/Apps/Dia) (drawing tool)
 * [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
 * [FractGen](https://www.nntb.no/~dreibh/fractalgenerator/) (fractal generator)
@@ -226,12 +226,12 @@ It must contain the following packages:
 * [Konsole](https://konsole.kde.org/) (console)
 * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
+* [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 * [R](https://www.r-project.org/) (statistical computing suite)
 * [Strawberry Music Player](https://www.strawberrymusicplayer.org/) (audio player)
 * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 
 Further properties:
-
 * Configured KDE and SDDM login manager
 * Configured 4 virtual desktops
 * Configured switchable keyboard layouts
@@ -246,19 +246,21 @@ Further properties:
 The "Development" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
-
 * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
 * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 * [CMake](https://cmake.org/) (build tool)
-* [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
+* [DejaVu Fonts](https://dejavu-fonts.github.io/) ([DejaVu fonts)
 * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
+* [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
 * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
 * [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
 * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
 * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
 * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
+* [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 * [PkgConfig](https://www.freedesktop.org/wiki/Software/pkg-config/) (metainformation about installed libraries)
+* [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
 * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
 * [Valgrind](https://valgrind.org/) (debugging tool)
@@ -271,7 +273,6 @@ It must contain the following libraries and development files:
 * SCTP development files (if needed)
 
 Further properties:
-
 * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
 * Wireshark as regular user is allowed. ⚠WARNING: Development settings are intended for developers only!
 * Source packages enabled from package manager (if available)

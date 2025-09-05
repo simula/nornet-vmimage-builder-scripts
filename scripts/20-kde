@@ -23,10 +23,11 @@ set -eux
 
 
 # ###########################################################################
-# The "KDE" installation is based on the "Basic" installation.
+# The "KDE" installation is based on the [Basic](#basic) installation.
 #
 # It must contain the following packages:
 # * The [KDE Plasma Desktop](https://kde.org/plasma-desktop/) with Oxygen theme and [SDDM](https://github.com/sddm/sddm)
+# * [DejaVu Fonts](https://dejavu-fonts.github.io/) ([DejaVu fonts)
 # * [Dia](https://wiki.gnome.org/Apps/Dia) (drawing tool)
 # * [Firefox](https://www.mozilla.org/en-US/firefox/new/) (web browser)
 # * [FractGen](https://www.nntb.no/~dreibh/fractalgenerator/) (fractal generator)
@@ -38,6 +39,7 @@ set -eux
 # * [Konsole](https://konsole.kde.org/) (console)
 # * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 # * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
+# * [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 # * [R](https://www.r-project.org/) (statistical computing suite)
 # * [Strawberry Music Player](https://www.strawberrymusicplayer.org/) (audio player)
 # * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
@@ -68,6 +70,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    packages="
       dia
+      fonts-dejavu
+      fonts-noto
+      fonts-open-sans
       fractgen
       kde-plasma-desktop
       kde-style-oxygen-qt5
@@ -135,6 +140,7 @@ EOF
 elif [ "${ID}" == "fedora" ] ; then
 
    packages="
+      dejavu-fonts-all
       dia
       firefox
       fractgen
@@ -146,6 +152,7 @@ elif [ "${ID}" == "fedora" ] ; then
       konsole
       libreoffice
       okular
+      open-sans-fonts
       oxygen-fonts
       oxygen-icon-theme
       plasma-oxygen
@@ -172,6 +179,7 @@ elif [ "${ID}" == "fedora" ] ; then
 elif [ "${ID}" == "freebsd" ] ; then
 
    packages="
+      dejavu
       dia
       firefox-esr
       fractgen
@@ -182,6 +190,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       gstreamer1-plugins-soup
       libreoffice
       noto
+      open-sans-20180831
       oxygen-fonts
       plasma6-oxygen
       plasma6-sddm-kcm
