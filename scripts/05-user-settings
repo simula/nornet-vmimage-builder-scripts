@@ -101,15 +101,20 @@ if ! sudo -u "${USER_NAME}" test -e "/home/${USER_NAME}/.gitconfig" ; then
    (
       cat <<EOF
 [user]
-      name = ${USER_REALNAME}
-      email = ${USER_NAME}@$(hostname -f)
+	name = ${USER_REALNAME}
+	email = ${USER_NAME}@$(hostname -f)
 [push]
-      default = simple
-      autoSetupRemote = true
+	default = simple
+	autoSetupRemote = true
 [pull]
-      rebase = false
+	rebase = false
+[init]
+	defaultBranch = master
+[commit]
+	# Enable GnuPG by default signing here (needs key setup first):
+	# gpgsign = true
 [color]
-      ui = auto
+	ui = auto
 EOF
    ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gitconfig"
 fi
