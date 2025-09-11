@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# Debian Popularity Contest
+# Copyright (C) 2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eux
+
+
+# ====== Check environment variables ========================================
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release is not available!"
+   exit 1
+fi
+. /etc/os-release
+
+
+# ====== Configuration ======================================================
+
+# ------ Debian/Ubuntu ------------------------------------------------------
+if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      popularity-contest
+   sed -e 's/^PARTICIPATE="no"/PARTICIPATE="yes"/' -i /etc/popularity-contest.conf
+   sed -e '/^SUBMITURLS=""/d' -e 's/^#SUBMITURLS=/SUBMITURLS=/' -i /usr/share/popularity-contest/default.conf
+   /etc/cron.daily/popularity-contest
+fi
