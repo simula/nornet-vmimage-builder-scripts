@@ -118,6 +118,7 @@ EOF
    packages="
       acl
       apt-file
+      bridge-utils
       bwm-ng
       bzip2
       cloud-guest-utils
@@ -129,6 +130,8 @@ EOF
       gpm
       htop
       idn
+      iproute2
+      iptables
       iputils-ping
       joe
       jq
@@ -207,6 +210,7 @@ elif [ "${ID}" == "fedora" ] ; then
    packages="
       acl
       bind-utils
+      bridge-utils
       bwm-ng
       bzip2
       cmake
@@ -218,6 +222,9 @@ elif [ "${ID}" == "fedora" ] ; then
       gpm
       hipercontracer
       htop
+      iproute
+      iproute-tc
+      iptables
       iputils
       joe
       jq
@@ -332,7 +339,7 @@ if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]]
    fi
 fi
 if [ "$(uname)" == "Linux" ] ; then
-   programs="${programs} ethtool growpart"
+   programs="${programs} brctl ethtool ifconfig ip iptables growpart tc"
 fi
 if [ ! "${ID}" == "debian" ] || [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    packages="${packages} rspserver rspterminal"
