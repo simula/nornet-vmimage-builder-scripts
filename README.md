@@ -203,9 +203,11 @@ It must contain the following packages:
 * [RSync](https://rsync.samba.org/) Tools (file synchronisation)
 * [SubNetCalc](https://www.nntb.no/~dreibh/subnetcalc/) (address calculator)
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
+* [TCPDump](https://www.tcpdump.org/) (packet sniffer)
 * Tree (tree view of directory hierachy)
 * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
+* [Zip](https://infozip.sourceforge.net/Zip.html) (Zip compression tools)
 
 
 ## KDE
