@@ -120,6 +120,30 @@ EOF
 fi
 
 
+# ====== GDB configuration file =============================================
+if ! sudo -u "${USER_NAME}" test -e "/home/${USER_NAME}/.gdbinit" ; then
+   (
+      cat <<EOF
+# Enable project-specific local configuration:
+set auto-load safe-path /
+set auto-load local-gdbinit on
+
+# Load missing debug information:
+set debuginfod enabled on
+
+# Enable Text User Interface (TUI):
+tui enable
+focus cmd
+
+# Command history:
+set history save on
+set history filename ~/.gdb_history
+set history size 10000
+EOF
+   ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gdbinit"
+fi
+
+
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then
    if [ -e /tmp/face-icons/Face-Tux.png ] ; then
