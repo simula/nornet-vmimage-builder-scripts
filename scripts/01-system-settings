@@ -93,7 +93,8 @@ fi
 
 # ====== Set sysctls ========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   cat >>/etc/sysctl.conf <<EOF
+   mkdir -p /etc/sysctl.d
+   cat >>/etc/sysctl.d/01-sysctl.conf <<EOF
 
 #############################################################################
 
@@ -118,7 +119,6 @@ net.ipv4.tcp_ecn=1
 
 # ----- MPTCP settings ------------------------------------------------------
 # net.mptcp.mptcp_enabled=1
-# net.mptcp.mptcp_path_manager=fullmesh
 EOF
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
