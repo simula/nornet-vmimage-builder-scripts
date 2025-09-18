@@ -131,14 +131,28 @@ set auto-load local-gdbinit on
 # Load missing debug information:
 set debuginfod enabled on
 
+# Disable pagination:
+set pagination off
+
 # Enable Text User Interface (TUI):
 tui enable
 focus cmd
+# NOTE: <Shift> key is needed for normal console text selection!
+#       This can be turned off here:
+# set tui mouse-events off
 
 # Command history:
 set history save on
 set history filename ~/.gdb_history
 set history size 10000
+
+# Pretty printing for libstdc++:
+python
+import sys
+sys.path.insert(0, '/usr/share/gcc/python')
+from libstdcxx.v6.printers import register_libstdcxx_printers
+register_libstdcxx_printers (None)
+end
 EOF
    ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.gdbinit"
 fi
