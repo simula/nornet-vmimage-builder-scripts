@@ -35,11 +35,12 @@ fi
 # ====== Obtain name and e-mail for Git configuration =======================
 gitConfig="${HOME}/.gitconfig"
 if [ -e "${gitConfig}" ] ; then
-   GIT_NAME="$(grep "^[ \t]*name[ \t]*=" "${gitConfig}" | sed -e 's/^.*=[ \t]*//')"
-   GIT_EMAIL="$(grep "^[ \t]*email[ \t]*=" "${gitConfig}" | sed -e 's/^.*=[ \t]*//')"
+   GIT_NAME="$(grep "^[[:space:]]*name[[:space:]]*=" "${gitConfig}" | sed -e 's/^.*=[ \t]*//')"
+   GIT_EMAIL="$(grep "^[[:space:]]*email[[:space:]]*=" "${gitConfig}" | sed -e 's/^.*=[ \t]*//')"
 else
    GIT_NAME=""
    GIT_EMAIL=""
+   echo >&2 "WARNING: Unable to determine Git user and email!"
 fi
 
 # ====== Configure server ===================================================
@@ -47,7 +48,8 @@ ssh-copy-id -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
 set -eu
-if [ ! -e .gitconfig ] ; then
+if [ ! -e .gitconfig ] || grep -q "^[[:space:]]*name[[:space:]]*=[[:space:]]*NorNet Praesum Presum" ; then
+   echo \"Updating .gitconfig:\"
    (
       echo \"[user]\"
       echo \"        name = ${GIT_NAME}\"
@@ -59,7 +61,9 @@ if [ ! -e .gitconfig ] ; then
       echo \"        rebase = false\"
       echo \"[color]\"
       echo \"        ui = auto\"
-   ) >.gitconfig
+   ) | tee .gitconfig
+else
+   echo \"Leaving .gitconfig unchanged!\"
 fi
 echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | if [ -d /etc/sudoers.d ] ; then
    sudo tee /etc/sudoers.d/99-nornetpp
