@@ -93,7 +93,7 @@ FreeBSD: {
 
 # Define "Latest" repository with the latest updates:
 Latest: {
-  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/latest",
+  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/quarterly",
   mirror_type: "srv",
   signature_type: "fingerprints",
   fingerprints: "/usr/share/keys/pkg",
