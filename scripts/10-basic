@@ -118,6 +118,7 @@ EOF
    packages="
       acl
       apt-file
+      chrpath
       bridge-utils
       bwm-ng
       bzip2
@@ -213,6 +214,7 @@ elif [ "${ID}" == "fedora" ] ; then
       bridge-utils
       bwm-ng
       bzip2
+      chrpath
       cmake
       cloud-utils-growpart
       curl
@@ -274,6 +276,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       base64
       bind-tools
       bwm-ng
+      chrpath
       cmake
       curl
       flock
@@ -320,7 +323,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
