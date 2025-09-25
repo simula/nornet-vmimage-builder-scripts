@@ -17,5 +17,13 @@
 // Contact: thomas.dreibholz@gmail.com
 
 {
-  "image": "debian:trixie"
+  "type": "docker",
+  "image": "debian:trixie",
+  "pull": "true",
+  "commit": "true",
+  "changes": [
+     "ENV LC_ALL C.UTF-8",
+     "ENV LANG LC_ALL C.UTF-8",
+     "CMD [ \"/bin/bash\", \"--login\" ]"
+  ]
 }

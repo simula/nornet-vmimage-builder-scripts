@@ -17,5 +17,12 @@
 // Contact: thomas.dreibholz@gmail.com
 
 {
-  "image": "debian:bookworm"
+  "image": "debian:bookworm",
+  "pull": "true",
+  "commit": "true",
+  "changes": [
+     "ENV LC_ALL C.UTF-8",
+     "ENV LANG LC_ALL C.UTF-8",
+     "CMD [ \"/bin/bash\", \"--login\" ]"
+  ]
 }
