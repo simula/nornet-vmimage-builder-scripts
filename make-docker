@@ -29,7 +29,7 @@ SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT} ${DEFAULT_LINUX_SYSTEMS_LEGACY}"
 # SYSTEMS="Ubuntu-24.04-LTS"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Basic"   # Minimal Basic Development
+PROJECTS="Minimal Basic Development"   # Minimal Basic Development
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
