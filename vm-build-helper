@@ -68,7 +68,7 @@ build-defined-vms ()
             if [ "${isFirst}" -eq 0 ] ; then
                if [ "${delay}" -gt 0 ] ; then
                   echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
-                  sleep ${delay}
+                  sleep "${delay}"
                fi
             fi
             isFirst=0
