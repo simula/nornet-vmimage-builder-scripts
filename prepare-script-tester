@@ -48,7 +48,7 @@ ssh-copy-id -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
 set -eu
-if [ ! -e .gitconfig ] || grep -q "^[[:space:]]*name[[:space:]]*=[[:space:]]*NorNet Praesum Presum" ; then
+if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*name[[:space:]]*=[[:space:]]*NorNet Praesum Presum' .gitconfig ; then
    echo \"Updating .gitconfig:\"
    (
       echo \"[user]\"
