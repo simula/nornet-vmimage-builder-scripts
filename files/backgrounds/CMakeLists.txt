@@ -33,7 +33,7 @@
 # INITIALISE
 #############################################################################
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5...3.31)
 PROJECT(undefined C)   # to be set in Settings.input
 INCLUDE(Settings.input)
 
@@ -138,19 +138,19 @@ IF(NOT MAKE_CAPTION)
    MESSAGE(FATAL_ERROR "Make-Caption (${TDD_MAKE_CAPTION}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_TEXT ${TDD_MAKE_TEXT})
-IF(NOT MAKE_TEXT)
-   MESSAGE(FATAL_ERROR "Make-Text (${TDD_MAKE_TEXT}) not found!")
+FIND_PROGRAM(MAKE_GLOSSYTEXT ${TDD_MAKE_GLOSSYTEXT})
+IF(NOT MAKE_GLOSSYTEXT)
+   MESSAGE(FATAL_ERROR "Make-GlossyText (${TDD_MAKE_GLOSSYTEXT}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_BACKGROUND ${TDD_MAKE_BACKGROUND})
-IF(NOT MAKE_BACKGROUND)
-   MESSAGE(FATAL_ERROR "Make-Background (${TDD_MAKE_BACKGROUND}) not found!")
+FIND_PROGRAM(MAKE_BUMPMAP ${TDD_MAKE_BUMPMAP})
+IF(NOT MAKE_BUMPMAP)
+   MESSAGE(FATAL_ERROR "Make-BumpMap (${TDD_MAKE_BUMPMAP}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_PAINTING ${TDD_MAKE_PAINTING})
-IF(NOT MAKE_PAINTING)
-   MESSAGE(FATAL_ERROR "Make-Painting (${TDD_MAKE_PAINTING}) not found!")
+FIND_PROGRAM(MAKE_OILPAINTING ${TDD_MAKE_OILPAINTING})
+IF(NOT MAKE_OILPAINTING)
+   MESSAGE(FATAL_ERROR "Make-OilPainting (${TDD_MAKE_OILPAINTING}) not found!")
 ENDIF()
 
 FIND_PROGRAM(MAKE_MOSAIC ${TDD_MAKE_MOSAIC})
@@ -262,7 +262,7 @@ FOREACH(textFile IN LISTS TDD_TEXT_FILES)
    GET_FILENAME_COMPONENT(textImage ${textImage} NAME)
 
    ADD_CUSTOM_COMMAND(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_TEXT="${MAKE_TEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_GLOSSYTEXT="${MAKE_GLOSSYTEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
                       DEPENDS ${textFile}
                               generate_gimpDirStamp
                               ${gimpDirStamp})
@@ -289,7 +289,7 @@ FOREACH(image IN LISTS TDD_IMAGE_FILES)
       makeUniqueTarget(generate_hostnameImage "generate_${hostname}.png")
 
       ADD_CUSTOM_COMMAND(OUTPUT  ${hostnameImage}
-                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_TEXT} ${hostnameImage} "${hostname}" 256 10 "Brushed Aluminium" "Comic Sans MS"
+                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_GLOSSYTEXT} ${hostnameImage} "${hostname}" 256 10 "Brushed Aluminium" "Comic Sans MS"
                          DEPENDS generate_gimpDirStamp
                                  ${gimpDirStamp})
       ADD_CUSTOM_TARGET(${generate_hostnameImage} DEPENDS ${hostnameImage})
@@ -418,7 +418,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             IF(imageExtension STREQUAL ".png")
                ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
                                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}    ${image} ${imageTemp2} ${aspectRatio} ${width}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_BACKGROUND} ${imageTemp2} ${imageTemp1}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_BUMPMAP} ${imageTemp2} ${imageTemp1}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                   COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -442,7 +442,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             # MESSAGE("Painting: ${width} -> ${maskSize}")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
                                COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_PAINTING} ${imageTemp2} ${imageTemp1} ${makeSize}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OILPAINTING} ${imageTemp2} ${imageTemp1} ${makeSize}
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}

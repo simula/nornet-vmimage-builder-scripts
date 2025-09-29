@@ -1,1 +1,1 @@
-${MAKE_TEXT} ${OUTPUT}   "thomas.dreibholz@gmail.com"   256   --bordersize 10 --colorscheme "Brushed Aluminium" --font "DejaVu Sans"
+${MAKE_GLOSSYTEXT} ${OUTPUT}   "thomas.dreibholz@gmail.com"   256   --bordersize 10 --colorscheme "Brushed Aluminium" --font "DejaVu Sans"
