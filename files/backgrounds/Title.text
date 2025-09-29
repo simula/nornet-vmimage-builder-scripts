@@ -1,1 +1,1 @@
-${MAKE_GLOSSYTEXT} ${OUTPUT}   "SimulaMet"   1024   --bordersize 30 --colorscheme "Golden" --font "DejaVu Sans Bold"
+${MAKE_GLOSSYTEXT} "${OUTPUT}"   "SimulaMet"   1024   --bordersize 30 --colorscheme "Golden" --font "DejaVu Sans Bold"

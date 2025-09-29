@@ -1,1 +1,1 @@
-${MAKE_GLOSSYTEXT} ${OUTPUT}   "Simula Metropolitan Centre for Digital Engineering"   256   --bordersize 20 --colorscheme "Golden" --font "DejaVu Sans"
+${MAKE_GLOSSYTEXT} "${OUTPUT}"   "Simula Metropolitan Centre for Digital Engineering"   256   --bordersize 20 --colorscheme "Golden" --font "DejaVu Sans"
