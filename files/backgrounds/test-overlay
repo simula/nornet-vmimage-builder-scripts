@@ -19,9 +19,9 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -e
+set -eu
 
-RESOLUTION="1920x1080"
+RESOLUTION="3840x2160"
 
 make generate_overlayImage-${RESOLUTION}.png
 
