@@ -110,6 +110,23 @@ else
 fi
 
 
+# ====== Configuration ======================================================
+if [ ! -e "/etc/docker/daemon.json" ] ; then
+   # By default, Docker creates a network interface docker0 172.17.0.1/16.
+   # Since all systems have the same network, it interferes with SCTP.
+   # SCTP assumes that source and destination host are the same => ABORT
+   # Solution: Creating a /26 network with random link-local IPv4 address.
+   network="169.254.$(( 1 + (RANDOM % 253) )).$(( ((RANDOM % 4) << 6) + 1 ))/26"
+   ( cat <<EOF
+{
+  "bip": "${network}",
+  "ipv6": true
+}
+EOF
+   ) | sudo tee "/etc/docker/daemon.json"
+fi
+
+
 # ====== Verify command availability ========================================
 
 echo "Verifying command availability:"
