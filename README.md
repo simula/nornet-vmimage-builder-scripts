@@ -205,6 +205,7 @@ It must contain the following packages:
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 * [TCPDump](https://www.tcpdump.org/) (packet sniffer)
 * Tree (tree view of directory hierachy)
+* [TSCTP](https://www.nntb.no/~dreibh/tsctp/) (SCTP test tool)
 * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
 * [Zip](https://infozip.sourceforge.net/Zip.html) (Zip compression tools)

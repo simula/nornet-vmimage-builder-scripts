@@ -56,6 +56,7 @@ set -eux
 # * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 # * [TCPDump](https://www.tcpdump.org/) (packet sniffer)
 # * Tree (tree view of directory hierachy)
+# * [TSCTP](https://www.nntb.no/~dreibh/tsctp/) (SCTP test tool)
 # * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 # * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
 # * [Zip](https://infozip.sourceforge.net/Zip.html) (Zip compression tools)
@@ -152,6 +153,7 @@ EOF
       td-system-tools
       traceroute
       tree
+      tsctp
       tshark
       unzip
       uuid
@@ -250,6 +252,7 @@ elif [ "${ID}" == "fedora" ] ; then
       td-system-tools-configure-grub
       traceroute
       tree
+      tsctp
       unzip
       uuid
       wget
@@ -303,6 +306,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       tcpdump
       td-system-tools
       tree
+      tsctp
       wget
       wireshark-nox11
       zip
@@ -323,7 +327,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
