@@ -54,15 +54,19 @@ function generate-serial-number ()
 PACKER="/usr/bin/packer"
 
 PROJECT="NorNet"
+ARCHITECTURE="$(uname -m)"
+ARCHITECTURE="${ARCHITECTURE/x86_64/amd64}"
 HYPERVISOR="VirtualBox"
 DISTRIBUTION="Ubuntu"
-RELEASE="20.04"
+RELEASE="24.04"
 PROVISIONERS=""
 
 DRY_RUN=0
 
-VM_CHIPSET=ich9
-VM_FIRMWARE=efi
+VM_ARCHITECTURE="${ARCHITECTURE}"
+VM_PLATFORM="${ARCHITECTURE}"
+VM_CHIPSET="ich9"
+VM_FIRMWARE="efi"
 VM_CORES=4
 VM_MEMORY=4096
 VM_BALLOON=0
@@ -147,6 +151,9 @@ while [ $# -gt 0 ] ; do
       DISTRIBUTION=$(echo "$2" | sed -e "s/-.*$//g")
       # shellcheck disable=SC2001
       RELEASE=$(echo "$2" | sed -e "s/^[^\-]*-//g")
+      shift
+   elif [ "$1" == "--architecture" ] || [ "$1" == "-A" ] ; then
+      VM_ARCHITECTURE="$2"
       shift
    elif [ "$1" == "--chipset" ] || [ "$1" == "-I" ] ; then
       VM_CHIPSET="$2"
@@ -325,6 +332,7 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
       echo >&2 "   [--release|-R RELEASE]"
       echo >&2 "   [--system|-D DISTRIBUTION-RELEASE]"
+      echo >&2 "   [--architecture|-A architecture]"
       echo >&2 "   [--chipset|-I ich9|piix3]"
       echo >&2 "   [--firmware|-F efi|bios]"
       echo >&2 "   [--cores|-c cores]"
@@ -404,7 +412,11 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
-   NAME="Docker"
+   NAME="Docker-${VM_ARCHITECTURE^^/\//}"
+   VM_PLATFORM="linux/${VM_ARCHITECTURE}"
+   if [[ "${VM_PLATFORM}" =~ ^(.*)(v[0-9]*)$ ]] ; then
+      VM_PLATFORM="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+   fi
    VM_DISK_PREFIX=
    VM_DISK_ROOT_DEVICE=
    VM_DISK_HOME_DEVICE=
@@ -774,6 +786,7 @@ echo " - DISTRIBUTION=${DISTRIBUTION}"
 echo " - RELEASE=${RELEASE}"
 echo " - PROVISIONERS=${PROVISIONERS}"
 echo " - HTTP_DIRECTORY=${HTTP_DIRECTORY}"
+echo " - VM_ARCHITECTURE=${VM_ARCHITECTURE}"
 echo " - VM_CHIPSET=${VM_CHIPSET}"
 echo " - VM_FIRMWARE=${VM_FIRMWARE}"
 echo " - VM_CORES=${VM_CORES}"
@@ -852,6 +865,8 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vm_name_dnsname=${vm_name//[^a-zA-Z0-9\\.-]/}"    \
    -var "vm_version=${vm_version}"                         \
    -var "vm_version=${vm_version}"                         \
+   -var "vm_architecture=${VM_ARCHITECTURE}"               \
+   -var "vm_platform=${VM_PLATFORM}"                       \
    -var "vm_chipset=${VM_CHIPSET}"                         \
    -var "vm_firmware=${VM_FIRMWARE}"                       \
    -var "vm_cores=${VM_CORES}"                             \

@@ -20,10 +20,12 @@
 
 set -eu
 
+
+# ###### Configure ##########################################################
+
+# ====== Directories ========================================================
 . ./directories.config
 
-
-# ###### Handle command-line parameters #####################################
 if [ ! -e "${OUTPUT_DIRECTORY}" ] ; then
    echo >&2 "ERROR: Output directory ${OUTPUT_DIRECTORY} does not exist!"
    exit 1
@@ -33,6 +35,10 @@ if [ ! -e "${CACHE_DIRECTORY}" ] ; then
    echo >&2 "ERROR: Cache directory ${CACHE_DIRECTORY} does not exist!"
    exit 1
 fi
+
+# ====== Default architecture ===============================================
+ARCHITECTURES="$(uname -m)"
+ARCHITECTURES="${ARCHITECTURES/x86_64/amd64}"
 
 
 # ###### Build VMs ##########################################################
@@ -49,64 +55,66 @@ build-defined-vms ()
    isFirst=1
    for project in ${PROJECTS} ; do
       for system in ${SYSTEMS} ; do
-         # shellcheck disable=SC2001
-         distribution=$(echo "${system}" | sed -e "s/-.*$//g")
-         # shellcheck disable=SC2001
-         release=$(echo "${system}" | sed -e "s/^[^\-]*-//g")
+         for architecture in ${ARCHITECTURES} ; do
+            # shellcheck disable=SC2001
+            distribution=$(echo "${system}" | sed -e "s/-.*$//g")
+            # shellcheck disable=SC2001
+            release=$(echo "${system}" | sed -e "s/^[^\-]*-//g")
 
-         # ====== Filter out unsupported combinations =======================
-         if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
-            [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
-            echo "${project}/${distribution}-${release} is not supported (yet)"
-            continue
-         fi
-
-         # ====== Build VM ==================================================
-         name="${HYPERVISOR}-${project}-${distribution}-${release}"
-         logfile="${OUTPUT_DIRECTORY}/${name}/${name}.log"
-         if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
-            if [ "${isFirst}" -eq 0 ] ; then
-               if [ "${delay}" -gt 0 ] ; then
-                  echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
-                  sleep "${delay}"
-               fi
+            # ====== Filter out unsupported combinations =======================
+            if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
+               [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
+               echo "${project}/${distribution}-${release} is not supported (yet)"
+               continue
             fi
-            isFirst=0
 
-            startTime="$(date +"%Y-%m-%d %H:%M:%S")"
-            echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
-            mkdir -p "${OUTPUT_DIRECTORY}/${name}"
-            (
-               # shellcheck disable=SC2086
-               if ./make-vm -H "${HYPERVISOR}" \
-                     --project "${project}" --distribution "${distribution}" --release "${release}" \
-                     --hostname "${HOSTNAME}" \
-                     --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
-                     --chipset "${CHIPSET}" \
-                     --firmware "${FIRMWARE}" \
-                     --cores "${CORES}" --memory "${MEMORY}" --balloon "${BALLOON}" \
-                     --root "${DISK_ROOT}" --home "${DISK_HOME}" --swap "${DISK_SWAP}" \
-                     --video "${VIDEO}" \
-                     --bootsplash "${BOOTSPLASH}" \
-                     --background-sddm "${BACKGROUND_SDDM}" \
-                     --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
-                     --background-desktop "${BACKGROUND_DESKTOP}" \
-                     --cache-directory "${CACHE_DIRECTORY}" \
-                     --output-directory "${OUTPUT_DIRECTORY}" \
-                     ${OPTIONS}  >"${logfile}" 2>&1 ; then
-                  result="OK"
-                  resultColor="32"
-               else
-                  result="FAILED!"
-                  resultColor="37;41;97"
+            # ====== Build VM ==================================================
+            name="${HYPERVISOR}-${architecture^^}-${project}-${distribution}-${release}"
+            logfile="${OUTPUT_DIRECTORY}/${name}/build.log"
+            if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
+               if [ "${isFirst}" -eq 0 ] ; then
+                  if [ "${delay}" -gt 0 ] ; then
+                     echo -e "\x1b[37mWaiting for ${delay} s ...\x1b[0m"
+                     sleep "${delay}"
+                  fi
                fi
-               finishTime="$(date +"%Y-%m-%d %H:%M:%S")"
-               echo -e "\x1b[${resultColor}m${finishTime}: Finished to build ${name} - ${result} -> ${logfile}\x1b[0m"
-            ) &
-         else
-            echo -e "\x1b[34m${name} is already there -> ${logfile}\x1b[0m"
-         fi
+               isFirst=0
 
+               startTime="$(date +"%Y-%m-%d %H:%M:%S")"
+               echo -e "\x1b[33m${startTime}: Starting to build ${name}, logfile is ${logfile} ...\x1b[0m"
+               mkdir -p "${OUTPUT_DIRECTORY}/${name}"
+               (
+                  # shellcheck disable=SC2086
+                  if ./make-vm -H "${HYPERVISOR}" \
+                        --project "${project}" --distribution "${distribution}" --release "${release}" \
+                        --hostname "${HOSTNAME}" \
+                        --username "${USER_NAME}" --realname "${USER_REALNAME}" --password "${USER_PASSWORD}" \
+                        --architecture "${architecture}" \
+                        --chipset "${CHIPSET}" \
+                        --firmware "${FIRMWARE}" \
+                        --cores "${CORES}" --memory "${MEMORY}" --balloon "${BALLOON}" \
+                        --root "${DISK_ROOT}" --home "${DISK_HOME}" --swap "${DISK_SWAP}" \
+                        --video "${VIDEO}" \
+                        --bootsplash "${BOOTSPLASH}" \
+                        --background-sddm "${BACKGROUND_SDDM}" \
+                        --background-lockscreen "${BACKGROUND_LOCKSCREEN}" \
+                        --background-desktop "${BACKGROUND_DESKTOP}" \
+                        --cache-directory "${CACHE_DIRECTORY}" \
+                        --output-directory "${OUTPUT_DIRECTORY}" \
+                        ${OPTIONS}  >"${logfile}" 2>&1 ; then
+                     result="OK"
+                     resultColor="32"
+                  else
+                     result="FAILED!"
+                     resultColor="37;41;97"
+                  fi
+                  finishTime="$(date +"%Y-%m-%d %H:%M:%S")"
+                  echo -e "\x1b[${resultColor}m${finishTime}: Finished to build ${name} - ${result} -> ${logfile}\x1b[0m"
+               ) &
+            else
+               echo -e "\x1b[34m${name} is already there -> ${logfile}\x1b[0m"
+            fi
+         done
       done
    done
 
