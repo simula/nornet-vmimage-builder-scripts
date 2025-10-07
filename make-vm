@@ -681,7 +681,7 @@ EOF
       cat >>"${JSONTMP}" <<EOF
        {
          "type": "shell",
-         "execute_command": "echo '${USER_PASSWORD}' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+         "execute_command": "echo '${USER_PASSWORD}' | sudo -S {{.Vars}} bash '{{.Path}}'",
          "script": "$(realpath scripts/"${provisioner}")",
          "environment_vars": [ "VIDEO=${VIDEO}",
                                "XKBMODEL=${XKBMODEL}",
