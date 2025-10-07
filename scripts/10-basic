@@ -92,20 +92,23 @@ EOF
       fi
    fi
 
-   # ------ Work-around for missing System-Tools in Debian ------------------
    if [ "${ID}" == "debian" ] ; then
+      architecture="$(uname -m)"
+      architecture="${architecture/x86_64/amd64}"
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
+
+      # ------ Work-around for missing System-Tools in Debian ---------------
       # FIXME! This is not the best solution. Ideally, there should be a
       #        Debian PPA for System-Tools!
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
       cd /tmp
       wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
       architecture="$(uname -m)"
       if [ "${architecture}" == "x86_64" ] ; then
          architecture="amd64"
       fi
-      pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*_all.deb")"
-      pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/ -name "*_${architecture}.deb")"
+      pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_all.deb")"
+      pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_${architecture}.deb")"
       packages="${pkg1} ${pkg2}"
       version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
       echo "${packages}"
@@ -114,6 +117,27 @@ EOF
       echo "${packages}"
       # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+
+      # ------ Work-around for missing TSCTP in Debian < 13------------------
+      # shellcheck disable=SC2071
+      if [[ "${VERSION_ID}" < "13" ]] ; then
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
+         cd /tmp
+         wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/
+
+         pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ -name "*_all.deb")"
+         pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ -name "*_${architecture}.deb")"
+         packages="${pkg1} ${pkg2}"
+         version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
+         echo "${packages}"
+         echo "${version}"
+         packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
+         echo "${packages}"
+         # shellcheck disable=SC2086
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      fi
+
+      rm -rf ppa.launchpadcontent.net
    fi
 
    packages="
