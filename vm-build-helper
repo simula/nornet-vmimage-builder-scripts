@@ -49,15 +49,32 @@ check-vm-config ()
    local release="$3"
    local architecture="$4"
 
-   if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
-      [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
-      return 1
-   fi
-   if [[ "${architecture}" =~ ^(i386|arm32) ]] && [ "${distribution}" == "Ubuntu" ] ; then
-      return 1
-   fi
-   if [[ "${architecture}" =~ ^(i386|arm32|riscv64) ]] && [ "${distribution}" == "Fedora" ] ; then
-      return 1
+   if [ "${distribution}" == "Debian" ] ; then
+      # shellcheck disable=SC2071
+      if [ "${architecture}" == "ppc64le" ] && [[ "${release}" < "12" ]] ; then
+         return 1
+      elif [ "${architecture}" == "riscv64" ] && [[ "${release}" < "13" ]] ; then
+         return 1
+      elif [ "${architecture}" == "s390x" ] && [[ "${release}" < "12" ]] ; then
+         return 1
+      fi
+
+      if [ "${project}" == "NorNet" ] || [ "${project}" == "NorNet-Desktop" ] ; then
+         return 1
+      fi
+
+   elif [ "${distribution}" == "Ubuntu" ] ; then
+      # shellcheck disable=SC2072
+      if [[ "${architecture}" =~ ^(i386|arm32) ]] ; then
+         return 1
+      elif [ "${architecture}" == "riscv64" ] && [[ "${release}" < "20.04" ]] ; then
+         return 1
+      fi
+
+   elif [ "${distribution}" == "Fedora" ] ; then
+      if [[ "${architecture}" =~ ^(i386|arm32|riscv64) ]] ; then
+         return 1
+      fi
    fi
 
    return 0
