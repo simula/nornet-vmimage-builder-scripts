@@ -417,7 +417,7 @@ elif [ "${HYPERVISOR}" == "Docker" ] ; then
       fi
       VM_PLATFORM="${BASH_REMATCH[1]}${bits}/${BASH_REMATCH[3]}"
    elif [[ "${VM_PLATFORM}" =~ (.*/)(i)(386)$ ]] ; then
-      VM_PLATFORM="${BASH_REMATCH[1]}/${BASH_REMATCH[3]}"
+      VM_PLATFORM="${BASH_REMATCH[1]}${BASH_REMATCH[3]}"
    fi
    VM_DISK_PREFIX=
    VM_DISK_ROOT_DEVICE=
