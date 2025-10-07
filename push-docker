@@ -37,17 +37,22 @@ for container in ${containers} ; do
       tag="$(jq -r '."post-processors"[0][0].tags[0]' "${configurationFile}")"
       if [ "${repository}" != "" ] && [ "${tag}" != "" ] ; then
          print-utf8 -s "\e[33m------ Pushing ${repository}:${tag} ... " "-" "\e[0m"
-         parentTag="${tag/-*/}"
-         parent="${repository}:${parentTag}"
-         docker push "${repository}:${tag}"
-         if [ "${parentTag}" != "${tag}" ] ; then
-            if test -v multiPlatformArray["${parent}"] ; then
-               multiPlatformArray[${parent}]="${multiPlatformArray[${parent}]} ${repository}:${tag}"
+         successfullyPushedFile="${container}/successfully-pushed.txt"
+         if [ ! -e "${successfullyPushedFile}" ] ; then
+            parentTag="${tag/-*/}"
+            parent="${repository}:${parentTag}"
+            docker push "${repository}:${tag}" && date +"%Y-%m-%d %H:%M:%S" >"${successfullyPushedFile}"
+            if [ "${parentTag}" != "${tag}" ] ; then
+               if test -v multiPlatformArray["${parent}"] ; then
+                  multiPlatformArray[${parent}]="${multiPlatformArray[${parent}]} ${repository}:${tag}"
+               else
+                  multiPlatformArray[${parent}]="${repository}:${tag}"
+               fi
             else
-               multiPlatformArray[${parent}]="${repository}:${tag}"
+               echo -e "\e[35m${container} does not have a platform-specific tag?!\e[0m"
             fi
          else
-            echo -e "\e[35m${container} does not have a platform-specific tag?!\e[0m"
+            echo "Already pushed -> nothing to do."
          fi
       fi
    else
