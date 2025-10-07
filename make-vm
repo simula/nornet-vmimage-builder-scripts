@@ -463,17 +463,17 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
       exit 1
    fi
 elif [ "${DISTRIBUTION}" == "Debian" ] ; then
-   BUILDER_INSTALL="debian-${RELEASE}"
-   NAME="${NAME}-Debian-${RELEASE}"
-   HTTP_DIRECTORY="http/debian"
    if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
-   elif [[ "${RELEASE}" =~ ^Testing$ ]] ; then
+   elif [[ "${RELEASE}" =~ ^(Testing|Unstable)$ ]] ; then
       RELEASE="Testing"
    else
       echo >&2 "ERROR: Invalid Debian release ${RELEASE}!"
       exit 1
    fi
+   BUILDER_INSTALL="debian-${RELEASE}"
+   NAME="${NAME}-Debian-${RELEASE}"
+   HTTP_DIRECTORY="http/debian"
 elif [ "${DISTRIBUTION}" == "Fedora" ] ; then
    BUILDER_INSTALL="fedora-${RELEASE}"
    NAME="${NAME}-Fedora-${RELEASE}"
@@ -562,7 +562,6 @@ mkdir -p "${OUTPUT_DIRECTORY}/${NAME}/http"
 httpFiles=$(find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*")
 for httpFile in ${httpFiles} ; do
    echo "Processing: ${httpFile} -> ${NAME}/http/$(basename "${httpFile}")"
-   # shellcheck disable=SC2094
    sed -e "s%<SET_ROOT_DISK_DEVICE_HERE>%${VM_DISK_ROOT_DEVICE}%g" \
        -e "s%<SET_HOME_DISK_DEVICE_HERE>%${VM_DISK_HOME_DEVICE}%g" \
        -e "s%<SET_SWAP_DISK_DEVICE_HERE>%${VM_DISK_SWAP_DEVICE}%g" \
