@@ -561,7 +561,8 @@ fi
 mkdir -p "${OUTPUT_DIRECTORY}/${NAME}/http"
 httpFiles=$(find "${HTTP_DIRECTORY}/" -maxdepth 1 -type f -name "*")
 for httpFile in ${httpFiles} ; do
-   echo "Processing: ${httpFile} -> ${NAME}/http/$(basename "${httpFile}")"
+   httpFileToWrite="${NAME}/http/$(basename "${httpFile}")"
+   echo "Processing: ${httpFile} -> ${httpFileToWrite}"
    sed -e "s%<SET_ROOT_DISK_DEVICE_HERE>%${VM_DISK_ROOT_DEVICE}%g" \
        -e "s%<SET_HOME_DISK_DEVICE_HERE>%${VM_DISK_HOME_DEVICE}%g" \
        -e "s%<SET_SWAP_DISK_DEVICE_HERE>%${VM_DISK_SWAP_DEVICE}%g" \
@@ -576,7 +577,7 @@ for httpFile in ${httpFiles} ; do
        -e "s/<SET_REALNAME_HERE>/${USER_REALNAME}/g" \
        -e "s/<SET_PASSWORD_HERE>/${USER_PASSWORD}/g" \
        -e "s#<SET_HASHED_PASSWORD_HERE>#${USER_HASHED_PASSWORD}#g" \
-       <"${httpFile}" >"${OUTPUT_DIRECTORY}/${NAME}/http/$(basename "${httpFile}")"
+       <"${httpFile}" >"${OUTPUT_DIRECTORY}/${httpFileToWrite}"
 done
 
 # Configure HTTP directory:
