@@ -25,7 +25,7 @@ set -eu
 
 HYPERVISOR="VirtualBox"
 SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
-# SYSTEMS="Ubuntu-24.04-LTS"
+# SYSTEMS="Ubuntu-24.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="HAW-Router HAW-Desktop"

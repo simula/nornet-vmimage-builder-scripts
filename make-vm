@@ -456,7 +456,6 @@ if [ ${USE_SEPARATE_DISKS} -ne 0 ] ; then
 fi
 
 if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
-   RELEASE="${RELEASE/-LTS/}"   # Remove "-LTS" from release
    BUILDER_INSTALL="ubuntu-${RELEASE}"
    NAME="${NAME}-Ubuntu-${RELEASE}"
    HTTP_DIRECTORY="http/ubuntu"
@@ -758,6 +757,8 @@ vm_vendor="Simula Metropolitan Centre for Digital Engineering"
 vm_vendorurl="https://www.simula.no/people/dreibh"
 vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HYPERVISOR}."
 vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE}"
+
+# ------ Tag LTS versions ---------------------------------------------------
 if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
    y=${BASH_REMATCH[1]}
    m=${BASH_REMATCH[2]}

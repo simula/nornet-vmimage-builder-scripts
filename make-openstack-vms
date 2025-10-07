@@ -25,7 +25,7 @@ set -eu
 
 HYPERVISOR="QEMU"   # "VirtualBox" "QEMU"
 SYSTEMS="${DEFAULT_LINUX_UBUNTU_SYSTEMS_CURRENT}"
-# SYSTEMS="Ubuntu-22.04-LTS"
+# SYSTEMS="Ubuntu-22.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="5gVINNI-OpenStack"   # 5gVINNI-OpenStack 5gVINNI-OpenStack-Development
