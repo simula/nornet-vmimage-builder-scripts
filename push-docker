@@ -22,15 +22,51 @@ set -eu
 
 source ./directories.config
 
-CONTAINERS=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "Docker*")
-for container in ${CONTAINERS} ; do
-   json=$(find "${container}" -mindepth 1 -maxdepth 1 -type f -name "*.json")
-   if [ "${json}" != "" ] ; then
-      REPOSITORY="$(jq '."post-processors"[0]' "${json}" | jq '.[0].repository' | tr -d '"')"
-      TAG="$(jq '."post-processors"[0]' "${json}" | jq '.[0].tags[0]' | tr -d '"')"
-      if [ "${REPOSITORY}" != "" ] && [ "${TAG}" != "" ] ; then
-         echo "Pushing ${REPOSITORY}:${TAG} ..."
-         docker push "${REPOSITORY}":"${TAG}"
+declare -A multiPlatformArray
+
+
+# ====== Push containers ====================================================
+print-utf8 -s "\e[34m====== Pushing Containers ... " "=" "\e[0m"
+
+containers=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "Docker*")
+for container in ${containers} ; do
+   configurationFile="${container}/configuration.json"
+   successfullyBuiltFile="${container}/successfully-built.txt"
+   if [ -e "${configurationFile}" ] && [ -e "${successfullyBuiltFile}" ]  ; then
+      repository="$(jq -r '."post-processors"[0][0].repository' "${configurationFile}")"
+      tag="$(jq -r '."post-processors"[0][0].tags[0]' "${configurationFile}")"
+      if [ "${repository}" != "" ] && [ "${tag}" != "" ] ; then
+         print-utf8 -s "\e[33m------ Pushing ${repository}:${tag} ... " "-" "\e[0m"
+         parentTag="${tag/-*/}"
+         parent="${repository}:${parentTag}"
+         docker push "${repository}:${tag}"
+         if [ "${parentTag}" != "${tag}" ] ; then
+            if test -v multiPlatformArray["${parent}"] ; then
+               multiPlatformArray[${parent}]="${multiPlatformArray[${parent}]} ${repository}:${tag}"
+            else
+               multiPlatformArray[${parent}]="${repository}:${tag}"
+            fi
+         else
+            echo "${container} does not have a platform-specific tag?!"
+         fi
       fi
+   else
+      echo "${container} is not (yet) built!"
    fi
+done
+echo ""
+
+
+# ====== Join multi-platform tags to parent tag =============================
+echo ""
+print-utf8 -s "\e[34m====== Merging Multi-Platform Containers to Parent Tag ... " "=" "\e[0m"
+
+parents=$(printf "%s\n" "${!multiPlatformArray[@]}" | sort)
+for parent in ${parents} ; do
+   print-utf8 -s "\e[33m------ Merging ${parent} ... " "-" "\e[0m"
+   children=$(printf "%s\n" "${multiPlatformArray[${parent}]}" | sort)
+   echo "Platform-specific tags: ${children}"
+   # shellcheck disable=SC2086
+   docker buildx imagetools create --tag \
+      "${parent}" ${children}
 done
