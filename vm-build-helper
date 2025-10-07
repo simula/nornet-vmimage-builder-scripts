@@ -41,6 +41,29 @@ ARCHITECTURES="$(uname -m)"
 ARCHITECTURES="${ARCHITECTURES/x86_64/amd64}"
 
 
+# ###### Check for invalid combinations #####################################
+check-vm-config ()
+{
+   local project="$1"
+   local distribution="$2"
+   local release="$3"
+   local architecture="$4"
+
+   if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
+      [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
+      return 1
+   fi
+   if [[ "${architecture}" =~ ^(i386|arm32) ]] && [ "${distribution}" == "Ubuntu" ] ; then
+      return 1
+   fi
+   if [[ "${architecture}" =~ ^(i386|arm32|riscv64) ]] && [ "${distribution}" == "Fedora" ] ; then
+      return 1
+   fi
+
+   return 0
+}
+
+
 # ###### Build VMs ##########################################################
 build-defined-vms ()
 {
@@ -56,15 +79,15 @@ build-defined-vms ()
    for project in ${PROJECTS} ; do
       for system in ${SYSTEMS} ; do
          for architecture in ${ARCHITECTURES} ; do
+
             # shellcheck disable=SC2001
             distribution=$(echo "${system}" | sed -e "s/-.*$//g")
             # shellcheck disable=SC2001
             release=$(echo "${system}" | sed -e "s/^[^\-]*-//g")
 
             # ====== Filter out unsupported combinations =======================
-            if [ "${project}" == "NorNet"         ] && [ "${distribution}" == "Debian" ] ||
-               [ "${project}" == "NorNet-Desktop" ] && [ "${distribution}" == "Debian" ] ; then
-               echo "${project}/${distribution}-${release} is not supported (yet)"
+            if ! check-vm-config "${project}" "${distribution}" "${release}" "${architecture}" ; then
+               echo "${project}/${architecture^^}-${project}-${distribution}-${release} is not supported (yet)."
                continue
             fi
 
