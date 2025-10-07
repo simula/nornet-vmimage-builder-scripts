@@ -23,7 +23,7 @@
   "commit": "true",
   "changes": [
      "ENV LC_ALL C.UTF-8",
-     "ENV LANG LC_ALL C.UTF-8",
+     "ENV LANG C.UTF-8",
      "CMD [ \"/bin/bash\", \"--login\" ]"
   ]
 }
