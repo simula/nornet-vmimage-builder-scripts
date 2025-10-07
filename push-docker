@@ -47,11 +47,11 @@ for container in ${containers} ; do
                multiPlatformArray[${parent}]="${repository}:${tag}"
             fi
          else
-            echo "${container} does not have a platform-specific tag?!"
+            echo -e "\e[35m${container} does not have a platform-specific tag?!\e[0m"
          fi
       fi
    else
-      echo "${container} is not (yet) built!"
+      echo -e "\e[35m${container} is not (yet) built!\e[0m"
    fi
 done
 echo ""

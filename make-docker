@@ -24,10 +24,10 @@ set -eu
 . ./supported-systems.config
 
 HYPERVISOR="Docker"
-ARCHITECTURES="amd64 arm64v8"   # amd64 arm64v8
+ARCHITECTURES="amd64 arm64v8 riscv64 s390x ppc64le"   # amd64 arm64v8 riscv64 s390x ppc64le   arm32v7 arm32v5 i386
 # SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT}"
 SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT} ${DEFAULT_LINUX_SYSTEMS_LEGACY}"
-SYSTEMS="Ubuntu-24.04"
+SYSTEMS="Debian-13 Ubuntu-24.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"   # Minimal Basic Development
