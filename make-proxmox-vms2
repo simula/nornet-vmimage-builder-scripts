@@ -52,4 +52,5 @@ BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 # ---------------------------------------------------------
 
 files/generate-backgrounds
+# shellcheck disable=SC2119
 build-defined-vms 60

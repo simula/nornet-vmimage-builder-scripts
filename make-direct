@@ -103,6 +103,7 @@ if [ ! -e "${CONFIG}" ] ; then
    exit 1
 fi
 PROVISIONERS=""
+# shellcheck disable=SC1090
 . ./"${CONFIG}"
 PROVISIONERS="$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)"
 popd >/dev/null

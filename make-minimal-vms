@@ -52,4 +52,5 @@ OPTIONS=""
 # ---------------------------------------------------------
 
 # files/generate-backgrounds   # !!! Not necessary for Minimal !!!
+# shellcheck disable=SC2119
 build-defined-vms

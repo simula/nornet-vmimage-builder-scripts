@@ -52,4 +52,5 @@ OPTIONS="-1"   # Just one disk!
 # ---------------------------------------------------------
 
 files/generate-backgrounds
+# shellcheck disable=SC2119
 build-defined-vms

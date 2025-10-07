@@ -63,6 +63,7 @@ for project in ${PROJECTS} ; do
       BALLOON=1024
    fi
    PROJECTS="${project}"
+   # shellcheck disable=SC2119
    build-defined-vms &
 done
 wait
