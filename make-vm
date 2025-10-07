@@ -412,7 +412,7 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
-   NAME="Docker-${VM_ARCHITECTURE^^/\//}"
+   NAME="Docker-${VM_ARCHITECTURE^^}"
    VM_PLATFORM="linux/${VM_ARCHITECTURE}"
    if [[ "${VM_PLATFORM}" =~ ^(.*)(v[0-9]*)$ ]] ; then
       VM_PLATFORM="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
@@ -461,12 +461,6 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
    HTTP_DIRECTORY="http/ubuntu"
    if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
       y=${BASH_REMATCH[1]}
-      m=${BASH_REMATCH[2]}
-      isNonLTSYear=$(( y%2 ))
-      if [ ${isNonLTSYear} -eq 0 ] && [ "$m" -eq 4 ] ; then
-         NAME="${NAME}-LTS"
-         RELEASE="${RELEASE} LTS"
-      fi
       if [ "$y" -lt 20 ] ; then
          HTTP_DIRECTORY="${HTTP_DIRECTORY}-legacy"
       fi
@@ -539,7 +533,7 @@ CACHE_DIRECTORY="$(realpath "${CACHE_DIRECTORY}")"
 mkdir -p "${CACHE_DIRECTORY}"
 
 mkdir -p "${OUTPUT_DIRECTORY}/${NAME}"
-JSON="$(realpath "${OUTPUT_DIRECTORY}"/"${NAME}")/${NAME}.json"
+JSON="$(realpath "${OUTPUT_DIRECTORY}"/"${NAME}")/configuration.json"
 JSONTMP="${JSON}.tmp"
 
 
@@ -762,17 +756,21 @@ vm_producturl="https://github.com/simula/nornet-vmimage-builder-scripts"
 vm_vendor="Simula Metropolitan Centre for Digital Engineering"
 vm_vendorurl="https://www.simula.no/people/dreibh"
 vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HYPERVISOR}."
-vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE//[ -]LTS/}"
-if [[ "${NAME}" =~ (-LTS)$ ]] ; then
+vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE}"
+if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   y=${BASH_REMATCH[1]}
+   m=${BASH_REMATCH[2]}
+   isNonLTSYear=$(( y%2 ))
+   if [ ${isNonLTSYear} -eq 0 ] && [ "$m" -eq 4 ] ; then
+      vm_tags="${vm_tags};LTS"
+   fi
+elif [[ "${NAME}" =~ (-LTS)$ ]] ; then
    vm_tags="${vm_tags};LTS"
 elif [ "${DISTRIBUTION}" == "Debian" ] && [[ "${RELEASE}" =~ ^[0-9]+$ ]] ; then
    vm_tags="${vm_tags};LTS"
 elif [ "${DISTRIBUTION}" == "FreeBSD" ] && [[ "${RELEASE}" =~ ^RELEASE- ]] ; then
    vm_tags="${vm_tags};LTS"
 fi
-# vm_tags="${vm_tags,,}"
-# vm_tags="${vm_tags//\./_}"
-# echo >&2 "Tags: ${vm_tags}"
 
 
 # ====== Print configuration ================================================
