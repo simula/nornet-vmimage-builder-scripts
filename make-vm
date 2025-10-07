@@ -766,8 +766,6 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]
    if [ ${isNonLTSYear} -eq 0 ] && [ "$m" -eq 4 ] ; then
       vm_tags="${vm_tags};LTS"
    fi
-elif [[ "${NAME}" =~ (-LTS)$ ]] ; then
-   vm_tags="${vm_tags};LTS"
 elif [ "${DISTRIBUTION}" == "Debian" ] && [[ "${RELEASE}" =~ ^[0-9]+$ ]] ; then
    vm_tags="${vm_tags};LTS"
 elif [ "${DISTRIBUTION}" == "FreeBSD" ] && [[ "${RELEASE}" =~ ^RELEASE- ]] ; then
