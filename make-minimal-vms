@@ -26,7 +26,7 @@ set -eu
 HYPERVISOR="VirtualBox"
 # SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
 # SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
-SYSTEMS="Ubuntu-24.04"
+SYSTEMS="Ubuntu-25.10"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"

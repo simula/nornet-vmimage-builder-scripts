@@ -268,6 +268,7 @@ elif [ "${ID}" == "fedora" ] ; then
       rsplib-tools
       rsync
       subnetcalc
+      tar
       tcpdump
       td-system-tools
       td-system-tools-configure-grub
@@ -282,7 +283,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
    if [ -e /etc/selinux/config ] ; then
       # FIXME!
@@ -348,7 +349,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else

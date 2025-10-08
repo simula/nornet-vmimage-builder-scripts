@@ -208,7 +208,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"

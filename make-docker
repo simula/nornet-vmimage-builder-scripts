@@ -24,13 +24,13 @@ set -eu
 . ./supported-systems.config
 
 HYPERVISOR="Docker"
-ARCHITECTURES="arm32v7 i386"   # amd64 arm64v8 riscv64 s390x ppc64le   arm32v7 arm32v5 i386
+ARCHITECTURES="amd64"   # amd64 arm64v8 riscv64 s390x ppc64le   arm32v7 arm32v5 i386
 # SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT}"
 SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT} ${DEFAULT_LINUX_SYSTEMS_LEGACY}"
-SYSTEMS="Debian-13"
+# SYSTEMS="Ubuntu-25.04 Debian-13"
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal"   # Minimal Basic Development
+PROJECTS="Minimal Basic"   # Minimal Basic Development
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"
@@ -56,4 +56,4 @@ OPTIONS="-1"
 
 files/generate-backgrounds
 # shellcheck disable=SC2119
-build-defined-vms
+build-defined-vms 5

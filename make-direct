@@ -126,7 +126,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       cmake fonts-dejavu fonts-noto gimp graphicsmagick libimage-exiftool-perl
 elif [ "${ID}" == "fedora" ] ; then
    sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
-      awk cmake dejavu-sans-fonts google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
+      awk cmake dejavu-sans-fonts gcc google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
 elif [ "${ID}" == "freebsd" ] ; then
    sudo /usr/sbin/pkg install -y \
       cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool

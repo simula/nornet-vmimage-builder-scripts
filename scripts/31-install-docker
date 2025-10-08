@@ -42,7 +42,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Add Docker's official GPG key:
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install ca-certificates curl
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      ca-certificates curl
    install -m 0755 -d /etc/apt/keyrings
    curl -fsSL "https://download.docker.com/linux/${ID}/gpg" -o /etc/apt/keyrings/docker.asc
    chmod a+r /etc/apt/keyrings/docker.asc
@@ -89,7 +90,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
    # Add user to "docker" group:
    usermod -a -G docker "${USER_NAME}"

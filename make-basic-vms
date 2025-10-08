@@ -25,8 +25,8 @@ set -eu
 
 HYPERVISOR="VirtualBox"
 # SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
-# SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
-SYSTEMS="Ubuntu-24.04"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
+# SYSTEMS="Ubuntu-24.04"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
@@ -53,4 +53,4 @@ OPTIONS=""
 
 files/generate-backgrounds
 # shellcheck disable=SC2119
-build-defined-vms 1
+build-defined-vms 10

@@ -127,8 +127,8 @@ EOF
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -o Acquire::ForceIPv4=true -y ${packages}
 
    # Only newer system versions have Strawberry, install Clementine instead:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y strawberry ||
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y clementine
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends strawberry ||
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends clementine
 
    # FIXME: Ubuntu 20.04 triggers GNOME Desktop as "recommends".
    #        Fix should be to use --no-install-recommends!
@@ -151,6 +151,7 @@ elif [ "${ID}" == "fedora" ] ; then
       kile
       konsole
       libreoffice
+      google-noto-fonts-all
       okular
       open-sans-fonts
       oxygen-fonts
@@ -163,12 +164,12 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y --allowerasing ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y --allowerasing ${packages}
 
    # FIXME!
    # 2024/03: Wayland is still completely unusable in VirtualBox!
    # SDDM on Wayland just produces a black screen -> use X11 instead!
-   /usr/bin/dnf install -y --allowerasing sddm-x11
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y --allowerasing sddm-x11
 
    systemctl enable sddm.service
    systemctl start sddm.service
