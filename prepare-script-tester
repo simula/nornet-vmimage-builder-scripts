@@ -44,7 +44,7 @@ else
 fi
 
 # ====== Configure server ===================================================
-ssh-copy-id -oStrictHostKeyChecking=no "${USER}@${SERVER}"
+ssh-copy-id -i ~/.ssh/id_rsa -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
 set -eu
