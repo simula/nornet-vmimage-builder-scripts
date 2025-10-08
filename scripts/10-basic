@@ -115,7 +115,7 @@ EOF
       # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
-      # ------ Work-around for missing TSCTP in Debian < 13------------------
+      # ------ Work-around for missing TSCTP in Debian < 13 -----------------
       # shellcheck disable=SC2071
       if [[ "${VERSION_ID}" < "13" ]] ; then
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
