@@ -44,19 +44,38 @@ As part of the VM setup process, it is also possible to set custom bootsplashes 
 * Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g.&nbsp;VirtualBox, QEMU, Proxmox, ...
 
     ```
-    packer plugin install github.com/hashicorp/virtualbox
-    packer plugin install github.com/hashicorp/proxmox
-    packer plugin install github.com/hashicorp/qemu
-    packer plugin install github.com/hashicorp/vsphere
-    packer plugin install github.com/hashicorp/docker
+    packer plugins install github.com/hashicorp/virtualbox
+    packer plugins install github.com/hashicorp/proxmox
+    packer plugins install github.com/hashicorp/qemu
+    packer plugins install github.com/hashicorp/docker
+    packer plugins install github.com/hashicorp/vsphere
     ...
+    packer plugins installed
     ```
 
-* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), for building the background images. Basically (on a Ubuntu/Debian system):
+* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), DejaVu Fonts, for building the background images:
 
-    ```sudo apt install -y cmake fonts-noto gimp graphicsmagick libimage-exiftool-perl```
+  - Ubuntu/Debian:
 
-    Take a look at the scripts [20-kde](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/20-kde) and [30-development](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/scripts/30-development) for installing the dependencies.
+     ```
+     sudo apt-get install -y --no-install-recommends \
+        cmake fonts-dejavu fonts-noto gimp graphicsmagick libimage-exiftool-perl
+     ```
+
+  - Fedora:
+
+     ```
+     sudo dnf install --setopt=install_weak_deps=False -y \
+        awk cmake dejavu-sans-fonts gcc google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
+     ```
+  - FreeBSD:
+
+    ```
+    sudo pkg install -y \
+       cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool
+    ```
+
+  Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing the dependencies.
 
 To start a VM build, run one the the "make" scripts:
 ```
