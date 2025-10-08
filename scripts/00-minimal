@@ -101,6 +101,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
+   # Remove unsed Canonical stuff:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge \
+      ubuntu-pro-client landscape-common
+
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
