@@ -32,6 +32,14 @@ BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 
 
+# ###### Check/set environment variables ####################################
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
 # ###### Handle command-line parameters #####################################
 if [ $# -lt 1 ] ; then
    echo >&2 "Usage: $0 project"
@@ -106,6 +114,25 @@ PROVISIONERS=""
 # shellcheck disable=SC1090
 . ./"${CONFIG}"
 PROVISIONERS="$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)"
+popd >/dev/null
+
+
+# ###### Ensure that the generated files are there ##########################
+pushd >/dev/null files
+
+# ------ Get background build dependencies, and generate the backgrounds ----
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+   sudo env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      cmake fonts-dejavu fonts-noto gimp graphicsmagick libimage-exiftool-perl
+elif [ "${ID}" == "fedora" ] ; then
+   sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
+      awk cmake dejavu-fonts-all GraphicsMagick gimp perl-Image-ExifTool
+elif [ "${ID}" == "freebsd" ] ; then
+   /usr/sbin/pkg install -y \
+      cmake dejavu gimp GraphicsMagick p5-Image-ExifTool
+fi
+./generate-backgrounds
+
 popd >/dev/null
 
 
