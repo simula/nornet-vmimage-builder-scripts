@@ -89,6 +89,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       debhelper
       devscripts
       dpkg-dev
+      distro-info
       flex
       fonts-dejavu
       fonts-noto
