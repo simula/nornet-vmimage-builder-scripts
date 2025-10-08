@@ -102,8 +102,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
    # Remove unsed Canonical stuff:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge \
-      ubuntu-pro-client landscape-common
+   if [ "${ID}" == "ubuntu" ] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge \
+         ubuntu-pro-client landscape-common
+   fi
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
