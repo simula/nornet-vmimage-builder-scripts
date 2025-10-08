@@ -172,8 +172,8 @@ fi
 
 # ====== GnuPG configuration file ===========================================
 if ! sudo -u "${USER_NAME}" test -e "/home/${USER_NAME}/.gnupg/gpg.conf" ; then
-   sudo -u "${USER_NAME}" mkdir "/home/${USER_NAME}/.gnupg"
-   sudo -u "${USER_NAME}" chmod 600 "/home/${USER_NAME}/.gnupg"
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.gnupg"
+   sudo -u "${USER_NAME}" chmod 700 "/home/${USER_NAME}/.gnupg"
    (
       cat <<EOF
 # use-agent
