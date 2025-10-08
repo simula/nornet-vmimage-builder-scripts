@@ -219,3 +219,13 @@ else
    exit 1
 
 fi
+
+
+# ====== Add a playlist for Strawberry ======================================
+if [ -e /tmp/music/20-kde.files/Radios.m3u ] ; then
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Music"
+   sudo -u "${USER_NAME}" cp /tmp/music/20-kde.files/Radios.m3u "/home/${USER_NAME}/Music"
+   if [ ! -e "/home/${USER_NAME}/Desktop/Radios.m3u" ] ; then
+      sudo -u "${USER_NAME}" ln -s "/home/${USER_NAME}/Music/Radios.m3u" "/home/${USER_NAME}/Desktop/"
+   fi
+fi

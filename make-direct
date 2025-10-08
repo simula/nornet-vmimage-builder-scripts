@@ -154,7 +154,11 @@ for provisioner in ${PROVISIONERS} ; do
                echo >&2 "ERROR: Destination has to be provided in files/${provisioner}!"
                exit 1
             fi
-            mkdir -p "$(dirname "${destination}")"
+            if [[ "${destination}" =~ [/]$ ]] ; then
+               mkdir -p "${destination}"
+            else
+               mkdir -p "$(dirname "${destination}")"
+            fi
             echo "Copying ${source} to ${destination} ..."
             cp "${source}" "${destination}"
          fi
