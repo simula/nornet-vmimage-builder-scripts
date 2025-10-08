@@ -126,7 +126,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       cmake fonts-dejavu fonts-noto gimp graphicsmagick libimage-exiftool-perl
 elif [ "${ID}" == "fedora" ] ; then
    sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
-      awk cmake dejavu-fonts-all GraphicsMagick gimp perl-Image-ExifTool
+      awk cmake dejavu-fonts-all gcc GraphicsMagick gimp perl-Image-ExifTool
 elif [ "${ID}" == "freebsd" ] ; then
    /usr/sbin/pkg install -y \
       cmake dejavu gimp GraphicsMagick p5-Image-ExifTool
