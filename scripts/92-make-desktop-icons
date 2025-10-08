@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eux
+set -eu
 
 
 # ====== Ensure that script is ran by user account to provision =============
@@ -64,6 +64,7 @@ APPLICATIONS="
    org.kde.kile
    org.kde.konsole
    org.kde.okular
+   org.mozilla.firefox
    org.strawberrymusicplayer.strawberry
    org.wireshark.Wireshark
    R
@@ -91,13 +92,19 @@ done
 
 # ====== Create directorys for applications =================================
 for application in ${APPLICATIONS} ; do
+   found=0
    for source in /usr/share/applications /usr/local/share/applications /var/lib/snapd/desktop/applications /var/lib/flatpak/exports/share/applications ; do
-      if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
-         if [ -e "${source}/${application}.desktop" ] ; then
+      if [ -e "${source}/${application}.desktop" ] ; then
+         found=1
+         echo "FOUND: ${application} -> ${source}/${application}.desktop"
+         if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then
             echo "Creating desktop link for application ${application} (in ${source}) ..."
             ln -s "${source}/${application}.desktop" "${DESKTOP_DIRECTORY}/" || true
             break
          fi
       fi
    done
+   if [ ${found} -eq 0 ] ; then
+      echo "NOT FOUND: ${application}"
+   fi
 done
