@@ -151,6 +151,7 @@ elif [ "${ID}" == "fedora" ] ; then
       kile
       konsole
       libreoffice
+      google-noto-fonts-all
       okular
       open-sans-fonts
       oxygen-fonts
