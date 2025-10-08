@@ -279,6 +279,7 @@ It must contain the following packages:
 * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
 * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
+* [Git LFS](https://git-lfs.com/) (large file storage for Git)
 * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
 * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 * [PkgConfig](https://www.freedesktop.org/wiki/Software/pkg-config/) (metainformation about installed libraries)
