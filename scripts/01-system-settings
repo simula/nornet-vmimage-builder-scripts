@@ -106,7 +106,7 @@ net.sctp.addip_enable=1
 # Enable MPTCP (default on newer systems):
 # net.mptcp.enabled=1
 EOF
-   sysctl -f /etc/sysctl.d/01-sysctl.conf
+   sysctl -f /etc/sysctl.d/01-sysctl.conf || true
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    (
@@ -139,7 +139,7 @@ EOF
    ) >/etc/sysctl.conf.new
    mv /etc/sysctl.conf.new /etc/sysctl.conf
 
-   sysctl -f /etc/sysctl.conf
+   sysctl -f /etc/sysctl.conf || true
 fi
 
 
