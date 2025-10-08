@@ -106,9 +106,20 @@ net.sctp.addip_enable=1
 # Enable MPTCP (default on newer systems):
 # net.mptcp.enabled=1
 EOF
+   sysctl -f /etc/sysctl.d/01-sysctl.conf
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
-   cat >>/etc/sysctl.conf <<EOF
+   (
+      # Allow rerun of this script, by:
+      # * Filtering out the previously written block
+      # * Removing all trailing newlines
+      awk '
+/^###### BEGIN VM Image Scripts/{flag=1; next}
+/^###### END VM Image Scripts/{flag=0; next}
+// { if(flag == 0) { print $0; } }
+' </etc/sysctl.conf | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba'
+
+      cat <<EOF
 
 ###### BEGIN VM Image Scripts ###############################################
 
@@ -125,7 +136,10 @@ net.inet.sctp.nrsack_enable=1
 
 ###### END VM Image Scripts #################################################
 EOF
+   ) >/etc/sysctl.conf.new
+   mv /etc/sysctl.conf.new /etc/sysctl.conf
 
+   sysctl -f /etc/sysctl.conf
 fi
 
 
