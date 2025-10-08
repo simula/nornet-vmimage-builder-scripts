@@ -178,6 +178,7 @@ d-i preseed/late_command                            string \
  in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBOPTIONS=\"[a-z]*\"/XKBOPTIONS=\"\"/g" /etc/default/keyboard ; \
  in-target /usr/sbin/dpkg-reconfigure -fnoninteractive keyboard-configuration ; \
+ in-target /usr/bin/apt-get autoremove -y --purge ubuntu-pro-client landscape-common ; \
  in-target /usr/sbin/update-grub ; \
  in-target true # <SET_POSTINSTALL_COMMANDS_HERE>
 

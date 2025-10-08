@@ -34,7 +34,8 @@ for key in ${KEYS} ; do
    for keyServer in ${KEYSERVERS} ; do
       if sudo -u "${USER_NAME}" gpg \
             --homedir /home/"${USER_NAME}"/.gnupg \
-            --keyserver hkp://"${keyServer}" \
+            --keyserver "hkps://${keyServer}" \
+            --keyserver-options no-self-sigs-only \
             --recv-keys ${key} ; then
          echo "Got ${key} from ${keyServer}!"
          foundKey=1

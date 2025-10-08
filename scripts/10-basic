@@ -95,6 +95,7 @@ EOF
    if [ "${ID}" == "debian" ] ; then
       architecture="$(uname -m)"
       architecture="${architecture/x86_64/amd64}"
+      architecture="${architecture/aarch64/arm64}"
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
 
       # ------ Work-around for missing System-Tools in Debian ---------------
@@ -103,10 +104,6 @@ EOF
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
       cd /tmp
       wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-      architecture="$(uname -m)"
-      if [ "${architecture}" == "x86_64" ] ; then
-         architecture="amd64"
-      fi
       pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_all.deb")"
       pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_${architecture}.deb")"
       packages="${pkg1} ${pkg2}"
