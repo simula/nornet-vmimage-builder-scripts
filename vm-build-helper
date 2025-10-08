@@ -109,7 +109,11 @@ build-defined-vms ()
             fi
 
             # ====== Build VM ==================================================
-            name="${HYPERVISOR}-${architecture^^}-${project}-${distribution}-${release}"
+            if [ "${HYPERVISOR}" != "Docker" ] ; then
+               name="${HYPERVISOR}-${project}-${distribution}-${release}"
+            else
+               name="${HYPERVISOR}-${architecture^^}-${project}-${distribution}-${release}"
+            fi
             logfile="${OUTPUT_DIRECTORY}/${name}/build.log"
             if [ ! -e "${OUTPUT_DIRECTORY}/${name}/successfully-built.txt" ] ; then
                if [ "${isFirst}" -eq 0 ] ; then
