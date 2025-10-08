@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Autoinstall Scripts
+# Copyright (C) 2017-2025 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Bash options:
+set -eux
+
+
+# ====== Check environment variables ========================================
+if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   exit 1
+fi
+
+# ====== Add a playlist for Strawberry ======================================
+if [ -e /tmp/music/Radios.m3u ] ; then
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Music"
+   sudo -u "${USER_NAME}" cp /tmp/music/Radios.m3u "/home/${USER_NAME}/Music"
+   if [ ! -e "/home/${USER_NAME}/Desktop/Radios.m3u" ] ; then
+      sudo -u "${USER_NAME}" ln -s "/home/${USER_NAME}/Music/Radios.m3u" "/home/${USER_NAME}/Desktop/"
+   fi
+fi
