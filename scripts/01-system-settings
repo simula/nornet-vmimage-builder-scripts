@@ -95,42 +95,35 @@ fi
 if [ "${UNAME}" == "Linux" ] ; then
    mkdir -p /etc/sysctl.d
    cat >>/etc/sysctl.d/01-sysctl.conf <<EOF
-
-#############################################################################
-
 # ------ Custom settings ----------------------------------------------------
 # Enable ECN:
 net.ipv4.tcp_ecn=1
 
-# ------ TCP settings -------------------------------------------------------
-# Turn off auto-tuning of the TCP receive buffer size:
-# net.ipv4.tcp_moderate_rcvbuf=0
-# net.netfilter.nf_conntrack_icmp_timeout=60
+# Enable SCTP AUTH and Add-IP:
+net.sctp.auth_enable=1
+net.sctp.addip_enable=1
 
-# net.core.rmem_default=212992
-# net.core.rmem_max=134217728
-# net.core.wmem_default=212992
-# net.core.wmem_max=134217728
-# net.ipv4.tcp_rmem='4096 87380 134217728'
-# net.ipv4.tcp_wmem='4096 16384 134217728'
-# net.ipv4.tcp_mem='134217728 134217728 134217728'
-# net.ipv4.route.flush=1
-# net.ipv6.route.flush=1
-
-# ----- MPTCP settings ------------------------------------------------------
-# net.mptcp.mptcp_enabled=1
+# Enable MPTCP (default on newer systems):
+# net.mptcp.enabled=1
 EOF
 
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    cat >>/etc/sysctl.conf <<EOF
 
-#############################################################################
+###### BEGIN VM Image Scripts ###############################################
 
 # ------ Custom settings ----------------------------------------------------
+# Make sure that power-off works with EFI:
+hw.efi.poweroff=0
+
 # Enable ECN:
 net.inet.tcp.ecn.enable=1
-# Make sure power off works with EFI:
-hw.efi.poweroff=0
+
+# Enable SCTP PKTDROP and NR-SACK:
+net.inet.sctp.pktdrop_enable=1
+net.inet.sctp.nrsack_enable=1
+
+###### END VM Image Scripts #################################################
 EOF
 
 fi
