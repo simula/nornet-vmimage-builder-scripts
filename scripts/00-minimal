@@ -105,7 +105,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # Make sure that DNF has COPR support:
-   /usr/bin/dnf install -y 'dnf-command(copr)'
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y 'dnf-command(copr)'
 
    # Add COPR PPA dreibh/ppa:
    /usr/bin/dnf copr enable -y dreibh/ppa
@@ -128,7 +128,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
