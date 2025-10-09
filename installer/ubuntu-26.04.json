@@ -1,4 +1,4 @@
-// Ubuntu Server 25.10 "Questing Quokka" with EFI Boot
+// Ubuntu Server 26.04 "Resolute Raccoon" with EFI Boot
 // Copyright (C) 2019-2025 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep questing-live-server-amd64.iso
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/questing-live-server-amd64.iso",
+  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep resolute-live-server-amd64.iso
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/resolute-live-server-amd64.iso",
   "iso_checksum": "file:https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
