@@ -32,6 +32,14 @@ BACKGROUND_LOCKSCREEN="/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg"
 BACKGROUND_DESKTOP="/usr/share/desktop/Flåm-3840x2160-plain.jpeg"
 
 
+# ###### Check/set environment variables ####################################
+if [ ! -e /etc/os-release ] ; then
+   echo >&2 "ERROR: /etc/os-release does not exist!"
+   exit 1
+fi
+. /etc/os-release
+
+
 # ###### Handle command-line parameters #####################################
 if [ $# -lt 1 ] ; then
    echo >&2 "Usage: $0 project"
@@ -109,6 +117,25 @@ PROVISIONERS="$(echo "${PROVISIONERS}" | xargs -n1 | sort -u)"
 popd >/dev/null
 
 
+# ###### Ensure that the generated files are there ##########################
+pushd >/dev/null files
+
+# ------ Get background build dependencies, and generate the backgrounds ----
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+   sudo env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      cmake fonts-dejavu fonts-noto gimp graphicsmagick libimage-exiftool-perl
+elif [ "${ID}" == "fedora" ] ; then
+   sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
+      awk cmake dejavu-sans-fonts gcc google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
+elif [ "${ID}" == "freebsd" ] ; then
+   sudo /usr/sbin/pkg install -y \
+      cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool
+fi
+./generate-backgrounds
+
+popd >/dev/null
+
+
 # ###### Run provisioners ###################################################
 for provisioner in ${PROVISIONERS} ; do
    echo ""
@@ -127,7 +154,11 @@ for provisioner in ${PROVISIONERS} ; do
                echo >&2 "ERROR: Destination has to be provided in files/${provisioner}!"
                exit 1
             fi
-            mkdir -p "$(dirname "${destination}")"
+            if [[ "${destination}" =~ [/]$ ]] ; then
+               mkdir -p "${destination}"
+            else
+               mkdir -p "$(dirname "${destination}")"
+            fi
             echo "Copying ${source} to ${destination} ..."
             cp "${source}" "${destination}"
          fi

@@ -61,7 +61,7 @@ elif [ -e /usr/bin/dnf ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
 
 # ------ FreeBSD ------------------------------------------------------------

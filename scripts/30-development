@@ -37,6 +37,7 @@ set -eux
 # * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
 # * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 # * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
+# * [Git LFS](https://git-lfs.com/) (large file storage for Git)
 # * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
 # * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 # * [PkgConfig](https://www.freedesktop.org/wiki/Software/pkg-config/) (metainformation about installed libraries)
@@ -89,6 +90,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       debhelper
       devscripts
       dpkg-dev
+      distro-info
       flex
       fonts-dejavu
       fonts-noto
@@ -97,6 +99,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       gcc
       gdb
       ghostscript
+      git-lfs
       graphicsmagick
       gsfonts
       libimage-exiftool-perl
@@ -162,6 +165,7 @@ elif [ "${ID}" == "fedora" ] ; then
       gcc
       gdb
       ghostscript
+      git-lfs
       google-noto-fonts-all
       GraphicsMagick
       libtool
@@ -207,7 +211,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"
@@ -227,6 +231,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       gcc
       gdb
       ghostscript10
+      git-lfs
       GraphicsMagick
       hs-ShellCheck
       libtool
@@ -288,7 +293,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb gm gs libtool make pkg-config shellcheck valgrind"
+programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb git-lfs gm gs libtool make pkg-config shellcheck valgrind"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else

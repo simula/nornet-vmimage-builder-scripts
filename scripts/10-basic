@@ -95,6 +95,7 @@ EOF
    if [ "${ID}" == "debian" ] ; then
       architecture="$(uname -m)"
       architecture="${architecture/x86_64/amd64}"
+      architecture="${architecture/aarch64/arm64}"
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
 
       # ------ Work-around for missing System-Tools in Debian ---------------
@@ -103,10 +104,6 @@ EOF
       #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
       cd /tmp
       wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-      architecture="$(uname -m)"
-      if [ "${architecture}" == "x86_64" ] ; then
-         architecture="amd64"
-      fi
       pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_all.deb")"
       pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_${architecture}.deb")"
       packages="${pkg1} ${pkg2}"
@@ -118,7 +115,7 @@ EOF
       # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
-      # ------ Work-around for missing TSCTP in Debian < 13------------------
+      # ------ Work-around for missing TSCTP in Debian < 13 -----------------
       # shellcheck disable=SC2071
       if [[ "${VERSION_ID}" < "13" ]] ; then
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
@@ -271,6 +268,7 @@ elif [ "${ID}" == "fedora" ] ; then
       rsplib-tools
       rsync
       subnetcalc
+      tar
       tcpdump
       td-system-tools
       td-system-tools-configure-grub
@@ -285,7 +283,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
    if [ -e /etc/selinux/config ] ; then
       # FIXME!
@@ -351,7 +349,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else

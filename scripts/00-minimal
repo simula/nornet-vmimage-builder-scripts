@@ -101,11 +101,17 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
 
+   # Remove unsed Canonical stuff:
+   if [ "${ID}" == "ubuntu" ] ; then
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge \
+         ubuntu-pro-client landscape-common
+   fi
+
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
    # Make sure that DNF has COPR support:
-   /usr/bin/dnf install -y 'dnf-command(copr)'
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y 'dnf-command(copr)'
 
    # Add COPR PPA dreibh/ppa:
    /usr/bin/dnf copr enable -y dreibh/ppa
@@ -128,7 +134,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install -y ${packages}
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

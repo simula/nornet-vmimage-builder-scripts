@@ -89,17 +89,17 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      /usr/bin/dnf install -y virtualbox-guest-additions
+      /usr/bin/dnf install --setopt=install_weak_deps=False -y virtualbox-guest-additions
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
-      /usr/bin/dnf install -y open-vm-tools
+      /usr/bin/dnf install --setopt=install_weak_deps=False -y open-vm-tools
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
-         /usr/bin/dnf install -y open-vm-tools-desktop
+         /usr/bin/dnf install --setopt=install_weak_deps=False -y open-vm-tools-desktop
       fi
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-      /usr/bin/dnf install -y qemu-guest-agent
+      /usr/bin/dnf install --setopt=install_weak_deps=False -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
