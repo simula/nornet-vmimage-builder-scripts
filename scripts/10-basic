@@ -93,10 +93,7 @@ EOF
    fi
 
    if [ "${ID}" == "debian" ] ; then
-      architecture="$(uname -m)"
-      architecture="${architecture/x86_64/amd64}"
-      architecture="${architecture/aarch64/arm64}"
-      architecture="${architecture/ppc64le/ppc64el}"
+      architecture="$(dpkg --print-architecture)"
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
 
       # ------ Work-around for missing System-Tools in Debian ---------------
