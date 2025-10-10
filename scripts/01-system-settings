@@ -105,6 +105,10 @@ net.sctp.addip_enable=1
 
 # Enable MPTCP (default on newer systems):
 # net.mptcp.enabled=1
+
+# INotify:
+fs.inotify.max_user_instances=1024
+fs.inotify.max_user_watches=1048576
 EOF
    sysctl -f /etc/sysctl.d/01-sysctl.conf || true
 
