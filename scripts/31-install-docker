@@ -125,7 +125,7 @@ if [ ! -e "/etc/docker/daemon.json" ] ; then
 }
 EOF
    ) | sudo tee "/etc/docker/daemon.json"
-   service docker restart
+   service docker restart || true
 fi
 
 
