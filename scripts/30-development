@@ -169,6 +169,7 @@ elif [ "${ID}" == "fedora" ] ; then
       git-lfs
       google-noto-fonts-all
       GraphicsMagick
+      kernel-devel
       libtool
       mock
       open-sans-fonts
