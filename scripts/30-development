@@ -44,7 +44,7 @@ set -eux
 # * [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 # * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
 # * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
-# * [Valgrind](https://valgrind.org/) (debugging tool)
+# * [Valgrind](https://valgrind.org/) (debugging tool; if available for architecture)
 # * [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
 # * [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
 # * [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Linux systems only!)
@@ -113,7 +113,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       r-base
       reprepro
       shellcheck
-      valgrind
    "
 
    # Development files:
@@ -147,6 +146,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
 
+   # Install Valgrind, if available:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends valgrind || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -184,7 +185,6 @@ elif [ "${ID}" == "fedora" ] ; then
       rpm-build
       shellcheck
       urw-base35-fonts
-      valgrind
       yamllint
    "
 
@@ -212,6 +212,9 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # shellcheck disable=SC2086
    /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+
+   # Install Valgrind, if available:
+   /usr/bin/dnf install --setopt=install_weak_deps=False -y valgrind || true
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"
@@ -246,7 +249,6 @@ elif [ "${ID}" == "freebsd" ] ; then
       python
       R
       urw-base35-fonts
-      valgrind
    "
 
    # Development files:
@@ -260,8 +262,10 @@ elif [ "${ID}" == "freebsd" ] ; then
    # shellcheck disable=SC2086
    /usr/sbin/pkg install -y ${packages}
 
+   # Install Valgrind, if available:
+   /usr/sbin/pkg install -y valgrind || true
+
    # Fetch and check out the FreeBSD Sources:
-   . /etc/os-release
    branch="main"
    if [[ "${VERSION}" =~ -RELEASE$ ]] ; then
       branch="releng/${VERSION_ID}"
@@ -292,12 +296,15 @@ fi
 
 
 # ====== Verify command availability ========================================
-
-programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb git-lfs gm gs libtool make pkg-config shellcheck valgrind"
+programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb git-lfs gm gs libtool make pkg-config shellcheck"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
    programs="${programs} yamllint"
+fi
+if [[ "$(uname -m)" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
+   # Valgrind is at least available for AMD64 and ARM64:
+   programs="${programs} valgrind"
 fi
 
 echo "Verifying command availability:"
