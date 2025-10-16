@@ -36,6 +36,11 @@ fi
 
 
 # ====== Package installation ===============================================
+architecture="$(uname -m)"
+if [[ ! "${architecture}" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
+   echo "Docker is (currently) only available on AMD64 and ARM64 => nothing to do here!"
+   exit 0
+fi
 
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
