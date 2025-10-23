@@ -41,6 +41,7 @@ set -eux
 # * [HTop](https://htop.dev/) (process monitor)
 # * [Joe](https://joe-editor.sourceforge.io/) (editor)
 # * [JQ](https://jqlang.github.io/jq/) (JSON editing tool)
+# * [Less](https://github.com/gwsw/less) (Terminal pager)
 # * [NMap](https://nmap.org/) (network testing tool)
 # * Manual page utilities (manual page viewer)
 # * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
@@ -156,6 +157,7 @@ EOF
       iputils-ping
       joe
       jq
+      less
       make
       man
       netperfmeter
@@ -347,7 +349,7 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
+programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq less locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
