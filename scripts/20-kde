@@ -38,6 +38,7 @@ set -eux
 # * [Kile](https://kile.sourceforge.io/) (LaTeX editor)
 # * [Konsole](https://konsole.kde.org/) (console)
 # * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
+# * [Okteta](https://apps.kde.org/okteta/) Hex editor)
 # * [Okular](https://okular.kde.org/) (file viewer, e.g. for PDF)
 # * [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 # * [R](https://www.r-project.org/) (statistical computing suite)
@@ -83,6 +84,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       kile
       konsole
       libreoffice
+      okteta
       okular
       oxygen-icon-theme
       plasma-theme-oxygen
@@ -152,6 +154,7 @@ elif [ "${ID}" == "fedora" ] ; then
       konsole
       libreoffice
       google-noto-fonts-all
+      okteta
       okular
       open-sans-fonts
       oxygen-fonts
@@ -192,6 +195,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       libreoffice
       noto
       open-sans-20180831
+      okteta
       oxygen-fonts
       plasma6-oxygen
       plasma6-sddm-kcm

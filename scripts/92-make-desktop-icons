@@ -63,6 +63,7 @@ APPLICATIONS="
    org.kde.kate
    org.kde.kile
    org.kde.konsole
+   org.kde.okteta
    org.kde.okular
    org.mozilla.firefox
    org.strawberrymusicplayer.strawberry
