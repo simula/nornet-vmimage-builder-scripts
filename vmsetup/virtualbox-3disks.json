@@ -47,7 +47,7 @@
   "gfx_accelerate_3d": false,
   "gfx_efi_resolution": "{{user `vm_video`}}",
 
-  "audio_controller": "hda",
+  "audio_controller": "ac97",
 
   "iso_interface": "virtio",
   "hard_drive_interface": "virtio",
