@@ -37,7 +37,7 @@ fi
 # ====== Wireshark filter rules =============================================
 mkdir -p /root/.config/wireshark
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/wireshark"
-for file in colorfilters dfilters preferences ; do
-   cp "/tmp/wireshark/${file}" /root/.config/wireshark
+for file in colorfilters decode_as_entries dfilters preferences ; do
+   cp "/tmp/wireshark/${file}"                        /root/.config/wireshark
    sudo -u "${USER_NAME}" cp "/tmp/wireshark/${file}" "/home/${USER_NAME}/.config/wireshark"
 done
