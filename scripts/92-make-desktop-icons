@@ -53,6 +53,7 @@ DIRECTORIES="
 # Applications to be directoryed:
 APPLICATIONS="
    clementine
+   dbeaver
    dia
    firefox
    firefox-esr

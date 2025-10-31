@@ -60,18 +60,7 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   # FIXME!
-   true
-
-   # Based on: https://forums.freebsd.org/threads/how-to-install-dbeaver-in-freebsd.91496/
-
-   # pkg install -y maven openjdk17
-   # sudo -u "${USER_NAME}" wget -O /tmp/dbeaver.tar.gz "https://github.com/dbeaver/dbeaver/archive/refs/tags/23.3.3.tar.gz"
-   # cd "/home/${USER_NAME}/src"
-   # sudo -u "${USER_NAME}" tar xzf /tmp/dbeaver.tar.gz
-   # cd dbeaver*
-   # pwd
-   # sudo -u "${USER_NAME}" JAVA_HOME=/usr/local/openjdk17 mvn package -Pall-platforms
+   pkg install -y dbeaver
 
 # ------ Unknown ------------------------------------------------------------
 else
