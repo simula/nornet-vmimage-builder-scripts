@@ -60,6 +60,7 @@ APPLICATIONS="
    fractgen
    gimp
    libreoffice-startcenter
+   org.gnome.Dia
    org.inkscape.Inkscape
    org.kde.kate
    org.kde.kile

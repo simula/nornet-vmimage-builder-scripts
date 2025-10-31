@@ -29,6 +29,16 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    exit 1
 fi
 
+# ====== Prepare configuration file =========================================
+if [ ! -e "/home/${USER_NAME}/.config/strawberry/strawberry.conf" ] ; then
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/.config/strawberry"
+   ( cat <<EOF
+[MainWindow]
+do_not_show_sponsor_message=true
+EOF
+   ) | sudo -u "${USER_NAME}" tee "/home/${USER_NAME}/.config/strawberry/strawberry.conf"
+fi
+
 # ====== Add a playlist for Strawberry ======================================
 if [ -e /tmp/strawberry/Radios.m3u ] ; then
    sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Music"
