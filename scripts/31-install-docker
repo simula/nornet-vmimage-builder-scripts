@@ -33,6 +33,7 @@ if [ ! -e /etc/os-release ] ; then
    exit 1
 fi
 . /etc/os-release
+UNAME="$(uname)"
 
 
 # ====== Package installation ===============================================
@@ -117,7 +118,7 @@ fi
 
 
 # ====== Configuration ======================================================
-if [ ! -e "/etc/docker/daemon.json" ] ; then
+if [ -d "/etc/docker" ] && [ ! -e "/etc/docker/daemon.json" ] ; then
    # By default, Docker creates a network interface docker0 172.17.0.1/16.
    # Since all systems have the same network, it interferes with SCTP.
    # SCTP assumes that source and destination host are the same => ABORT
