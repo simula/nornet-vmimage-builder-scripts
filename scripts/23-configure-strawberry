@@ -30,9 +30,9 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
 fi
 
 # ====== Add a playlist for Strawberry ======================================
-if [ -e /tmp/music/Radios.m3u ] ; then
+if [ -e /tmp/strawberry/Radios.m3u ] ; then
    sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Music"
-   sudo -u "${USER_NAME}" cp /tmp/music/Radios.m3u "/home/${USER_NAME}/Music"
+   sudo -u "${USER_NAME}" cp /tmp/strawberry/Radios.m3u "/home/${USER_NAME}/Music"
 fi
 if [ -e "/home/${USER_NAME}/Music/Radios.m3u" ] ; then
    if [ ! -e "/home/${USER_NAME}/Desktop/Radios.m3u" ] ; then
