@@ -38,6 +38,7 @@ fi
 # ====== Install DBeaver Community Edition ==================================
 
 # ------ Debian -------------------------------------------------------------
+dbeaverConfigurationDirectory="/home/${USER_NAME}/.local/share/DBeaverData/workspace6"
 if [ "${ID}" == "debian" ] ; then
 
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends flatpak
@@ -51,6 +52,8 @@ elif [ "${ID}" == "ubuntu" ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends snapd
    try-hard 3 60 -- snap install dbeaver-ce
 
+   dbeaverConfigurationDirectory="/home/${USER_NAME}/snap/dbeaver-ce/current/.local/share/DBeaverData/workspace6"
+
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
@@ -60,23 +63,38 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   # FIXME!
-   true
-
-   # Based on: https://forums.freebsd.org/threads/how-to-install-dbeaver-in-freebsd.91496/
-
-   # pkg install -y maven openjdk17
-   # sudo -u "${USER_NAME}" wget -O /tmp/dbeaver.tar.gz "https://github.com/dbeaver/dbeaver/archive/refs/tags/23.3.3.tar.gz"
-   # cd "/home/${USER_NAME}/src"
-   # sudo -u "${USER_NAME}" tar xzf /tmp/dbeaver.tar.gz
-   # cd dbeaver*
-   # pwd
-   # sudo -u "${USER_NAME}" JAVA_HOME=/usr/local/openjdk17 mvn package -Pall-platforms
+   pkg install -y dbeaver
 
 # ------ Unknown ------------------------------------------------------------
 else
 
    echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
    exit 1
+
+fi
+
+
+# ====== Make initial configuration =========================================
+sudo -u "${USER_NAME}" mkdir -p "${dbeaverConfigurationDirectory}/General/.dbeaver"
+sudo -u "${USER_NAME}" mkdir -p "${dbeaverConfigurationDirectory}/.metadata/.plugins/org.eclipse.core.runtime/.settings"
+if [ ! -e "${dbeaverConfigurationDirectory}/General/.dbeaver/data-sources.json" ] ; then
+
+   echo "{}" | sudo -u "${USER_NAME}" tee "${dbeaverConfigurationDirectory}/General/.dbeaver/data-sources.json"
+
+   (
+      cat <<EOF
+eclipse.preferences.version=1
+org.jkiss.dbeaver.core.confirm.exit=never
+tipOfTheDayInitializer.notFirstRun=true
+ui.show.tip.of.the.day.on.startup=false
+EOF
+   ) | sudo -u "${USER_NAME}" tee "${dbeaverConfigurationDirectory}/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.jkiss.dbeaver.core.prefs"
+
+   (
+      cat <<EOF
+eclipse.preferences.version=1
+feature.tracking.skipConfirmation=true
+EOF
+   ) | sudo -u "${USER_NAME}" tee "${dbeaverConfigurationDirectory}/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.jkiss.dbeaver.ui.statistics.prefs"
 
 fi

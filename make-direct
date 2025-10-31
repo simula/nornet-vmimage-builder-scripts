@@ -127,9 +127,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
    sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
       awk cmake dejavu-sans-fonts gcc google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
+   sudo fc-cache -f
 elif [ "${ID}" == "freebsd" ] ; then
    sudo /usr/sbin/pkg install -y \
       cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool
+   sudo fc-cache -f
 fi
 ./generate-backgrounds
 

@@ -53,12 +53,14 @@ DIRECTORIES="
 # Applications to be directoryed:
 APPLICATIONS="
    clementine
+   dbeaver
    dia
    firefox
    firefox-esr
    fractgen
    gimp
    libreoffice-startcenter
+   org.gnome.Dia
    org.inkscape.Inkscape
    org.kde.kate
    org.kde.kile
