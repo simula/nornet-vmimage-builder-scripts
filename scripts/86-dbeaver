@@ -52,7 +52,12 @@ elif [ "${ID}" == "ubuntu" ] ; then
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends snapd
    try-hard 3 60 -- snap install dbeaver-ce
 
-   dbeaverConfigurationDirectory="/home/${USER_NAME}/snap/dbeaver-ce/current/.local/share/DBeaverData/workspace6"
+   if [ ! -d "/home/${USER_NAME}/snap/dbeaver-ce/current" ] ; then
+      dbeaverSnapVersion="$(snap list dbeaver-ce | awk '/^dbeaver-ce/ { print $3 }')"
+   else
+      dbeaverSnapVersion="current"
+   fi
+   dbeaverConfigurationDirectory="/home/${USER_NAME}/snap/dbeaver-ce/${dbeaverSnapVersion}/.local/share/DBeaverData/workspace6"
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
