@@ -22,28 +22,6 @@
 set -eux
 
 
-# ###### Run a command, retry multiple times in case of an error ############
-try-hard ()
-{
-   local max_trials=$1
-   local delay=$2
-   shift 2
-
-   local trial=0
-   while true ; do
-      trial=$(( trial+1 ))
-      echo "Trial ${trial}: $*"
-      # shellcheck disable=SC2068
-      $@ && return 0
-      if [ ${trial} -ge "${max_trials}" ] ; then
-         exit 1
-      fi
-      echo "Waiting ${delay} s before next try ..."
-      sleep "${delay}"
-   done
-}
-
-
 # ###### Clone or update Git repository #####################################
 clone-or-update ()
 {
@@ -52,11 +30,11 @@ clone-or-update ()
    local clone_maxtrials=10
    local clone_delay=60
    if [ ! -e "${repository}" ] ; then
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
    else
       pushd "${repository}"
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git fetch --all
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git pull
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git pull
       popd
    fi
 }
