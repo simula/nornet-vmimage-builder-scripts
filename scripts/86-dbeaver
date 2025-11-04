@@ -55,7 +55,7 @@ elif [ "${ID}" == "ubuntu" ] ; then
 
    if [ ! -d "/home/${USER_NAME}/snap/dbeaver-ce/current" ] ; then
       dbeaverSnapVersion="$(snap list dbeaver-ce | awk '/^dbeaver-ce/ { print $3 }')"
-      echo "V=$dbeaverSnapVersion"
+      sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/snap/dbeaver-ce/${dbeaverSnapVersion}"
       sudo -u "${USER_NAME}" ln -rs "/home/${USER_NAME}/snap/dbeaver-ce/${dbeaverSnapVersion}" "/home/${USER_NAME}/snap/dbeaver-ce/current"
    else
       dbeaverSnapVersion="current"
