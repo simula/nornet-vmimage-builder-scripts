@@ -33,7 +33,6 @@ if [ ! -e /etc/os-release ] ; then
    exit 1
 fi
 . /etc/os-release
-UNAME="$(uname)"
 
 
 # ====== Package installation ===============================================
