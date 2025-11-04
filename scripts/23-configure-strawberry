@@ -40,9 +40,12 @@ EOF
 fi
 
 # ====== Add a playlist for Strawberry ======================================
-if [ -e /tmp/strawberry/Radios.m3u ] ; then
+if [ -e /tmp/data-files/Radios.m3u ] ; then
    sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Music"
-   sudo -u "${USER_NAME}" cp /tmp/strawberry/Radios.m3u "/home/${USER_NAME}/Music"
+   sudo -u "${USER_NAME}" cp /tmp/data-files/Radios.m3u "/home/${USER_NAME}/Music"
+else
+   ls -l /tmp
+   ls -l /tmp/data-files/ || true
 fi
 if [ -e "/home/${USER_NAME}/Music/Radios.m3u" ] ; then
    if [ ! -e "/home/${USER_NAME}/Desktop/Radios.m3u" ] ; then

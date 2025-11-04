@@ -222,6 +222,7 @@ EOF
 directories="
    bootsplash-images
    configuration-files
+   data-files
    desktop-backgrounds
    face-icons
    system-info
