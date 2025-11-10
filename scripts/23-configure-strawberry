@@ -48,6 +48,7 @@ else
    ls -l /tmp/data-files/ || true
 fi
 if [ -e "/home/${USER_NAME}/Music/Radios.m3u" ] ; then
+   sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/Desktop"
    if [ ! -e "/home/${USER_NAME}/Desktop/Radios.m3u" ] ; then
       sudo -u "${USER_NAME}" ln -s "/home/${USER_NAME}/Music/Radios.m3u" "/home/${USER_NAME}/Desktop/"
    fi
