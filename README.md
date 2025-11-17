@@ -1,10 +1,11 @@
-VM Image Builder Scripts
+Virtual Machine Image Builder and System Installation Scripts
 
 <https://github.com/simula/nornet-vmimage-builder-scripts>
 
 
 # Table of Contents
--   [Introduction](#introduction)
+
+-   [What are the Virtual Machine Image Builder and System Installation Scripts](#what-are-the-virtual-machine-image-builder-and-system-installation-scripts)
 -   [VM Types](#vm-types)
     -   [VirtualBox](#virtualbox)
     -   [Proxmox](#proxmox)
@@ -31,29 +32,29 @@ VM Image Builder Scripts
         -   [5gVINNI](#gvinni)
 
 
-# Introduction
+# 💡 What are the Virtual Machine Image Builder and System Installation Scripts?
 
 This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, basic console setups, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
 
-As part of the VM setup process, it is also possible to set custom bootsplashes and desktop/screen locker/login background images for customisation.
+As part of the VM setup process, it is also possible to set custom boot-splashes and desktop/screen locker/login background images for customisation.
 
 
-# Requirements
+# ⭐ Requirements
 
 * [Packer](https://www.packer.io) (get up-to-date version from <https://www.packer.io>, the Ubuntu-provided package or snap is out-of-date!)
 * Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g.&nbsp;VirtualBox, QEMU, Proxmox, ...
 
-    ```
-    packer plugins install github.com/hashicorp/virtualbox
-    packer plugins install github.com/hashicorp/proxmox
-    packer plugins install github.com/hashicorp/qemu
-    packer plugins install github.com/hashicorp/docker
-    packer plugins install github.com/hashicorp/vsphere
-    ...
-    packer plugins installed
-    ```
+  ```
+  packer plugins install github.com/hashicorp/virtualbox
+  packer plugins install github.com/hashicorp/proxmox
+  packer plugins install github.com/hashicorp/qemu
+  packer plugins install github.com/hashicorp/docker
+  packer plugins install github.com/hashicorp/vsphere
+  ...
+  packer plugins installed
+  ```
 
-* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), DejaVu Fonts, for building the background images:
+* [CMake](https://cmake.org/), [ExifTool](https://exiftool.org/), [Gimp](https://www.gimp.org/), [GraphicsMagick](http://www.graphicsmagick.org/), [Noto Fonts](https://fonts.google.com/noto), DejaVu Fonts, for building the boot-splash and desktop/screen locker/login background images:
 
   - Ubuntu/Debian:
 
@@ -75,18 +76,21 @@ As part of the VM setup process, it is also possible to set custom bootsplashes 
        cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool
     ```
 
-  Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing the dependencies.
+Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing of the system itself (i.e.&nbsp;*not* building VMs but configuring the system itself):
+```
+./make-direct <PROJECT>
+```
 
-To start a VM build, run one the the "make" scripts:
+To start a VM build, run one the the `make-*` scripts:
 ```
 ./make-<PROJECT>
 ```
 with &lt;PROJECT&gt; e.g. "minimal", "basic", "development", "kde", "kde+development", "hipercontracer", etc.!
 
-See further details about the different VM hypervisor variants, systems, and projcts (choice of packages to install) below!
+See further details about the different VM hypervisor variants, systems, and projects (choice of packages to install) below!
 
 
-# Hypervisors
+# 🎫 Hypervisors
 
 ## VirtualBox
 
@@ -111,7 +115,7 @@ Note: The vSphere support of the scripts is *not* tested any more!
 Containers for usage in Docker.
 
 
-# Systems
+# 💻 Systems
 
 The following operating systems are currently supported as VM guests:
 * [Ubuntu Linux](https://ubuntu.com/)
@@ -127,9 +131,9 @@ General settings:
 
 * Base: Ubuntu Server ISO
 * EFI boot
-* Using BTRFS for / and /home, with subvolumes @ and @home
+* Using BTRFS for `/` and `/home`, with subvolumes `@` and `@home`
 * Added Launchpad PPA dreibh/ppa (<https://launchpad.net/~dreibh/+archive/ubuntu/ppa/+packages>)
-* Purged and blocked snapd. To install snapd again, remove /etc/apt/preferences.d/block-snapd.pref!
+* Purged and blocked snapd. To install snapd again, remove `/etc/apt/preferences.d/block-snapd.pref`!
 
 ## Debian Linux
 
@@ -137,7 +141,7 @@ General settings:
 
 * Base: Debian Netinstall ISO
 * EFI boot
-* Using BTRFS for / and /home, with subvolumes @ and @home
+* Using BTRFS for `/` and `/home`, with subvolumes `@` and `@home`
 
 ## Fedora Core Linux
 
@@ -157,7 +161,7 @@ General settings:
 * Using ZFS for / and /home
 
 
-# Projects
+# 📦 Projects
 
 Details can be found in the directory [projects](https://github.com/simula/nornet-vmimage-builder-scripts/tree/master/projects).
 
@@ -194,7 +198,7 @@ The "Basic" installation is based on the [Minimal](#minimal) installation.
 It must contain the following packages:
 
 * [ACL](https://savannah.nongnu.org/projects/acl/) (Tools for ACL configuration, particularly getfacl and setfacl commands)
-* Base64 (base64 tool)
+* [Base64](https://en.wikipedia.org/wiki/Base64) (base64 tool)
 * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 * [BZip2](https://sourceware.org/bzip2/) (compression tool)
@@ -236,6 +240,7 @@ It must contain the following packages:
 The "KDE" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
+
 * The [KDE Plasma Desktop](https://kde.org/plasma-desktop/) with Oxygen theme and [SDDM](https://github.com/sddm/sddm)
 * [DejaVu Fonts](https://dejavu-fonts.github.io/) ([DejaVu fonts)
 * [Dia](https://wiki.gnome.org/Apps/Dia) (drawing tool)
@@ -256,6 +261,7 @@ It must contain the following packages:
 * [Wireshark](https://www.wireshark.org/) (packet sniffer, GUI version)
 
 Further properties:
+
 * Configured KDE and SDDM login manager
 * Configured 4 virtual desktops
 * Configured switchable keyboard layouts
@@ -270,6 +276,7 @@ Further properties:
 The "Development" installation is based on the [Basic](#basic) installation.
 
 It must contain the following packages:
+
 * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
 * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 * [CMake](https://cmake.org/) (build tool)
@@ -294,10 +301,12 @@ It must contain the following packages:
 * [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Linux systems only!)
 
 It must contain the following libraries and development files:
+
 * [BOOST C++ Libraries](https://www.boost.org/) (portable C++ libraries)
 * SCTP development files (if needed)
 
 Further properties:
+
 * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!
 * Wireshark as regular user is allowed. ⚠WARNING: Development settings are intended for developers only!
 * Source packages enabled from package manager (if available)
@@ -325,7 +334,7 @@ Basic for general-purpose desktop usage, particularly for working with [NEAT](ht
 Features:
 
 * [NEAT](https://github.com/NEAT-project/neat) installed (NEAT library as well as NEAT sockets API library).
-* Source repositories cloned under ~/src. Build dependencies are already installed.
+* Source repositories cloned under `$HOME/src`. Build dependencies are already installed.
 
 ### RSerPoolDemo
 
@@ -336,7 +345,7 @@ Features:
 
 * [RSPLIB](https://www.nntb.no/~dreibh/rserpool/index.html#Download) installed.
 * [RSerPoolDemo-Tool](https://www.nntb.no/~dreibh/rserpool/index.html#DemoTool) installed.
-* Source repositories cloned under ~/src. Build dependencies are already installed.
+* Source repositories cloned under `$HOME/src`. Build dependencies are already installed.
 
 ### SimulaMet-Desktop
 
@@ -344,8 +353,34 @@ These are SimulaMet desktop VMs, based on the [KDE+Development](#kdedevelopment)
 
 Features:
 
-* Some [SimulaMet](https://code.simula.no/)-related source repositories cloned under ~/src.
+* Some [SimulaMet](https://code.simula.no/)-related source repositories cloned under `$HOME/src`.
 
 ### 5gVINNI
 
 Basic for general-purpose desktop usage, particularly for working with [5gVINNI](https://www.5g-vinni.eu/). They base on the NorNet images.
+
+
+# 🔗 Useful Links
+
+## Networking and System Management Software
+
+* [System-Tools – Tools for Basic System Management](https://www.nntb.no/~dreibh/system-tools/)
+* [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/)
+* [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/)
+* [Dynamic Multi-Homing Setup (DynMHS)](https://www.nntb.no/~dreibh/dynmhs/)
+* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/)
+* [TSCTP – An SCTP test tool](https://www.nntb.no/~dreibh/tsctp/)
+* [Thomas Dreibholz's Reliable Server Pooling Page](https://www.nntb.no/~dreibh/rserpool/)
+* [Thomas Dreibholz's SCTP Page](https://www.nntb.no/~dreibh/sctp/)
+* [Wireshark](https://www.wireshark.org/)
+
+## Projects using the VM Image Builder and System Installation Scripts
+
+* [NorNet – A Real-World, Large-Scale Multi-Homing Testbed](https://www.nntb.no/)
+* [GAIA – Cyber Sovereignty](https://gaia.nntb.no/)
+* [RAKSHA – 5G Security for Critical Communications](https://www.simulamet.no/research/projects/raksha-5g-security-critical-communications)
+* [5G-VINNI – 5G Verticals Innovation Infrastructure](https://www.5g-vinni.eu/)
+* [HENCSAT – Highly Efficient Network Coding for Satellite Applications Test-bed](https://connectivity.esa.int/projects/hencsat)
+* [SEARCH – Synthetic Healthcare Data Governance Hub](https://ihi-search.eu/)
+* [MELODIC – Multi-Cloud Execution-Ware for Large-scale Optimised Data-Intensive Computing](https://melodic.cloud/)
+* [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
