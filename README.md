@@ -81,7 +81,7 @@ To start a VM build, run one the the "make" scripts:
 ```
 ./make-<PROJECT>
 ```
-with <PROJECT> e.g. "minimal", "basic", "development", "kde", "kde+development", "hipercontracer", etc.!
+with &lt;PROJECT&gt; e.g. "minimal", "basic", "development", "kde", "kde+development", "hipercontracer", etc.!
 
 See further details about the different VM hypervisor variants, systems, and projcts (choice of packages to install) below!
 
