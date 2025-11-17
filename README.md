@@ -384,3 +384,4 @@ Basic for general-purpose desktop usage, particularly for working with [5gVINNI]
 * [SEARCH – Synthetic Healthcare Data Governance Hub](https://ihi-search.eu/)
 * [MELODIC – Multi-Cloud Execution-Ware for Large-scale Optimised Data-Intensive Computing](https://melodic.cloud/)
 * [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
+* [RITE  – Reducing Internet Transport Latency](https://web.archive.org/web/20221006013921/https://riteproject.eu/)
