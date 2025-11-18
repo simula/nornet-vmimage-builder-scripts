@@ -30,11 +30,11 @@ clone-or-update ()
    local clone_maxtrials=10
    local clone_delay=60
    if [ ! -e "${repository}" ] ; then
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git clone "${url}" "${repository}"
    else
       pushd "${repository}"
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git fetch --all
-      try-hard ${clone_maxtrials} ${clone_delay}   sudo -u "${USER_NAME}" git pull
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay} -- sudo -u "${USER_NAME}" git pull
       popd
    fi
 }
