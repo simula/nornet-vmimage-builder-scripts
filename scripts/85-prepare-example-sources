@@ -81,9 +81,12 @@ cd "/home/${USER_NAME}/src"
 
 clone-or-update bibtexconv              https://dreibh@github.com/dreibh/bibtexconv
 clone-or-update build-tools             https://dreibh@github.com/dreibh/build-tools
+clone-or-update dynmhs                  https://dreibh@github.com/simula/dynmhs
+clone-or-update fractgen                https://dreibh@github.com/dreibh/fractgen
 clone-or-update fractgen                https://dreibh@github.com/dreibh/fractgen
 clone-or-update hipercontracer          https://dreibh@github.com/dreibh/hipercontracer
 clone-or-update netperfmeter            https://dreibh@github.com/dreibh/netperfmeter
+clone-or-update rserpooldemo            https://dreibh@github.com/dreibh/rserpooldemo
 clone-or-update rsplib                  https://dreibh@github.com/dreibh/rsplib
 clone-or-update subnetcalc              https://dreibh@github.com/dreibh/subnetcalc
 clone-or-update system-tools            https://dreibh@github.com/dreibh/system-tools

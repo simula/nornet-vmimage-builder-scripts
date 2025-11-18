@@ -58,7 +58,11 @@ sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
 cd "/home/${USER_NAME}/src"
 
 clone-or-update hipercontracer          https://dreibh@github.com/dreibh/hipercontracer
+
+clone-or-update dynmhs                  https://dreibh@github.com/simula/dynmhs
+clone-or-update netperfmeter            https://dreibh@github.com/dreibh/netperfmeter
 clone-or-update system-tools            https://dreibh@github.com/dreibh/system-tools
+clone-or-update tsctp                   https://dreibh@github.com/dreibh/tsctp
 clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-vmimage-builder-scripts
 
 
