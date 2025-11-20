@@ -17,7 +17,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -x
+set -ux
 
 
 # ###### Partitioning #######################################################
@@ -34,7 +34,7 @@ for d in ada0 da0 vtbd0; do
     break
   fi
 done
-if [ "$DISK_ROOT" == "" ] ; then
+if [ "$DISK_ROOT" = "" ] ; then
    echo >&2 "ERROR: Root disk not found!"
    exit 1
 fi
@@ -46,7 +46,7 @@ for d in ada1 da1 vtbd1; do
     break
   fi
 done
-if [ "$DISK_HOME" == "" ] ; then
+if [ "$DISK_HOME" = "" ] ; then
    echo >&2 "ERROR: Home disk not found!"
    exit 1
 fi
@@ -58,7 +58,7 @@ for d in ada2 da2 vtbd2; do
     break
   fi
 done
-if [ "$DISK_SWAP" == "" ] ; then
+if [ "$DISK_SWAP" = "" ] ; then
    echo >&2 "ERROR: Swap disk not found!"
    exit 1
 fi
@@ -67,8 +67,9 @@ echo "root=$DISK_ROOT home=$DISK_HOME swap=$DISK_SWAP"
 
 
 # ====== Just make sure that the script can run multiple times ==============
-umount /mnt/usr/home/$zfsRootPool/home /mnt/usr/home/$zfsHomePool || true
+umount /mnt/usr/home/$zfsRootPool/home /mnt/usr/home/$zfsHomePool /mnt/boot/efi || true
 while umount /mnt ; do true ; done
+swapoff -a
 
 zpool destroy $zfsRootPool 2>/dev/null || true
 gpart delete -i 2 $DISK_ROOT 2>/dev/null || true
@@ -145,7 +146,7 @@ zfs set compress=on                                            $zfsHomePool
 zfs create -o mountpoint=none                                  $zfsHomePool/HOME
 zfs create -o mountpoint=/usr/home                             $zfsHomePool/HOME/default
 
-zpool import $zfsHomePool -o altroot=/mnt
+zpool import $zfsHomePool -o altroot=/mnt || true
 
 
 # ====== Prepare swap disk ==================================================
