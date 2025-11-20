@@ -22,6 +22,11 @@
 
 DISTRIBUTIONS="kernel.txz base.txz"
 
+. /etc/os-release
+_UNAME_R="$(uname -r)"
+_UNAME_R="${_UNAME_R%-p*}"
+export BSDINSTALL_DISTSITE="http://download.freebsd.org/ftp/releases/$(uname -m)/$(uname -p)/${_UNAME_R}"
+
 for d in ada0 da0 vtbd0; do
   if [ -e "/dev/$d" ]; then
     export ZFSBOOT_DISKS=$d
@@ -66,9 +71,17 @@ ZFSBOOT_DATASETS="
 export nonInteractive="YES"
 
 
+# NOTE:
+# For unknown reason FreeBSD 15.0's bsdinstall removes the existing
+# resolv.conf, and dhclient fails to add it again. Make sure that
+# at least some public DNS servers are there for installation:
+echo 'nameserver 1.1.1.1' >>/tmp/bsdinstall_etc/resolv.conf
+echo 'nameserver 9.9.9.9' >>/tmp/bsdinstall_etc/resolv.conf
+
+
 #!/bin/sh
 
-set -ex
+set -eux
 
 # ====== Basic configuration ================================================
 
@@ -81,7 +94,7 @@ sysrc ifconfig_$interface="dhcp"
 sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
 sysrc ipv6_activate_all_interfaces="YES"
 sysrc ipv6_privacy="YES"
-dhclient $interface
+# dhclient $interface
 
 # Enable basic daemons:
 sysrc dumpdev="AUTO"
@@ -133,7 +146,7 @@ FreeBSD: {
 
 # Define "Latest" repository with the latest updates:
 Latest: {
-  url: "pkg+https://pkg.FreeBSD.org/\${ABI}//latest",
+  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/latest",
   mirror_type: "srv",
   signature_type: "fingerprints",
   fingerprints: "/usr/share/keys/pkg",

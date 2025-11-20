@@ -26,7 +26,7 @@ set -eu
 HYPERVISOR="VirtualBox"
 # SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
 SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
-# SYSTEMS="Ubuntu-24.04"
+SYSTEMS="FreeBSD-14.3-RELEASE FreeBSD-15.0-RELEASE"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
