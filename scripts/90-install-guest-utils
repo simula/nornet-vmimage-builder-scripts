@@ -48,12 +48,36 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-         virtualbox-guest-utils || true
-      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
-         # System has X11 -> also install X11 utilities as well:
+      # shellcheck disable=SC2071
+      if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" > "12" ]] ; then
+         # FIXME! Yet another ugly Debian work-around:
+         #        virtualbox-guest-utils/x11 is missing in Debian 13
+         #        => needs to be added manually:
+         architecture="$(dpkg --print-architecture)"
+         cd /tmp
+         wget -4rq --no-parent --accept-regex 'virtualbox-guest-.*deb$' https://ftp.debian.org/debian/pool/contrib/v/virtualbox/
+         pkg1="$(find /tmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-utils_*_${architecture}.deb")"
+         if [ ! -e /usr/lib/systemd/system/sddm.service ] ; then
+            packages="${pkg1}"
+         else
+            pkg2="$(find /tmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-x11_*_${architecture}.deb")"
+            packages="${pkg1} ${pkg2}"
+         fi
+         version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
+         echo "${packages}"
+         echo "${version}"
+         packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
+         echo "${packages}"
+         # shellcheck disable=SC2086
+         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      else
          env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-            virtualbox-guest-x11 || true
+            virtualbox-guest-utils || true
+         if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+            # System has X11 -> also install X11 utilities as well:
+            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+               virtualbox-guest-x11 || true
+         fi
       fi
    # ------ vSphere ---------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
