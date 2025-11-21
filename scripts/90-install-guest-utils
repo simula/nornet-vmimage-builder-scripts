@@ -48,7 +48,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      # NOTE: virtualbox-guest-dkms is obsolete now!
       env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
          virtualbox-guest-utils || true
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
@@ -115,7 +114,7 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      /usr/sbin/pkg install -y virtualbox-ose-additions
+      /usr/sbin/pkg install -y virtualbox-ose-additions-72
       sysrc vboxguest_enable="YES"   ; service vboxguest   start || true
       sysrc vboxservice_enable="YES" ; service vboxservice start || true
    # ------ vSphere ---------------------------------------------------------
