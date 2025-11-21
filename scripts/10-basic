@@ -82,12 +82,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      # FIXME! Debian Trixie is not released yet => no FastTrack repository!
-      if [ "${VERSION_CODENAME}" != "trixie" ] && [ "${VERSION_CODENAME}" != "sid" ] ; then
+      if [ "${VERSION_CODENAME}" != "sid" ] ; then
          DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
          cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
-deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
-# deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+deb [signed-by=/usr/share/keyrings/fasttrack-archive-keyring.gpg] http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+# deb-src [signed-by=/usr/share/keyrings/fasttrack-archive-keyring.gpg] http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 EOF
          /usr/bin/apt-get update
       fi
