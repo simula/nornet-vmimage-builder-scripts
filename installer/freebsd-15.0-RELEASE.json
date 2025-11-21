@@ -37,7 +37,7 @@
     [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
     [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
   ],
-  "boot_wait": "30s",
+  "boot_wait": "45s",
   "boot_command": [
     "s<enter><wait>",
     "cd /tmp && dhclient vtnet0 && ",
