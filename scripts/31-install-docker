@@ -154,7 +154,9 @@ EOF
 fi
 if [ -e "/usr/local/etc/containers/containers.conf" ] ; then
    # By default, Podman creates a default network 10.88.0.0/16.
-   network="169.254.$(( 1 + (RANDOM % 253) )).$(( ((RANDOM % 4) << 6) + 1 ))/26"
+   # Unfortunately, link-local IPv4 addresses do not work here.
+   # => Using 192.168.x.y instead:
+   network="192.168.$(( 1 + (RANDOM % 253) )).$(( ((RANDOM % 4) << 6) + 1 ))/26"
    sed -e "s@^#default_subnet[ \t]*=[ \t]*\"10.88.0.0/16\"@default_subnet = \"${network}\"@" \
        </usr/local/etc/containers/containers.conf \
        >/usr/local/etc/containers/containers.conf.new
