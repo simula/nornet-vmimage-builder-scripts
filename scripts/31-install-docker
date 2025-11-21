@@ -110,16 +110,22 @@ elif [ "${ID}" == "freebsd" ] ; then
    /usr/sbin/pkg install -y podman-suite
 
    if [ ! -e /etc/pf.conf ] ; then
-      cp /usr/local/etc/containers/pf.conf.sample /etc/pf.conf
+      sed -e 's/^v4egress_if[ \t]*=.*$/v4egress_if = vtnet0/' \
+          -e 's/^v6egress_if[ \t]*=.*$/v6egress_if = vtnet0/' \
+          </usr/local/etc/containers/pf.conf.sample \
+          >/etc/pf.conf
    fi
    service pf enable
    service pf start
    service linux enable
    service linux start
+   service podman enable
+   service podman start
 
    # Tests:
-   # podman run ghcr.io/freebsd/freebsd-runtime:14.3 cat /etc/os-release
-   # podman run --rm --os=linux docker.io/ubuntu:latest cat /etc/os-release
+   # sudo podman run -it --rm ghcr.io/freebsd/freebsd-runtime:14.3 freebsd-version
+   # sudo podman run -it --rm --os=linux docker.io/ubuntu:latest cat /etc/os-release
+   # sudo podman run -it --rm --os=linux docker.io/dreibh/basic-debian:13 bash --login
 
 # ------ Unknown ------------------------------------------------------------
 else
@@ -145,6 +151,14 @@ if [ -d "/etc/docker" ] && [ ! -e "/etc/docker/daemon.json" ] ; then
 EOF
    ) | sudo tee "/etc/docker/daemon.json"
    service docker restart || true
+fi
+if [ -e "/usr/local/etc/containers/containers.conf" ] ; then
+   # By default, Podman creates a default network 10.88.0.0/16.
+   network="169.254.$(( 1 + (RANDOM % 253) )).$(( ((RANDOM % 4) << 6) + 1 ))/26"
+   sed -e "s@^#default_subnet[ \t]*=[ \t]*\"10.88.0.0/16\"@default_subnet = \"${network}\"@" \
+       </usr/local/etc/containers/containers.conf \
+       >/usr/local/etc/containers/containers.conf.new
+   mv /usr/local/etc/containers/containers.conf.new /usr/local/etc/containers/containers.conf
 fi
 
 
