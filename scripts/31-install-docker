@@ -104,8 +104,22 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   # There is no Docker in FreeBSD, yet!
-   true
+   # FreeBSD has support for Podman:
+   # https://freebsdfoundation.org/blog/oci-containers-on-freebsd/
+
+   /usr/sbin/pkg install -y podman-suite
+
+   if [ ! -e /etc/pf.conf ] ; then
+      cp /usr/local/etc/containers/pf.conf.sample /etc/pf.conf
+   fi
+   service pf enable
+   service pf start
+   service linux enable
+   service linux start
+
+   # Tests:
+   # podman run ghcr.io/freebsd/freebsd-runtime:14.3 cat /etc/os-release
+   # podman run --rm --os=linux docker.io/ubuntu:latest cat /etc/os-release
 
 # ------ Unknown ------------------------------------------------------------
 else
