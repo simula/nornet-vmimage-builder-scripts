@@ -7,12 +7,6 @@
 </h1>
 
 
-
-Virtual Machine Image Builder and System Installation Scripts
-
-<https://github.com/simula/nornet-vmimage-builder-scripts>
-
-
 # Table of Contents
 
 -   [What are the Virtual Machine Image Builder and System Installation Scripts](#what-are-the-virtual-machine-image-builder-and-system-installation-scripts)
@@ -44,12 +38,34 @@ Virtual Machine Image Builder and System Installation Scripts
 
 # 💡 What are the Virtual Machine Image Builder and System Installation Scripts?
 
-This repository contains Virtual Machine (VM) image building scripts, to automatically generate freshly installed VM images for different projects and purposes, like minimal servers, basic console setups, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
+This repository contains Virtual Machine (VM) image building and system installation scripts, to automatically generate freshly installed VM or container images for different projects and purposes, like minimal servers, basic console setups, development environments, as well as full desktop machines. The scripts use Packer (<https://www.packer.io>).
 
 As part of the VM setup process, it is also possible to set custom boot-splashes and desktop/screen locker/login background images for customisation.
 
 
+# 💾 Sources
+
+The Virtual Machine Image Builder and System Installation Scripts are released under the [GNU General Public Licence&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
+
+The Git repository of the Virtual Machine Image Builder and System Installation Scripts sources can be found at [https://github.com/simula/nornet-vmimage-builder-scripts](https://github.com/simula/nornet-vmimage-builder-scripts):
+
+```bash
+git clone https://github.com/simula/nornet-vmimage-builder-scripts
+cd nornet-vmimage-builder-scripts
+```
+
+Contributions:
+
+* Issue tracker: [https://github.com/simula/nornet-vmimage-builder-scripts/issues](https://github.com/simula/nornet-vmimage-builder-scripts/issues).
+  Please submit bug reports, issues, questions, etc. in the issue tracker!
+
+* Pull Requests for the Virtual Machine Image Builder and System Installation Scripts: [https://github.com/simula/nornet-vmimage-builder-scripts/pulls](https://github.com/simula/nornet-vmimage-builder-scripts/pulls).
+  Your contributions to the Virtual Machine Image Builder and System Installation Scripts are always welcome!
+
+
 # ⭐ Requirements
+
+The following installations of dependencies are necessary:
 
 * [Packer](https://www.packer.io) (get up-to-date version from <https://www.packer.io>, the Ubuntu-provided package or snap is out-of-date!)
 * Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g.&nbsp;VirtualBox, QEMU, Proxmox, ...
@@ -85,6 +101,9 @@ As part of the VM setup process, it is also possible to set custom boot-splashes
     sudo pkg install -y \
        cmake dejavu gimp3-app noto-sans GraphicsMagick p5-Image-ExifTool
     ```
+
+
+# 💻 Usage
 
 Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing of the system itself (i.e.&nbsp;*not* building VMs but configuring the system itself):
 ```
