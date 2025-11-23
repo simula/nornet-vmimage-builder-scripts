@@ -1,3 +1,13 @@
+<h1 align="center">
+ Virtual Machine Image Builder and System Installation Scripts<br />
+ <a href="https://www.nntb.no/~dreibh/vmimage-builder-scripts/">
+  <img alt="Virtual Machine Image Builder and System Installation Scripts Logo" src="logo/Logo-VMImageBuilderScripts.svg" width="25%" /><br />
+  <span style="font-size: 75%;">https://www.nntb.no/~dreibh/vmimage-builder-scripts</span>
+ </a>
+</h1>
+
+
+
 Virtual Machine Image Builder and System Installation Scripts
 
 <https://github.com/simula/nornet-vmimage-builder-scripts>
