@@ -123,15 +123,15 @@ See further details about the different VM hypervisor variants, systems, and pro
 
 ## VirtualBox
 
-The VirtualBox images use optimised settings for display, network and storage. Two disk layouts are available: 3-disks (separate disks for /, /home, and swap) and 1-disk (one disk for everything).
+The VirtualBox images use optimised settings for display, network and storage. Two disk layouts are available: 3-disks (separate disks for `/`, `/home`, and swap; recommended) and 1-disk (one disk for everything).
 
 ## Proxmox
 
-VMs for usage in Proxmox. They are basically like the VirtualBox variant, with the QEMU Guest Agent installed.
+VMs for usage in Proxmox. They are basically like the VirtualBox variant, with the QEMU Guest Agent installed. Two disk layouts are available: 3-disks (separate disks for `/`, `/home`, and swap; recommended) and 1-disk (one disk for everything).
 
 ## QEMU
 
-The QEMU images use optimised settings for display, network and storage. Two disk layouts are available: 3-disks (separate disks for /, /home, and swap) and 1-disk (one disk for everything). These images are mainly useful for OpenStack, for which the layout should be 1-disk.
+The QEMU images use optimised settings for display, network and storage. Two disk layouts are available: 3-disks (separate disks for `/`, `/home`, and swap) and 1-disk (one disk for everything). The QEMU images are particularly useful for OpenStack, for which the disk layout should be 1-disk.
 
 ## vSphere
 
@@ -147,6 +147,7 @@ Containers for usage in Docker.
 # 💻 Systems
 
 The following operating systems are currently supported as VM guests:
+
 * [Ubuntu Linux](https://ubuntu.com/)
 * [Debian Linux](https://www.debian.org/)
 * [Fedora Core Linux](https://getfedora.org/de/)
@@ -178,7 +179,7 @@ General settings:
 
 * Base: Fedora Core Netinstall ISO
 * EFI boot
-* Using XFS for / and /home
+* Using XFS for `/` and `/home`
 * Added COPR PPA dreibh/ppa (<https://copr.fedorainfracloud.org/coprs/dreibh/ppa/>)
 
 ## FreeBSD
@@ -187,7 +188,7 @@ General settings:
 
 * Base: FreeBSD installation ISO
 * EFI boot
-* Using ZFS for / and /home
+* Using ZFS for `/` and `/home`
 
 
 # 📦 Projects
@@ -210,7 +211,7 @@ Provided packages:
 
 Further properties:
 
-* /etc/os-release with operating system information exists
+* `/etc/os-release` with operating system information exists
 * Bash as default shell
 * Explicit Congestion Notification (ECN, [RFC 3168](https://www.rfc-editor.org/rfc/rfc3168.html)) enabled
 * Stream Control Transmission Protocol (SCTP, [RFC 4960](https://www.rfc-editor.org/rfc/rfc4960.html)) enabled
