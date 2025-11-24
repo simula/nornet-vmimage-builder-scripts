@@ -51,7 +51,7 @@ set -eux
 #
 # It must contain the following libraries and development files:
 # * [BOOST C++ Libraries](https://www.boost.org/) (portable C++ libraries)
-# * SCTP development files (if needed)
+# * SCTP development files
 #
 # Further properties:
 # * Password-less sudo calls. ⚠WARNING: Development settings are intended for developers only!

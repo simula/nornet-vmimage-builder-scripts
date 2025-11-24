@@ -30,7 +30,7 @@ set -eux
 # * [cURL](https://curl.se/) (download tool)
 # * [Git](https://git-scm.com/) (revision management)
 # * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
-# * Ping (network connectivity check)
+# * [Ping](https://en.wikipedia.org/wiki/Ping_(networking_utility)) (network connectivity check)
 # * [Sudo](https://www.sudo.ws/) (privileged command execution)
 # * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 #

@@ -204,7 +204,7 @@ Provided packages:
 * [cURL](https://curl.se/) (download tool)
 * [Git](https://git-scm.com/) (revision management)
 * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
-* Ping (network connectivity check)
+* [Ping](https://en.wikipedia.org/wiki/Ping_(networking_utility)) (network connectivity check)
 * [Sudo](https://www.sudo.ws/) (privileged command execution)
 * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
@@ -212,8 +212,8 @@ Further properties:
 
 * /etc/os-release with operating system information exists
 * Bash as default shell
-* Explicit Congestion Notification (ECN, RFC 3168) enabled
-* Stream Control Transmission Protocol (SCTP, RFC 4960) enabled
+* Explicit Congestion Notification (ECN, [RFC 3168](https://www.rfc-editor.org/rfc/rfc3168.html)) enabled
+* Stream Control Transmission Protocol (SCTP, [RFC 4960](https://www.rfc-editor.org/rfc/rfc4960.html)) enabled
 * SSH server enabled
 * Hardened SSH server and client settings (weak algorithms disabled)
 * UTF-8 character encoding
@@ -234,7 +234,7 @@ It must contain the following packages:
 * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
 * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
-* GrowPart (Partition growing tool; on Linux systems only!)
+* [GrowPart](https://manpages.ubuntu.com/manpages/plucky/man1/growpart.1.html) (Partition growing tool; on Linux systems only!)
 * [IDN](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html) (Internationalised Domain Names command line tool)
 * [GNU Parallel](https://www.gnu.org/software/parallel/) (Parallel job execution)
 * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
@@ -244,20 +244,20 @@ It must contain the following packages:
 * [JQ](https://jqlang.github.io/jq/) (JSON editing tool)
 * [Less](https://github.com/gwsw/less) (Terminal pager)
 * [NMap](https://nmap.org/) (network testing tool)
-* Manual page utilities (manual page viewer)
+* [Manual page utilities](https://man7.org/linux/man-pages/man1/man.1.html) (manual page viewer)
 * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
 * [NetPlan](https://netplan.io/) (network configuration; on Linux systems only!)
 * [OpenSSL](https://openssl.org/) (Cryptography and TLS toolkit)
-* Ping, Traceroute, ifconfig (basic networking tools)
+* [Traceroute](https://en.wikipedia.org/wiki/Traceroute), [ifconfig](https://en.wikipedia.org/wiki/Ifconfig) (basic networking tools)
 * [PLocate](https://plocate.sesse.net/) ("locate" command for finding files)
-* PwGen (password generator)
+* [PwGen](https://opensource.com/article/21/7/generate-passwords-pwgen) (secure password generator)
 * [Python](https://www.python.org/) (Python 3 interpreter)
 * [RSPLIB RSerPool](https://www.nntb.no/~dreibh/rserpool/) Tools (RSerPool testing tools)
 * [RSync](https://rsync.samba.org/) Tools (file synchronisation)
 * [SubNetCalc](https://www.nntb.no/~dreibh/subnetcalc/) (address calculator)
 * [System-Tools](https://www.nntb.no/~dreibh/system-tools/) (system information on login)
 * [TCPDump](https://www.tcpdump.org/) (packet sniffer)
-* Tree (tree view of directory hierachy)
+* [Tree](https://linux.die.net/man/1/tree) (tree view of directory hierachy)
 * [TSCTP](https://www.nntb.no/~dreibh/tsctp/) (SCTP test tool)
 * [T-Shark](https://www.wireshark.org/) (packet sniffer, CLI-version for Wireshark)
 * [UUID](http://www.ossp.org/pkg/lib/uuid/) (UUID generator)
@@ -332,7 +332,7 @@ It must contain the following packages:
 It must contain the following libraries and development files:
 
 * [BOOST C++ Libraries](https://www.boost.org/) (portable C++ libraries)
-* SCTP development files (if needed)
+* SCTP development files
 
 Further properties:
 
