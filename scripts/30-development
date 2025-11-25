@@ -126,10 +126,13 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libpqxx-dev
       libsctp-dev
       libssl-dev
-      qtchooser
       zlib1g-dev
    "
-   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
+
+   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" -lt 11 ]] ; then
+     # Debian 11: Qt 5
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
+   elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
       # Ubuntu 12.04, 14.04:
       packages="${packages} libtool libmariadbclient-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
@@ -207,7 +210,6 @@ elif [ "${ID}" == "fedora" ] ; then
       openssl-devel
       qt6-linguist
       qt6-qtbase-devel
-      qtchooser
       rsplib-libcpprspserver-devel
       rsplib-librsplib-devel
       xz-devel
