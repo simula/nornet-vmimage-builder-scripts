@@ -126,21 +126,24 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libpqxx-dev
       libsctp-dev
       libssl-dev
-      qtbase5-dev
-      qtbase5-dev-tools
       qtchooser
-      qttools5-dev
       zlib1g-dev
    "
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
       # Ubuntu 12.04, 14.04:
-      packages="${packages} libtool libmariadbclient-dev"
+      packages="${packages} libtool libmariadbclient-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
       # Ubuntu 16.04:
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
+   elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[89]\.[01][04]$ ]] ; then
+     # Ubuntu 18.04: Qt 5
+      packages="${packages} qtbase5-dev qtbase5-dev-tools qttools5-dev"
+   elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^2[01]\.[01][04]$ ]] ; then
+     # Ubuntu 20.04: Qt 5
+      packages="${packages} qtbase5-dev qtbase5-dev-tools qttools5-dev"
    else
       # Newer Ubuntu and Debian systems:
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qt6-base-dev qt6-l10n-tools"
    fi
 
    # shellcheck disable=SC2086
@@ -161,6 +164,7 @@ elif [ "${ID}" == "fedora" ] ; then
       clang
       cmake
       dejavu-fonts-all
+      extra-cmake-modules
       flex
       g++
       gcc
@@ -201,8 +205,8 @@ elif [ "${ID}" == "fedora" ] ; then
       mariadb-connector-c-devel
       mongo-c-driver-devel
       openssl-devel
-      qt5-qtbase-devel
-      qt5-qttools-devel
+      qt6-linguist
+      qt6-qtbase-devel
       qtchooser
       rsplib-libcpprspserver-devel
       rsplib-librsplib-devel
@@ -256,7 +260,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       boost-all
       mongo-c-driver
       postgresql-libpqxx
-      qt5
+      qt6-base
    "
 
    # shellcheck disable=SC2086
