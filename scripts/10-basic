@@ -82,7 +82,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      if [ "${VERSION_CODENAME}" != "sid" ] ; then
+      # FIXME: Does not work with Bookworm!
+      # != "sid"
+      if [ "${VERSION_CODENAME}" == "trixie" ] ; then
          DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
          cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
 deb [signed-by=/usr/share/keyrings/fasttrack-archive-keyring.gpg] http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
