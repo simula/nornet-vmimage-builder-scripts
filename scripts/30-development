@@ -129,7 +129,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       zlib1g-dev
    "
 
-   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" -lt 11 ]] ; then
+   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" -le 11 ]] ; then
      # Debian 11: Qt 5
       packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
@@ -140,10 +140,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[89]\.[01][04]$ ]] ; then
      # Ubuntu 18.04: Qt 5
-      packages="${packages} qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev"
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^2[01]\.[01][04]$ ]] ; then
      # Ubuntu 20.04: Qt 5
-      packages="${packages} qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev"
    else
       # Newer Ubuntu and Debian systems:
       packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qt6-base-dev qt6-l10n-tools"
