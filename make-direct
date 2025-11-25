@@ -124,7 +124,7 @@ pushd >/dev/null files
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Note: gcc and libc6-dev are needed by GNUInstallDirs.
    sudo env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-      cmake fonts-dejavu fonts-noto gcc gimp graphicsmagick libc6-dev libimage-exiftool-perl
+      cmake fonts-dejavu fonts-noto gcc gimp graphicsmagick libc6-dev libimage-exiftool-perl make
 elif [ "${ID}" == "fedora" ] ; then
    sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
       awk cmake dejavu-sans-fonts gcc google-noto-sans-fonts GraphicsMagick gimp perl-Image-ExifTool
