@@ -399,7 +399,7 @@ Basic for general-purpose desktop usage, particularly for working with [5gVINNI]
 * [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/)
 * [Dynamic Multi-Homing Setup (DynMHS)](https://www.nntb.no/~dreibh/dynmhs/)
 * [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/)
-* [TSCTP – An SCTP test tool](https://www.nntb.no/~dreibh/tsctp/)
+* [TSCTP – An SCTP Test Tool](https://www.nntb.no/~dreibh/tsctp/)
 * [Thomas Dreibholz's Reliable Server Pooling Page](https://www.nntb.no/~dreibh/rserpool/)
 * [Thomas Dreibholz's SCTP Page](https://www.nntb.no/~dreibh/sctp/)
 * [Wireshark](https://www.wireshark.org/)
