@@ -258,7 +258,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       python
       R
       urw-base35-fonts
-      tidy5
+      tidy-html5
    "
 
    # Development files:
