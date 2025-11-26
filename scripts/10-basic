@@ -82,14 +82,24 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      # FIXME: Does not work with Bookworm!
-      # != "sid"
-      if [ "${VERSION_CODENAME}" == "trixie" ] ; then
+      if [ "${VERSION_CODENAME}" != "sid" ] ; then
          DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
-         cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
+         if [ "${VERSION_ID}" -ge 13 ] ; then
+            # On newer Debian versions, it is necessary to specify "signed-by";
+            # the fasttrack-archive-keyring installs
+            # /usr/share/keyrings/fasttrack-archive-keyring.gpg.
+            cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
 deb [signed-by=/usr/share/keyrings/fasttrack-archive-keyring.gpg] http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 # deb-src [signed-by=/usr/share/keyrings/fasttrack-archive-keyring.gpg] http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 EOF
+         else
+            # Older Debian versions use the deprecated APT keyring, and
+            # fasttrack-archive-keyring adds the key to the APT keyring:
+            cat >/etc/apt/sources.list.d/fasttrack.list <<EOF
+deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+# deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
+EOF
+         fi
          /usr/bin/apt-get update
       fi
    fi
