@@ -326,6 +326,7 @@ It must contain the following packages:
 * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
 * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
 * [Tidy](https://www.html-tidy.org/) (HTML/XML syntax checker and reformatter)
+* [URW Base 35 Fonts](https://github.com/ArtifexSoftware/urw-base35-fonts) (URW Base 35 fonts)
 * [Valgrind](https://valgrind.org/) (debugging tool; if available for architecture)
 * [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
 * [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
