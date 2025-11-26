@@ -325,6 +325,7 @@ It must contain the following packages:
 * [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
 * [Python](https://www.python.org/) (Python 3 interpreter, tools and PIP package management)
 * [ShellCheck](https://www.shellcheck.net/) (checker tool for shell scripts)
+* [Tidy](https://www.html-tidy.org/) (HTML/XML syntax checker and reformatter)
 * [Valgrind](https://valgrind.org/) (debugging tool; if available for architecture)
 * [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
 * [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
