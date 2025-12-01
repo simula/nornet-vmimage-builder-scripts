@@ -55,11 +55,13 @@ if [ "${UNAME}" == "Linux" ] ; then
          echo >&2 "ERROR: Unknown bootsplash image format of ${BOOTSPLASH}!"
          exit 1
       fi
-      sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
-          -e "s%@SET_LOADER_HERE@%${loader}%g" \
-          </tmp/configuration-files/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
-      chmod +x /etc/grub.d/06_aaaaa_bootsplash
-      configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
+      if [ -d /etc/grub.d ] && [ -e /etc/default/grub ] ;  then
+         sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
+            -e "s%@SET_LOADER_HERE@%${loader}%g" \
+            </tmp/configuration-files/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
+         chmod +x /etc/grub.d/06_aaaaa_bootsplash
+         configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
+      fi
    fi
 
    # ------ Update GRUB configuration ---------------------------------------
