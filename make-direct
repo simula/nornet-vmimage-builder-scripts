@@ -21,10 +21,16 @@
 set -eu
 
 
-
 VIDEO="1024x768"
-USER_NAME="nornetpp"
-USER_REALNAME="NorNet Praesum Presum"
+# USER_NAME="nornetpp"
+# USER_REALNAME="NorNet Praesum Presum"
+if [ "$(id -u)" -eq 0 ] ; then
+   # Running as ROOT!
+   USER_NAME="${SUDO_USER}"
+else
+   USER_NAME="$(id -un)"
+fi
+USER_REALNAME="$(getent passwd "${USER_NAME}" | cut -d":" -f5 | cut -d"," -f1)"
 
 BOOTSPLASH="/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg"
 BACKGROUND_SDDM="/usr/share/desktop/Nordmarka-3840x2160-mosaic.jpeg"
