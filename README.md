@@ -50,9 +50,11 @@ The Virtual Machine Image Builder and System Installation Scripts are released u
 The Git repository of the Virtual Machine Image Builder and System Installation Scripts sources can be found at [https://github.com/simula/nornet-vmimage-builder-scripts](https://github.com/simula/nornet-vmimage-builder-scripts):
 
 ```bash
-git clone https://github.com/simula/nornet-vmimage-builder-scripts
-cd nornet-vmimage-builder-scripts
+git clone https://github.com/simula/nornet-vmimage-builder-scripts vmimage-builder-scripts
+cd nornet-vmimage-builder-scripts vmimage-builder-scripts
 ```
+
+Note: The repository name "nornet-vmimage-builder-scripts" refers to the [NorNet project](https://www.nntb.no/), since the initial scripts were developed for the purpose of NorNet system installations. However, the scripts are since a long time generic and project-independed. But in order to keep the repository URL as-is, the repository still contains "nornet" in its name.
 
 Contributions:
 
