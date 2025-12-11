@@ -99,10 +99,10 @@ cap_mkdb /etc/login.conf
 # Get the latest updates:
 mkdir -p /usr/local/etc/pkg/repos
 cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
-# The quartery default repository is defined in /etc/pkg/FreeBSD.conf:
-FreeBSD: {
-  enabled: no
-}
+# The quartery default repository is defined in /etc/pkg/FreeBSD.conf,
+# named "FreeBSD-ports" (from FreeBSD 15.0) or "FreeBSD" (before FreeBSD 15.0):
+FreeBSD-ports: { enabled: no }
+FreeBSD: { enabled: no }
 
 # Define "Latest" repository with the latest updates:
 Latest: {
