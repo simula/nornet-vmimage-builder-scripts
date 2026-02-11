@@ -237,7 +237,7 @@ It must contain the following packages:
 * [EthTool](https://mirrors.edge.kernel.org/pub/software/network/ethtool/) (Ethernet card configuration tool; on Linux systems only!)
 * [Fail2Ban](https://github.com/fail2ban/fail2ban) (prevent brute-force SSH attacks)
 * [GDisk](https://sourceforge.net/projects/gptfdisk/) (GPT partitioning tool)
-* [GrowPart](https://manpages.ubuntu.com/manpages/plucky/man1/growpart.1.html) (Partition growing tool; on Linux systems only!)
+* [GrowPart](https://manpages.ubuntu.com/manpages/resolute/en/man1/growpart.1.html) (Partition growing tool; on Linux systems only!)
 * [IDN](https://www.gnu.org/software/libidn/manual/html_node/Invoking-idn.html) (Internationalised Domain Names command line tool)
 * [GNU Parallel](https://www.gnu.org/software/parallel/) (Parallel job execution)
 * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
