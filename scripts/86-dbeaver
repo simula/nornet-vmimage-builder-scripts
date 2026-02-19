@@ -51,7 +51,7 @@ elif [ "${ID}" == "ubuntu" ] ; then
 
    rm -f /etc/apt/preferences.d/block-snapd.pref
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends snapd
-   try-hard 3 60 -- snap install dbeaver-ce
+   try-hard 3 60 -- snap install --classic dbeaver-ce
 
    if [ ! -d "/home/${USER_NAME}/snap/dbeaver-ce/current" ] ; then
       dbeaverSnapVersion="$(snap list dbeaver-ce | awk '/^dbeaver-ce/ { print $3 }')"
