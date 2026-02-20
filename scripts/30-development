@@ -250,7 +250,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       hs-ShellCheck
       libtool
       noto
-      open-sans-20180831
+      opensans-ttf-3.003
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
       pdf2svg

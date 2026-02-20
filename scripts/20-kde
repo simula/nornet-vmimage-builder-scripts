@@ -194,7 +194,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       gstreamer1-plugins-soup
       libreoffice
       noto
-      open-sans-20180831
+      opensans-ttf-3.003
       okteta
       oxygen-fonts
       plasma6-oxygen
