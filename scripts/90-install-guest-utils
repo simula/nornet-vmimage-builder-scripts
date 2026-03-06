@@ -95,7 +95,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
       # NOTE: qemu-guest-agent may have been installed as part of th
       #       initial setup, since e.g. the Proxmox builder may expect it!
       /usr/bin/apt-get autoremove -y --purge qemu-guest-agent
@@ -111,7 +111,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
       /usr/bin/dnf install --setopt=install_weak_deps=False -y virtualbox-guest-additions
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
@@ -157,7 +157,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] ; then
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
       # NOTE: qemu-guest-agent may have been installed as part of the
       #       initial setup, since e.g. the Proxmox builder expects it!
       /usr/sbin/pkg remove -y qemu-guest-agent
