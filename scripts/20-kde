@@ -190,6 +190,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       gimp3-app
       inkscape
       kile
+      konsole
       gstreamer1-plugins-soup
       libreoffice
       noto
@@ -201,6 +202,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       plasma6-sddm-kcm
       R
       sddm
+      strawberry
 
       wireshark
       xf86-video-vmware
