@@ -31,16 +31,16 @@
   // !!! IMPORTANT: The "vboxmanage" here will REPLACE all "vboxmanage"
   //                settings from vmsetup/virtualbox*.json!
   "vboxmanage": [
+    // FIXME! virtio NIC type does not work for FreeBSD guest in current VirtualBox!
+    [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM" ],
+    // FIXME! FreeBSD guest in current VirtualBox needs VBoxSVGA!
     [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga" ],
-    [ "modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
-    [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
-    [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
-    [ "setextradata", "global", "GUI/SuppressMessages", "all" ]
+    [ "modifyvm", "{{.Name}}", "--ostype", "FreeBSD_64" ]
   ],
   "boot_wait": "45s",
   "boot_command": [
     "s<enter><wait>",
-    "cd /tmp && dhclient vtnet0 && ",
+    "cd /tmp && dhclient $(ifconfig -l | cut -d' ' -f1) && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
     "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot && ",
