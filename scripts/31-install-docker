@@ -45,27 +45,24 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # Add Docker's official GPG key:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
-      ca-certificates curl
-   install -m 0755 -d /etc/apt/keyrings
-   curl -fsSL "https://download.docker.com/linux/${ID}/gpg" -o /etc/apt/keyrings/docker.asc
-   chmod a+r /etc/apt/keyrings/docker.asc
-
-   # Add the repository to Apt sources:
-   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/${ID} ${VERSION_CODENAME} stable" | \
-     tee /etc/apt/sources.list.d/docker.list >/dev/null
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get update
-
-   # Programs:
-   packages="
-      docker-ce
-      docker-ce-cli
-      containerd.io
-      docker-buildx-plugin
-      docker-compose-plugin
-   "
+   if [ "${ID}" == "ubuntu" ] ; then
+      if [[ "${VERSION_ID}" =~ ^(1[2-9]\.[01][04]|2[01]\.[01][04])$ ]] ; then
+         # Old Ubuntu versions do not have docker-buildx and docker-cli:
+         packages="containerd docker.io docker-compose"
+      else
+         packages="containerd docker.io docker-buildx docker-cli docker-compose-v2"
+      fi
+   elif [ "${ID}" == "debian" ] ; then
+      if [ -v VERSION_ID ] && [[ "${VERSION_ID}" -lt 13 ]] ; then
+         # Old Debian versions do not have docker-buildx and docker-cli:
+         packages="containerd docker.io docker-compose"
+      else
+         packages="containerd docker.io docker-buildx docker-cli docker-compose"
+      fi
+   else
+      echo >&2 "ERROR: Inexpected ID ${ID}!"
+      exit 1
+   fi
 
    # shellcheck disable=SC2086
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
@@ -77,22 +74,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   # Add Docker repository:
-   if [ "${VERSION_ID}" -ge 41 ] ; then
-      dnf5 config-manager addrepo --overwrite --from-repofile=https://download.docker.com/linux/fedora/docker-ce.repo
-   else
-      # Before Fedora 41:
-      dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-   fi
-
    # Programs:
-   packages="
-      docker-ce
-      docker-ce-cli
-      containerd.io
-      docker-buildx-plugin
-      docker-compose-plugin
-   "
+   packages="containerd docker.io docker-buildx docker-cli docker-compose"
 
    # shellcheck disable=SC2086
    /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
@@ -110,8 +93,9 @@ elif [ "${ID}" == "freebsd" ] ; then
    /usr/sbin/pkg install -y podman-suite
 
    if [ ! -e /etc/pf.conf ] ; then
-      sed -e 's/^v4egress_if[ \t]*=.*$/v4egress_if = vtnet0/' \
-          -e 's/^v6egress_if[ \t]*=.*$/v6egress_if = vtnet0/' \
+      interface="$(ifconfig -l | cut -d' ' -f1)"
+      sed -e "s/^v4egress_if[ \t]*=.*$/v4egress_if = ${interface}/" \
+          -e "s/^v6egress_if[ \t]*=.*$/v6egress_if = ${interface}/" \
           </usr/local/etc/containers/pf.conf.sample \
           >/etc/pf.conf
    fi
