@@ -16,9 +16,6 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-# Documentation:
-# Example: https://github.com/stblassitude/packer-freebsd
-
 
 DISTRIBUTIONS="kernel.txz base.txz"
 
@@ -76,7 +73,7 @@ export nonInteractive="YES"
 # resolv.conf, and dhclient fails to add it again. Make sure that
 # at least some public DNS servers are there for installation:
 echo 'nameserver 1.1.1.1' >>/tmp/bsdinstall_etc/resolv.conf
-echo 'nameserver 9.9.9.9' >>/tmp/bsdinstall_etc/resolv.conf
+echo 'nameserver 1.0.0.1' >>/tmp/bsdinstall_etc/resolv.conf
 
 
 #!/bin/sh
@@ -89,7 +86,7 @@ set -eux
 ln -s /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
 # Initialise IPv4 and IPv6 networking:
-interface="`ifconfig -l | cut -d' ' -f1`"
+interface="$(ifconfig -l | cut -d' ' -f1)"
 sysrc ifconfig_$interface="dhcp"
 sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
 sysrc ipv6_activate_all_interfaces="YES"
@@ -143,6 +140,15 @@ cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
 # named "FreeBSD-ports" (from FreeBSD 15.0) or "FreeBSD" (before FreeBSD 15.0):
 FreeBSD-ports: { enabled: no }
 FreeBSD: { enabled: no }
+
+# Define "Quarterly" repository with the quarterly updates:
+Quarterly: {
+  url: "pkg+https://pkg.FreeBSD.org/\${ABI}/quarterly",
+  mirror_type: "srv",
+  signature_type: "fingerprints",
+  fingerprints: "/usr/share/keys/pkg",
+  enabled: yes
+}
 
 # Define "Latest" repository with the latest updates:
 Latest: {
