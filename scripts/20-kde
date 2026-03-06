@@ -196,7 +196,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       opensans-ttf-3.003
       okteta
       oxygen-fonts
-      plasma6-plasma-desktop
+      plasma6-plasma
       plasma6-oxygen
       plasma6-sddm-kcm
       R
