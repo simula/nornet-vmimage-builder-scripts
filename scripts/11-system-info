@@ -29,9 +29,6 @@ UNAME="$(uname)"
 # ====== Configure System-Info ==============================================
 if [ "${UNAME}" == "FreeBSD" ] ; then
    systemInfoDirectory="/usr/local/etc/system-info.d"
-
-   # FIXME! This can be removed when the td-system-tools port got updated!
-   pkg install -y figlet
 else
    systemInfoDirectory="/etc/system-info.d"
 fi
