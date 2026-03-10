@@ -312,6 +312,7 @@ It must contain the following packages:
 * [BC](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/bc.html) (arbitrary precision calculator language)
 * [CLang](https://clang.llvm.org/) (CLang C and C++ compilers)
 * [CMake](https://cmake.org/) (build tool)
+* [CreateRepo](https://www.percona.com/blog/how-to-create-your-own-repositories-for-packages/) (RPM repository build tool; on Fedora Linux systems only!)
 * [DejaVu Fonts](https://dejavu-fonts.github.io/) ([DejaVu fonts)
 * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
 * [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
@@ -322,6 +323,7 @@ It must contain the following packages:
 * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
 * [Git LFS](https://git-lfs.com/) (large file storage for Git)
 * [GraphicsMagick](http://www.graphicsmagick.org/) (image conversion)
+* [Mock](https://fedoraproject.org/wiki/Using_Mock_to_test_package_builds) (RPM build tool; on Fedora Linux systems only!)
 * [Noto Fonts](https://fonts.google.com/noto) (Noto fonts, complete UTF-8 character range)
 * [PkgConfig](https://www.freedesktop.org/wiki/Software/pkg-config/) (metainformation about installed libraries)
 * [Open Sans Fonts](https://fonts.google.com/specimen/Open+Sans) (Open Sans fonts)
@@ -332,7 +334,7 @@ It must contain the following packages:
 * [Valgrind](https://valgrind.org/) (debugging tool; if available for architecture)
 * [YamlLint](https://github.com/adrienverge/yamllint) (checker tool for YAML)
 * [RepRepro](https://wiki.debian.org/DebianRepository/SetupWithReprepro) (DEB repository build tool; on Linux systems only!)
-* [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Linux systems only!)
+* [PBuilder](https://pbuilder-team.pages.debian.net/pbuilder/) (DEB build tool; on Debian/Ubuntu Linux systems only!)
 
 It must contain the following libraries and development files:
 
