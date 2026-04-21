@@ -11,7 +11,7 @@
 # ==========================================================================
 #
 # GIMP Scripts
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,23 +32,24 @@
 set -eu
 
 
+# ###### Main program #######################################################
+
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 --verbose"
+   echo >&2 "Usage: $0 [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o vqh --long verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o wqh --long verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -v | --verbose)
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;
@@ -87,23 +88,29 @@ if [ "${GIMP3_DIRECTORY}" != "" ] ; then
    done
 
    # FIXME!
-   # Gimp 3.0 wastes a lot of CPU, for whatever reason. Just
+   # GIMP 3.0 wastes a lot of CPU, for whatever reason. Just
    # using 1 core seems to provide the best performance:
    echo "(num-processors 1)" >>"${GIMP3_DIRECTORY}/gimprc"
 fi
 
 
-# ====== Obtain GIMP call options ===========================================
-if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+# ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE="$(which gimp-console 2>/dev/null || true)"
+if [ "${GIMP_CONSOLE}" == "" ] ; then
+   echo >&2 "ERROR: GIMP is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
+   echo >&2 "* Fedora:  sudo dnf install -y gimp"
+   echo >&2 "* SuSE     sudo zypper install -y gimp"
+   echo >&2 "* Alpine:  sudo apk add gimp"
+   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -116,11 +123,11 @@ GIMP_OPTIONS="${GIMP_OPTIONS} --no-fonts --no-data"
 ( cat <<EOF
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )

@@ -3,11 +3,12 @@
 set -eu
 
 # The style is named "Book" on most systems, but "Regular" on Fedora ...
-style=$(fc-list | grep "^/usr/.*share/fonts/.*dejavu.*/DejaVuSans\.ttf" | sed -e "s/^.*style=//" -e "s/,Book//")
+style="$(fc-list | grep "^/usr/.*share/fonts/.*dejavu.*/DejaVuSans\.ttf" | sed -e "s/^.*style=//" -e "s/,Book//")"
 
-# Note: DejaVu Sans does not support CJK characters -> fallback is (probably) Noto Sans
-${MAKE_GLOSSYTEXT} "${OUTPUT}"           \
-   "Thomas Dreibholz (托马斯博士)"   256   \
-   --bordersize 10                       \
-   --colorscheme "Golden"                \
-   --font "DejaVu Sans ${style}"
+${GS_GLOSSYTEXT} "${OUTPUT}"                       \
+   "Thomas Dreibholz (托马斯博士)"                   \
+   --font-name              "DejaVu Sans ${style}" \
+   --font-size              256                    \
+   --outline-size           10                     \
+   --blend-gradient-text    "Golden"               \
+   --blend-gradient-outline "Golden"

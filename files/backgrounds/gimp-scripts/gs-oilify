@@ -11,7 +11,7 @@
 # ==========================================================================
 #
 # GIMP Scripts
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,27 +32,45 @@
 set -eu
 
 
-# Example:
-# Make-Background Demo-Fractal-8192x6144.png Background1.png
-
+# ###### Main program #######################################################
 
 # ====== Handle arguments ===================================================
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 Demo-Fractal-8192x6144.png Background1.png"
+   echo >&2 "Usage: $0 input_filename output_filename [-S|--mask-size masksize] [-I|--intensity-mode on|off] [-w|--verbose] [-q|--quiet] [-h|--help]"
    exit "${exitCode}"
 }
 
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o vqh --long verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o S:I:wqh --long mask-size:,intensity-mode:,verbose,quiet,help -a -- "$@")"
 eval set -- "${options}"
 
+MASK_SIZE=8
+INTENSITY_MODE="TRUE"
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -v | --verbose)
+      -S | --mask-size)
+         MASK_SIZE="$2"
+         if [[ ! "${MASK_SIZE}" =~ ^([0-9]+)$ ]] ; then
+            echo >&2 "ERROR: Invalid value ${MASK_SIZE} for -S|--mask-size!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -I | --intensity-mode)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            INTENSITY_MODE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            INTENSITY_MODE="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -I|--intensity-mode!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;
@@ -85,17 +103,23 @@ if [ ! -f "${INPUT_FILENAME}" ] ; then
 fi
 
 
-# ====== Obtain GIMP call options ===========================================
-if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+# ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE="$(which gimp-console 2>/dev/null || true)"
+if [ "${GIMP_CONSOLE}" == "" ] ; then
+   echo >&2 "ERROR: GIMP is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
+   echo >&2 "* Fedora:  sudo dnf install -y gimp"
+   echo >&2 "* SuSE     sudo zypper install -y gimp"
+   echo >&2 "* Alpine:  sudo apk add gimp"
+   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -111,73 +135,49 @@ rm -f "${OUTPUT_FILENAME}"
    ; ------ Initialise and load image ---------------------------------------
    ((inputFileName    "${INPUT_FILENAME}")
     (outputFileName   "${OUTPUT_FILENAME}")
+    (maskSize         ${MASK_SIZE})
+    (intensityMode    ${INTENSITY_MODE})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (gimp-image-get-base-type image))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-image-base-type image)))
                       )
     (layer            (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-image-get-active-layer image)))
                       )
    )
 
    ; ------ Apply filter ----------------------------------------------------
    ; First, make sure that the image is RGB, not indexed color mode!
-   (if (defined? 'gimp-drawable-hue-saturation)
-      (begin  ; New Gimp > 2.8 API:
-         ; New Gimp > 2.8 API:
-         (gimp-drawable-hue-saturation layer HUE-RANGE-ALL 120.0 0 0 0)
-      )
-      (begin  ; Old Gimp <= 2.8 API:
-         (gimp-hue-saturation layer ALL-HUES 120.0 0 0)
+   (if (not (= RGB imageType))
+      (gimp-image-convert-rgb image))
+
+   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ; GEGL Oilify options: https://gegl.org/operations/gegl-oilify.html
+   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   (cond( (not(defined? 'plug-in-mosaic))
+      ; New GIMP 3.0 API:
+      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-INTENSITY_MODE-REPLACE 1.0
+          "mask-radius" (max 1 (/ maskSize 2))
+          "use-inten"   intensityMode
       )
    )
-
-   ; Step 2: Apply Bump Map effect
-   (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-        (gimp-drawable-merge-new-filter layer "gegl:bump-map" 0 LAYER-MODE-REPLACE 1.0
-            "azimuth"         30.0
-            "elevation"       45.0
-            "depth"           20.0
-            "offset-x"        0
-            "offset-y"        0
-            "waterlevel"      0.0
-            "ambient"         0.0
-            "compensate"      TRUE
-            "invert"          FALSE
-            "type"            "linear"
-        )
-      )
-      (begin  ; Old Gimp < 3.0 API:
-         (plug-in-bump-map RUN-NONINTERACTIVE image layer layer
-           30.0 45.0 20
-           0 0 0 0
-           TRUE FALSE 0)
-      )
-   )
-
-   ; Step 3: Darken the result a little bit
-   (if (defined? 'gimp-drawable-hue-saturation)
-      (begin  ; New Gimp > 2.8 API:
-         ; New Gimp > 2.8 API:
-         (gimp-drawable-hue-saturation layer HUE-RANGE-ALL 0 -15 0 0)
-      )
-      (begin  ; Old Gimp <= 2.8 API:
-         (gimp-hue-saturation layer ALL-HUES 0 -15 0)
-      )
-   )
-
+   (else
+      ; Old GIMP 2.x API:
+      (display maskSize) (newline)
+      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize intensityMode)
+   ))
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-         ; FIXME: This does not work when running in Gimp 2.x!
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
          ; (file-png-export
          ;    #:run-mode         RUN-NONINTERACTIVE
          ;    #:image            image
@@ -196,7 +196,7 @@ rm -f "${OUTPUT_FILENAME}"
             outputFileName -1
             TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (file-png-save2 RUN-NONINTERACTIVE image
             (car (gimp-image-get-active-layer image))
             outputFileName outputFileName
@@ -209,12 +209,12 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 

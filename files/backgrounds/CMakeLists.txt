@@ -92,24 +92,6 @@ IF(NOT AWK)
            " * FreeBSD:       (should always be there!")
 ENDIF()
 
-FIND_PROGRAM(GM gm PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT GM)
-   MESSAGE(FATAL_ERROR
-           " Cannot find GraphicsMagick! Try:\n"
-           " * Ubuntu/Debian: sudo apt install -y graphicsmagick\n"
-           " * Fedora:        sudo dnf install -y GraphicsMagick\n"
-           " * FreeBSD:       sudo pkg install -y GraphicsMagick")
-ENDIF()
-
-FIND_PROGRAM(GIMP gimp PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT GIMP)
-   MESSAGE(FATAL_ERROR
-           " Cannot find Gimp! Try:\n"
-           " * Ubuntu/Debian: sudo apt install -y gimp\n"
-           " * Fedora:        sudo dnf install -y gimp\n"
-           " * FreeBSD:       sudo pkg install -y gimp")
-ENDIF()
-
 # NOTE: exiftool fails to handle GIMP-generated JPEG files under
 # Debian Stretch and Ubuntu Trusty. Errors are just ignored in this case
 # (i.e. the EXIF information will not be updated).
@@ -122,50 +104,69 @@ IF(NOT EXIFTOOL)
            " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool")
 ENDIF()
 
+FIND_PROGRAM(GIMP gimp PATHS /bin /usr/bin /usr/local/bin)
+IF(NOT GIMP)
+   MESSAGE(FATAL_ERROR
+           " Cannot find Gimp! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y gimp\n"
+           " * Fedora:        sudo dnf install -y gimp\n"
+           " * FreeBSD:       sudo pkg install -y gimp")
+ENDIF()
+
+FIND_PROGRAM(GM gm PATHS /bin /usr/bin /usr/local/bin)
+IF(NOT GM)
+   MESSAGE(FATAL_ERROR
+           " Cannot find GraphicsMagick! Try:\n"
+           " * Ubuntu/Debian: sudo apt install -y graphicsmagick\n"
+           " * Fedora:        sudo dnf install -y GraphicsMagick\n"
+           " * FreeBSD:       sudo pkg install -y GraphicsMagick")
+ENDIF()
+
 # ------ Required scripts ---------------------------------------------------
-FIND_PROGRAM(TEST_GIMP ${TDD_TEST_GIMP})
-IF(NOT TEST_GIMP)
-   MESSAGE(FATAL_ERROR "Test-Gimp (${TDD_TEST_GIMP}) not found!")
+FIND_PROGRAM(GS_BUMPMAP ${TDD_GS_BUMPMAP})
+IF(NOT GS_BUMPMAP)
+   MESSAGE(FATAL_ERROR "gs-bumpmap (${TDD_GS_BUMPMAP}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_CROPPED ${TDD_MAKE_CROPPED})
-IF(NOT MAKE_CROPPED)
-   MESSAGE(FATAL_ERROR "Resize-with-Cropping (${TDD_MAKE_CROPPED}) not found!")
+FIND_PROGRAM(GS_CAPTION ${TDD_GS_CAPTION})
+IF(NOT GS_CAPTION)
+   MESSAGE(FATAL_ERROR "gs-caption (${TDD_GS_CAPTION}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_CAPTION ${TDD_MAKE_CAPTION})
-IF(NOT MAKE_CAPTION)
-   MESSAGE(FATAL_ERROR "Make-Caption (${TDD_MAKE_CAPTION}) not found!")
+FIND_PROGRAM(GS_CLOTHIFY ${TDD_GS_CLOTHIFY})
+IF(NOT GS_CLOTHIFY)
+   MESSAGE(FATAL_ERROR "gs-clothify (${TDD_GS_CLOTHIFY}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_GLOSSYTEXT ${TDD_MAKE_GLOSSYTEXT})
-IF(NOT MAKE_GLOSSYTEXT)
-   MESSAGE(FATAL_ERROR "Make-GlossyText (${TDD_MAKE_GLOSSYTEXT}) not found!")
+FIND_PROGRAM(GS_GLOSSYTEXT ${TDD_GS_GLOSSYTEXT})
+IF(NOT GS_GLOSSYTEXT)
+   MESSAGE(FATAL_ERROR "gs-glossytext (${TDD_GS_GLOSSYTEXT}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_BUMPMAP ${TDD_MAKE_BUMPMAP})
-IF(NOT MAKE_BUMPMAP)
-   MESSAGE(FATAL_ERROR "Make-BumpMap (${TDD_MAKE_BUMPMAP}) not found!")
+FIND_PROGRAM(GS_MOSAIC ${TDD_GS_MOSAIC})
+IF(NOT GS_MOSAIC)
+   MESSAGE(FATAL_ERROR "gs-mosaic (${TDD_GS_MOSAIC}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_OILPAINTING ${TDD_MAKE_OILPAINTING})
-IF(NOT MAKE_OILPAINTING)
-   MESSAGE(FATAL_ERROR "Make-OilPainting (${TDD_MAKE_OILPAINTING}) not found!")
+FIND_PROGRAM(MAKE_OILIFY ${TDD_GS_OILIFY})
+IF(NOT MAKE_OILIFY)
+   MESSAGE(FATAL_ERROR "gs-oilify (${TDD_GS_OILIFY}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_MOSAIC ${TDD_MAKE_MOSAIC})
-IF(NOT MAKE_MOSAIC)
-   MESSAGE(FATAL_ERROR "Make-Mosaic (${TDD_MAKE_MOSAIC}) not found!")
+FIND_PROGRAM(GS_OLDPHOTO ${TDD_GS_OLDPHOTO})
+IF(NOT GS_OLDPHOTO)
+   MESSAGE(FATAL_ERROR "gs-oldphoto (${TDD_GS_OLDPHOTO}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_CLOTH ${TDD_MAKE_CLOTH})
-IF(NOT MAKE_CLOTH)
-   MESSAGE(FATAL_ERROR "Make-Cloth (${TDD_MAKE_CLOTH}) not found!")
+
+FIND_PROGRAM(GS_RESIZE_WITH_CROPPING ${TDD_GS_RESIZE_WITH_CROPPING})
+IF(NOT GS_RESIZE_WITH_CROPPING)
+   MESSAGE(FATAL_ERROR "gs-resize-with-cropping (${TDD_GS_RESIZE_WITH_CROPPING}) not found!")
 ENDIF()
 
-FIND_PROGRAM(MAKE_OLDPHOTO ${TDD_MAKE_OLDPHOTO})
-IF(NOT MAKE_OLDPHOTO)
-   MESSAGE(FATAL_ERROR "Make-OldPhoto (${TDD_MAKE_OLDPHOTO}) not found!")
+FIND_PROGRAM(GS_TEST_GIMP ${TDD_GS_TEST_GIMP})
+IF(NOT GS_TEST_GIMP)
+   MESSAGE(FATAL_ERROR "gs-test-gimp (${TDD_GS_TEST_GIMP}) not found!")
 ENDIF()
 
 # ------ Customised background scripts --------------------------------------
@@ -250,7 +251,7 @@ FILE(MAKE_DIRECTORY ${GIMP_DIRECTORY})
 FILE(MAKE_DIRECTORY ${GIMP_DIRECTORY}/./gradients)   # For some reason, Gimp 2.10 does not create this directory but complains about it.
 SET(gimpDirStamp "${GIMP_DIRECTORY}/gimp.stamp")
 ADD_CUSTOM_COMMAND(OUTPUT  ${gimpDirStamp}
-                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${TEST_GIMP}
+                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_TEST_GIMP}
                    COMMAND touch ${gimpDirStamp})
 ADD_CUSTOM_TARGET(generate_gimpDirStamp DEPENDS ${gimpDirStamp})
 
@@ -262,7 +263,7 @@ FOREACH(textFile IN LISTS TDD_TEXT_FILES)
    GET_FILENAME_COMPONENT(textImage ${textImage} NAME)
 
    ADD_CUSTOM_COMMAND(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_GLOSSYTEXT="${MAKE_GLOSSYTEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} GS_GLOSSYTEXT="${GS_GLOSSYTEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
                       DEPENDS ${textFile}
                               generate_gimpDirStamp
                               ${gimpDirStamp})
@@ -289,7 +290,7 @@ FOREACH(image IN LISTS TDD_IMAGE_FILES)
       makeUniqueTarget(generate_hostnameImage "generate_${hostname}.png")
 
       ADD_CUSTOM_COMMAND(OUTPUT  ${hostnameImage}
-                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_GLOSSYTEXT} ${hostnameImage} "${hostname}" 256 10 "Brushed Aluminium" "Comic Sans MS"
+                         COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_GLOSSYTEXT} ${hostnameImage} "${hostname}" --font-name "Comic Sans MS" --font-size 256 --outline-size 10 --blend-gradient-text "Brushed Aluminium" --blend-gradient-outline "Brushed Aluminium"
                          DEPENDS generate_gimpDirStamp
                                  ${gimpDirStamp})
       ADD_CUSTOM_TARGET(${generate_hostnameImage} DEPENDS ${hostnameImage})
@@ -315,7 +316,7 @@ FOREACH(resolution IN LISTS TDD_BOOTSPLASH_RESOLUTIONS)
    STRING(REGEX REPLACE "x.*$" "" bootsplash_width  "${resolution}")
    STRING(REGEX REPLACE "^.*x" "" bootsplash_height "${resolution}")
    ADD_CUSTOM_COMMAND(OUTPUT  ${imageCaption}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} MAKE_CAPTION=${MAKE_CAPTION} ${BUILD_CAPTION} ${imageCaption} ${captionFile} ${bootsplash_width} ${bootsplash_height}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} GS_CAPTION=${GS_CAPTION} ${BUILD_CAPTION} ${imageCaption} ${captionFile} ${bootsplash_width} ${bootsplash_height}
                       DEPENDS ${generate_captionFile}
                               ${captionFile}
                               generate_gimpDirStamp
@@ -417,8 +418,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          IF(variant STREQUAL "plain")
             IF(imageExtension STREQUAL ".png")
                ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}    ${image} ${imageTemp2} ${aspectRatio} ${width}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_BUMPMAP} ${imageTemp2} ${imageTemp1}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING}    ${image} ${imageTemp2} --aspect ${aspectRatio} --width ${width}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_BUMPMAP} ${imageTemp2} ${imageTemp1}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                   COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -427,7 +428,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                           ${gimpDirStamp})
             ELSE()
                ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp1} ${aspectRatio} ${width}
+                                  COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp1} --aspect ${aspectRatio} --width ${width}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                   COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -441,8 +442,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             EXECUTE_PROCESS(COMMAND ${AWK} "BEGIN { print int((8*${width})/1024 + 0.5) }" OUTPUT_VARIABLE maskSize OUTPUT_STRIP_TRAILING_WHITESPACE)
             # MESSAGE("Painting: ${width} -> ${maskSize}")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OILPAINTING} ${imageTemp2} ${imageTemp1} ${makeSize}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp2} --aspect ${aspectRatio} --width ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OILIFY} ${imageTemp2} ${imageTemp1} --mask-size ${maskSize}
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -462,8 +463,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
             ENDIF()
             # MESSAGE("Mosaic: ${width} ${height} -> ${tileSize} ${tileHeight}")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_MOSAIC}  ${imageTemp2} ${imageTemp1} ${tileSize} ${tileHeight} ${tileHeight} --type hexagons --surface rough
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp2} --aspect ${aspectRatio} --width ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_MOSAIC} ${imageTemp2} ${imageTemp1} $--tile-size ${tileSize} --tile-height ${tileHeight} --tile-spacing ${tileHeight} --tile-type hexagons --tile-surface rough
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -474,8 +475,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          # ------ Cloth -----------------------------------------------------
          ELSEIF(variant STREQUAL "cloth")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED} ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CLOTH}   ${imageTemp2} ${imageTemp1} 5
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp2} --aspect ${aspectRatio} --width ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_CLOTHIFY} ${imageTemp2} ${imageTemp1} --depth 5
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
@@ -486,8 +487,8 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
          # ------ Old Photo -------------------------------------------------
          ELSEIF(variant STREQUAL "oldphoto")
             ADD_CUSTOM_COMMAND(OUTPUT  ${imageWithoutLogo}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_CROPPED}  ${image} ${imageTemp2} ${aspectRatio} ${width}
-                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OLDPHOTO} ${imageTemp2} ${imageTemp1} 20
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp2} --aspect ${aspectRatio} --width ${width}
+                               COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_OLDPHOTO} ${imageTemp2} ${imageTemp1} --border-size 20
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo} || true
                                COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
