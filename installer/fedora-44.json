@@ -18,7 +18,7 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.fedoraproject.org/pub/fedora/linux/releases/test/44_Beta/Server/x86_64/iso/Fedora-Server-dvd-x86_64-44_Beta-1.2.iso",
+  "iso_url": "https://dl.fedoraproject.org/pub/fedora/linux/releases/test/44_Beta/Server/x86_64/iso/Fedora-Server-netinst-x86_64-44_Beta-1.2.iso",
   "iso_checksum": "file:https://dl.fedoraproject.org/pub/fedora/linux/releases/test/44_Beta/Server/x86_64/iso/Fedora-Server-iso-44_Beta-1.2-x86_64-CHECKSUM",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
