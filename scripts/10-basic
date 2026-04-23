@@ -71,7 +71,7 @@ if [ ! -e /etc/os-release ] ; then
 fi
 . /etc/os-release
 if [ ! -v VERSION_ID ] ; then
-   VERSION_ID="99.99"
+   VERSION_ID=""
 fi
 
 
@@ -82,7 +82,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
-      if [ "${VERSION_CODENAME}" != "sid" ] ; then
+      if [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] ; then
          DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
          if [ "${VERSION_ID}" -ge 13 ] ; then
             # On newer Debian versions, it is necessary to specify "signed-by";
@@ -106,7 +106,7 @@ EOF
 
    if [ "${ID}" == "debian" ] ; then
       architecture="$(dpkg --print-architecture)"
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
+      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ca-certificates wget
 
       # ------ Work-around for missing System-Tools in Debian ---------------
       # FIXME! This is not the best solution. Ideally, there should be a
@@ -127,8 +127,7 @@ EOF
 
       # ------ Work-around for missing TSCTP in Debian < 13 -----------------
       # shellcheck disable=SC2071
-      if [[ "${VERSION_ID}" < "13" ]] ; then
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends wget
+      if [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] && [[ "${VERSION_ID}" -lt 13 ]] ; then
          cd /tmp
          wget -4rq --no-parent --accept-regex '.*focal.*deb$' https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/
 
