@@ -472,7 +472,7 @@ elif [ "${DISTRIBUTION}" == "Debian" ] ; then
    if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
    elif [[ "${RELEASE}" =~ ^(Testing|Unstable)$ ]] ; then
-      RELEASE="Testing"
+      RELEASE="${RELEASE}"
    else
       echo >&2 "ERROR: Invalid Debian release ${RELEASE}!"
       exit 1
@@ -923,9 +923,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
       # Create a compressed version as well:
       nice xz -T0 -k "${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}".qcow2
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/${vm_name}/${vm_name}.qcow2"
-   elif [ "${HYPERVISOR}" == "vSphere" ] ; then
-      echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/successfully-built.txt"
-   elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
+   else
       echo "RESULT=${OUTPUT_DIRECTORY}/${NAME}/successfully-built.txt"
    fi
-) >successfully-built.txt
+) >"${OUTPUT_DIRECTORY}/${NAME}/successfully-built.txt"
