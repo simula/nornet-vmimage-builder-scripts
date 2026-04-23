@@ -33,6 +33,9 @@ if [ ! -e /etc/os-release ] ; then
    exit 1
 fi
 . /etc/os-release
+if [ ! -v VERSION_ID ] ; then
+   VERSION_ID=""
+fi
 
 
 # ====== Package installation ===============================================
@@ -53,7 +56,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          packages="containerd docker.io docker-buildx docker-cli docker-compose-v2"
       fi
    elif [ "${ID}" == "debian" ] ; then
-      if [ -v VERSION_ID ] && [[ "${VERSION_ID}" -lt 13 ]] ; then
+      if [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] && [[ "${VERSION_ID}" -lt 13 ]] ; then
          # Old Debian versions do not have docker-buildx and docker-cli:
          packages="containerd docker.io docker-compose"
       else
