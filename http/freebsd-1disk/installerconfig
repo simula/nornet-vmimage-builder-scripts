@@ -147,7 +147,7 @@ Quarterly: {
   mirror_type: "srv",
   signature_type: "fingerprints",
   fingerprints: "/usr/share/keys/pkg",
-  enabled: no
+  enabled: yes
 }
 
 # Define "Latest" repository with the latest updates:
@@ -156,7 +156,7 @@ Latest: {
   mirror_type: "srv",
   signature_type: "fingerprints",
   fingerprints: "/usr/share/keys/pkg",
-  enabled: yes
+  enabled: no
 }
 EOF
 
