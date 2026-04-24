@@ -11,7 +11,7 @@
 # ==========================================================================
 #
 # GIMP Scripts
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,45 +32,80 @@
 set -eu
 
 
-# Example:
-# Make-OilPainting Image1.jpeg Painting1.png
-# Make-OilPainting Image1.jpeg Painting2.png --masksize 5
-
-
-# ====== Handle arguments ===================================================
+# ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 input_filename output_filename [--masksize|-s masksize] [--mode|-m rgb|intensity] [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 Image.jpeg Cloth.png --masksize 5"
+   echo >&2 "Usage: $0 input_filename output_filename [-X|--blur-x value] [-Y|--blur-y value] [-A|--azimut bearing] [-E|--elevation bearing] [-D|--depth depth] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
+
+# ###### Version ############################################################
+version () {
+   echo "gs-clothify @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o s:m:vqh --long masksize:,mode:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o X:Y:A:E:D:wqhv --long blur-x:,blur-y:,azimut:,elevation:,depth:,verbose,quiet,help,version -a -- "$@")"
 eval set -- "${options}"
 
-MASKSIZE=8
-MODE=1
+BLUR_X=3
+BLUR_Y=3
+AZIMUT=135.0
+ELEVATION=45.0
+DEPTH=5
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -s | --masksize)
-         MASKSIZE="$2"
-         shift 2
-         ;;
-      -m | --mode)
-         if [ "$2" == "rgb" ] ; then
-            MODE=0
-         elif [ "$2" == "intensity" ] ; then
-            MODE=1
-         else
-            echo >&2 "ERROR: Invalid mode!"
+      -X | --blur-x)
+         BLUR_X="$2"
+         if [[ ! "${BLUR_X}" =~ ^[0-9]+$ ]] || [ "${BLUR_X}" -lt 3 ] || [ "${BLUR_X}" -gt 100 ] ; then
+            echo >&2 "ERROR: Invalid value ${BLUR_X} for -X|--blur-x!"
             exit 1
          fi
          shift 2
          ;;
-      -v | --verbose)
+      -Y | --blur-y)
+         BLUR_Y="$2"
+         if [[ ! "${BLUR_Y}" =~ ^[0-9]+$ ]] || [ "${BLUR_Y}" -lt 3 ] || [ "${BLUR_Y}" -gt 100 ] ; then
+            echo >&2 "ERROR: Invalid value ${BLUR_Y} for -Y|--blur-y!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -A | --azimut)
+         AZIMUT="$2"
+         if [[ ! "${AZIMUT}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
+            awk "BEGIN { exit ( ($AZIMUT < 0.0) || ($AZIMUT > 360.0) ? 0 : 1) }" ; then
+            echo >&2 "ERROR: Invalid value ${AZIMUT} for -A|--azimut!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -E | --elevation)
+         ELEVATION="$2"
+         if [[ ! "${ELEVATION}" =~ ^([-]{0,1})([0-9]+|[0-9]*\.[0-9]+|[0-9]+\.[0-9]*)$  ]] || \
+            awk "BEGIN { exit ( ($ELEVATION < 0.5) || ($ELEVATION > 90.0) ? 0 : 1) }" ; then
+            echo >&2 "ERROR: Invalid value ${ELEVATION} for -E|--elevation!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -D | --depth)
+         if [[ ! "${DEPTH}" =~ ^[0-9]+$ ]] || [ "${DEPTH}" -lt 1 ] || [ "${DEPTH}" -gt 65 ] ; then
+            echo >&2 "ERROR: Invalid value ${DEPTH} for -D|--depth!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;
@@ -80,6 +115,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -h | --help)
          usage 0
+         ;;
+      -v | --version)
+         version
+         # shift
          ;;
       --)
          shift
@@ -101,23 +140,25 @@ if [ ! -f "${INPUT_FILENAME}" ] ; then
    echo >&2 "ERROR: Input file ${INPUT_FILENAME} does not exist!"
    exit 1
 fi
-if [[ ! "${MASKSIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid mask size ${MASKSIZE}!"
-   exit 1
-fi
 
 
-# ====== Obtain GIMP call options ===========================================
-if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+# ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE="$(which gimp-console 2>/dev/null || true)"
+if [ "${GIMP_CONSOLE}" == "" ] ; then
+   echo >&2 "ERROR: GIMP is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
+   echo >&2 "* Fedora:  sudo dnf install -y gimp"
+   echo >&2 "* SuSE     sudo zypper install -y gimp"
+   echo >&2 "* Alpine:  sudo apk add gimp"
+   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -133,19 +174,22 @@ rm -f "${OUTPUT_FILENAME}"
    ; ------ Initialise and load image ---------------------------------------
    ((inputFileName    "${INPUT_FILENAME}")
     (outputFileName   "${OUTPUT_FILENAME}")
-    (maskSize         ${MASKSIZE})
-    (mode             ${MODE})
+    (blurX            ${BLUR_X})
+    (blurY            ${BLUR_Y})
+    (azimut           ${AZIMUT})
+    (elevation        ${ELEVATION})
+    (depth            ${DEPTH})
     (image            (car (gimp-file-load RUN-NONINTERACTIVE inputFileName inputFileName)))
     (imageType        (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (gimp-image-get-base-type image))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-image-base-type image)))
                       )
     (layer            (if (not (defined? 'gimp-image-get-active-layer))
-                         ; New Gimp 3.0 API:
+                         ; New GIMP 3.0 API:
                          (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                         ; Old Gimp 2.x API:
+                         ; Old GIMP 2.x API:
                          (car (gimp-image-get-active-layer image)))
                       )
    )
@@ -155,27 +199,19 @@ rm -f "${OUTPUT_FILENAME}"
    (if (not (= RGB imageType))
       (gimp-image-convert-rgb image))
 
-   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ; GEGL Oilify options: https://gegl.org/operations/gegl-oilify.html
-   ; ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   (cond( (not(defined? 'plug-in-mosaic))
-      ; New Gimp 3.0 API:
-      (gimp-drawable-merge-new-filter layer "gegl:oilify" 0 LAYER-MODE-REPLACE 1.0
-          "mask-radius" (max 1 (/ maskSize 2))
-          "use-inten"   mode
-      )
+   (cond( (not(defined? 'plug-in-bump-map))
+      ; New GIMP 3.0 API:
+      (script-fu-clothify image (vector layer) blurX blurY azimut elevation depth)
    )
    (else
-      ; Old Gimp 2.x API:
-      (display maskSize) (newline)
-      (plug-in-oilify RUN-NONINTERACTIVE image layer maskSize mode)
+      ; Old GIMP 2.x API:
+      (script-fu-clothify image layer blurX blurY azimut elevation depth)
    ))
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-         ; FIXME: This does not work when running in Gimp 2.x!
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
          ; (file-png-export
          ;    #:run-mode         RUN-NONINTERACTIVE
          ;    #:image            image
@@ -194,7 +230,7 @@ rm -f "${OUTPUT_FILENAME}"
             outputFileName -1
             TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (file-png-save2 RUN-NONINTERACTIVE image
             (car (gimp-image-get-active-layer image))
             outputFileName outputFileName
@@ -207,12 +243,12 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 

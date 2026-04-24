@@ -1,4 +1,4 @@
-// Fedora 44 Server with EFI Boot
+// Ubuntu Server 26.10 "Stonking Stingray" with EFI Boot
 // Copyright (C) 2019-2026 by Thomas Dreibholz
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,9 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://dl.fedoraproject.org/pub/fedora/linux/releases/test/44_Beta/Server/x86_64/iso/Fedora-Server-netinst-x86_64-44_Beta-1.2.iso",
-  "iso_checksum": "file:https://dl.fedoraproject.org/pub/fedora/linux/releases/test/44_Beta/Server/x86_64/iso/Fedora-Server-iso-44_Beta-1.2-x86_64-CHECKSUM",
+  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS | grep stonking-live-server-amd64.iso
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/stonking-live-server-amd64.iso",
+  "iso_checksum": "file:https://cdimage.ubuntu.com/ubuntu-server/daily-live/current/SHA256SUMS",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -28,7 +29,11 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
-  "boot_wait": "3s",
+  "boot_wait": "5s",
+  // VirtualBox and QEMU take different times to start booting. Ubuntu 20.04's
+  // GRUB configuration has a timeout of 5s. Typing ESC too early leads into
+  // the EFI firmware's setup. Typing <left> is ignored by the firmware, and it
+  // stops GRUB's countdown.
   "boot_command": [
     "<left><wait>",
     "<left><wait>",
@@ -41,8 +46,8 @@
     "<left><wait>",
     "<left><wait>",
     "<esc>c<wait>",
-    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
-    "initrd /images/pxeboot/initrd.img<enter><wait>",
+    "linux /casper/vmlinuz --- autoinstall ds=\"nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/\"<enter><wait>",
+    "initrd /casper/initrd<enter><wait>",
     "boot<enter>"
   ]
 }

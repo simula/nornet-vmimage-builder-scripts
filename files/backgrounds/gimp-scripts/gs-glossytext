@@ -11,7 +11,7 @@
 # ==========================================================================
 #
 # GIMP Scripts
-# Copyright (C) 2013-2025 by Thomas Dreibholz
+# Copyright (C) 2013-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,59 +32,181 @@
 set -eu
 
 
-# Examples:
-# Make-GlossyText NorNet1.png "NorNet Testbed" 128 --bordersize 5 --colorscheme Golden --font "Noto Sans Regular"
-# Make-GlossyText NorNet2.png "NorNet Testbed" 128 --bordersize 5 --colorscheme "Brushed Aluminium" --font "Comic Sans MS Bold"
-# Hint: List available fonts with "fc-list"!
-
-
-# ====== Handle arguments ===================================================
+# ###### Usage ##############################################################
 usage () {
    local exitCode="$1"
-   echo >&2 "Usage: $0 filename content font_size [--bordersize|-b size] [--colorscheme|-c schemename] [--font|-f fontname] [-p|--patterntext pattern] [-o|--patternoutline pattern] [-l|--patternoverlay pattern] [--verbose|-v] [--quiet|-q] [--help|-h]"
-   echo >&2 "Example: $0 NorNet1.png \"NorNet Testbed\" 128 --bordersize 5 --colorscheme Golden --font \"Noto Sans Regular\""
+   echo >&2 "Usage: $0 filename text [-F|--font-name font] [-S|--font-size size] [-G|--blend-gradient-text gradient] [-g|--blend-gradient-text-reverse on|off] [-L|--blend-gradient-outline gradient] [-l|--blend-gradient-outline-reverse on|off] [-O|--outline-size size] [-B|--background-color color] [-I|--pattern-text pattern] [-i|--use-pattern-text on|off] [-J|--pattern-outline pattern] [-j|--use-pattern-outline on|off] [-R|--pattern-overlay pattern] [-r|--use-pattern-overlay on|off] [-s|--use-shadow on|off] [-X|--shadow-offset-x offset] [-Y|--shadow-offset-y offset] [-w|--verbose] [-q|--quiet] [-h|--help] [-v|--version]"
    exit "${exitCode}"
 }
 
+
+# ###### Version ############################################################
+version () {
+   echo "gs-glossytext @BUILD_MAJOR@.@BUILD_MINOR@.@BUILD_PATCH@"
+   exit 0
+}
+
+
+
+# ###### Main program #######################################################
+
+# ====== Handle arguments ===================================================
 GETOPT="$(PATH=/usr/local/bin:$PATH which getopt)"
 # shellcheck disable=SC2068
-options="$(${GETOPT} -o b:c:f:p:o:l:vqh --long bordersize:,colorscheme:,font:,patterntext:,patternoutline:,patternoverlay:,verbose,quiet,help -a -- "$@")"
+options="$(${GETOPT} -o F:S:G:g:L:l:O:B:I:i:J:j:R:r:s:X:Y:wqhv --long font-name:,font-size:,blend-gradient-text:,blend-gradient-text-reverse:,blend-gradient-outline:,blend-gradient-outline-reverse:,outline-size:,background-color:,pattern-text:,use-pattern-text:,pattern-outline:,use-pattern-outline:,pattern-overlay:,use-pattern-overlay:,use-shadow:,shadow-offset-x:,shadow-offset-y:,verbose,quiet,help,version -a -- "$@")"
 eval set -- "${options}"
 
-BORDER_SIZE=5
-COLORSCHEME="Golden"
-FONT_NAME="Noto Sans Regular"
+FONT_NAME="Noto Sans Bold"
+FONT_SIZE="50"
+BLEND_GRADIENT_TEXT="Golden"
+BLEND_GRADIENT_TEXT_REVERSE="FALSE"
+BLEND_GRADIENT_OUTLINE="Golden"
+BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
+OUTLINE_SIZE=5
+BACKGROUND_COLOR="white"
 PATTERN_TEXT="Electric Blue"
+USE_PATTERN_TEXT="FALSE"
 PATTERN_OUTLINE="Electric Blue"
+USE_PATTERN_OUTLINE="FALSE"
 PATTERN_OVERLAY="Parque #1"
+USE_PATTERN_OVERLAY="FALSE"
+USE_SHADOW="TRUE"
+SHADOW_OFFSET_X=8
+SHADOW_OFFSET_Y=8
 VERBOSE=0
 while [ $# -gt 0 ] ; do
    case "$1" in
-      -b | --bordersize)
-         BORDER_SIZE="$2"
-         shift 2
-         ;;
-      -c | --colorscheme)
-         COLORSCHEME="$2"
-         shift 2
-         ;;
-      -f | --font)
+      -F | --font-name)
          FONT_NAME="$2"
          shift 2
          ;;
-      -p | --patterntext)
+      -S | --font-size)
+         FONT_SIZE="$2"
+         if [[ ! "${FONT_SIZE}" =~ ^[0-9]+$ ]] || [ "${FONT_SIZE}" -lt 1 ] ; then
+            echo >&2 "ERROR: Invalid value ${FONT_SIZE} for -S|--font-size!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
+      -G | --blend-gradient-text)
+         BLEND_GRADIENT_TEXT="$2"
+         shift 2
+         ;;
+      -g | --blend-gradient-text-reverse)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            BLEND_GRADIENT_TEXT_REVERSE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            BLEND_GRADIENT_TEXT_REVERSE="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -g|--blend-gradient-text-reverse!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -L | --blend-gradient-outline)
+         BLEND_GRADIENT_OUTLINE="$2"
+         shift 2
+         ;;
+      -l | --blend-gradient-outline-reverse)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            BLEND_GRADIENT_OUTLINE_REVERSE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            BLEND_GRADIENT_OUTLINE_REVERSE="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -l|--blend-gradient-outline-reverse!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -O | --outline-size)
+         OUTLINE_SIZE="$2"
+         if [[ ! "${OUTLINE_SIZE}" =~ ^[0-9]+$ ]] || [ "${OUTLINE_SIZE}" -lt 2 ] || [ "${OUTLINE_SIZE}" -gt 250 ] ; then
+            echo >&2 "ERROR: Invalid value ${OUTLINE_SIZE} for -O|--outline-size!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -B | --background-color)
+         BACKGROUND_COLOR="$2"
+         shift 2
+         ;;
+
+      -I | --pattern-text)
          PATTERN_TEXT="$2"
          shift 2
          ;;
-      -o | --patternoutline)
+      -i | --use-pattern-text)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_TEXT="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_TEXT="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -i|--use-pattern-text!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -J | --pattern-outline)
          PATTERN_OUTLINE="$2"
          shift 2
          ;;
-      -l | --patternoverlay)
+      -j | --use-pattern-outline)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_OUTLINE="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_OUTLINE="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -j|--use-pattern-outline!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -R | --pattern-overlay)
          PATTERN_OVERLAY="$2"
          shift 2
          ;;
-      -v | --verbose)
+      -r | --use-pattern-overlay)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_PATTERN_OVERLAY="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_PATTERN_OVERLAY="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -r|--use-pattern-overlay!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
+      -s | --use-shadow)
+         if [[ "$2" =~ ^(on|ON|true|TRUE|yes|YES|1)$ ]] ; then
+            USE_SHADOW="TRUE"
+         elif [[ "$2" =~ ^(off|OFF|false|FALSE|no|NO|0)$ ]] ; then
+            USE_SHADOW="FALSE"
+         else
+            echo >&2 "ERROR: Invalid value $2 for -s|--use-shadow!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -X | --shadow-offset-x)
+         SHADOW_OFFSET_X="$2"
+         if [[ ! "${SHADOW_OFFSET_X}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_X}" -lt 1 ] || [ "${SHADOW_OFFSET_X}" -gt 100 ] ; then
+            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_X} for -X|--shadow-offset-x!"
+            exit 1
+         fi
+         shift 2
+         ;;
+      -Y | --shadow-offet-y)
+         SHADOW_OFFSET_Y="$2"
+         if [[ ! "${SHADOW_OFFSET_Y}" =~ ^[0-9]+$ ]] || [ "${SHADOW_OFFSET_Y}" -lt 1 ] || [ "${SHADOW_OFFSET_Y}" -gt 100 ] ; then
+            echo >&2 "ERROR: Invalid value ${SHADOW_OFFSET_Y} for -Y|--shadow-offet-y!"
+            exit 1
+         fi
+         shift 2
+         ;;
+
+      -w | --verbose)
          VERBOSE=1
          shift
          ;;
@@ -94,6 +216,10 @@ while [ $# -gt 0 ] ; do
          ;;
       -h | --help)
          usage 0
+         ;;
+      -v | --version)
+         version
+         # shift
          ;;
       --)
          shift
@@ -105,34 +231,30 @@ while [ $# -gt 0 ] ; do
   esac
 done
 
-if [ $# -ne 3 ] ; then
+if [ $# -ne 2 ] ; then
    usage 1
 fi
 OUTPUT_FILENAME="$1"
-CONTENT="$2"
-FONT_SIZE=$3
-
-if [[ ! "${FONT_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid font size ${FONT_SIZE}!"
-   exit 1
-fi
-if [[ ! "${BORDER_SIZE}" =~ ^([0-9]+)$ ]] ; then
-   echo >&2 "ERROR: Invalid border size ${BORDER_SIZE}!"
-   exit 1
-fi
+TEXT="$2"
 
 
-# ====== Obtain GIMP call options ===========================================
-if ! whereis gimp-console >/dev/null ; then
-   echo >&2 "ERROR: Gimp is not available!"
+# ====== Detect GIMP, and determine version-specific call options ===========
+GIMP_CONSOLE="$(which gimp-console 2>/dev/null || true)"
+if [ "${GIMP_CONSOLE}" == "" ] ; then
+   echo >&2 "ERROR: GIMP is not installed!"
+   echo >&2 "* Ubuntu:  sudo apt install -y gimp"
+   echo >&2 "* Fedora:  sudo dnf install -y gimp"
+   echo >&2 "* SuSE     sudo zypper install -y gimp"
+   echo >&2 "* Alpine:  sudo apk add gimp"
+   echo >&2 "* FreeBSD: sudo pkg install -y gimp3-app"
    exit 1
 fi
-GIMP_VERSION="$(LANG=C gimp-console --version | sed -e 's/GNU Image Manipulation Program version //')"
+GIMP_VERSION="$(LC_ALL=C.UTF-8 "${GIMP_CONSOLE}" --version | sed -e 's/GNU Image Manipulation Program version //')"
 if [[ "${GIMP_VERSION}" =~ ^[012] ]] ; then
-   # Gimp 2.x:
+   # GIMP 2.x:
    GIMP_OPTIONS="--new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 else
-   # Gimp 3.x:
+   # GIMP 3.x:
    GIMP_OPTIONS="--quit --new-instance --no-interface --no-splash --batch-interpreter plug-in-script-fu-eval --batch -"
 fi
 
@@ -147,7 +269,7 @@ rm -f "${OUTPUT_FILENAME}"
 
 ; ****** Begin of glossy-300.scm ********************************************
 
-;Modernized with ModernizeMatic8 for Gimp 2.10.28 by vitforlinux.wordpress.com - dont remove
+;Modernized with ModernizeMatic8 for GIMP 2.10.28 by vitforlinux.wordpress.com - dont remove
 
 ; glossy-patterned-shadowed-and-bump-mapped-logo
 ; creates anything you can create with it :)
@@ -181,7 +303,7 @@ rm -f "${OUTPUT_FILENAME}"
 
 (cond ((not (defined? 'gimp-text-fontname)) (define (gimp-text-fontname fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 PIXELS fn9) (gimp-text-font fn1 fn2 fn3 fn4 fn5 fn6 fn7 fn8 fn9))))
 
-; Gimp 2.8 compatibility:
+; GIMP 2.8 compatibility:
 (cond ((not (defined? 'LAYER-MODE-NORMAL-LEGACY)) (define LAYER-MODE-NORMAL-LEGACY NORMAL-MODE)))
 (cond ((not (defined? 'LAYER-MODE-SCREEN-LEGACY)) (define LAYER-MODE-SCREEN-LEGACY SCREEN-MODE)))
 
@@ -239,11 +361,11 @@ rm -f "${OUTPUT_FILENAME}"
     (script-fu-util-image-add-layers img grow-me bg-layer)
     (gimp-item-set-name grow-me "Grow-me")
     (if (defined? 'gimp-item-transform-translate)
-      (begin  ; New Gimp > 2.8 API:
-        ; New Gimp > 2.8 API:
+      (begin  ; New GIMP > 2.8 API:
+        ; New GIMP > 2.8 API:
         (gimp-item-transform-translate grow-me posx posy)
       )
-      (begin  ; Old Gimp <= 2.8 API:
+      (begin  ; Old GIMP <= 2.8 API:
         (gimp-layer-translate grow-me posx posy)
       )
     )
@@ -253,11 +375,11 @@ rm -f "${OUTPUT_FILENAME}"
     ;(gimp-drawable-edit-bucket-fill bg-layer FILL-BACKGROUND  100 0 )
 
     (if (defined? 'gimp-drawable-edit-fill)
-      (begin  ; New Gimp > 2.8 API:
-        ; New Gimp > 2.8 API:
+      (begin  ; New GIMP > 2.8 API:
+        ; New GIMP > 2.8 API:
         (gimp-drawable-edit-fill bg-layer FILL-BACKGROUND)
       )
-      (begin  ; Old Gimp <= 2.8 API:
+      (begin  ; Old GIMP <= 2.8 API:
         (gimp-edit-bucket-fill bg-layer BG-BUCKET-FILL NORMAL-MODE 100 0 FALSE 0 0)
       )
     )
@@ -274,11 +396,11 @@ rm -f "${OUTPUT_FILENAME}"
       (begin
         (gimp-context-set-pattern pattern-text)
         (if (defined? 'gimp-drawable-edit-fill)
-          (begin  ; New Gimp > 2.8 API:
-            ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
+            ; New GIMP > 2.8 API:
             (gimp-drawable-edit-fill logo-layer FILL-PATTERN)
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-drawable-edit-bucket-fill logo-layer BUCKET-FILL-PATTERN  100 0 )
           )
         )
@@ -289,11 +411,11 @@ rm -f "${OUTPUT_FILENAME}"
       (begin
         (gimp-context-set-gradient blend-gradient-text)
         (if (defined? 'gimp-drawable-edit-gradient-fill)
-          (begin  ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
              (gimp-context-set-gradient-reverse blend-gradient-text-reverse)
              (gimp-drawable-edit-gradient-fill logo-layer GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-edit-blend logo-layer CUSTOM-MODE NORMAL-MODE
                                         GRADIENT-LINEAR 100 0 REPEAT-NONE
                                         blend-gradient-text-reverse
@@ -329,11 +451,11 @@ rm -f "${OUTPUT_FILENAME}"
         (gimp-context-set-gradient blend-gradient-outline)
 
         (if (defined? 'gimp-drawable-edit-gradient-fill)
-          (begin  ; New Gimp > 2.8 API:
+          (begin  ; New GIMP > 2.8 API:
              (gimp-context-set-gradient-reverse blend-gradient-outline-reverse)
              (gimp-drawable-edit-gradient-fill grow-me GRADIENT-LINEAR 0 0 1 0 0 0 0 0 (+ height 5)) ; Fill with gradient
           )
-          (begin  ; Old Gimp <= 2.8 API:
+          (begin  ; Old GIMP <= 2.8 API:
             (gimp-edit-blend grow-me CUSTOM-MODE NORMAL-MODE
                                      GRADIENT-LINEAR 100 0 REPEAT-NONE
                                      blend-gradient-outline-reverse
@@ -557,16 +679,27 @@ rm -f "${OUTPUT_FILENAME}"
 
 
 (let*
+
    ; ------ Initialise ------------------------------------------------------
-   ((outputFileName   "${OUTPUT_FILENAME}")
-    (logoText    "${CONTENT}")
+   ((outputFileName             "${OUTPUT_FILENAME}")
+    (text                       "${TEXT}")
     (font)
-    (fontSize     ${FONT_SIZE})
-    (borderSize   ${BORDER_SIZE})
-    (colorScheme)
+    (fontSize                    ${FONT_SIZE})
+    (blendGradientText)
+    (blendGradientTextReverse    ${BLEND_GRADIENT_TEXT_REVERSE})
+    (blendGradientOutline)
+    (blendGradientOutlineReverse ${BLEND_GRADIENT_OUTLINE_REVERSE})
+    (outlineSize                 ${OUTLINE_SIZE})
+    (backgroundColor             "${BACKGROUND_COLOR}")
+    (usePatternText              ${USE_PATTERN_TEXT})
     (patternText)
+    (usePatternOutline           ${USE_PATTERN_OUTLINE})
     (patternOutline)
+    (usePatternOverlay           ${USE_PATTERN_OVERLAY})
     (patternOverlay)
+    (useShadow                   ${USE_SHADOW})
+    (shadowOffsetX               ${SHADOW_OFFSET_X})
+    (shadowOffsetY               ${SHADOW_OFFSET_Y})
     (image)
     (layers)
     (num-layers)
@@ -579,16 +712,25 @@ rm -f "${OUTPUT_FILENAME}"
       (set! font "${FONT_NAME}"))
    ; (newline) (display "font=") (display font) (newline)
    (if (and (not (defined? 'gimp-image-get-active-layer)) (= font -1)) (
-      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts with fc-list!")
+      (gimp-message "ERROR: Font \"${FONT_NAME}\" is not available! Check installed fonts using fc-list!")
       (quit FALSE)
    ))
 
    (if (not (defined? 'gimp-image-get-active-layer))
-      (set! colorScheme (car (gimp-gradient-get-by-name "${COLORSCHEME}")))
-      (set! colorScheme "${COLORSCHEME}"))
-   ; (display "colorScheme=") (display colorScheme) (newline)
-   (if (and (not (defined? 'gimp-image-get-active-layer)) (= colorScheme -1)) (
-      (gimp-message "ERROR: Color scheme \"${COLORSCHEME}\" is not available!")
+      (set! blendGradientText (car (gimp-gradient-get-by-name "${BLEND_GRADIENT_TEXT}")))
+      (set! blendGradientText "${BLEND_GRADIENT_TEXT}"))
+   ; (display "blendGradientText=") (display blendGradientText) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= blendGradientText -1)) (
+      (gimp-message "ERROR: Gradient \"${BLEND_GRADIENT_TEXT}\" is not available!")
+      (quit FALSE)
+   ))
+
+   (if (not (defined? 'gimp-image-get-active-layer))
+      (set! blendGradientOutline (car (gimp-gradient-get-by-name "${BLEND_GRADIENT_OUTLINE}")))
+      (set! blendGradientOutline "${BLEND_GRADIENT_OUTLINE}"))
+   ; (display "blendGradientOutline=") (display blendGradientOutline) (newline)
+   (if (and (not (defined? 'gimp-image-get-active-layer)) (= blendGradientOutline -1)) (
+      (gimp-message "ERROR: Gradient \"${BLEND_GRADIENT_OUTLINE}\" is not available!")
       (quit FALSE)
    ))
 
@@ -620,13 +762,13 @@ rm -f "${OUTPUT_FILENAME}"
    ))
 
    ; ------ Generate text ---------------------------------------------------
-   (set! image (car (script-fu-glossy-300-logo logoText fontSize font 0 8 8 colorScheme FALSE colorScheme FALSE borderSize "white" FALSE patternText FALSE patternOutline FALSE patternOverlay TRUE TRUE 8 8)))
+   (set! image (car (script-fu-glossy-300-logo text fontSize font 0 8 8 blendGradientText blendGradientTextReverse blendGradientOutline blendGradientOutlineReverse outlineSize backgroundColor usePatternText patternText usePatternOutline patternOutline usePatternOverlay patternOverlay TRUE useShadow shadowOffsetX shadowOffsetY)))
    ; (display "image=") (display image) (newline)
 
    (set! layers (if (not (defined? 'gimp-image-get-active-layer))
-                    ; New Gimp 3.0 API:
+                    ; New GIMP 3.0 API:
                     (set! layers (car (gimp-image-get-layers image)))
-                    ; Old Gimp 2.x API:
+                    ; Old GIMP 2.x API:
                     (set! layers (car (cdr (gimp-image-get-layers image))))
                 ))
    ; (display "layers=") (display layers) (newline)
@@ -640,16 +782,16 @@ rm -f "${OUTPUT_FILENAME}"
    (gimp-image-merge-visible-layers image EXPAND-AS-NECESSARY)
 
    (set! layer (if (not (defined? 'gimp-image-get-active-layer))
-                   ; New Gimp 3.0 API:
+                   ; New GIMP 3.0 API:
                    (car (list (vector-ref (car (gimp-image-get-selected-layers image)) 0)))
-                   ; Old Gimp 2.x API:
+                   ; Old GIMP 2.x API:
                    (car (gimp-image-get-active-layer image)))
                   )
 
    ; ------ Save result -----------------------------------------------------
    (if (defined? 'gimp-drawable-merge-new-filter)
-      (begin  ; New Gimp >= 3.0 API:
-         ; FIXME: This does not work when running in Gimp 2.x!
+      (begin  ; New GIMP >= 3.0 API:
+         ; FIXME: This does not work when running in GIMP 2.x!
          ; (file-png-export
          ;    #:run-mode         RUN-NONINTERACTIVE
          ;    #:image            image
@@ -668,7 +810,7 @@ rm -f "${OUTPUT_FILENAME}"
             outputFileName -1
             TRUE 6 TRUE FALSE TRUE TRUE FALSE TRUE)
       )
-      (begin  ; Old Gimp < 3.0 API:
+      (begin  ; Old GIMP < 3.0 API:
          (file-png-save2 RUN-NONINTERACTIVE image
             (car (gimp-image-get-active-layer image))
             outputFileName outputFileName
@@ -681,12 +823,12 @@ rm -f "${OUTPUT_FILENAME}"
 )
 (gimp-quit TRUE)
 EOF
-) | env LANG=C HOME=/tmp gimp-console ${GIMP_OPTIONS} 2>&1 | \
+) | env LC_ALL=C.UTF-8 HOME=/tmp "${GIMP_CONSOLE}" ${GIMP_OPTIONS} 2>&1 | \
 (
    if [ ${VERBOSE} -ne 0 ] ; then
       cat
    else
-      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
+      grep -vE "^ts>|(#t)|^Copyright|Welcome to (GIMP|TinyScheme)|^using gegl copy|^gimp_color_transform_new: using babl|scriptfu-WARNING|-WARNING|^Please use named arguments:|^script quit with code:|^$" || true
    fi
 )
 

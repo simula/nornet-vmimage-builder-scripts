@@ -175,7 +175,7 @@ elif [ "${ID}" == "fedora" ] ; then
    /usr/bin/dnf install --setopt=install_weak_deps=False -y --allowerasing sddm-x11
 
    systemctl enable sddm.service || true
-   systemctl start sddm.service || true
+   systemctl start sddm.service  || true
    systemctl set-default graphical.target
 
 

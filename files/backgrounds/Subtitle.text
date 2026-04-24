@@ -3,10 +3,12 @@
 set -eu
 
 # The style is named "Book" on most systems, but "Regular" on Fedora ...
-style=$(fc-list | grep "^/usr/.*share/fonts/.*dejavu.*/DejaVuSans\.ttf" | sed -e "s/^.*style=//" -e "s/,Book//")
+style="$(fc-list | grep "^/usr/.*share/fonts/.*dejavu.*/DejaVuSans\.ttf" | sed -e "s/^.*style=//" -e "s/,Book//")"
 
-${MAKE_GLOSSYTEXT} "${OUTPUT}"   \
-   "Simula Metropolitan Centre for Digital Engineering"   256   \
-   --bordersize 20                                              \
-   --colorscheme "Golden"                                       \
-   --font "DejaVu Sans ${style}"
+${GS_GLOSSYTEXT} "${OUTPUT}"                            \
+   "Simula Metropolitan Centre for Digital Engineering" \
+   --font-name              "DejaVu Sans ${style}"      \
+   --font-size              256                         \
+   --outline-size           20                          \
+   --blend-gradient-text    "Golden"                    \
+   --blend-gradient-outline "Golden"

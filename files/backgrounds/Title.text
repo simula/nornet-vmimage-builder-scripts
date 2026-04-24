@@ -2,8 +2,10 @@
 
 set -eu
 
-${MAKE_GLOSSYTEXT} "${OUTPUT}"   \
-   "SimulaMet"   1024            \
-   --bordersize 30               \
-   --colorscheme "Golden"        \
-   --font "DejaVu Sans Bold"
+${GS_GLOSSYTEXT} "${OUTPUT}"                       \
+   "SimulaMet"                                     \
+   --font-name              "DejaVu Sans Bold"     \
+   --font-size              1024                   \
+   --outline-size           30                     \
+   --blend-gradient-text    "Golden"               \
+   --blend-gradient-outline "Golden"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # SuNILab Desktop Background Script
-# Copyright (C) 2017-2025 by Thomas Dreibholz
+# Copyright (C) 2017-2026 by Thomas Dreibholz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 # Bash options:
 set -eu
 
-if [ $# -lt 4 ] ; then
-   echo >&2 "Usage: $0 output_file caption width height"
+if [ $# -lt 3 ] ; then
+   echo >&2 "Usage: $0 output_file caption width"
    exit 1
 fi
 
@@ -35,12 +35,15 @@ CAPTION="$(cat "$2")"
 WIDTH="$3"
 HEIGHT="$4"
 
-if [ "${MAKE_CAPTION}" = "" ] ; then
-   MAKE_CAPTION=gimp-scripts/Make-Caption
+if [ "${GS_CAPTION}" = "" ] ; then
+   GS_CAPTION=gimp-scripts/gs-caption
 fi
 
 height=$((42*HEIGHT/768))   # Height "42" is designed for 1024x768
-${MAKE_CAPTION} \
-   "${OUTPUT}" "${CAPTION}" "${WIDTH}" "${height}" \
-   "Noto Sans Bold" 55 \
-   --foreground "#02266b" --background "#ffd700" --transparency 26
+${GS_CAPTION}                                    \
+   "${OUTPUT}" "${WIDTH}" "${height}" "${CAPTION}" \
+   --font-name "Noto Sans Bold"                    \
+   --font-size 55                                  \
+   --foreground "#02266b"                          \
+   --background "#ffd700"                          \
+   --transparency 26
