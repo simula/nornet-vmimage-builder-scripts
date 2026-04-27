@@ -27,7 +27,7 @@ HYPERVISOR="Docker"
 ARCHITECTURES="amd64 arm64v8 riscv64 ppc64le s390x"   # amd64 arm64v8 riscv64 ppc64le s390x   arm32v7 arm32v5 i386
 # SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT}"
 SYSTEMS="${DEFAULT_LINUX_SYSTEMS_CURRENT} ${DEFAULT_LINUX_SYSTEMS_LEGACY}"
-# SYSTEMS="Debian-13"
+# SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal Basic Development"   # Minimal Basic Development
