@@ -72,28 +72,28 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
          echo "${packages}"
          # shellcheck disable=SC2086
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
       else
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             virtualbox-guest-utils || true
          if [ -e /usr/lib/systemd/system/sddm.service ] ; then
             # System has X11 -> also install X11 utilities as well:
-            env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+            env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                virtualbox-guest-x11 || true
          fi
       fi
    # ------ vSphere ---------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          open-vm-tools
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             open-vm-tools-desktop || true
       fi
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          qemu-guest-agent
    fi
 
@@ -101,12 +101,12 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
       # NOTE: qemu-guest-agent may have been installed as part of th
       #       initial setup, since e.g. the Proxmox builder may expect it!
-      /usr/bin/apt-get autoremove -y --purge qemu-guest-agent || true
+      apt-get autoremove -y --purge qemu-guest-agent || true
    fi
 
    # ------ Not in QEMU -> remove open-vm-tools -----------------------------
    if [ ! "${HYPERVISOR}" == "vmware" ] ; then
-      /usr/bin/apt-get autoremove -y --purge open-vm-tools || true
+      apt-get autoremove -y --purge open-vm-tools || true
    fi
 
 
@@ -115,24 +115,24 @@ elif [ "${ID}" == "fedora" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      /usr/bin/dnf install --setopt=install_weak_deps=False -y virtualbox-guest-additions
+      dnf install --setopt=install_weak_deps=False -y virtualbox-guest-additions
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
-      /usr/bin/dnf install --setopt=install_weak_deps=False -y open-vm-tools
+      dnf install --setopt=install_weak_deps=False -y open-vm-tools
       if [ -e /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
-         /usr/bin/dnf install --setopt=install_weak_deps=False -y open-vm-tools-desktop
+         dnf install --setopt=install_weak_deps=False -y open-vm-tools-desktop
       fi
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-      /usr/bin/dnf install --setopt=install_weak_deps=False -y qemu-guest-agent
+      dnf install --setopt=install_weak_deps=False -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
    if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
       # NOTE: qemu-guest-agent may have been installed as part of th
       #       initial setup, since e.g. the Proxmox builder may expect it!
-      /usr/bin/dnf remove -y qemu-guest-agent || true
+      dnf remove -y qemu-guest-agent || true
    fi
 
 

@@ -125,17 +125,17 @@ EOF
 
    # NOTE: Try IPv4-only, if there is a problem. This seems to be necessary for Ubuntu 18.04.
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y ${packages} || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -o Acquire::ForceIPv4=true -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y ${packages} || \
+      env DEBIAN_FRONTEND=noninteractive apt-get install -o Acquire::ForceIPv4=true -y ${packages}
 
    # Only newer system versions have Strawberry, install Clementine instead:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends strawberry ||
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends clementine
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends strawberry ||
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends clementine
 
    # FIXME: Ubuntu 20.04 triggers GNOME Desktop as "recommends".
    #        Fix should be to use --no-install-recommends!
    # Work-around: disable GDM, to get SDDM working:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y gdm3 || true
+   env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y gdm3 || true
 
 
 # ------ Fedora -------------------------------------------------------------
@@ -167,12 +167,12 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y --allowerasing ${packages}
+   dnf install --setopt=install_weak_deps=False -y --allowerasing ${packages}
 
    # FIXME!
    # 2024/03: Wayland is still completely unusable in VirtualBox!
    # SDDM on Wayland just produces a black screen -> use X11 instead!
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y --allowerasing sddm-x11
+   dnf install --setopt=install_weak_deps=False -y --allowerasing sddm-x11
 
    systemctl enable sddm.service || true
    systemctl start sddm.service  || true

@@ -89,7 +89,7 @@ if [ "${ID}" == "debian" ] ; then
    update-grub
 
    cd "/home/${USER_NAME}/src/neat"
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get build-dep -y .
+   env DEBIAN_FRONTEND=noninteractive apt-get build-dep -y .
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
    sudo -u "${USER_NAME}" make -j"${cores}"
    make install
@@ -103,7 +103,7 @@ elif [ "${ID}" == "ubuntu" ] ; then
    "
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -114,7 +114,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

@@ -83,7 +83,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
       if [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] ; then
-         DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends fasttrack-archive-keyring
+         DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends fasttrack-archive-keyring
          if [ "${VERSION_ID}" -ge 13 ] ; then
             # On newer Debian versions, it is necessary to specify "signed-by";
             # the fasttrack-archive-keyring installs
@@ -100,13 +100,13 @@ deb http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack 
 # deb-src http://fasttrack.debian.net/debian-fasttrack/ ${VERSION_CODENAME}-fasttrack main contrib
 EOF
          fi
-         /usr/bin/apt-get update
+         apt-get update
       fi
    fi
 
    if [ "${ID}" == "debian" ] ; then
       architecture="$(dpkg --print-architecture)"
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ca-certificates wget
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates wget
 
       # ------ Work-around for missing System-Tools in Debian ---------------
       # FIXME! This is not the best solution. Ideally, there should be a
@@ -123,7 +123,7 @@ EOF
       packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
       echo "${packages}"
       # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
       # ------ Work-around for missing TSCTP in Debian < 13 -----------------
       # shellcheck disable=SC2071
@@ -140,7 +140,7 @@ EOF
          packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
          echo "${packages}"
          # shellcheck disable=SC2086
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
       fi
 
       rm -rf ppa.launchpadcontent.net
@@ -228,14 +228,14 @@ EOF
    fi
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
    # ------ Locate ----------------------------------------------------------
    # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
    # Try PLocate first, then MLocate, then findutils:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends plocate || \
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends mlocate || \
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends findutils
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends plocate || \
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends mlocate || \
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends findutils
 
 
 # ------ Fedora -------------------------------------------------------------
@@ -293,7 +293,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
    if [ -e /etc/selinux/config ] ; then
       # FIXME!

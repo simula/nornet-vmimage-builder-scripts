@@ -43,29 +43,29 @@ fi
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    packages="
       nornet-node
    "
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
+elif [ "${ID}" == "fedora" ] ; then
 
    packages="
       nornet-node
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
 
 # ------ FreeBSD ------------------------------------------------------------
-elif [ -e /usr/sbin/pkg ] ; then
+elif [ "${ID}" == "freebsd" ] ; then
 
    # TBD!
    true

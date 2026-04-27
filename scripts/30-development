@@ -162,10 +162,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    fi
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends ${packages}
 
    # Install Valgrind, if available:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y -m --no-install-recommends valgrind || true
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends valgrind || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -229,10 +229,10 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
    # Install Valgrind, if available:
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y valgrind || true
+   dnf install --setopt=install_weak_deps=False -y valgrind || true
 
    # Add user to "mock" group:
    usermod -a -G mock "${USER_NAME}"

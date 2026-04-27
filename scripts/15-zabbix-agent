@@ -56,13 +56,13 @@ EOF
    rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
       gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
-   /usr/bin/apt-get update
+   apt-get update
 
    # ------ Install ---------------------------------------------------------
    packages="zabbix-agent"
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
    systemctl enable zabbix-agent
    systemctl start  zabbix-agent
@@ -73,7 +73,7 @@ elif [ "${ID}" == "fedora" ] ; then
    packages="zabbix-agent"
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
    systemctl enable zabbix-agent
    systemctl start  zabbix-agent

@@ -64,18 +64,18 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Ubuntu: add PPA dreibh/ppa
    if [ "${ID}" == "ubuntu" ] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends software-properties-common
+      env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends software-properties-common
       if [ "${ID}" == "ubuntu" ] && [[  "${VERSION_ID}" =~ ^22\.[01][04]$ ]] ; then
          # Ubuntu 22.04 fix: gpg-agent + dirmngr are needed.
-         env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends gpg-agent dirmngr
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg-agent dirmngr
       fi
-      /usr/bin/apt-add-repository -y ppa:dreibh/ppa
+      apt-add-repository -y ppa:dreibh/ppa
    fi
 
    # Ensure that the installed packages are up-to-date:
-   /usr/bin/apt-get update
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get dist-upgrade -y
+   apt-get update
+   env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 
    packages="
       bash
@@ -99,11 +99,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    fi
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
    # Remove unsed Canonical stuff:
    if [ "${ID}" == "ubuntu" ] ; then
-      env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y --purge \
+      env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y --purge \
          ubuntu-pro-client landscape-common
    fi
 
@@ -111,13 +111,13 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # Make sure that DNF has COPR support:
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y 'dnf-command(copr)'
+   dnf install --setopt=install_weak_deps=False -y 'dnf-command(copr)'
 
    # Add COPR PPA dreibh/ppa:
-   /usr/bin/dnf copr enable -y dreibh/ppa
+   dnf copr enable -y dreibh/ppa
 
    # Ensure that the installed packages are up-to-date:
-   /usr/bin/dnf upgrade -y
+   dnf upgrade -y
 
    packages="
       bash
@@ -134,7 +134,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

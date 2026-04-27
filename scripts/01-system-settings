@@ -40,9 +40,9 @@ if [ "${UNAME}" == "Linux" ] ; then
       # This command may fail in a Docker container, due to systemd not running:
       timedatectl set-timezone ${TIMEZONE} || true
    else
-      if [ -e /usr/bin/apt-get ] ; then
+      if command -v apt-get 2>/dev/null ; then
          # ------ Old Ubuntu (12.04 etc.) -----------------------------------
-         if [ ! -e /usr/bin/apt ] ; then
+         if [ ! -e apt ] ; then
             echo "${TIMEZONE}" >/etc/timezone
             dpkg-reconfigure -f noninteractive tzdata
          fi

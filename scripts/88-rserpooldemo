@@ -77,7 +77,7 @@ if [ "${ID}" == "debian" ] ; then
       rsplib-services
    "
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
    systemctl stop rsplib-registrar    || true
    systemctl disable rsplib-registrar || true
    systemctl stop rspregistrar        || true
@@ -106,7 +106,7 @@ elif [ "${ID}" == "ubuntu" ] ; then
    "
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
    systemctl stop rspregistrar
    systemctl disable rspregistrar
@@ -122,7 +122,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
    systemctl stop rspregistrar
    systemctl disable rspregistrar

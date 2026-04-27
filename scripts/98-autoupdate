@@ -36,7 +36,7 @@ fi
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Packages:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       unattended-upgrades
 
    # Ensure that "unattended-upgrades" is active and handles the PPAs:
@@ -62,7 +62,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # Packages:
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y dnf-automatic
+   dnf install --setopt=install_weak_deps=False -y dnf-automatic
 
    if [ ! -e /etc/dnf/automatic.conf ] ; then
       cp /usr/share/dnf5/dnf5-plugins/automatic.conf /etc/dnf/automatic.conf

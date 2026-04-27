@@ -25,11 +25,13 @@ set -ex
 # ====== OpenStack configuration ============================================
 
 # ------ Ubuntu -------------------------------------------------------------
-if [ -e /usr/bin/apt-get ] ; then
-   /usr/bin/apt-get update
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+   apt-get update
 
    # Install Cloud-Init:
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y cloud-init
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      cloud-init
 
    # Set user name in Cloud-Init's configuration file:
    # !!! Something messes up the instance on nisse, but not on odin, when
@@ -50,6 +52,9 @@ if [ -e /usr/bin/apt-get ] ; then
          /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
 
 # ------ Fedora -------------------------------------------------------------
-elif [ -e /usr/bin/dnf ] ; then
-   /usr/bin/dnf install -y cloud-init
+elif [ "${ID}" == "fedora" ] ; then
+
+   # Install Cloud-Init:
+   dnf install -y cloud-init
+
 fi

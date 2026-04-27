@@ -38,8 +38,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # https://askubuntu.com/questions/916199/install-apt-show-versions-inside-an-ubuntu-docker-container
    rm -f /etc/apt/apt.conf.d/docker-gzip-indexes
 
-   /usr/bin/apt-get update -qq
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y sudo
+   apt-get update -qq
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y sudo
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -58,11 +58,11 @@ useradd -s /bin/bash \
    "${USER_NAME}"
 echo "${USER_NAME}:${USER_PASSWORD}" | chpasswd
 chown "${USER_NAME}":"${USER_NAME}" /home/"${USER_NAME}"
-if [ ! -e /usr/bin/dnf ] ; then
-   # Debian/Ubuntu:
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+   # Debian/Ubuntu: group is "sudo"
    usermod -aG sudo "${USER_NAME}"
 else
-   # Fedora:
+   # Fedora: group is "wheel"
    usermod -aG wheel "${USER_NAME}"
 fi
 
@@ -71,7 +71,7 @@ fi
 
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y locales tzdata
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y locales tzdata
    locale-gen ar_SA.UTF-8 bs_BA.UTF-8 da_DK.UTF-8 de_AT.UTF-8 de_CH.UTF-8 de_DE.UTF-8 en_AU.UTF-8 en_DK.UTF-8 en_GB.UTF-8 en_IE.UTF-8 en_US.UTF-8 en_ZA.UTF-8 nb_NO.UTF-8 nn_NO.UTF-8 ro_RO.UTF-8 sk_SK.UTF-8 zh_CN.UTF-8
 
 # ------ Fedora -------------------------------------------------------------
@@ -85,7 +85,7 @@ fi
 
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y systemctl || true
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y systemctl || true
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then

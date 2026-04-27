@@ -34,7 +34,7 @@ fi
 
 # ------ Debian/Ubuntu ------------------------------------------------------
 if [ "${ID}" == "debian" ] || [ "${ID}" == "ubuntu" ] ; then
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       popularity-contest
    sed -e 's/^PARTICIPATE="no"/PARTICIPATE="yes"/' -i /etc/popularity-contest.conf
    sed -e '/^SUBMITURLS=""/d' -e 's/^#SUBMITURLS=/SUBMITURLS=/' -i /usr/share/popularity-contest/default.conf

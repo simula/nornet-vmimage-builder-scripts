@@ -65,7 +65,7 @@ if [ "${ID}" == "debian" ] ; then
    # libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb hunspell-de-de hunspell-no hunspell-en-gb hunspell-en-us hunspell-en-au
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
    sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
    cd "/home/${USER_NAME}/src"
@@ -96,7 +96,7 @@ elif [ "${ID}" == "ubuntu" ] ; then
    # libreoffice-l10n-en-gb libreoffice-l10n-de libreoffice-l10n-nb hunspell-de-de hunspell-no hunspell-en-gb hunspell-en-us hunspell-en-au
 
    # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
@@ -109,7 +109,7 @@ elif [ "${ID}" == "fedora" ] ; then
    "
 
    # shellcheck disable=SC2086
-   /usr/bin/dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y ${packages}
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

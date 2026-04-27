@@ -57,7 +57,7 @@ if [ "${UNAME}" == "Linux" ] ; then
       fi
       if [ -d /etc/grub.d ] && [ -e /etc/default/grub ] ;  then
          sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
-            -e "s%@SET_LOADER_HERE@%${loader}%g" \
+             -e "s%@SET_LOADER_HERE@%${loader}%g" \
             </tmp/configuration-files/06_aaaaa_bootsplash.in >/etc/grub.d/06_aaaaa_bootsplash
          chmod +x /etc/grub.d/06_aaaaa_bootsplash
          configure-grub /usr/share/configure-grub/grub-defaults-nornet -o /etc/default/grub
@@ -70,8 +70,8 @@ if [ "${UNAME}" == "Linux" ] ; then
          configure-grub /usr/share/configure-grub/grub-defaults-nornet \
             -V "auto,${VIDEO},1024x768" \
             -o /etc/default/grub
-         if [ -x /usr/sbin/grub2-mkconfig ] ; then
-            /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg || true
+         if command -v grub2-mkconfig 2>/dev/null ; then
+            grub2-mkconfig -o /boot/grub2/grub.cfg || true
          else
             update-grub || true
          fi
