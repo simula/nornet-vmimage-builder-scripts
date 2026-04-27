@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eux
+set -euxo pipefail
 
 INPUT="Logo-VMImageBuilderScripts.dia"
 OUTPUT="Logo-VMImageBuilderScripts"

@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -eu
+set -euo pipefail
 
 
 # ====== Handle arguments ===================================================
@@ -47,7 +47,7 @@ fi
 ssh-copy-id "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
-set -eu
+set -euo pipefail
 if [ ! -e .gitconfig ] ; then
    (
       echo \"[user]\"

@@ -41,7 +41,7 @@ echo 'nameserver 1.0.0.1' >>/tmp/bsdinstall_etc/resolv.conf
 
 #!/bin/sh
 
-set -eux
+set -euxo pipefail
 
 # ====== Basic configuration ================================================
 

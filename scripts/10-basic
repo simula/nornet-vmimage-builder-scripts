@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eux
+set -euxo pipefail
 
 
 # ###########################################################################
@@ -149,10 +149,10 @@ EOF
    packages="
       acl
       apt-file
-      chrpath
       bridge-utils
       bwm-ng
       bzip2
+      chrpath
       cloud-guest-utils
       curl
       dnsutils
@@ -181,7 +181,7 @@ EOF
       subnetcalc
       tcpdump
       td-system-configure-grub
-      td-system-tools
+      td-system-tools-basic
       traceroute
       tree
       tsctp
@@ -248,8 +248,8 @@ elif [ "${ID}" == "fedora" ] ; then
       bwm-ng
       bzip2
       chrpath
-      cmake
       cloud-utils-growpart
+      cmake
       curl
       ethtool
       fail2ban
@@ -280,7 +280,7 @@ elif [ "${ID}" == "fedora" ] ; then
       subnetcalc
       tar
       tcpdump
-      td-system-tools
+      td-system-tools-basic
       td-system-tools-configure-grub
       traceroute
       tree
@@ -325,8 +325,8 @@ elif [ "${ID}" == "freebsd" ] ; then
       libidn
       netperfmeter
       nmap
-      ossp-uuid
       openssl
+      ossp-uuid
       parallel
       plocate
       pwgen

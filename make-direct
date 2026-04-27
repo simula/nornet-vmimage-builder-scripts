@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -eu
+set -euo pipefail
 
 
 VIDEO="1024x768"
