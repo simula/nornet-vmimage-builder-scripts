@@ -33,17 +33,18 @@ if [ -e /usr/bin/apt-get ] ; then
    /usr/bin/apt-get update
 
    # ====== Install MPTCP kernel packages ===================================
-   mptcpKernelImagePackage=`apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image-" | grep -- '-mptcp' | grep -v -- '-dbg$' | sort --version-sort --field-separator=- -r | head -n1`
+   mptcpKernelImagePackage=$(apt-cache search mptcp | cut -d' ' -f1 | grep "^linux-image-" | grep -- '-mptcp' | grep -v -- '-dbg$' | sort --version-sort --field-separator=- -r | head -n1)
    if [ "${mptcpKernelImagePackage}" == "" ] ; then
       echo >&2 "ERROR: No suitable MPTCP kernel package found!"
       exit 1
    fi
-   mptcpKernelHeadersPackage=`echo "${mptcpKernelImagePackage}" | sed -e "s/-image-/-headers-/g"`
+   # shellcheck disable=SC2001
+   mptcpKernelHeadersPackage=$(echo "${mptcpKernelImagePackage}" | sed -e "s/-image-/-headers-/g")
    echo "MPTCP kernel image package: ${mptcpKernelImagePackage}"
    echo "MPTCP kernel headers package: ${mptcpKernelHeadersPackage}"
 
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y \
-      ${mptcpKernelImagePackage} ${mptcpKernelHeadersPackage}
+      "${mptcpKernelImagePackage}" "${mptcpKernelHeadersPackage}"
 
 
    # ====== Adapt sysctl settings ==============================================
@@ -89,13 +90,14 @@ BEGIN {
 
    # ====== Remove all other kernels ========================================
    kernelType="mptcp"
+   # shellcheck disable=SC2012
    kernelDiskVersion=$(ls -t /boot/vmlinuz-*-${kernelType}-* | sort -rV | head -n1 | sed -e "s/\/boot\/vmlinuz-//" -e "s/-${kernelType}-.*$//")
 
    echo "Kernel Type:         ${kernelType}"
    echo "Kernel Disk Version: ${kernelDiskVersion}"
 
-   toBeRemoved=`apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | grep "^linux-" | (
-      while read line ; do
+   toBeRemoved=$(apt-show-versions | awk '{ print $1 }' | sed -e "s/:.*$//g" -e "s/\/.*$//g" | grep "^linux-" | (
+      while read -r line ; do
          if [[ $line =~ ^(linux-image-|linux-headers-|linux-modules-).*$ ]] ; then
             if [[ $line =~ ^(linux-image-${kernelDiskVersion}-${kernelType}|linux-image-extra-${kernelDiskVersion}-${kernelType}|linux-modules-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}-${kernelType}|linux-headers-${kernelDiskVersion}).*$ ]] ; then
                true
@@ -106,13 +108,13 @@ BEGIN {
             fi
          fi
       done
-   )`
+   ))
 
    echo -e "To be removed:"
    echo "$toBeRemoved" | xargs -n1 | grep -v ".*+$" | sort -u
    env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get autoremove -y -qq --purge \
       -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" \
-      $toBeRemoved
+      "$toBeRemoved"
 
 # ------ Fedora -------------------------------------------------------------
 elif [ -e /usr/bin/dnf ] ; then
