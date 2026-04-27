@@ -18,7 +18,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-set -euo pipefail
+set -euox pipefail
 
 
 # ###### Generate serial number based on date, number <= 999999999 ##########
@@ -472,7 +472,7 @@ elif [ "${DISTRIBUTION}" == "Debian" ] ; then
    if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
    elif [[ "${RELEASE}" =~ ^(Testing|Unstable)$ ]] ; then
-      RELEASE="${RELEASE}"
+      RELEASE=${BASH_REMATCH[1]}
    else
       echo >&2 "ERROR: Invalid Debian release ${RELEASE}!"
       exit 1
@@ -828,7 +828,7 @@ if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    # Power off the VM, if it exists
    timeout --kill-after=30 15 vboxmanage controlvm "${vm_name}" poweroff || true
    # shellcheck disable=SC2009
-   pid=$(ps ax | grep VBoxHeadless | grep -- " --comment ${vm_name} " | awk '{ print $1 }')
+   pid="$(ps ax | grep VBoxHeadless | grep -- " --comment ${vm_name} " | awk '{ print $1 }' || true)"
    if [ "${pid}" != "" ] ; then
       echo "VM is still running (PID ${pid}) -> sending SIGKILL!"
       kill -KILL "${pid}"
