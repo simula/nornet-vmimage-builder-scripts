@@ -122,7 +122,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    cd "/home/${USER_NAME}/src"
    clone-or-update simulamet https://dreibh@github.com/dreibh/simulamet
 
-   cores=$(sysctl -a | grep 'hw.ncpu' | cut -d ':' -f2 | tr -d ' ' || echo "1")
+   cores="$(sysctl -a | grep "^hw.ncpu" | cut -d ":" -f2 | tr -d " " || echo "1")"
    cd "/home/${USER_NAME}/src/simulamet"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr/local
    sudo -u "${USER_NAME}" make -j"${cores}"

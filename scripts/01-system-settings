@@ -75,7 +75,7 @@ EOF
    else
       if [ -e /etc/modules ] ; then
          (
-            grep -v "^sctp" /etc/modules
+            grep -v "^sctp" /etc/modules || true
             echo "sctp"
          ) >/etc/modules.new
          mv /etc/modules.new /etc/modules

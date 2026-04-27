@@ -120,7 +120,7 @@ EOF
       version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
       echo "${packages}"
       echo "${version}"
-      packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
+      packages="$(echo "${packages}" | xargs -n1 | grep "${version}" || true)"
       echo "${packages}"
       # shellcheck disable=SC2086
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
@@ -137,7 +137,7 @@ EOF
          version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
          echo "${packages}"
          echo "${version}"
-         packages="$(echo "${packages}" | xargs -n1 | grep "${version}")"
+         packages="$(echo "${packages}" | xargs -n1 | grep "${version}" || true)"
          echo "${packages}"
          # shellcheck disable=SC2086
          env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
