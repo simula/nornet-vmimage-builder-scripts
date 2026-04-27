@@ -55,6 +55,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # Install Cloud-Init:
-   dnf install -y cloud-init
+   dnf install --setopt=install_weak_deps=False -y cloud-init
 
 fi

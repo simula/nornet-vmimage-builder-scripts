@@ -43,7 +43,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
-   dnf install -y sudo
+   dnf install --setopt=install_weak_deps=False -y sudo
 fi
 
 
@@ -76,7 +76,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
-   dnf install -y glibc-locale-source
+   dnf install --setopt=install_weak_deps=False -y glibc-locale-source
    localedef -v -c -i en_US -f UTF-8 en_US.UTF-8 || true
 fi
 
@@ -89,5 +89,5 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
-   dnf install -y systemd
+   dnf install --setopt=install_weak_deps=False -y systemd
 fi
