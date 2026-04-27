@@ -49,8 +49,8 @@
 
   "audio_controller": "ac97",
 
-  "iso_interface": "sata",
-  "hard_drive_interface": "sata",
+  "iso_interface": "virtio",
+  "hard_drive_interface": "virtio",
   "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
   "keep_registered": true,
@@ -64,6 +64,8 @@
   // ],
   "sound": "pulse",
   "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--tpm-type", "2.0" ],
+    [ "modifyvm", "{{.Name}}", "--x86-pae", "on" ],
     [ "modifyvm", "{{.Name}}", "--nat-localhostreachable1", "on"],
     [ "modifyvm", "{{.Name}}", "--vrde", "off" ],
     [ "modifyvm", "{{.Name}}", "--guest-memory-balloon", "{{user `vm_balloon`}}" ],
