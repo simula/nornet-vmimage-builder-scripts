@@ -34,11 +34,11 @@ UNAME="$(uname)"
 # ====== Set timezone =======================================================
 if [ "${UNAME}" == "Linux" ] ; then
    TIMEZONE="Europe/Oslo"
-   if [ -x /usr/bin/timedatectl ] ; then
+   if command -v timedatectl 2>/dev/null ; then
       rm -f /etc/localtime
       ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
       # This command may fail in a Docker container, due to systemd not running:
-      /usr/bin/timedatectl set-timezone ${TIMEZONE} || true
+      timedatectl set-timezone ${TIMEZONE} || true
    else
       if [ -e /usr/bin/apt-get ] ; then
          # ------ Old Ubuntu (12.04 etc.) -----------------------------------

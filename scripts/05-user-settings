@@ -82,8 +82,8 @@ sudo chown "${USER_NAME}":"${USER_NAME}" "/home/${USER_NAME}/.bashrc"
 
 # ====== Make some directories ==============================================
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/src"
-if [ -x /usr/bin/chattr ] ; then
-   sudo -u "${USER_NAME}" /usr/bin/chattr +c "/home/${USER_NAME}/src" || true
+if command -v chattr 2>/dev/null ; then
+   sudo -u "${USER_NAME}" chattr +c "/home/${USER_NAME}/src" || true
 fi
 sudo -u "${USER_NAME}" mkdir -p "/home/${USER_NAME}/tmp"
 
@@ -207,7 +207,7 @@ for key in ${KEYS} ; do
    done
    # ------ If this fails, try to fetch the key from the NNTB server --------
    if [ ${foundKey} -eq 0 ] ; then
-      if [ -x /usr/bin/wget ] ; then
+      if command -v wget 2>/dev/null ; then
          wget "https://www.nntb.no/~dreibh/${key}.asc" -O "/tmp/${key}.asc"
       else
          curl "https://www.nntb.no/~dreibh/${key}.asc" >"/tmp/${key}.asc"
