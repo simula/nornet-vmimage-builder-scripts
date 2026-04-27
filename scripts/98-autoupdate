@@ -19,7 +19,7 @@
 # Contact: thomas.dreibholz@gmail.com
 
 # Bash options:
-set -eux
+set -euxo pipefail
 
 
 # ====== Check/set environment variables ====================================
@@ -34,6 +34,10 @@ fi
 
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+
+   # Packages:
+   env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+      unattended-upgrades
 
    # Ensure that "unattended-upgrades" is active and handles the PPAs:
    if [ "${ID}" == "ubuntu" ] ; then
