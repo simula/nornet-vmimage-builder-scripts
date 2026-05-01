@@ -685,6 +685,13 @@ ColorScheme=BlackOnLightYellow
 [General]
 Name=Profile 1
 Parent=FALLBACK/
+
+[Scrolling]
+HistorySize=100000
+
+[Terminal Features]
+BidiRenderingEnabled=true
+BidiLineLTR=false
 EOF
 
 
