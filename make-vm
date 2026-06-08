@@ -472,6 +472,14 @@ elif [ "${DISTRIBUTION}" == "FreeBSD" ] ; then
       echo >&2 "ERROR: Invalid FreeBSD release ${RELEASE}!"
       exit 1
    fi
+elif [ "${DISTRIBUTION}" == "NetBSD" ] ; then
+   BUILDER_INSTALL="netbsd-${RELEASE}"
+   NAME="${NAME}-NetBSD-${RELEASE}"
+   HTTP_DIRECTORY="http/netbsd"
+   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+      echo >&2 "ERROR: Invalid NetBSD release ${RELEASE}!"
+      exit 1
+   fi
 else
    echo >&2 "ERROR: Invalid distribution ${DISTRIBUTION}!"
    exit 1
