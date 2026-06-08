@@ -130,8 +130,20 @@ EOF
 # ====== Basic configuration ================================================
 
 # ------ Boot loader --------------------------------------------------------
-chroot $r cp /usr/mdec/boot /boot
-chroot $r /usr/sbin/installboot  /dev/rwd0a /usr/mdec/bootxx_ffsv2
+mkdir -p $r/boot/efi/EFI/boot
+cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/boot/bootx64.efi
+cat > $r/boot/efi/EFI/boot/boot.cfg << EOF
+menu=Boot normally:boot hd0b:netbsd
+menu=Boot single user:boot hd0b:netbsd -s
+default=1
+timeout=5
+EOF
+umount /$r/boot/efi
+
+
+# chroot $r cp /usr/mdec/boot /boot
+# chroot $r /usr/sbin/installboot /dev/rwd0a /usr/mdec/bootxx_ffsv2
+
 
 # ------ Set root password --------------------------------------------------
 passhash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
