@@ -4,7 +4,7 @@
 
 export PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/pkg/sbin:/usr/pkg/bin
 
-set -eu
+set -eux
 
 
 # ====== Find disks =========================================================
@@ -134,16 +134,16 @@ EOF
 
 # ====== Boot loader ========================================================
 mkdir -p $r/boot/efi/EFI/boot
-cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/boot/bootx64.efi
-cat > $r/boot/efi/EFI/boot/boot.cfg << EOF
+cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
+cat > $r/boot/efi/EFI/BOOT/BOOT.CFG << EOF
 menu=Boot normally:boot hd0b:netbsd
 menu=Boot single user:boot hd0b:netbsd -s
 default=1
 timeout=5
 EOF
 
-# efi -c -d sd0 -p 1 -l "\\EFI\\boot\\bootx64.efi" -L "NetBSD"
-( cd $r/boot/efi && efi -q -c -l "\\EFI\\boot\\bootx64.efi" -L "NetBSD" )
+# efi -c -d sd0 -p 1 -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD"
+( cd $r/boot/efi && efi -q -c -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD" )
 
 
 # ====== Basic configuration ================================================
