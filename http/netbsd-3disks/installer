@@ -50,62 +50,44 @@ fi
 # Documentation:
 # https://wiki.netbsd.org/Installation_on_UEFI_systems/
 
-# Root:
+# Root Disk:
 gpt create $DISK_ROOT
-gpt add -l "EFI system" -t efi -s 64m $DISK_ROOT
+gpt add -l "EFI-system" -t efi -s 64m $DISK_ROOT
 gpt add -l "Root"       -t ffs $DISK_ROOT
-dkctl $DISK_ROOT listwedges
-newfs_msdos /dev/rdk0
-newfs -O 2 /dev/rdk1
 
-# Home:
+# Dynamically discover assigned wedge IDs for Root Disk
+WEDGE_EFI=$(dkctl $DISK_ROOT listwedges | grep "EFI-system" | awk -F: '{print $1}' | tr -d ' ')
+WEDGE_ROOT=$(dkctl $DISK_ROOT listwedges | grep "Root" | awk -F: '{print $1}' | tr -d ' ')
+
+newfs_msdos /dev/r$WEDGE_EFI
+newfs -O 2 /dev/r$WEDGE_ROOT
+
+# Home Disk:
 gpt create $DISK_HOME
 gpt add -l "Home" -t ffs $DISK_HOME
-dkctl $DISK_HOME listwedges
-newfs -O 2 /dev/rdk2
 
-# Swap:
+# Dynamically discover assigned wedge ID for Home Disk
+WEDGE_HOME=$(dkctl $DISK_HOME listwedges | grep "Home" | awk -F: '{print $1}' | tr -d ' ')
+newfs -O 2 /dev/r$WEDGE_HOME
+
+# Swap Disk:
 gpt create $DISK_SWAP
 gpt add -l "Swap" -t swap $DISK_SWAP
-dkctl $DISK_SWAP listwedges
-swapctl -a /dev/dk3
 
-
-# # disk partition
-# cat <<EOF > /tmp/sed.$$
-# /total sectors:/{
-# s/.*sectors: //
-# s/,.*//
-# p
-# q
-# }
-# EOF
-# wd_size="$(fdisk wd0d | sed -n -f /tmp/sed.$$)"
-# fdisk -i -a -0 -f -u -s 169/63/$(($wd_size - 63)) /dev/rwd0d
-#
-# # disklabel
-# ram_size="$(sysctl -n hw.physmem)"
-# swap_size="$(($ram_size / 512))"
-# root_size="$(($wd_size - 63 - $swap_size))"
-# disklabel -t wd0 > /tmp/disktab.$$ || true # XXX
-# sed -e "s/generated label/generated label|mylabel/" \
-#     -e "s/:pe#.*/:pa#$root_size:oa#63:ta=4.2BSD:ba#16384:fa#2048:pb#$swap_size:ob#$(($root_size + 63)):tb=swap:/" \
-#     /tmp/disktab.$$ > /tmp/newdisktab.$$
-# disklabel -w -f /tmp/newdisktab.$$ wd0 mylabel
-#
-# # newfs
-# newfs -O 2 /dev/rwd0a
+# Dynamically discover assigned wedge ID for Swap Disk
+WEDGE_SWAP=$(dkctl $DISK_SWAP listwedges | grep "Swap" | awk -F: '{print $1}' | tr -d ' ')
+swapctl -a /dev/$WEDGE_SWAP
 
 
 # ====== NetBSD installation ================================================
 
 # ------ Mount filesystems --------------------------------------------------
 r=/targetroot
-mount /dev/dk1 $r
-mkdir -p $r/boot/efi/EFI
-mount /dev/dk0 $r/boot/efi/EFI
+mount /dev/$WEDGE_ROOT $r
+mkdir -p $r/boot/efi
+mount /dev/$WEDGE_EFI $r/boot/efi
 mkdir -p $r/home
-mount /dev/dk2 $r/home
+mount /dev/$WEDGE_HOME $r/home
 
 # ------ Extract sets -------------------------------------------------------
 suffix=tgz
@@ -113,7 +95,7 @@ suffix=tgz
 
 # X11: xbase xcomp xetc xfont xserver
 for s in base etc comp games kern-GENERIC man misc modules tests text ; do
-  ( cd $r && echo $s && tar --chroot -zxpf /amd64/binary/sets/$s.$suffix )
+   ( cd $r && echo $s && tar --chroot -xpf /amd64/binary/sets/$s.$suffix )
 done
 
 # MAKEDEV
@@ -122,28 +104,29 @@ done
 # fstab
 mkdir $r/kern
 mkdir $r/proc
-cat <<EOF > $r/etc/fstab
-/dev/dk1 /            ffs     rw,log        1 1
-/dev/dk0 /boot/efi    msdos   rw            0 0
-/dev/dk2 /home        ffs     rw,log        1 2
-/dev/dk2 none         swap    sw,dp         0 0
-kernfs   /kern        kernfs  rw            0 0
-procfs   /proc        procfs  rw            0 0
-fdesc    /dev         fdesc   ro,-o=union   0 0
-ptyfs    /dev/pts     ptyfs   rw            0 0
-tmpfs    /tmp tmpfs   rw,-m1777,-sram%25
+cat <<EOF >$r/etc/fstab
+NAME=Root        /            ffs     rw,log        1 1
+NAME=EFI-system  /boot/efi    msdos   rw            0 0
+NAME=Home        /home        ffs     rw,log        1 2
+NAME=Swap        none         swap    sw,dp         0 0
+kernfs           /kern        kernfs  rw            0 0
+procfs           /proc        procfs  rw            0 0
+fdesc            /dev         fdesc   ro,-o=union   0 0
+ptyfs            /dev/pts     ptyfs   rw            0 0
+tmpfs            /tmp tmpfs   rw,-m1777,-sram%25
 EOF
 
 
 # ====== Boot loader ========================================================
-mkdir -p $r/boot/efi/EFI/boot
+mkdir -p $r/boot/efi/EFI/BOOT
 cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
-cat > $r/boot/efi/EFI/BOOT/BOOT.CFG << EOF
-menu=Boot NetBSD 11.0:boot netbsd
-menu=Drop to boot prompt:prompt
-default=1
-timeout=5
-EOF
+
+# cat >$r/boot/efi/boot.cfg <<EOF
+# menu=Boot NetBSD 11.0:dev hd0b:;boot hd0b:netbsd
+# menu=Drop to boot prompt:prompt
+# default=1
+# timeout=5
+# EOF
 
 # efi -c -d sd0 -p 1 -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD"
 ( cd $r/boot/efi && efi -q -c -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD" )
@@ -152,25 +135,26 @@ EOF
 # ====== Basic configuration ================================================
 
 # ------ Set root password --------------------------------------------------
-passhash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
-chroot $r usermod -p "$passhash" root
+root_hash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
+chroot $r usermod -p "$root_hash" root
 
 # ------ Network configuration ----------------------------------------------
-cat <<EOF >> $r/etc/rc.conf
-hostname="<SET_HOSTFQDN_HERE>
+# shellcheck disable=SC2129
+cat >>$r/etc/rc.conf <<EOF
+hostname="<SET_HOSTFQDN_HERE>"
 ifconfig_wm0=dhcp
 EOF
 
 # ssh config
-# cat <<EOF >> $r/etc/ssh/sshd_config
+# cat <<EOF >>$r/etc/ssh/sshd_config
 # UseDNS no
 # NoneEnabled yes
 # EOF
-echo sshd=YES >> $r/etc/rc.conf
+echo sshd=YES >>$r/etc/rc.conf
 
 # misc configuration
-echo wscons=YES >> $r/etc/rc.conf
-sed -e 's/^rc_configured=NO/rc_configured=YES/' $r/etc/rc.conf > /tmp/rc.conf
+echo wscons=YES >>$r/etc/rc.conf
+sed -e 's/^rc_configured=NO/rc_configured=YES/' $r/etc/rc.conf >/tmp/rc.conf
 cp /tmp/rc.conf $r/etc/rc.conf
 
 # kill dhcpcd and relaunch it in chroot
@@ -181,7 +165,9 @@ chroot $r dhcpcd wm0
 release=11.0
 
 chroot $r pkg_add http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/amd64/$release/All/pkgin
-sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'$release'/All,' $r/usr/pkg/etc/pkgin/repositories.conf > /tmp/repositories.conf
+# shellcheck disable=SC2016
+sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'$release'/All,' \
+   $r/usr/pkg/etc/pkgin/repositories.conf >/tmp/repositories.conf
 mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
 
@@ -190,13 +176,18 @@ chroot $r /usr/pkg/bin/pkgin -y install bash sudo wget virt-what
 
 
 # ====== User ===============================================================
-echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n "<SET_USERNAME_HERE>" -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
+user_hash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
+
+# Create the user natively within the chroot system
+chroot $r useradd -u 1000 -m -G wheel -s /usr/pkg/bin/bash -p "$user_hash" -c "<SET_REALNAME_HERE>" "<SET_USERNAME_HERE>"
 
 mkdir -p $r/usr/pkg/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 chmod 0440 "$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 
-chsh -s /usr/pkg/bin/bash "<SET_USERNAME_HERE>"
+echo "#includedir /usr/pkg/etc/sudoers.d" >>"$r/usr/pkg/etc/sudoers"
+chmod 0440 "$r/usr/pkg/etc/sudoers"
+
 
 # chroot $r useradd -s /usr/pkg/bin/bash -d /home/vagrant -m -g staff -G wheel -p "$passhash" vagrant
 # mkdir -pm 700 $r/home/vagrant/.ssh
