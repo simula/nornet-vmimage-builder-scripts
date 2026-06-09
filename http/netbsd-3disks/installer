@@ -47,23 +47,26 @@ fi
 
 
 # ====== Partitioning =======================================================
+# Documentation:
+# https://wiki.netbsd.org/Installation_on_UEFI_systems/
+
 # Root:
 gpt create $DISK_ROOT
-gpt add -t efi -s 64m $DISK_ROOT
-gpt add -t ffs $DISK_ROOT
+gpt add -l "EFI system" -t efi -s 64m $DISK_ROOT
+gpt add -l "Root"       -t ffs $DISK_ROOT
 dkctl $DISK_ROOT listwedges
 newfs_msdos /dev/rdk0
 newfs -O 2 /dev/rdk1
 
 # Home:
 gpt create $DISK_HOME
-gpt add -t ffs $DISK_HOME
+gpt add -l "Home" -t ffs $DISK_HOME
 dkctl $DISK_HOME listwedges
 newfs -O 2 /dev/rdk2
 
 # Swap:
 gpt create $DISK_SWAP
-gpt add -t swap $DISK_SWAP
+gpt add -l "Swap" -t swap $DISK_SWAP
 dkctl $DISK_SWAP listwedges
 swapctl -a /dev/dk3
 
@@ -136,8 +139,8 @@ EOF
 mkdir -p $r/boot/efi/EFI/boot
 cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
 cat > $r/boot/efi/EFI/BOOT/BOOT.CFG << EOF
-menu=Boot normally:boot hd0b:netbsd
-menu=Boot single user:boot hd0b:netbsd -s
+menu=Boot NetBSD 11.0:boot netbsd
+menu=Drop to boot prompt:prompt
 default=1
 timeout=5
 EOF
@@ -150,23 +153,19 @@ EOF
 
 # ------ Set root password --------------------------------------------------
 passhash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
-sed -e "s,^root::,root:$passhash:," $r/etc/master.passwd > /tmp/master.passwd
-cp /tmp/master.passwd $r/etc/master.passwd
-chown 0:0 $r/etc/master.passwd
-chmod 600 $r/etc/master.passwd
-chroot $r pwd_mkdb -p /etc/master.passwd
+chroot $r usermod -p "$passhash" root
 
-# hostname & network config
+# ------ Network configuration ----------------------------------------------
 cat <<EOF >> $r/etc/rc.conf
 hostname="<SET_HOSTFQDN_HERE>
 ifconfig_wm0=dhcp
 EOF
 
 # ssh config
-cat <<EOF >> $r/etc/ssh/sshd_config
-UseDNS no
-NoneEnabled yes
-EOF
+# cat <<EOF >> $r/etc/ssh/sshd_config
+# UseDNS no
+# NoneEnabled yes
+# EOF
 echo sshd=YES >> $r/etc/rc.conf
 
 # misc configuration
@@ -175,7 +174,7 @@ sed -e 's/^rc_configured=NO/rc_configured=YES/' $r/etc/rc.conf > /tmp/rc.conf
 cp /tmp/rc.conf $r/etc/rc.conf
 
 # kill dhcpcd and relaunch it in chroot
-kill -TERM "$(cat /var/run/dhcpcd-wm0.pid)"
+kill -TERM "$(cat /var/run/dhcpcd/wm0.pid)" || true
 chroot $r dhcpcd wm0
 
 # ------ Initialise package database ----------------------------------------
