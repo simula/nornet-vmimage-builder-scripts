@@ -8,38 +8,33 @@ set -eux
 
 
 # ====== Find disks =========================================================
-# Disk names: sysctl hw.disknames
-DISK_ROOT=""
-for d in sd0 ; do
-  if [ -e "/dev/$d" ]; then
-    export DISK_ROOT=$d
-    break
-  fi
+# Disk names extracted dynamically from sysctl hw.disknames
+VALID_DISKS=""
+for d in $(sysctl -n hw.disknames); do
+  case "$d" in
+    dk*|cd*)
+       # Skip CD drives and wedges
+       ;;
+    *)
+       VALID_DISKS="$VALID_DISKS $d"
+       ;;
+  esac
 done
+
+# Map space-separated disk strings to positional parameters:
+set -- $VALID_DISKS
+
+DISK_ROOT="${1:-}"
+DISK_HOME="${2:-}"
+DISK_SWAP="${3:-}"
 if [ "$DISK_ROOT" = "" ] ; then
    echo >&2 "ERROR: Root disk not found!"
    exit 1
 fi
-
-DISK_HOME=""
-for d in sd1 ; do
-  if [ -e "/dev/$d" ]; then
-    export DISK_HOME=$d
-    break
-  fi
-done
 if [ "$DISK_HOME" = "" ] ; then
    echo >&2 "ERROR: Home disk not found!"
    exit 1
 fi
-
-DISK_SWAP=""
-for d in sd2 ; do
-  if [ -e "/dev/$d" ]; then
-    export DISK_SWAP=$d
-    break
-  fi
-done
 if [ "$DISK_SWAP" = "" ] ; then
    echo >&2 "ERROR: Swap disk not found!"
    exit 1
@@ -55,9 +50,9 @@ gpt create $DISK_ROOT
 gpt add -l "EFI-system" -t efi -s 64m $DISK_ROOT
 gpt add -l "Root"       -t ffs $DISK_ROOT
 
-# Dynamically discover assigned wedge IDs for Root Disk
-WEDGE_EFI=$(dkctl $DISK_ROOT listwedges | grep "EFI-system" | awk -F: '{print $1}' | tr -d ' ')
-WEDGE_ROOT=$(dkctl $DISK_ROOT listwedges | grep "Root" | awk -F: '{print $1}' | tr -d ' ')
+# Find assigned wedge IDs for Root Disk:
+WEDGE_EFI=$(dkctl $DISK_ROOT listwedges | grep "EFI-system" | awk -F: '{ print $1 }' | tr -d ' ')
+WEDGE_ROOT=$(dkctl $DISK_ROOT listwedges | grep "Root" | awk -F: '{ print $1 }' | tr -d ' ')
 
 newfs_msdos /dev/r$WEDGE_EFI
 newfs -O 2 /dev/r$WEDGE_ROOT
@@ -66,16 +61,16 @@ newfs -O 2 /dev/r$WEDGE_ROOT
 gpt create $DISK_HOME
 gpt add -l "Home" -t ffs $DISK_HOME
 
-# Dynamically discover assigned wedge ID for Home Disk
-WEDGE_HOME=$(dkctl $DISK_HOME listwedges | grep "Home" | awk -F: '{print $1}' | tr -d ' ')
+# Find assigned wedge ID for Home Disk:
+WEDGE_HOME=$(dkctl $DISK_HOME listwedges | grep "Home" | awk -F: '{ print $1 }' | tr -d ' ')
 newfs -O 2 /dev/r$WEDGE_HOME
 
 # Swap Disk:
 gpt create $DISK_SWAP
 gpt add -l "Swap" -t swap $DISK_SWAP
 
-# Dynamically discover assigned wedge ID for Swap Disk
-WEDGE_SWAP=$(dkctl $DISK_SWAP listwedges | grep "Swap" | awk -F: '{print $1}' | tr -d ' ')
+# Find assigned wedge ID for Swap Disk:
+WEDGE_SWAP=$(dkctl $DISK_SWAP listwedges | grep "Swap" | awk -F: '{ print $1 }' | tr -d ' ')
 swapctl -a /dev/$WEDGE_SWAP
 
 
@@ -93,7 +88,7 @@ mount /dev/$WEDGE_HOME $r/home
 suffix=tgz
 [ -f /amd64/binary/sets/base.tar.xz ] && suffix=tar.xz
 
-# X11: xbase xcomp xetc xfont xserver
+# Skipping X11: xbase xcomp xetc xfont xserver
 for s in base etc comp games kern-GENERIC man misc modules tests text ; do
    ( cd $r && echo $s && tar --chroot -xpf /amd64/binary/sets/$s.$suffix )
 done
@@ -102,8 +97,8 @@ done
 ( cd $r/dev && sh ./MAKEDEV all )
 
 # fstab
-mkdir $r/kern
-mkdir $r/proc
+mkdir -p $r/kern
+mkdir -p $r/proc
 cat <<EOF >$r/etc/fstab
 NAME=Root        /            ffs     rw,log        1 1
 NAME=EFI-system  /boot/efi    msdos   rw            0 0
@@ -121,14 +116,6 @@ EOF
 mkdir -p $r/boot/efi/EFI/BOOT
 cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
 
-# cat >$r/boot/efi/boot.cfg <<EOF
-# menu=Boot NetBSD 11.0:dev hd0b:;boot hd0b:netbsd
-# menu=Drop to boot prompt:prompt
-# default=1
-# timeout=5
-# EOF
-
-# efi -c -d sd0 -p 1 -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD"
 ( cd $r/boot/efi && efi -q -c -l "\\EFI\\BOOT\\BOOTX64.EFI" -L "NetBSD" )
 
 
@@ -138,31 +125,49 @@ cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
 root_hash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
 chroot $r usermod -p "$root_hash" root
 
-# ------ Network configuration ----------------------------------------------
+# ------ Configure console --------------------------------------------------
+echo 'wscons="YES"' >>$r/etc/rc.conf
+cat >>"$r/etc/profile" <<EOF
+export LANG="C.UTF-8"
+export LC_CTYPE="C.UTF-8"
+EOF
+
+# ------ Configure keymap ---------------------------------------------------
+keymap="<SET_XKBLAYOUT_HERE>"
+if grep -q "^encoding" "$r/etc/wscons.conf"; then
+   sed -i "s/^encoding.*/encoding $keymap/" "$r/etc/wscons.conf"
+else
+   echo "encoding $keymap" >>"$r/etc/wscons.conf"
+fi
+chroot $r wsconsctl -w encoding=$keymap
+
+# ------ Configure network --------------------------------------------------
+interface="$(ifconfig -l | cut -d' ' -f1)"
+
 # shellcheck disable=SC2129
 cat >>$r/etc/rc.conf <<EOF
 hostname="<SET_HOSTFQDN_HERE>"
-ifconfig_wm0=dhcp
+ifconfig_$interface="dhcp"
 EOF
 
-# ssh config
-# cat <<EOF >>$r/etc/ssh/sshd_config
-# UseDNS no
-# NoneEnabled yes
-# EOF
-echo sshd=YES >>$r/etc/rc.conf
+# ------ Configure time zone ------------------------------------------------
+chroot $r ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
 
-# misc configuration
-echo wscons=YES >>$r/etc/rc.conf
-sed -e 's/^rc_configured=NO/rc_configured=YES/' $r/etc/rc.conf >/tmp/rc.conf
-cp /tmp/rc.conf $r/etc/rc.conf
+# ------ Enable basic daemons -----------------------------------------------
+echo 'sshd="YES"' >>$r/etc/rc.conf
 
-# kill dhcpcd and relaunch it in chroot
-kill -TERM "$(cat /var/run/dhcpcd/wm0.pid)" || true
-chroot $r dhcpcd wm0
+# Update rc_configured:
+sed -e 's/^rc_configured=NO/rc_configured="YES"/' \
+   $r/etc/rc.conf >/tmp/rc.conf.updated
+mv /tmp/rc.conf.updated $r/etc/rc.conf
 
 # ------ Initialise package database ----------------------------------------
-release=11.0
+
+# kill dhcpcd and relaunch it in chroot
+kill -TERM "$(cat /var/run/dhcpcd/$interface.pid)" || true
+chroot $r dhcpcd $interface
+
+release="$(uname -r | sed -e 's/_.*//')"
 
 chroot $r pkg_add http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/amd64/$release/All/pkgin
 # shellcheck disable=SC2016
@@ -171,8 +176,8 @@ sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'$rele
 mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
 
-# Install some basic packages:
-chroot $r /usr/pkg/bin/pkgin -y install bash sudo wget virt-what
+# ------ Install required packages ------------------------------------------
+chroot $r /usr/pkg/bin/pkgin -y install bash sudo virt-what
 
 
 # ====== User ===============================================================
@@ -187,15 +192,6 @@ chmod 0440 "$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 
 echo "#includedir /usr/pkg/etc/sudoers.d" >>"$r/usr/pkg/etc/sudoers"
 chmod 0440 "$r/usr/pkg/etc/sudoers"
-
-
-# chroot $r useradd -s /usr/pkg/bin/bash -d /home/vagrant -m -g staff -G wheel -p "$passhash" vagrant
-# mkdir -pm 700 $r/home/vagrant/.ssh
-# chroot $r /usr/pkg/bin/wget --no-check-certificate 'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' -O /home/vagrant/.ssh/authorized_keys
-# chmod 0600 $r/home/vagrant/.ssh/authorized_keys
-# chroot $r chown -R vagrant /home/vagrant/.ssh
-# echo "vagrant ALL=(ALL) NOPASSWD: ALL" >> $r/usr/pkg/etc/sudoers.d/vagrant
-# chmod 0400 $r/usr/pkg/etc/sudoers.d/vagrant
 
 
 # ====== Reboot =============================================================
