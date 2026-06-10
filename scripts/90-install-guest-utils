@@ -195,7 +195,7 @@ elif [ "${ID}" == "freebsd" ] ; then
 
 
 # ------ NetBSD -------------------------------------------------------------
-elif [ "${ID}" == "freebsd" ] ; then
+elif [ "${ID}" == "netbsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
