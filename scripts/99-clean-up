@@ -48,13 +48,15 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
+# ====== Obtain system details ==============================================
 UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
 
 
 # ====== Reset machine identity =============================================
@@ -100,6 +102,12 @@ elif [ "${ID}" == "freebsd" ] ; then
    pkg upgrade -y
    pkg clean -y
 
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   pkgin -y upgrade
+   pkgin clean
+
 # ------ Unknown ------------------------------------------------------------
 else
 
@@ -116,6 +124,8 @@ if [ "${UNAME}" == "Linux" ] ; then
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    /etc/periodic/weekly/310.locate
+elif [ "${UNAME}" == "NetBSD" ] ; then
+   /usr/libexec/locate.updatedb
 fi
 
 

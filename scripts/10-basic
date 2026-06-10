@@ -90,14 +90,14 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
-if [ ! -v VERSION_ID ] ; then
-   VERSION_ID=""
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
 
 
@@ -409,6 +409,47 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    # shellcheck disable=SC2086
    pkg install -y ${packages}
+
+
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   packages="
+      base64
+      bwm-ng
+      chrpath
+      cmake
+      curl
+      gawk
+      gmake
+      hipercontracer
+      htop
+      joe
+      jq
+      libidn
+      netperfmeter
+      nmap
+      openssl
+      ossp-uuid
+      parallel
+      pwgen
+      py311-fail2ban
+      python3
+      rsplib
+      rsync
+      slocate
+      subnetcalc
+      tcpdump
+      td-system-tools
+      tree
+      tsctp
+      wget
+      wireshark
+      zip
+   "
+
+   # shellcheck disable=SC2086
+   pkgin -y install ${packages}
 
 
 # ------ Unknown ------------------------------------------------------------

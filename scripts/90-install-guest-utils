@@ -48,16 +48,16 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
-if [ ! -v VERSION_ID ] ; then
-   VERSION_ID=""
-fi
+# ====== Obtain system details ==============================================
 UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
 HYPERVISOR=" $(virt-what | xargs) "
 
 
@@ -191,6 +191,44 @@ elif [ "${ID}" == "freebsd" ] ; then
       #       initial setup, since e.g. the Proxmox builder expects it!
       pkg remove -y qemu-guest-agent || true
       sysrc -x qemu_guest_agent_enable || true
+   fi
+
+
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "freebsd" ] ; then
+
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      # There are no VirtualBox Guest Utils for NetBSD, yet.
+      true
+   # ------ vSphere ---------------------------------------------------------
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
+      pkgin -y install open-vm-tools
+      cp /usr/pkg/share/examples/rc.d/vmtools /etc/rc.d/
+      if grep -q "^vmtools=" /etc/rc.conf ; then
+         sed -i 's/^vmtools=.*/vmtools="YES"/' /etc/rc.conf
+      else
+         echo 'vmtools="YES"' >>/etc/rc.conf
+      fi
+      service vmtools start || true
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      pkgin -y install qemu-guest-agent
+      cp /usr/pkg/share/examples/rc.d/qemu-guest-agent /etc/rc.d/
+      if grep -q "^qemu_guest_agent=" /etc/rc.conf ; then
+         sed -i 's/^qemu_guest_agent=.*/qemu_guest_agent="YES"/' /etc/rc.conf
+      else
+         echo 'qemu_guest_agent="YES"' >>/etc/rc.conf
+      fi
+      service qemu-guest-agent start || true
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of the
+      #       initial setup, since e.g. the Proxmox builder expects it!
+      pkgin remove -y qemu-guest-agent || true
+      sed -i '/^qemu_guest_agent=.*/d' /etc/rc.conf
    fi
 
 
