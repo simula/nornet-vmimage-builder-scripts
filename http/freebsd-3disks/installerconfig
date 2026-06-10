@@ -56,27 +56,7 @@ set -euxo pipefail
 
 # ====== Basic configuration ================================================
 
-# Set time zone
-ln -s /usr/share/zoneinfo/Europe/Oslo /etc/localtime
-
-# Initialise IPv4 and IPv6 networking:
-interface="$(ifconfig -l | cut -d' ' -f1)"
-sysrc ifconfig_$interface="dhcp"
-sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
-sysrc ipv6_activate_all_interfaces="YES"
-sysrc ipv6_privacy="YES"
-# dhclient $interface
-
-# Enable basic daemons:
-sysrc dumpdev="AUTO"
-sysrc zfs_enable="YES"
-sysrc sshd_enable="YES"
-sysrc ntpd_enable="YES"
-sysrc ntp_leapfile_sources="https://data.iana.org/time-zones/data/leap-seconds.list"
-sysrc ntp_leapfile_fetch_verbose="YES"
-service ntpd fetch
-# sysrc powerd_enable="YES"
-
+# ------ Configure boot loader ----------------------------------------------
 # Set autoboot delay:
 echo 'autoboot_delay="5"' >>/boot/loader.conf
 
@@ -86,29 +66,49 @@ echo 'kern.vty=vt' >>/boot/loader.conf
 # Enable SCTP support:
 echo 'sctp_load="YES"' >>/boot/loader.conf
 
-
-# ====== Keymap =============================================================
-(
-   echo 'hostname="<SET_HOSTFQDN_HERE>"'
-   echo 'keymap="<SET_XKBLAYOUT_HERE>"'
-   echo 'moused_enable="YES"'
-   echo 'allscreens_flags="-m on"'
-   echo ''
-) >>/etc/rc.conf
-
-
-# ====== UTF-8 ==============================================================
-
+# ------ Configure console --------------------------------------------------
 # FreeBSD now uses UTF-8 by default.
 # Remove "lang=C.UTF-8", to apply the user's setting:
 sed -e $'s#:lang=C.UTF-8:#::#g' </etc/login.conf >/etc/login.conf.new
 mv /etc/login.conf.new /etc/login.conf
 cap_mkdb /etc/login.conf
 
+# ------ Configure keymap ---------------------------------------------------
+sysrc keymap="<SET_XKBLAYOUT_HERE>"
+
+# ------ Configure network --------------------------------------------------
+sysrc hostname="<SET_HOSTFQDN_HERE>"
+
+interface="$(ifconfig -l | cut -d' ' -f1)"
+sysrc ifconfig_$interface="dhcp"
+sysrc ifconfig_"$interface"_ipv6="inet6 accept_rtadv"
+sysrc ipv6_activate_all_interfaces="YES"
+sysrc ipv6_privacy="YES"
+
+# ------ Configure time zone ------------------------------------------------
+ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+
+# ------ Enable basic daemons -----------------------------------------------
+sysrc zfs_enable="YES"
+
+sysrc moused_enable="YES"
+sysrc allscreens_flags="YES"
+
+sysrc dumpdev="AUTO"
+sysrc sshd_enable="YES"
+sysrc ntpd_enable="YES"
+sysrc ntp_leapfile_sources="https://data.iana.org/time-zones/data/leap-seconds.list"
+sysrc ntp_leapfile_fetch_verbose="YES"
+service ntpd fetch
+# sysrc powerd_enable="YES"
+
 
 # ====== Basic packages =====================================================
 
-# Get the latest updates:
+# ------ Run freebsd-update -------------------------------------------------
+env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
+
+# ------ Configure package repositories -------------------------------------
 mkdir -p /usr/local/etc/pkg/repos
 cat >/usr/local/etc/pkg/repos/FreeBSD.conf <<EOF
 # The quartery default repository is defined in /etc/pkg/FreeBSD.conf,
@@ -135,17 +135,15 @@ Latest: {
 }
 EOF
 
-# Run freebsd-update:
-env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
-
 # Initialise package database. pkg will ask whether to initialise,
 # ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!
 env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 
-# Install some basic packages:
+# ------ Install required packages ------------------------------------------
 pkg update
 pkg upgrade -y
 pkg install -y bash sudo virt-what
+
 
 # ====== Bash profile link ==================================================
 # Bash does not use /etc/profile, only /usr/local/etc/profile. This needs to
@@ -159,11 +157,13 @@ if [ "\${_loaded}" = "" ] ; then
 fi
 EOF
 
+
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
-if [ "$(/usr/local/sbin/virt-what)" == "kvm" ] ; then
+if [ "$(/usr/local/sbin/virt-what)" = "kvm" ] ; then
    pkg install -y qemu-guest-agent
-   sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
+   sysrc qemu_guest_agent_enable="YES"
+   service qemu-guest-agent start || true
 fi
 
 
