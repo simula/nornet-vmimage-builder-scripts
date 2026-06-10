@@ -63,11 +63,14 @@ set -x
 # ###### Main program #######################################################
 
 # ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+else
+   NAME="$(uname)"
+   ID="${NAME,,}"
+   VERSION="$(uname -r)"
+   VERSION_ID="${VERSION/_*/}"
 fi
-. /etc/os-release
 
 
 # ====== Package installation ===============================================
@@ -200,6 +203,25 @@ elif [ "${ID}" == "freebsd" ] ; then
       # git fetch freebsd
       # git checkout main
    fi
+
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   pkgin update
+   pkgin -y upgrade
+
+   packages="
+      bash
+      bash-completion
+      curl
+      git
+      gnupg
+      sudo
+      virt-what
+   "
+
+   # shellcheck disable=SC2086
+   pkgin -y install ${packages}
 
 # ------ Unknown ------------------------------------------------------------
 else
