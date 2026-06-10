@@ -171,8 +171,10 @@ elif [ "${ID}" == "fedora" ] ; then
       dnf install --setopt=install_weak_deps=False -y ${packages}
    fi
 
-# ------ FreeBSD ------------------------------------------------------------
-elif [ "${ID}" == "freebsd" ] ; then
+# ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
+elif [ "${UNAME}" == "FreeBSD" ] ||
+     [ "${UNAME}" == "NetBSD"  ]  ||
+     [ "${UNAME}" == "OpenBSD" ] ; then
 
    # The language support should already be there!
    true

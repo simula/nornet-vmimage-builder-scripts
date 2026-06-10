@@ -104,8 +104,10 @@ elif [ "${ID}" == "fedora" ] ; then
    # Run now:
    systemctl start dnf-automatic.service || true
 
-# ------ FreeBSD ------------------------------------------------------------
-elif [ "${ID}" == "freebsd" ] ; then
+# ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
+elif [ "${UNAME}" == "FreeBSD" ] ||
+     [ "${UNAME}" == "NetBSD"  ]  ||
+     [ "${UNAME}" == "OpenBSD" ] ; then
 
    true    # FIXME: TDB!
 
