@@ -86,7 +86,7 @@ sysrc ipv6_activate_all_interfaces="YES"
 sysrc ipv6_privacy="YES"
 
 # ------ Configure time zone ------------------------------------------------
-ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # ------ Enable basic daemons -----------------------------------------------
 sysrc zfs_enable="YES"

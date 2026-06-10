@@ -151,7 +151,7 @@ ifconfig_$interface="dhcp"
 EOF
 
 # ------ Configure time zone ------------------------------------------------
-chroot $r ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+chroot $r ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # ------ Enable basic daemons -----------------------------------------------
 echo 'sshd="YES"' >>$r/etc/rc.conf
