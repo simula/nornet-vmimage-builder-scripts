@@ -79,7 +79,9 @@ if [ -e /tmp/configuration-files/bashrc ] ; then
    fi
 fi
 
-if [ "${ID}" == "freebsd" ] ; then
+if [ "${UNAME}" == "FreeBSD" ] ||
+   [ "${UNAME}" == "NetBSD"  ] ||
+   [ "${UNAME}" == "OpenBSD" ] ; then
    if [ ! -e "${USER_HOME}/.bash_profile" ] ; then
       cat >"${USER_HOME}/.bash_profile" <<EOF
 test -f ~/.bashrc && source ~/.bashrc

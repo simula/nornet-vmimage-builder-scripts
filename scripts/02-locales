@@ -104,8 +104,10 @@ elif [ "${ID}" == "fedora" ] ; then
       localedef -c -i "${locale}" -f UTF-8 "${locale}.UTF-8"
    done
 
-# ------ FreeBSD ------------------------------------------------------------
-elif [ "${ID}" == "freebsd" ] ; then
+# ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
+elif [ "${UNAME}" == "FreeBSD" ] ||
+     [ "${UNAME}" == "NetBSD"  ]  ||
+     [ "${UNAME}" == "OpenBSD" ] ; then
 
    # All locales should already be there!
    true

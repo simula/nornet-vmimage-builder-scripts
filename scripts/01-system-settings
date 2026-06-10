@@ -49,13 +49,13 @@ set -x
 # ###### Main program #######################################################
 
 # ====== Check/set environment variables ====================================
-USER_GROUP="$(id -gn "${USER_NAME}")"
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] || \
    [ ! -v TIMEZONE  ] || [ "${TIMEZONE}"  == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> TIMEZONE=\"Region/City\" $0"
-   echo >&2 "Example: sudo env USER_NAME=nornetpp IMEZONE=\"Europe/Oslo\" $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp TIMEZONE=\"Europe/Oslo\" $0"
    exit 1
 fi
+USER_GROUP="$(id -gn "${USER_NAME}")"
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
