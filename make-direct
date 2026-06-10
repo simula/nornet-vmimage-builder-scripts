@@ -46,11 +46,15 @@ if [ "${USER_REALNAME}" == "" ] ; then
    USER_REALNAME="${USER_NAME}"
 fi
 
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
-. /etc/os-release
 
 
 # ====== Handle command-line parameters =====================================
@@ -155,6 +159,8 @@ elif [ "${ID}" == "freebsd" ] ; then
    sudo /usr/sbin/pkg install -y \
       cmake flock getopt gimp3-app git GraphicsMagick opensans-ttf p5-Image-ExifTool
    sudo fc-cache -f
+elif [ "${ID}" == "netbsd" ] ; then
+   pkgin install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
 fi
 ./generate-backgrounds
 
