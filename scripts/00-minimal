@@ -169,7 +169,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       bash-completion
       curl
       git
-      gnupg2
+      gnupg
       sudo
       virt-what
    "
