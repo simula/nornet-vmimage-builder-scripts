@@ -76,18 +76,26 @@ if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*name[[:space:]]*=[[:space:]]*
 else
    echo \"Leaving .gitconfig unchanged!\"
 fi
-echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | if [ -d /etc/sudoers.d ] ; then
+echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | \
+if [ -d /etc/sudoers.d ] ; then
    sudo tee /etc/sudoers.d/99-nornetpp
-else
+elif [ -d /usr/local/etc/sudoers.d ] ; then
    sudo tee /usr/local/etc/sudoers.d/99-nornetpp
+elif [ -d /usr/pkg/etc/sudoers.d ] ; then
+   sudo tee /usr/pkg/etc/sudoers.d/99-nornetpp
+else
+   echo >&2 \"ERROR: Unable to find location for sudoers configuration!\"
+   exit 1
 fi
-if ! which git || ! which joe ; then
+if ! command -v git || ! command -v joe ; then
    if [ -x /usr/bin/apt ] ; then
-      sudo /usr/bin/apt install -y git joe
+      sudo /usr/bin/apt install -y ca-certificates git joe
    elif [ -x /usr/bin/dnf ] ; then
       sudo /usr/bin/dnf install -y git joe
    elif [ -x /usr/bin/pkg ] ; then
       sudo /usr/bin/pkg install -y git joe
+   elif [ -x /usr/pkg/bin/pkgin ] ; then
+      sudo /usr/pkg/bin/pkgin -y install mozilla-rootcerts-openssl git joe
    fi
 fi
 mkdir -p src
