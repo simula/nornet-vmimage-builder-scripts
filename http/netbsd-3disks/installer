@@ -184,7 +184,7 @@ chroot $r /usr/pkg/bin/pkgin -y install bash sudo virt-what
 # QEMU installs already need qemu-guest-agent before first boot:
 if [ "$(chroot $r /usr/pkg/sbin/virt-what)" = "kvm" ] ; then
    chroot $r pkgin -y install qemu-guest-agent
-   cp $r/usr/pkg/share/examples/rc.d/ $r/etc/rc.d/
+   cp $r/usr/pkg/share/examples/rc.d/qemu-guest-agent $r/etc/rc.d/
    echo 'qemu_guest_agent="YES"' >>$r/etc/rc.conf
 fi
 
@@ -199,11 +199,8 @@ mkdir -p $r/usr/pkg/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 chmod 0440 "$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 
-echo "#includedir /usr/pkg/etc/sudoers.d" >>"$r/usr/pkg/etc/sudoers"
-chmod 0440 "$r/usr/pkg/etc/sudoers"
-
 
 # ====== Reboot =============================================================
 
 # Reboot into the freshly installed system:
-# reboot
+reboot
