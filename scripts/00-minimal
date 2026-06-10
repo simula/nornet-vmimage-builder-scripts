@@ -143,6 +143,7 @@ elif [ "${ID}" == "fedora" ] ; then
    packages="
       bash
       bash-completion
+      ca-certificates
       curl
       dnf-automatic
       git
@@ -216,6 +217,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       curl
       git
       gnupg2
+      mozilla-rootcerts-openssl
       sudo
       virt-what
    "

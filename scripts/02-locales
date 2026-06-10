@@ -106,7 +106,7 @@ elif [ "${ID}" == "fedora" ] ; then
 
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
-     [ "${UNAME}" == "NetBSD"  ]  ||
+     [ "${UNAME}" == "NetBSD"  ] ||
      [ "${UNAME}" == "OpenBSD" ] ; then
 
    # All locales should already be there!

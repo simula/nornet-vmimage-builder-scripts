@@ -443,8 +443,8 @@ elif [ "${ID}" == "netbsd" ] ; then
       td-system-tools
       tree
       tsctp
+      tshark
       wget
-      wireshark
       zip
    "
 
