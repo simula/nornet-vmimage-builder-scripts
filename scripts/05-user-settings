@@ -58,12 +58,15 @@ fi
 USER_GROUP="$(id -gn "${USER_NAME}")"
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
+# ====== Obtain system details ==============================================
 UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
 
 
 # ====== Initial .bashrc ====================================================

@@ -49,18 +49,27 @@ set -x
 # ###### Main program #######################################################
 
 # ====== Check/set environment variables ====================================
-if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
-   echo >&2 "Usage: env USER_NAME=<user> $0"
-   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+USER_GROUP="$(id -gn "${USER_NAME}")"
+if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] || \
+   [ ! -v TIMEZONE  ] || [ "${TIMEZONE}"  == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> TIMEZONE=\"Region/City\" $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp IMEZONE=\"Europe/Oslo\" $0"
    exit 1
 fi
-USER_GROUP="$(id -gn "${USER_NAME}")"
+
+# ====== Obtain system details ==============================================
 UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
 
 
 # ====== Set timezone =======================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   TIMEZONE="Europe/Oslo"
    if command -v timedatectl 2>/dev/null ; then
       rm -f /etc/localtime
       ln -snf "/usr/share/zoneinfo/${TIMEZONE}" /etc/localtime
@@ -75,6 +84,13 @@ if [ "${UNAME}" == "Linux" ] ; then
          fi
       fi
    fi
+
+elif [ "${UNAME}" == "FreeBSD" ] ||
+     [ "${UNAME}" == "NetBSD"  ]  ||
+     [ "${UNAME}" == "OpenBSD" ] ; then
+
+   ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+
 fi
 
 
