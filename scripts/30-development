@@ -45,7 +45,7 @@ set -euo pipefail
 # * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
 # * [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
 # * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
-# * [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
+# * [GNU Autotools (Autoconf/Automake/Libtool)](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) (basic build tools)
 # * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
 # * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 # * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
