@@ -226,7 +226,7 @@ Provided packages:
 * [cURL](https://curl.se/) (download tool)
 * [Git](https://git-scm.com/) (revision management)
 * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
-* [Ping](https://en.wikipedia.org/wiki/Ping_(networking_utility)) (network connectivity check)
+* [Ping](https://linux.die.net/man/8/ping) (network connectivity check)
 * [Sudo](https://www.sudo.ws/) (privileged command execution)
 * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
@@ -249,7 +249,7 @@ The "Basic" installation is based on the [Minimal](#minimal) installation.
 It must contain the following packages:
 
 * [ACL](https://savannah.nongnu.org/projects/acl/) (Tools for ACL configuration, particularly getfacl and setfacl commands)
-* [Base64](https://en.wikipedia.org/wiki/Base64) (base64 tool)
+* [Base64](https://linux.die.net/man/1/base64) (base64 tool)
 * [BIND Tools](https://www.isc.org/bind/) (DNS testing, particularly dig and delv commands)
 * [BWM-NG](https://github.com/vgropp/bwm-ng) (simple bandwidth monitor)
 * [BZip2](https://sourceware.org/bzip2/) (compression tool)
@@ -262,6 +262,7 @@ It must contain the following packages:
 * [GNU Wget](https://www.gnu.org/software/wget/) (download tool)
 * [HiPerConTracer](https://www.nntb.no/~dreibh/hipercontracer/) (high-performance network tracing tool)
 * [HTop](https://htop.dev/) (process monitor)
+* [ifconfig](https://linux.die.net/man/8/ifconfig) (basic networking tools)
 * [Joe](https://joe-editor.sourceforge.io/) (editor)
 * [JQ](https://jqlang.github.io/jq/) (JSON editing tool)
 * [Less](https://github.com/gwsw/less) (Terminal pager)
@@ -270,7 +271,7 @@ It must contain the following packages:
 * [NetPerfMeter](https://www.nntb.no/~dreibh/netperfmeter/) (network performance metering tool)
 * [NetPlan](https://netplan.io/) (network configuration; on Linux systems only!)
 * [OpenSSL](https://openssl.org/) (Cryptography and TLS toolkit)
-* [Traceroute](https://en.wikipedia.org/wiki/Traceroute), [ifconfig](https://en.wikipedia.org/wiki/Ifconfig) (basic networking tools)
+* [Traceroute](https://linux.die.net/man/8/traceroute)
 * [PLocate](https://plocate.sesse.net/) ("locate" command for finding files)
 * [PwGen](https://opensource.com/article/21/7/generate-passwords-pwgen) (secure password generator)
 * [Python](https://www.python.org/) (Python 3 interpreter)
@@ -336,7 +337,7 @@ It must contain the following packages:
 * [ExifTool](https://exiftool.org/) (EXIF metadata editing tool for images)
 * [Docker](https://www.docker.com/) (Docker container management; on Linux systems only!)
 * [GhostScript](https://www.ghostscript.com/) (PostScript interpreter and fonts)
-* [GNU Autotools (Autoconf/Automake/Libtool)](https://en.wikipedia.org/wiki/GNU_Autotools) (basic build tools)
+* [GNU Autotools (Autoconf/Automake/Libtool)](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html) (basic build tools)
 * [GNU Bison](https://www.gnu.org/software/bison/) (parser generator)
 * [Flex](https://github.com/westes/flex) (lexical analyser generator)
 * [GNU GCC/G++, GNU Make, GNU Debugger](https://gcc.gnu.org/) (compilers, debugger and make tool)
