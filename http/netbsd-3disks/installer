@@ -116,8 +116,7 @@ mount /dev/$WEDGE_HOME $r/home
 suffix=tgz
 [ -f /amd64/binary/sets/base.tar.xz ] && suffix=tar.xz
 
-# Skipping X11: xbase xcomp xetc xfont xserver
-for s in base etc comp games kern-GENERIC man misc modules tests text ; do
+for s in base etc comp games kern-GENERIC man misc modules tests text xbase xcomp xetc xfont xserver ; do
    ( cd $r && echo $s && tar --chroot -xpf /amd64/binary/sets/$s.$suffix )
 done
 
@@ -150,8 +149,8 @@ cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
 # ====== Basic configuration ================================================
 
 # ------ Set root password --------------------------------------------------
-root_hash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
-chroot $r usermod -p "$root_hash" root
+rootPasswordHash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
+chroot $r usermod -p "$rootPasswordHash" root
 
 # ------ Configure console --------------------------------------------------
 echo 'wscons="YES"' >>$r/etc/rc.conf
@@ -218,13 +217,19 @@ fi
 
 
 # ====== User ===============================================================
-user_hash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
+userPasswordHash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
 
-# Create the user natively within the chroot system
-chroot $r useradd -u 1000 -m -G wheel -s /usr/pkg/bin/bash -p "$user_hash" -c "<SET_REALNAME_HERE>" "<SET_USERNAME_HERE>"
+chroot $r groupadd "<SET_USERNAME_HERE>"
+chroot $r useradd -u 1000 -g "<SET_USERNAME_HERE>" \
+   -m -G wheel \
+   -s /usr/pkg/bin/bash \
+   -p "$userPasswordHash" \
+   -c "<SET_REALNAME_HERE>" \
+   "<SET_USERNAME_HERE>"
 
 mkdir -p $r/usr/pkg/etc/sudoers.d
-echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
+echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" \
+   >"$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 chmod 0440 "$r/usr/pkg/etc/sudoers.d/<SET_USERNAME_HERE>"
 
 
