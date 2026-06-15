@@ -50,6 +50,7 @@ for d in $(sysctl -n hw.disknames); do
 done
 
 # Map space-separated disk strings to positional parameters:
+# shellcheck disable=SC2086
 set -- $VALID_DISKS
 
 DISK_ROOT="${1:-}"
@@ -74,43 +75,43 @@ fi
 # https://wiki.netbsd.org/Installation_on_UEFI_systems/
 
 # Root Disk:
-gpt create $DISK_ROOT
-gpt add -l "EFI-system" -t efi -s 64m $DISK_ROOT
-gpt add -l "Root"       -t ffs $DISK_ROOT
+gpt create "$DISK_ROOT"
+gpt add -l "EFI-system" -t efi -s 64m "$DISK_ROOT"
+gpt add -l "Root"       -t ffs "$DISK_ROOT"
 
 # Find assigned wedge IDs for Root Disk:
-WEDGE_EFI=$(dkctl $DISK_ROOT listwedges | grep "EFI-system" | awk -F: '{ print $1 }' | tr -d ' ')
-WEDGE_ROOT=$(dkctl $DISK_ROOT listwedges | grep "Root" | awk -F: '{ print $1 }' | tr -d ' ')
+WEDGE_EFI=$(dkctl "$DISK_ROOT" listwedges | grep "EFI-system" | awk -F: '{ print $1 }' | tr -d ' ')
+WEDGE_ROOT=$(dkctl "$DISK_ROOT" listwedges | grep "Root" | awk -F: '{ print $1 }' | tr -d ' ')
 
-newfs_msdos /dev/r$WEDGE_EFI
-newfs -O 2 /dev/r$WEDGE_ROOT
+newfs_msdos /dev/r"$WEDGE_EFI"
+newfs -O 2 /dev/r"$WEDGE_ROOT"
 
 # Home Disk:
-gpt create $DISK_HOME
-gpt add -l "Home" -t ffs $DISK_HOME
+gpt create "$DISK_HOME"
+gpt add -l "Home" -t ffs "$DISK_HOME"
 
 # Find assigned wedge ID for Home Disk:
-WEDGE_HOME=$(dkctl $DISK_HOME listwedges | grep "Home" | awk -F: '{ print $1 }' | tr -d ' ')
-newfs -O 2 /dev/r$WEDGE_HOME
+WEDGE_HOME=$(dkctl "$DISK_HOME" listwedges | grep "Home" | awk -F: '{ print $1 }' | tr -d ' ')
+newfs -O 2 /dev/r"$WEDGE_HOME"
 
 # Swap Disk:
-gpt create $DISK_SWAP
-gpt add -l "Swap" -t swap $DISK_SWAP
+gpt create "$DISK_SWAP"
+gpt add -l "Swap" -t swap "$DISK_SWAP"
 
 # Find assigned wedge ID for Swap Disk:
-WEDGE_SWAP=$(dkctl $DISK_SWAP listwedges | grep "Swap" | awk -F: '{ print $1 }' | tr -d ' ')
-swapctl -a /dev/$WEDGE_SWAP
+WEDGE_SWAP=$(dkctl "$DISK_SWAP" listwedges | grep "Swap" | awk -F: '{ print $1 }' | tr -d ' ')
+swapctl -a /dev/"$WEDGE_SWAP"
 
 
 # ====== NetBSD installation ================================================
 
 # ------ Mount filesystems --------------------------------------------------
 r=/targetroot
-mount /dev/$WEDGE_ROOT $r
+mount /dev/"$WEDGE_ROOT" $r
 mkdir -p $r/boot/efi
-mount /dev/$WEDGE_EFI $r/boot/efi
+mount /dev/"$WEDGE_EFI" $r/boot/efi
 mkdir -p $r/home
-mount /dev/$WEDGE_HOME $r/home
+mount /dev/"$WEDGE_HOME" $r/home
 
 # ------ Extract sets -------------------------------------------------------
 suffix=tgz
@@ -191,14 +192,14 @@ mv /tmp/rc.conf.updated $r/etc/rc.conf
 # ------ Initialise package database ----------------------------------------
 
 # kill dhcpcd and relaunch it in chroot
-kill -TERM "$(cat /var/run/dhcpcd/$interface.pid)" || true
-chroot $r dhcpcd $interface
+kill -TERM "$(cat /var/run/dhcpcd/"$interface".pid)" || true
+chroot $r dhcpcd "$interface"
 
 release="$(uname -r | sed -e 's/_.*//')"
 
-chroot $r pkg_add http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/amd64/$release/All/pkgin
+chroot $r pkg_add http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/amd64/"$release"/All/pkgin
 # shellcheck disable=SC2016
-sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'$release'/All,' \
+sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'"$release"'/All,' \
    $r/usr/pkg/etc/pkgin/repositories.conf >/tmp/repositories.conf
 mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
