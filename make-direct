@@ -161,6 +161,8 @@ elif [ "${ID}" == "freebsd" ] ; then
    sudo fc-cache -f
 elif [ "${ID}" == "netbsd" ] ; then
    pkgin -y install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
+elif [ "${ID}" == "openbsd" ] ; then
+   pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
 fi
 ./generate-backgrounds
 
