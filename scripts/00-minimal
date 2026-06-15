@@ -225,6 +225,23 @@ elif [ "${ID}" == "netbsd" ] ; then
    # shellcheck disable=SC2086
    pkgin -y install ${packages}
 
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   packages="
+      bash
+      bash-completion
+      curl
+      git
+      gnupg
+      sudo--
+      virt-what
+   "
+
+   # shellcheck disable=SC2086
+   pkg_add -r -I ${packages}
+
 # ------ Unknown ------------------------------------------------------------
 else
 
