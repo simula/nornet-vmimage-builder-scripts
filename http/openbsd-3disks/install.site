@@ -27,10 +27,11 @@ for entry in $(sysctl -n hw.disknames | tr "," " ") ; do
    esac
 done
 
-# Map to positional arguments:
-set -- "$VALID_DISKS"
+# Map space-separated disk strings to positional parameters:
+# shellcheck disable=SC2086
+set -- $VALID_DISKS
 
-# DISK_ROOT="${1:-}"
+DISK_ROOT="${1:-}"
 DISK_HOME="${2:-}"
 DISK_SWAP="${3:-}"
 
@@ -42,6 +43,12 @@ if [ -n "$DISK_HOME" ]; then
    echo "/home 1G-* 100%" | disklabel -wAT- "$DISK_HOME"
    newfs "/dev/r${DISK_HOME}a"
 
+   mkdir -p /tmp/home_disk
+   mount "/dev/${DISK_HOME}a" /tmp/home_disk
+   mv /home/* /tmp/home_disk/
+   umount /tmp/home_disk
+   rmdir /tmp/home_disk
+
    DUID_HOME=$(disklabel "$DISK_HOME" | grep '^duid:' | awk '{ print $2 }')
    echo "${DUID_HOME}.a /home ffs rw,nodev,nosuid 1 2" >>/etc/fstab
 fi
@@ -52,7 +59,7 @@ if [ -n "$DISK_SWAP" ]; then
    echo "SWAP 1G-* 100%" | disklabel -wAT- "$DISK_SWAP"
 
    DUID_SWAP=$(disklabel "$DISK_SWAP" | grep '^duid:' | awk '{ print $2 }')
-   echo "${DUID_SWAP}.b none swap sw 0 0" >>/etc/fstab
+   echo "${DUID_SWAP}.a none swap sw 0 0" >>/etc/fstab
 fi
 
 # ====== Basic configuration ================================================
@@ -62,13 +69,18 @@ fi
 # cap_mkdb /etc/login.conf
 
 # ------ Install required packages ------------------------------------------
-pkg_add -r -I bash sudo virt-what
+pkg_add -r -I bash sudo-- virt-what
 
 # ====== User ===============================================================
-echo "permit nopass <SET_USERNAME_HERE>" >/etc/doas.conf
+user="$(id -nu 1000)"   # The user was already create by install.conf!
+echo "permit nopass $user" >/etc/doas.conf
 chmod 0600 /etc/doas.conf
 
 # Replicate your custom sudoers configuration
 mkdir -p /etc/sudoers.d
-echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/<SET_USERNAME_HERE>"
-chmod 0440 "/etc/sudoers.d/<SET_USERNAME_HERE>"
+echo "$user ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/$user"
+chmod 0440 "/etc/sudoers.d/$user"
+if ! grep -q -E "^#(include|includedir) /etc/sudoers.d" /etc/sudoers; then
+   echo "" >> /etc/sudoers
+   echo "#includedir /etc/sudoers.d" >> /etc/sudoers
+fi
