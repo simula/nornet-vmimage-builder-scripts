@@ -43,16 +43,26 @@
 
   // ====== Boot into installer =============================================
   "vboxmanage": [
-    [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM" ],
-    [ "modifyvm", "{{.Name}}", "--ostype", "OpenBSD_64" ]
+    // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vmsvga"     ],
+    [ "modifyvm", "{{.Name}}", "--vram",               "4"          ],
+    [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"    ],
+    [ "modifyvm", "{{.Name}}", "--ostype",             "OpenBSD_64" ]
   ],
-  "boot_wait": "45s",
+  "boot_wait": "30s",
   "boot_command": [
     "S<enter><wait>",
     "ifconfig em0 inet autoconf<enter>",
     "ifconfig em0 inet6 autoconf<enter>",
     "<wait><wait><wait>",
-    "ftp -o /tmp/install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/install.conf<enter><wait>",
-    "install -a -f /tmp/install.conf && reboot<enter>"
+    "mkdir -p /tmp/autoinstall && ",
+    "ftp -o /tmp/autoinstall/install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/install.conf && ",
+    "ftp -o /tmp/autoinstall/disk-layout.template http://{{ .HTTPIP }}:{{ .HTTPPort }}/disk-layout.template && ",
+    "VDOT=$(sysctl -n kern.osrelease) && V=$(echo $VDOT | sed 's/\\.//g') && ",
+    "ftp -o \"/tmp/autoinstall/site$V.tgz\" http://{{ .HTTPIP }}:{{ .HTTPPort }}/site.tgz && ",
+    "sed -i\"\" \"s/<VERSION_DOT>/$VDOT/g; s/<VERSION>/$V/g\" /tmp/autoinstall/install.conf && ",
+    "ping -c3 -i0.3 www.heise.de && ",
+    "install -a -f /tmp/autoinstall/install.conf<enter>"
   ]
 }
+
+//    "echo 'stub' >\"/tmp/autoinstall/INSTALL.$(sysctl -n hw.machine)\" && ",
