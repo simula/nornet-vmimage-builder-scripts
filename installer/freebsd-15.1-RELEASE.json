@@ -1,0 +1,64 @@
+// ==========================================================================
+//    __   ____  __   ___                       ___      _ _    _
+//    \ \ / /  \/  | |_ _|_ __  __ _ __ _ ___  | _ )_  _(_) |__| |___ _ _
+//     \ V /| |\/| |  | || '  \/ _` / _` / -_) | _ \ || | | / _` / -_) '_|
+//      \_/ |_|  |_| |___|_|_|_\__,_\__, \___| |___/\_,_|_|_\__,_\___|_|
+//                                  |___/
+//
+//   --- Virtual Machine Image Builder and System Installation Scripts ---
+//            https://www.nntb.no/~dreibh/vmimage-builder-scripts/
+// ==========================================================================
+//
+// VM Image Builder Scripts
+// Copyright (C) 2017-2026 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: thomas.dreibholz@gmail.com
+
+// FreeBSD 15.1 with EFI Boot
+
+{
+  // ====== ISO settings ====================================================
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/15.1/FreeBSD-15.1-RELEASE-amd64-bootonly.iso",
+  "iso_checksum": "file:https://download.freebsd.org/ftp/releases/ISO-IMAGES/15.1/CHECKSUM.SHA512-FreeBSD-15.1-RELEASE-amd64",
+  "ssh_username": "{{user `user_name`}}",
+  "ssh_password": "{{user `user_password`}}",
+  "ssh_pty": true,
+  "ssh_timeout": "60m",
+  "ssh_handshake_attempts": "1024",
+  // No shutdown_command needed!
+
+  // ====== Boot into installer =============================================
+  // !!! IMPORTANT: The "vboxmanage" here will REPLACE all "vboxmanage"
+  //                settings from vmsetup/virtualbox*.json!
+  "vboxmanage": [
+    // FIXME! virtio NIC type does not work for FreeBSD guest in current VirtualBox!
+    // [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM" ],
+    // FreeBSD guest in current VirtualBox needs VBoxSVGA!
+    [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"   ],
+    [ "modifyvm", "{{.Name}}", "--ostype",             "FreeBSD_64" ]
+  ],
+  "boot_wait": "45s",
+  "boot_command": [
+    "s<enter><wait>",
+    "cd /tmp && dhclient $(ifconfig -l | cut -d' ' -f1) && ",
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig && ",
+    "fetch http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot && ",
+    "ping -c3 -i0.3 www.heise.de && ",
+    "chmod +x installer zfsboot && ",
+    "./installer script /tmp/installerconfig<enter>"
+   ]
+}
