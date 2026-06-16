@@ -232,6 +232,30 @@ elif [ "${ID}" == "netbsd" ] ; then
    fi
 
 
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      # There are no VirtualBox Guest Utils for OpenBSD, yet.
+      true
+   # ------ vSphere ---------------------------------------------------------
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
+      # There are no Open VM Tools for OpenBSD, yet.
+      true
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      pkg_add -r -I qemu-ga
+      rcctl enable qemu_ga
+      rcctl start qemu_ga || true
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      pkg_delete qemu-ga || true
+   fi
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 

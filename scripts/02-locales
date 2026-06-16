@@ -71,13 +71,11 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   packages="
+   packages=(
       locales
       tzdata
-   "
-
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   )
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
    # Locales:
    for locale in ${LOCALES} ; do
@@ -92,12 +90,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="
+   packages=(
       glibc-locale-source
-   "
-
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   )
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    # Locales:
    for locale in ${LOCALES} ; do

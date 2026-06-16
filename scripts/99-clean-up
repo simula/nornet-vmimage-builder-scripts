@@ -108,6 +108,12 @@ elif [ "${ID}" == "netbsd" ] ; then
    pkgin -y upgrade
    pkgin clean
 
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   syspatch
+   pkg_add -u
+
 # ------ Unknown ------------------------------------------------------------
 else
 
@@ -124,7 +130,7 @@ if [ "${UNAME}" == "Linux" ] ; then
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    /etc/periodic/weekly/310.locate
-elif [ "${UNAME}" == "NetBSD" ] ; then
+elif [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
    /usr/libexec/locate.updatedb
 fi
 

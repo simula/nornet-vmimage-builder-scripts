@@ -89,10 +89,8 @@ EOF
    apt-get update
 
    # ------ Install ---------------------------------------------------------
-   packages="zabbix-agent"
-
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   packages=( "zabbix-agent" )
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
    systemctl enable zabbix-agent || true
    systemctl start  zabbix-agent || true
@@ -100,10 +98,8 @@ EOF
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="zabbix-agent"
-
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   packages=( "zabbix-agent" )
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    systemctl enable zabbix-agent || true
    systemctl start  zabbix-agent || true
@@ -111,12 +107,23 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   packages="zabbix7-agent"
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
+   packages=( "zabbix74-agent" )
+   pkg install -y "${packages[@]}"
 
    sysrc zabbix_agentd_enable="YES"
    service zabbix_agentd start || true
+
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   packages=( "zabbix-agent" )
+   pkgin -y install "${packages[@]}"
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   packages=( "zabbix-agent" )
+   pkg_add -r -I "${packages[@]}"
 
 # ------ Unknown ------------------------------------------------------------
 else

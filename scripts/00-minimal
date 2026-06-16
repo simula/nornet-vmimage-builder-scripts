@@ -96,7 +96,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    apt-get update
    env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 
-   packages="
+   packages=(
       bash
       bash-completion
       ca-certificates
@@ -107,7 +107,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       openssh-server
       sudo
       virt-what
-   "
+   )
 
    # Old Ubuntu versions 12.04/14.04/16.04 show a splash image during boot,
    # which may lead to a blank screen -> turning splash off as work-around:
@@ -119,8 +119,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       fi
    fi
 
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
    # Remove unused Canonical stuff:
    if [ "${ID}" == "ubuntu" ] ; then
@@ -140,7 +139,7 @@ elif [ "${ID}" == "fedora" ] ; then
    # Ensure that the installed packages are up-to-date:
    dnf upgrade -y
 
-   packages="
+   packages=(
       bash
       bash-completion
       ca-certificates
@@ -153,10 +152,9 @@ elif [ "${ID}" == "fedora" ] ; then
       openssh-server
       sudo
       virt-what
-   "
+   )
 
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
@@ -164,7 +162,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    # Ensure that the installed packages are up-to-date:
    env ASSUME_ALWAYS_YES=yes pkg upgrade -y
 
-   packages="
+   packages=(
       bash
       bash-completion
       curl
@@ -172,10 +170,8 @@ elif [ "${ID}" == "freebsd" ] ; then
       gnupg
       sudo
       virt-what
-   "
-
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
+   )
+   pkg install -y "${packages[@]}"
 
    # ------ Prepare FreeBSD Sources -----------------------------------------
    mkdir -p /usr/src
@@ -211,7 +207,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    pkgin update
    pkgin -y upgrade
 
-   packages="
+   packages=(
       bash
       bash-completion
       curl
@@ -220,16 +216,13 @@ elif [ "${ID}" == "netbsd" ] ; then
       mozilla-rootcerts-openssl
       sudo
       virt-what
-   "
-
-   # shellcheck disable=SC2086
-   pkgin -y install ${packages}
-
+   )
+   pkgin -y install "${packages[@]}"
 
 # ------ OpenBSD ------------------------------------------------------------
 elif [ "${ID}" == "openbsd" ] ; then
 
-   packages="
+   packages=(
       bash
       bash-completion
       curl
@@ -237,10 +230,8 @@ elif [ "${ID}" == "openbsd" ] ; then
       gnupg
       sudo--
       virt-what
-   "
-
-   # shellcheck disable=SC2086
-   pkg_add -r -I ${packages}
+   )
+   pkg_add -r -I "${packages[@]}"
 
 # ------ Unknown ------------------------------------------------------------
 else

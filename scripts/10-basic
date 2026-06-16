@@ -152,17 +152,14 @@ EOF
       wget -rq --no-parent \
          --accept-regex ".*~${ppaDistribution}.*_(all|${architecture})\.deb$" \
          https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-      pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_all.deb")"
-      pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ -name "*_${architecture}.deb")"
-      packages="${pkg1} ${pkg2}"
-      if [ -n "${packages//[[:space:]]/}" ] ; then
-         version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
-         echo "${packages}"
+      mapfile -t packages < <(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ \( -name "*_all.deb" -o -name "*_${architecture}.deb" \))
+      if [ ${#packages[@]} -gt 0 ] ; then
+         version="$(printf '%s\n' "${packages[@]}" | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
+         echo "${packages[@]}"
          echo "${version}"
-         packages="$(echo "${packages}" | xargs -n1 | grep "${version}" || true)"
-         echo "${packages}"
-         # shellcheck disable=SC2086
-         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+         mapfile -t packages < <(printf '%s\n' "${packages[@]}" | grep "${version}")
+         echo "${packages[@]}"
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
       fi
 
       # ------ Work-around for missing TSCTP in Debian < 13 -----------------
@@ -172,24 +169,21 @@ EOF
          wget -rq --no-parent \
             --accept-regex ".*~${ppaDistribution}.*_(all|${architecture})\.deb$" \
             https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/
-         pkg1="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ -name "*_all.deb")"
-         pkg2="$(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ -name "*_${architecture}.deb")"
-         packages="${pkg1} ${pkg2}"
-         if [ -n "${packages//[[:space:]]/}" ] ; then
-            version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
-            echo "${packages}"
+         mapfile -t packages < <(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ \( -name "*_all.deb" -o -name "*_${architecture}.deb" \))
+         if [ ${#packages[@]} -gt 0 ] ; then
+            version="$(printf '%s\n' "${packages[@]}" | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
+            echo "${packages[@]}"
             echo "${version}"
-            packages="$(echo "${packages}" | xargs -n1 | grep "${version}" || true)"
-            echo "${packages}"
-            # shellcheck disable=SC2086
-            env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+            mapfile -t packages < <(printf '%s\n' "${packages[@]}" | grep "${version}")
+            echo "${packages[@]}"
+            env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
          fi
       fi
 
       rm -rf ppa.launchpadcontent.net
    fi
 
-   packages="
+   packages=(
       acl
       apt-file
       binutils
@@ -234,7 +228,7 @@ EOF
       uuid
       wget
       zip
-   "
+   )
 
    # ------ Ubuntu ----------------------------------------------------------
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
@@ -243,36 +237,35 @@ EOF
       # do not have "hipercontracer"!
       echo "NOTE: HiPerConTracer is not available in this Ubuntu/Debian version!"
    else
-      packages="${packages} hipercontracer"
+      packages+=( "hipercontracer" )
    fi
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04 do not have "netplan"!
       echo "NOTE: NetPlan is not available in this Ubuntu version!"
    else
-      packages="${packages} netplan.io"
+      packages+=( "netplan.io" )
    fi
    if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
       echo "NOTE: RSPLIB is not available in this Debian version!"
    else
-      packages="${packages} rsplib-tools"
+      packages+=( "rsplib-tools" )
    fi
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[23456789]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04/18.04 do not have "systemd-timesyncd"!
       echo "NOTE: systemd-timesyncd is not available in this Ubuntu version!"
    else
-      packages="${packages} systemd-timesyncd"
+      packages+=( "systemd-timesyncd" )
    fi
    if [ "${ID}" == "ubuntu" ] ; then
       if [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
          echo "NOTE: delv is not available in this Ubuntu version!"
       elif [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
          # Old Ubuntu version 16.04 has "delv" is in the "bind9" package!
-         packages="${packages} bind9"
+         packages+=( "bind9" )
       fi
    fi
 
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
    # ------ Locate ----------------------------------------------------------
    # PLocate is the successor of MLocate and findutils, all providing a "locate" command.
@@ -285,7 +278,7 @@ EOF
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="
+   packages=(
       acl
       bind-utils
       bridge-utils
@@ -335,10 +328,9 @@ elif [ "${ID}" == "fedora" ] ; then
       wget
       wireshark-cli
       zip
-   "
+   )
 
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    # Make initial NetPlan configuration:
    if [ ! -e /etc/netplan/netplan.yaml ] ; then
@@ -371,7 +363,7 @@ EOF
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   packages="
+   packages=(
       base64
       bind-tools
       bwm-ng
@@ -406,16 +398,15 @@ elif [ "${ID}" == "freebsd" ] ; then
       wget
       wireshark-nox11
       zip
-   "
+   )
 
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
+   pkg install -y "${packages[@]}"
 
 
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
-   packages="
+   packages=(
       base64
       bwm-ng
       chrpath
@@ -447,10 +438,48 @@ elif [ "${ID}" == "netbsd" ] ; then
       tshark
       wget
       zip
-   "
+   )
 
-   # shellcheck disable=SC2086
-   pkgin -y install ${packages}
+   pkgin -y install "${packages[@]}"
+
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   packages=(
+      base64
+      bwm-ng
+#       chrpath
+      cmake
+      curl
+      gawk
+      gmake
+#       hipercontracer
+      htop
+      joe
+      jq
+      libidn
+#       netperfmeter
+      nmap
+#       openssl
+      ossp-uuid
+      parallel
+      pwgen
+#       py311-fail2ban
+      "python--%3"
+#       rsplib
+      rsync--
+#       slocate
+#       subnetcalc
+#       tcpdump
+#       td-system-tools
+      tree
+#       tsctp
+      tshark
+      wget
+      zip
+   )
+   pkg_add -r -I "${packages[@]}"
 
 
 # ------ Unknown ------------------------------------------------------------
@@ -464,34 +493,36 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs="awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq less locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl strings subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip"
+programs=( awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq less locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl strings subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip )
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
-   programs="${programs} delv"
+   programs+=( delv )
 fi
 
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
    [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
-   true
+   true   # No HiPerConTracer in old Ubuntu and Debian versions
 else
-   programs="${programs} hipercontracer"
-fi
-if [ ! "${ID}" == "ubuntu" ] || [[ ! "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
-   if [ "${ID}" != "freebsd" ] ; then
-      programs="${programs} netplan"
-   fi
+   programs+=( hipercontracer )
 fi
 if [ "$(uname)" == "Linux" ] ; then
-   programs="${programs} brctl ethtool ifconfig ip iptables growpart tc"
+   if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
+      true   # No netplan in old Ubuntu versions
+   else
+      programs+=( netplan )
+   fi
+   programs+=( brctl ethtool ifconfig ip iptables growpart tc )
 fi
-if [ ! "${ID}" == "debian" ] || [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
-   programs="${programs} rspserver rspterminal"
+if [ "${ID}" == "debian" ] && [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
+   true   # No rsplib in old Debian versions
+else
+   programs+=( rspserver rspterminal )
 fi
 
 echo "Verifying command availability:"
 errors=0
-for command in ${programs} ; do
+for command in "${programs[@]}" ; do
    echo -n "${command}: "
    if command -v "${command}" >/dev/null 2>&1 ; then
       echo "OK"
