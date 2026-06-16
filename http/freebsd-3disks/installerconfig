@@ -168,13 +168,13 @@ fi
 
 
 # ====== User ===============================================================
-echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n <SET_USERNAME_HERE> -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
+echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n "<SET_USERNAME_HERE>" -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
 
 mkdir -p /usr/local/etc/sudoers.d
-echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >/usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
-chmod 0440 /usr/local/etc/sudoers.d/<SET_USERNAME_HERE>
+echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"/usr/local/etc/sudoers.d/99-<SET_USERNAME_HERE>"
+chmod 0600 "/usr/local/etc/sudoers.d/99-<SET_USERNAME_HERE>"
 
-chsh -s /usr/local/bin/bash <SET_USERNAME_HERE>
+chsh -s /usr/local/bin/bash "<SET_USERNAME_HERE>"
 
 
 # ====== Reimport ZFS pools =================================================

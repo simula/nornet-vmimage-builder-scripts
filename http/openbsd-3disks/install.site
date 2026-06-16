@@ -72,14 +72,17 @@ fi
 pkg_add -r -I bash sudo-- virt-what
 
 # ====== User ===============================================================
+
 user="$(id -nu 1000)"   # The user was already create by install.conf!
+
+# ------ doas configuration -------------------------------------------------
 echo "permit nopass $user" >/etc/doas.conf
 chmod 0600 /etc/doas.conf
 
-# Replicate your custom sudoers configuration
+# ------ sudo configuration -------------------------------------------------
 mkdir -p /etc/sudoers.d
-echo "$user ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/$user"
-chmod 0440 "/etc/sudoers.d/$user"
+echo "$user ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/99-$user"
+chmod 0600 "/etc/sudoers.d/99-$user"
 if ! grep -q -E "^#(include|includedir) /etc/sudoers.d" /etc/sudoers; then
    echo "" >> /etc/sudoers
    echo "#includedir /etc/sudoers.d" >> /etc/sudoers
