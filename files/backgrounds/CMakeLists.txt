@@ -305,7 +305,7 @@ FOREACH(textFile IN LISTS TDD_TEXT_FILES)
    GET_FILENAME_COMPONENT(textImage ${textImage} NAME)
 
    ADD_CUSTOM_COMMAND(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}
-                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} GS_GLOSSYTEXT="${GS_GLOSSYTEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${BASH} ${textFile}
+                      COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} GS_GLOSSYTEXT="${GS_GLOSSYTEXT}" OUTPUT="${CMAKE_CURRENT_BINARY_DIR}/${TDD_OUTPUT_DIRECTORY}/Text/${textImage}" ${textFile}
                       DEPENDS ${textFile}
                               generate_gimpDirStamp
                               ${gimpDirStamp})
