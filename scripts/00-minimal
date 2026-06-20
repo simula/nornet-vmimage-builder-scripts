@@ -217,6 +217,14 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
+   # Add Open Build Service PPA home:dreibh
+   ppaDistribution="Alpine_Latest_community"
+   sudo wget -O \
+      /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
+      https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub
+   echo "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" | \
+      sudo tee -a /etc/apk/repositories >/dev/null
+
    packages=(
       bash
       bash-completion
