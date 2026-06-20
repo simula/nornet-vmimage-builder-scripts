@@ -107,8 +107,8 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # ------ Add Debian FastTrack repository ---------------------------------
    if [ "${ID}" == "debian" ] ; then
+      # ------ Add Debian FastTrack repository ------------------------------
       if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] ; then
          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends fasttrack-archive-keyring
          if [ "${VERSION_ID}" -ge 13 ] ; then
@@ -129,58 +129,6 @@ EOF
          fi
          apt-get update
       fi
-   fi
-
-   if [ "${ID}" == "debian" ] ; then
-      architecture="$(dpkg --print-architecture)"
-      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends wget
-
-      ppaDistribution="resolute"
-      if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] ; then
-         if [ "${VERSION_ID}" -eq 12 ]; then
-            ppaDistribution="jammy"
-         else
-            ppaDistribution="focal"
-         fi
-      fi
-
-      # ------ Work-around for missing System-Tools in Debian ---------------
-      # FIXME! This is not the best solution. Ideally, there should be a
-      #        Debian PPA for System-Tools!
-      #        Using the packages from the Ubuntu 24.04 (Noble Numbat) PPA:
-      cd /tmp
-      wget -rq --no-parent \
-         --accept-regex ".*~${ppaDistribution}.*_(all|${architecture})\.deb$" \
-         https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/
-      mapfile -t packages < <(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/td-system-tools/ \( -name "*_all.deb" -o -name "*_${architecture}.deb" \))
-      if [ ${#packages[@]} -gt 0 ] ; then
-         version="$(printf '%s\n' "${packages[@]}" | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
-         echo "${packages[@]}"
-         echo "${version}"
-         mapfile -t packages < <(printf '%s\n' "${packages[@]}" | grep "${version}")
-         echo "${packages[@]}"
-         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
-      fi
-
-      # ------ Work-around for missing TSCTP in Debian < 13 -----------------
-      # shellcheck disable=SC2071
-      if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] && [[ "${VERSION_ID}" -lt 13 ]] ; then
-         cd /tmp
-         wget -rq --no-parent \
-            --accept-regex ".*~${ppaDistribution}.*_(all|${architecture})\.deb$" \
-            https://ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/
-         mapfile -t packages < <(find /tmp/ppa.launchpadcontent.net/dreibh/ppa/ubuntu/pool/main/t/tsctp/ \( -name "*_all.deb" -o -name "*_${architecture}.deb" \))
-         if [ ${#packages[@]} -gt 0 ] ; then
-            version="$(printf '%s\n' "${packages[@]}" | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"
-            echo "${packages[@]}"
-            echo "${version}"
-            mapfile -t packages < <(printf '%s\n' "${packages[@]}" | grep "${version}")
-            echo "${packages[@]}"
-            env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
-         fi
-      fi
-
-      rm -rf ppa.launchpadcontent.net
    fi
 
    packages=(
@@ -215,6 +163,7 @@ EOF
       parallel
       pwgen
       python3
+      rsplib-tools
       rsync
       subnetcalc
       tcpdump
@@ -244,11 +193,6 @@ EOF
       echo "NOTE: NetPlan is not available in this Ubuntu version!"
    else
       packages+=( "netplan.io" )
-   fi
-   if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
-      echo "NOTE: RSPLIB is not available in this Debian version!"
-   else
-      packages+=( "rsplib-tools" )
    fi
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[23456789]\.[01][04]$ ]] ; then
       # Old Ubuntu versions 12.04/14.04/16.04/18.04 do not have "systemd-timesyncd"!
@@ -358,6 +302,67 @@ EOF
       # Work-around is to turn SELinux into "permissive" mode:
       sed -e "s/^SELINUX=.*/SELINUX=permissive/" -i /etc/selinux/config
    fi
+
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=(
+      acl
+      bind-utils
+      binutils
+      bridge-utils
+      bwm-ng
+      bzip2
+      chrpath
+      cmake
+      curl
+      ethtool
+      fail2ban
+      gdisk
+      gpm
+      growpart
+      hipercontracer
+      htop
+      iproute2
+      iproute2-bash-completion
+      iptables
+      iputils
+      joe
+      jq
+      libidn
+      libidn-tools
+      make
+      man
+      netperfmeter
+      net-tools
+      net-tools-deprecated
+      nmap
+      openssl
+      gnu_parallel
+      plocate
+      pwgen
+      python3
+      rsplib-tools
+      rsync
+      subnetcalc
+      tar
+      tcpdump
+      td-system-tools-basic
+      td-system-tools-configure-grub
+      traceroute
+      tree
+      tsctp
+      unzip
+      uuid
+      wget
+      wireshark
+      zip
+   )
+
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y "${packages[@]}"
 
 
 # ------ FreeBSD ------------------------------------------------------------
@@ -493,13 +498,63 @@ fi
 
 # ====== Verify command availability ========================================
 
-programs=( awk base64 bwm-ng bzip2 chrpath curl dig flock gdisk getfacl htop idn ifconfig joe jq less locate man netperfmeter nmap openssl parallel ping pwgen python3 rsync setfacl strings subnetcalc System-Info System-Maintenance tar tcpdump traceroute tree tsctp tshark unzip uuid wget zip )
+# ------ Prepare list of required commands ----------------------------------
+programs=(
+   Reset-Machine-ID
+   System-Info
+   System-Maintenance
+   awk
+   base64
+   bwm-ng
+   bzip2
+   chrpath
+   curl
+   dig
+   flock
+   gdisk
+   getfacl
+   htop
+   idn
+   ifconfig
+   joe
+   jq
+   less
+   locate
+   man
+   netperfmeter
+   nmap
+   openssl
+   parallel
+   ping
+   print-utf8
+   pwgen
+   python3
+   random-sleep
+   rsync
+   setfacl
+   strings
+   subnetcalc
+   tar
+   tcpdump
+   text-block
+   time2unixts
+   traceroute
+   tree
+   try-hard
+   tsctp
+   tshark
+   unixts2time
+   unzip
+   uuid
+   wget
+   zip
+)
+
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
    programs+=( delv )
 fi
-
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
    [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No HiPerConTracer in old Ubuntu and Debian versions
@@ -509,32 +564,46 @@ fi
 if [ "$(uname)" == "Linux" ] ; then
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       true   # No netplan in old Ubuntu versions
+   elif [[ "${ID}" =~ ^opensuse- ]] ; then
+      true   # No netplan in OpenSUSE
    else
       programs+=( netplan )
    fi
-   programs+=( brctl ethtool ifconfig ip iptables growpart tc )
+   programs+=( brctl ethtool growpart ip iptables tc )
 fi
 if [ "${ID}" == "debian" ] && [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No rsplib in old Debian versions
 else
    programs+=( rspserver rspterminal )
 fi
+if [[ "${ID}" =~ ^opensuse- ]] ; then
+   true   # No NetPlan on OpenSUSE
+else
+   programs+=( netplan )
+fi
 
+
+# ------ Verify command availability ----------------------------------------
+set +x
 echo "Verifying command availability:"
 errors=0
+missing=()
 for command in "${programs[@]}" ; do
-   echo -n "${command}: "
-   if command -v "${command}" >/dev/null 2>&1 ; then
-      echo "OK"
-   else
-      echo "FAILED!"
+   if ! command -v "${command}" >/dev/null 2>&1 ; then
       errors=$((errors+1))
+      missing+=( "${command}" )
    fi
 done
 if [ ${errors} -gt 0 ] ; then
-   echo >&2 "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} commands are missing:"
+   for program in "${missing[@]}" ; do
+      echo >&2 " * ${program}"
+   done
    exit 1
+else
+   echo "OK"
 fi
+set -x
 
 
 # ====== Enable DNSSEC ======================================================

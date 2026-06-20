@@ -81,7 +81,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Make 3 APT package download retries, in case of network problems:
    echo 'Acquire::Retries "3";' >/etc/apt/apt.conf.d/80retries
 
-   # Ubuntu: add PPA dreibh/ppa
+   # ------ Ubuntu: add PPA dreibh/ppa --------------------------------------
    if [ "${ID}" == "ubuntu" ] ; then
       apt-get update
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends software-properties-common
@@ -90,6 +90,32 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg-agent dirmngr
       fi
       apt-add-repository -y ppa:dreibh/ppa
+
+   # ------ Debian: add Open Build Service PPA home:dreibh ------------------
+   elif [ "${ID}" == "debian" ] ; then
+      if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] ; then
+         ppaDistribution="Debian_${VERSION_ID^}"
+      else
+         suites="$(grep "^Suites:" /etc/apt/sources.list.d/debian.sources | sed -e "s/.*://" | head -n1) "   # Note the trailing space!
+         if [[ "${suites}" =~ ( unstable ) ]] ; then
+            ppaDistribution="Debian_Unstable"
+         elif [[ "${suites}" =~ ( testing ) ]] ; then
+            ppaDistribution="Debian_Testing"
+         else
+            ppaDistribution="Debian_${VERSION_CODENAME^}"
+         fi
+      fi
+      echo "ppaDistribution=${ppaDistribution}"
+
+      curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" \
+         | gpg --dearmor \
+         | tee /etc/apt/keyrings/dreibh-obs.gpg >/dev/null
+      (
+         cat <<EOF
+deb [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
+# deb-src [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
+EOF
+      ) | tee /etc/apt/sources.list.d/obs-dreibh.list >/dev/null
    fi
 
    # Ensure that the installed packages are up-to-date:
@@ -155,6 +181,38 @@ elif [ "${ID}" == "fedora" ] ; then
    )
 
    dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   # Add Open Build Service PPA home:dreibh
+   if [[ "${VERSION_ID}" =~ ^[0-9]+\.[0-9]+$ ]] ; then
+      ppaDistribution="${VERSION_ID}"
+   else
+      ppaDistribution="${NAME/ /_}"
+   fi
+   echo "ppaDistribution=${ppaDistribution}"
+   rpm --import "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/repodata/repomd.xml.key"
+   zypper addrepo -f "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/" dreibh-obs || true
+
+   # Ensure that the installed packages are up-to-date:
+   zypper up -y
+
+   packages=(
+      bash
+      bash-completion
+      ca-certificates
+      curl
+      dnf-automatic
+      git
+      gnupg
+      iputils
+      openssh-server
+      sudo
+      virt-what
+   )
+
+   zypper install --no-recommends -y "${packages[@]}"
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
@@ -243,18 +301,36 @@ fi
 
 
 # ====== Verify command availability ========================================
+
+# ------ Prepare list of required commands ----------------------------------
+programs=(
+   bash
+   curl
+   git
+   gpg
+   ping
+   sudo
+   virt-what
+)
+
+# ------ Verify command availability ----------------------------------------
+set +x
 echo "Verifying command availability:"
 errors=0
-for command in bash curl git gpg ping sudo virt-what ; do
-   echo -n "${command}: "
-   if command -v "${command}" >/dev/null ; then
-      echo "OK"
-   else
-      echo "FAILED!"
+missing=()
+for command in "${programs[@]}" ; do
+   if ! command -v "${command}" >/dev/null 2>&1 ; then
       errors=$((errors+1))
+      missing+=( "${command}" )
    fi
 done
 if [ ${errors} -gt 0 ] ; then
-   echo >&2 "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} commands are missing:"
+   for program in "${missing[@]}" ; do
+      echo >&2 " * ${program}"
+   done
    exit 1
+else
+   echo "OK"
 fi
+set -x
