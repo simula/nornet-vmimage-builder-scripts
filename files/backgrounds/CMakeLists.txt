@@ -30,7 +30,7 @@
 
 
 #############################################################################
-# INITIALISE
+#### INITIALISE                                                          ####
 #############################################################################
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5...3.31)
@@ -39,15 +39,15 @@ INCLUDE(Settings.input)
 
 
 #############################################################################
-# INSTALLATION_DIRECTORIES
+#### CMAKE INCLUDES                                                      ####
 #############################################################################
 
-# See: https://cmake.org/cmake/help/v3.0/module/GNUInstallDirs.html
+INCLUDE(CheckCCompilerFlag)
 INCLUDE(GNUInstallDirs)
 
 
 #############################################################################
-# OPTIONS
+#### OPTIONS                                                             ####
 #############################################################################
 
 OPTION(FLAT_DIRECTORY_STRUCTURE "Use flat directory structure" ${TDD_FLAT_DIRECTORY_STRUCTURE})
@@ -77,52 +77,95 @@ ENDIF()
 
 
 #############################################################################
-# REQUIREMENTS
+#### PROGRAMS                                                            ####
 #############################################################################
 
-INCLUDE(FindUnixCommands)
-
-# ------ Required prgorams --------------------------------------------------
-FIND_PROGRAM(AWK awk PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT AWK)
+# ====== GNU Awk ============================================================
+FIND_PROGRAM(AWK awk PATHS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
+IF(AWK)
+   EXECUTE_PROCESS(COMMAND ${AWK} --version | head -n1
+                   OUTPUT_VARIABLE AWK_OUTPUT
+                   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+   STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" AWK_VERSION "${AWK_OUTPUT}")
+   MESSAGE(STATUS "GNU Awk found: ${AWK} (version ${AWK_VERSION})")
+ELSE()
    MESSAGE(FATAL_ERROR
-           " Cannot find AWK! Try:\n"
+           " Cannot find GNU Awk! Try:\n"
            " * Ubuntu/Debian: sudo apt install -y awk\n"
            " * Fedora:        sudo dnf install -y awk\n"
-           " * FreeBSD:       (should always be there!")
+           " * OpenSUSE:      sudo zypper install -y awk\n"
+           " * Alpine:        sudo apk add gawk\n"
+           " * FreeBSD:       (should always be there!)\n"
+           " * NetBSD:        (should always be there!)\n"
+           " * OpenBSD:       (should always be there!)\n"
+           " * Apple:         brew install gawk")
 ENDIF()
 
-# NOTE: exiftool fails to handle GIMP-generated JPEG files under
-# Debian Stretch and Ubuntu Trusty. Errors are just ignored in this case
-# (i.e. the EXIF information will not be updated).
-FIND_PROGRAM(EXIFTOOL exiftool PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT EXIFTOOL)
+# ====== ExifTool ===========================================================
+FIND_PROGRAM(EXIFTOOL exiftool PATHS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
+IF(EXIFTOOL)
+   EXECUTE_PROCESS(COMMAND ${EXIFTOOL} -ver | head -n1
+                   OUTPUT_VARIABLE EXIFTOOL_OUTPUT
+                   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+   STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" EXIFTOOL_VERSION "${EXIFTOOL_OUTPUT}")
+   MESSAGE(STATUS "ExifTool found: ${EXIFTOOL} (version ${EXIFTOOL_VERSION})")
+ELSE()
    MESSAGE(FATAL_ERROR
            " Cannot find ExifTool! Try:\n"
            " * Ubuntu/Debian: sudo apt install -y libimage-exiftool-perl\n"
            " * Fedora:        sudo dnf install -y perl-Image-ExifTool\n"
-           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool")
+           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool\n"
+           " * OpenSUSE:      sudo zypper install -y exiftool\n"
+           " * Alpine:        sudo apk add exiftool\n"
+           " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool\n"
+           " * NetBSD:        sudo pkgin -y install p5-Image-ExifTool\n"
+           " * OpenBSD:       sudo pkg_add p5-Image-ExifTool\n"
+           " * Apple:         brew install gimp")
 ENDIF()
 
-FIND_PROGRAM(GIMP gimp PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT GIMP)
+# ====== GIMP ===============================================================
+FIND_PROGRAM(GIMP gimp HINTS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
+IF(GIMP)
+   EXECUTE_PROCESS(COMMAND ${GIMP} --version | head -n1
+                   OUTPUT_VARIABLE GIMP_OUTPUT
+                   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+   STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" GIMP_VERSION "${GIMP_OUTPUT}")
+   MESSAGE(STATUS "GIMP found: ${GIMP} (version ${GIMP_VERSION})")
+ELSE()
    MESSAGE(FATAL_ERROR
-           " Cannot find Gimp! Try:\n"
+           "Cannot find GIMP! Try:\n"
            " * Ubuntu/Debian: sudo apt install -y gimp\n"
            " * Fedora:        sudo dnf install -y gimp\n"
-           " * FreeBSD:       sudo pkg install -y gimp")
+           " * OpenSUSE:      sudo zypper install -y gimp\n"
+           " * Alpine:        sudo apk add gimp\n"
+           " * FreeBSD:       sudo pkg install -y gimp\n"
+           " * NetBSD:        sudo pkgin -y install gimp\n"
+           " * OpenBSD:       sudo pkg_add \"\$(pkg_info -z \"gimp->=3\")\"\n"
+           " * Apple:         brew install gimp")
 ENDIF()
 
-FIND_PROGRAM(GM gm PATHS /bin /usr/bin /usr/local/bin)
-IF(NOT GM)
+# ====== GraphicsMagick =====================================================
+FIND_PROGRAM(GM gm HINTS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
+IF(GM)
+   EXECUTE_PROCESS(COMMAND ${GM} version | head -n1
+                   OUTPUT_VARIABLE GM_OUTPUT
+                   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+   STRING(REGEX MATCH "([0-9]+\\.[0-9]+\\.[0-9]+|[0-9]+\\.[0-9]+)" GM_VERSION "${GM_OUTPUT}")
+   MESSAGE(STATUS "GraphicsMagick found: ${GM} (version ${GM_VERSION})")
+ELSE()
    MESSAGE(FATAL_ERROR
-           " Cannot find GraphicsMagick! Try:\n"
+           "Cannot find GraphicsMagick! Try:\n"
            " * Ubuntu/Debian: sudo apt install -y graphicsmagick\n"
            " * Fedora:        sudo dnf install -y GraphicsMagick\n"
-           " * FreeBSD:       sudo pkg install -y GraphicsMagick")
+           " * OpenSUSE:      sudo zypper install -y GraphicsMagick\n"
+           " * Alpine:        sudo apk add graphicsmagick\n"
+           " * FreeBSD:       sudo pkg install -y GraphicsMagick\n"
+           " * NetBSD:        sudo pkgin -y install GraphicsMagick\n"
+           " * OpenBSD:       sudo pkg_add GraphicsMagick\n"
+           " * Apple:         brew install graphicsmagick")
 ENDIF()
 
-# ------ Required scripts ---------------------------------------------------
+# ====== Required scripts ===================================================
 FIND_PROGRAM(GS_BUMPMAP ${TDD_GS_BUMPMAP})
 IF(NOT GS_BUMPMAP)
    MESSAGE(FATAL_ERROR "gs-bumpmap (${TDD_GS_BUMPMAP}) not found!")
@@ -158,7 +201,6 @@ IF(NOT GS_OLDPHOTO)
    MESSAGE(FATAL_ERROR "gs-oldphoto (${TDD_GS_OLDPHOTO}) not found!")
 ENDIF()
 
-
 FIND_PROGRAM(GS_RESIZE_WITH_CROPPING ${TDD_GS_RESIZE_WITH_CROPPING})
 IF(NOT GS_RESIZE_WITH_CROPPING)
    MESSAGE(FATAL_ERROR "gs-resize-with-cropping (${TDD_GS_RESIZE_WITH_CROPPING}) not found!")
@@ -169,7 +211,7 @@ IF(NOT GS_TEST_GIMP)
    MESSAGE(FATAL_ERROR "gs-test-gimp (${TDD_GS_TEST_GIMP}) not found!")
 ENDIF()
 
-# ------ Customised background scripts --------------------------------------
+# ====== Customised background scripts ======================================
 FIND_PROGRAM(BUILD_CAPTION ${TDD_BUILD_CAPTION})
 IF(NOT BUILD_CAPTION)
    MESSAGE(FATAL_ERROR "Caption script (${TDD_BUILD_CAPTION}) not found!")
@@ -182,7 +224,7 @@ ENDIF()
 
 
 #############################################################################
-# REQUIREMENTS
+#### REQUIREMENTS                                                        ####
 #############################################################################
 
 IF(TDD_ADD_DIST_TARGET)
@@ -198,7 +240,7 @@ ENDIF()
 
 
 #############################################################################
-# BUILD TARGETS
+#### BUILD TARGETS                                                       ####
 #############################################################################
 
 # NOTE: The following build rules use custom commands. They need additional
@@ -636,7 +678,7 @@ ENDFOREACH()
 
 
 #############################################################################
-# SOURCE DIRECTORIES
+#### SOURCE DIRECTORIES                                                  ####
 #############################################################################
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/grub)
