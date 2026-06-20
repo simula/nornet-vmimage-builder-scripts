@@ -187,7 +187,6 @@ elif [ "${ID}" == "alpine" ] ; then
 
    # Collect *-lang packages of installed packages:
    mapfile -t packages < <(apk info -q | grep -v '\-lang$' | sed 's/$/-lang/' | xargs apk search -q 2>/dev/null)
-   packages+=( "musl-locales" )
 
    # ------ Install packages ------------------------------------------------
    if [ "${#packages[@]}" -gt 0 ] ; then

@@ -226,6 +226,7 @@ elif [ "${ID}" == "alpine" ] ; then
       git
       gnupg
       iputils
+      musl-locales
       openssh-server
       shadow
       sudo
@@ -346,9 +347,11 @@ for command in "${programs[@]}" ; do
 done
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} commands are missing:"
-   for program in "${missing[@]}" ; do
-      echo >&2 " * ${program}"
-   done
+   (
+      for program in "${missing[@]}" ; do
+         echo >&2 " * ${program}"
+      done
+   ) | sort
    exit 1
 else
    echo "OK"

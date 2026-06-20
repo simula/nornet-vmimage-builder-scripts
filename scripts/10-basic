@@ -320,6 +320,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       diffutils
       ethtool
       fail2ban
+      findutils
       gdisk
       gpm
       growpart
@@ -570,6 +571,7 @@ programs=(
    curl
    diff
    dig
+   find
    flock
    gdisk
    getfacl
@@ -607,6 +609,7 @@ programs=(
    unzip
    uuid
    wget
+   xargs
    zip
 )
 
@@ -624,8 +627,8 @@ fi
 if [ "$(uname)" == "Linux" ] ; then
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       true   # No netplan in old Ubuntu versions
-   elif [[ "${ID}" =~ ^opensuse- ]] ; then
-      true   # No netplan in OpenSUSE
+   elif [[ "${ID}" =~ ^opensuse- ]] || [ "${ID}" == "alpine" ] ; then
+      true   # No netplan in OpenSUSE and Alpine
    else
       programs+=( netplan )
    fi
@@ -635,11 +638,6 @@ if [ "${ID}" == "debian" ] && [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No rsplib in old Debian versions
 else
    programs+=( rspserver rspterminal )
-fi
-if [[ "${ID}" =~ ^opensuse- ]] ; then
-   true   # No NetPlan on OpenSUSE
-else
-   programs+=( netplan )
 fi
 
 
@@ -656,9 +654,11 @@ for command in "${programs[@]}" ; do
 done
 if [ ${errors} -gt 0 ] ; then
    echo >&2 "ERROR: ${errors} commands are missing:"
-   for program in "${missing[@]}" ; do
-      echo >&2 " * ${program}"
-   done
+   (
+      for program in "${missing[@]}" ; do
+         echo >&2 " * ${program}"
+      done
+   ) | sort
    exit 1
 else
    echo "OK"
