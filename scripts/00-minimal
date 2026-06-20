@@ -196,7 +196,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    zypper addrepo -f "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/" dreibh-obs || true
 
    # Ensure that the installed packages are up-to-date:
-   zypper up -y
+   zypper --non-interactive update -y
 
    packages=(
       bash
@@ -212,7 +212,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       virt-what
    )
 
-   zypper install --no-recommends -y "${packages[@]}"
+   zypper --non-interactive install --no-recommends -y "${packages[@]}"
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

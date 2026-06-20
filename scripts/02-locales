@@ -100,6 +100,19 @@ elif [ "${ID}" == "fedora" ] ; then
       localedef -c -i "${locale}" -f UTF-8 "${locale}.UTF-8"
    done
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=(
+      glibc-i18ndata
+   )
+   zypper --non-interactive install --no-recommends -y "${packages[@]}"
+
+   # Locales:
+   for locale in ${LOCALES} ; do
+      localedef -c -i "${locale}" -f UTF-8 "${locale}.UTF-8"
+   done
+
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
      [ "${UNAME}" == "NetBSD"  ] ||

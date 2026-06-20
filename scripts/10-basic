@@ -317,6 +317,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       chrpath
       cmake
       curl
+      diffutils
       ethtool
       fail2ban
       gdisk
@@ -509,6 +510,7 @@ programs=(
    bzip2
    chrpath
    curl
+   diff
    dig
    flock
    gdisk
