@@ -149,20 +149,25 @@ pushd >/dev/null files
 # ------ Get background build dependencies, and generate the backgrounds ----
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Note: gcc and libc6-dev are needed by GNUInstallDirs.
-   sudo env DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y --no-install-recommends \
+   sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       cmake fonts-open-sans gcc gimp git graphicsmagick libc6-dev libimage-exiftool-perl make
 elif [ "${ID}" == "fedora" ] ; then
-   sudo /usr/bin/dnf install --setopt=install_weak_deps=False -y \
-      awk cmake gcc git GraphicsMagick gimp open-sans-fonts perl perl-Image-ExifTool
+   sudo dnf install --setopt=install_weak_deps=False -y \
+      awk cmake gcc git GraphicsMagick gimp open-sans-fonts perl-Image-ExifTool
    sudo fc-cache -f
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+   sudo zypper install --no-recommends -y \
+      awk cmake exiftool gcc git GraphicsMagick gimp texlive-opensans-fonts
+elif [ "${ID}" == "alpine" ] ; then
+   sudo apk add cmake exiftool gawk gcc git gimp graphicsmagick make musl-dev
 elif [ "${ID}" == "freebsd" ] ; then
-   sudo /usr/sbin/pkg install -y \
+   sudo pkg install -y \
       cmake flock getopt gimp3-app git GraphicsMagick opensans-ttf p5-Image-ExifTool
    sudo fc-cache -f
 elif [ "${ID}" == "netbsd" ] ; then
-   pkgin -y install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
+   sudo pkgin -y install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
 elif [ "${ID}" == "openbsd" ] ; then
-   pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
+   sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
 fi
 ./generate-backgrounds
 
