@@ -94,7 +94,19 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
+   dnf upgrade -y
    dnf clean all
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   zypper --non-interactive dist-upgrade -y
+   zypper clean
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   apk upgrade
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

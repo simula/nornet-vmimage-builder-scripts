@@ -73,8 +73,10 @@ fi
 if [ -e /tmp/configuration-files/bashrc ] ; then
    cp /tmp/configuration-files/bashrc "${USER_HOME}/.bashrc"
    if [ "${ID}" == "freebsd" ]  ; then
+      mkdir -p /usr/share/skel
       cp /tmp/configuration-files/bashrc /usr/share/skel/.bashrc
    else
+      mkdir -p /etc/skel
       cp /tmp/configuration-files/bashrc /etc/skel/.bashrc
    fi
 fi

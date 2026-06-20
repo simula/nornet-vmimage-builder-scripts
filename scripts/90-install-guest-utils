@@ -162,6 +162,46 @@ elif [ "${ID}" == "fedora" ] ; then
    fi
 
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      zypper --non-interactive install --no-recommends -y virtualbox-guest-tools
+   # ------ vSphere ---------------------------------------------------------
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
+      zypper --non-interactive install --no-recommends -y open-vm-tools
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      zypper --non-interactive install --no-recommends -y qemu-guest-agent
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      zypper --non-interactive remove -y qemu-guest-agent || true
+   fi
+
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   # ------ VirtualBox ------------------------------------------------------
+   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      apk add virtualbox-guest-additions
+   # ------ vSphere ---------------------------------------------------------
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
+      apk add open-vm-tools
+   # ------ QEMU ------------------------------------------------------------
+   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+      apk add qemu-guest-agent
+   fi
+
+   # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
+   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+      apk del qemu-guest-agent || true
+   fi
+
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 

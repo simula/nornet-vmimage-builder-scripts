@@ -214,6 +214,26 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    zypper --non-interactive install --no-recommends -y "${packages[@]}"
 
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   packages=(
+      bash
+      bash-completion
+      ca-certificates
+      curl
+      fstrim
+      git
+      gnupg
+      iputils
+      openssh-server
+      shadow
+      sudo
+      virt-what
+   )
+
+   apk add "${packages[@]}"
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 

@@ -71,7 +71,7 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   packages=""
+   packages=()
 
    # ------ Ubuntu ----------------------------------------------------------
    # Ubuntu has its tool "check-language-support":
@@ -84,7 +84,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          language="${locale%%_*}"
          packagesToAdd="$(check-language-support -l "${language}")"
          if [ -n "${packagesToAdd}" ] ; then
-            packages="${packages} ${packagesToAdd}"
+            packages+=( "${packagesToAdd}" )
          fi
       done
 
@@ -119,14 +119,14 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
             taskName="${languageSupportMap[${languageCode}]}"
             if [ -n "${taskName}" ]; then
                if apt-cache show "task-${taskName}" >/dev/null 2>&1 ; then
-                  packages="${packages} task-${taskName}"
+                  packages+=( "task-${taskName}" )
                fi
                if [ ${isDesktop} -ne 0 ] ; then
                   if apt-cache show "task-${taskName}-desktop" >/dev/null 2>&1 ; then
-                     packages="${packages} task-${taskName}-desktop"
+                     packages+=( "task-${taskName}-desktop" )
                   fi
                   if apt-cache show "task-${taskName}-kde-desktop" >/dev/null 2>&1 ; then
-                     packages="${packages} task-${taskName}-kde-desktop"
+                     packages+=( "task-${taskName}-kde-desktop" )
                   fi
                fi
             fi
@@ -137,9 +137,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    fi
 
    # ------ Install packages ------------------------------------------------
-   if [ -n "${packages}" ] ; then
-      # shellcheck disable=SC2086
-      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   if [ "${#packages[@]}" -gt 0 ] ; then
+      env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+         "${packages[@]}"
    fi
 
    # Apply the user's setting, instead of using the installation default:
@@ -148,7 +148,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages=""
+   packages=()
 
    # ------ Determinate whether the system has a GUI ------------------------
    isDesktop=0
@@ -159,16 +159,39 @@ elif [ "${ID}" == "fedora" ] ; then
    # ------ Generate list of packages to be installed -----------------------
    for locale in ${LOCALES} ; do
       languageCode="${locale%%_*}"
-      packages="${packages} glibc-langpack-${languageCode}"
+      packages+=( "glibc-langpack-${languageCode}" )
       if [ ${isDesktop} -ne 0 ] ; then
-         packages="${packages} langpacks-${languageCode}"
+         packages+=( "langpacks-${languageCode}" )
       fi
    done
 
    # ------ Install packages ------------------------------------------------
-   if [ -n "${packages}" ] ; then
-      # shellcheck disable=SC2086
-      dnf install --setopt=install_weak_deps=False -y ${packages}
+   if [ "${#packages[@]}" -gt 0 ] ; then
+      dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
+   fi
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   # ------ Generate and process the locales --------------------------------
+   for locale in ${LOCALES} ; do
+      languageCode="${locale%%_*}"
+      zypper --non-interactive addlocale "${locale}"
+   done
+
+   # ------ Trigger installation of individual missing *-lang packages ------
+   zypper --non-interactive install-new-recommends --no-recommends
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   # Collect *-lang packages of installed packages:
+   mapfile -t packages < <(apk info -q | grep -v '\-lang$' | sed 's/$/-lang/' | xargs apk search -q 2>/dev/null)
+   packages+=( "musl-locales" )
+
+   # ------ Install packages ------------------------------------------------
+   if [ "${#packages[@]}" -gt 0 ] ; then
+      apk add "${packages[@]}"
    fi
 
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------

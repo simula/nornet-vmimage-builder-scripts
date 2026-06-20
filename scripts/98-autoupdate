@@ -104,12 +104,22 @@ elif [ "${ID}" == "fedora" ] ; then
    # Run now:
    systemctl start dnf-automatic.service || true
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   true   # FIXME: TDB!
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   true   # FIXME: TDB!
+
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
      [ "${UNAME}" == "NetBSD"  ] ||
      [ "${UNAME}" == "OpenBSD" ] ; then
 
-   true    # FIXME: TDB!
+   true   # FIXME: TDB!
 
 # ------ Unknown ------------------------------------------------------------
 else

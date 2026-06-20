@@ -113,6 +113,12 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       localedef -c -i "${locale}" -f UTF-8 "${locale}.UTF-8"
    done
 
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   # FIXME! TBD
+   true
+
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
      [ "${UNAME}" == "NetBSD"  ] ||

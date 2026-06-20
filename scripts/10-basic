@@ -366,6 +366,64 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       --no-recommends -y "${packages[@]}"
 
 
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   packages=(
+      acl
+      bind-dnssec-tools
+      binutils
+      bridge-utils
+      bwm-ng
+      bzip2
+      chrpath
+      cloud-utils-growpart
+      cmake
+      curl
+      docs
+      ethtool
+      fail2ban
+      findutils-locate
+      gptfdisk
+      gpm
+#       hipercontracer
+      htop
+      iproute2
+      iptables
+      iputils
+      joe
+      jq
+      libidn
+      make
+      man-pages
+#       netperfmeter
+#       netplan
+      net-tools
+      nmap
+      openssl
+      ossp-uuid
+      parallel
+      pwgen
+      python3
+#       rsplib-tools
+      rsync
+#       subnetcalc
+      tar
+      tcpdump
+#       td-system-tools-basic
+#       td-system-tools-configure-grub
+      traceroute
+      tree
+#       tsctp
+      tshark
+      unzip
+      wget
+      zip
+   )
+
+   apk add "${packages[@]}"
+
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
