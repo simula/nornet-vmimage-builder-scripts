@@ -117,7 +117,7 @@ mount /dev/"$WEDGE_HOME" $r/home
 suffix=tgz
 [ -f /amd64/binary/sets/base.tar.xz ] && suffix=tar.xz
 
-for s in base etc comp games kern-GENERIC man misc modules tests text xbase xcomp xetc xfont xserver ; do
+for s in base comp etc games kern-GENERIC man misc modules tests text xbase xcomp xetc xfont xserver ; do
    ( cd $r && echo $s && tar --chroot -xpf /amd64/binary/sets/$s.$suffix )
 done
 
@@ -207,6 +207,44 @@ chroot $r pkgin -y update
 # ------ Install required packages ------------------------------------------
 chroot $r /usr/pkg/bin/pkgin -y install bash sudo virt-what
 
+
+# ====== Enable SCTP ========================================================
+chroot $r sh <<EOF
+set -eu
+
+ARCH="\$(uname -m)"
+CONF_DIR="/usr/src/sys/arch/\$ARCH/conf"
+NEW_CONF="CUSTOM_SCTP"
+
+if [ ! -d "\$CONF_DIR" ]; then
+    RELEASE="\$(uname -r)"
+    URL="https://cdn.netbsd.org/pub/NetBSD/NetBSD-\$RELEASE/source/sets/syssrc.tgz"
+    tempDirectory="\$(mktemp -d /tmp/netbsd-src.XXXXXX)"
+    cd "\$tempDirectory"
+    ftp "\$URL"
+    tar -xzpf syssrc.tgz -C /
+    cd /
+    rm -rf "\$tempDirectory"
+fi
+
+cd "\$CONF_DIR"
+sed '/options[[:space:]]\\{1,\\}INET/a\\
+options         SCTP            # Stream Control Transmission Protocol support
+' GENERIC >CUSTOM_SCTP
+
+config "\$NEW_CONF"
+cd "../compile/\$NEW_CONF"
+
+NCPU="\$(sysctl -n hw.ncpu)"
+export MAKEFLAGS="-j \${NCPU}"
+make depend
+make
+
+if [ -f /netbsd ]; then
+   mv /netbsd /netbsd.old
+fi
+cp netbsd /netbsd
+EOF
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:

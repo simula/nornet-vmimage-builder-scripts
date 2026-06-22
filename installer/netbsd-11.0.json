@@ -31,9 +31,9 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC4/SHA512 | grep -- -amd64.iso
-  "iso_url": "https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC4/NetBSD-11.0_RC4-amd64.iso",
-  "iso_checksum": "file:https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC4/SHA512",
+  // Checksum: curl -s https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC5/SHA512 | grep -- -amd64.iso
+  "iso_url": "https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC5/NetBSD-11.0_RC5-amd64.iso",
+  "iso_checksum": "file:https://cdn.netbsd.org/pub/NetBSD/images/11.0_RC5/SHA512",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
