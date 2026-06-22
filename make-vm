@@ -465,6 +465,14 @@ elif [ "${DISTRIBUTION}" == "Fedora" ] ; then
    BUILDER_INSTALL="fedora-${RELEASE}"
    NAME="${NAME}-Fedora-${RELEASE}"
    HTTP_DIRECTORY="http/fedora"
+elif [ "${DISTRIBUTION}" == "Alpine" ] ; then
+   BUILDER_INSTALL="alpine-${RELEASE}"
+   NAME="${NAME}-Alpine-${RELEASE}"
+   HTTP_DIRECTORY="http/alpine"
+   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+      echo >&2 "ERROR: Invalid Alpine release ${RELEASE}!"
+      exit 1
+   fi
 elif [ "${DISTRIBUTION}" == "FreeBSD" ] ; then
    BUILDER_INSTALL="freebsd-${RELEASE}"
    NAME="${NAME}-FreeBSD-${RELEASE}"
