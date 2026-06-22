@@ -90,7 +90,8 @@ chroot /mnt ash <<EOF
 set -euxo pipefail
 
 # ------ Install required packages ------------------------------------------
-apk add bash btrfs-progs doas-sudo-shim virt-what
+# NOTE: "shadow" provides usermod
+apk add bash btrfs-progs doas shadow sudo virt-what
 
 # ------ Create user --------------------------------------------------------
 adduser -D -g '<SET_REALNAME_HERE>' -s /bin/bash -G wheel '<SET_USERNAME_HERE>'
@@ -98,10 +99,15 @@ echo '<SET_USERNAME_HERE>':'<SET_PASSWORD_HERE>' | chpasswd
 
 # ------ doas configuration -------------------------------------------------
 echo 'permit nopass :wheel' >/etc/doas.d/wheel.conf
-EOF
 
-# ====== Lock root account ==================================================
-chroot /mnt passwd -l root
+# ------ sudo configuration -------------------------------------------------
+addgroup sudo
+usermod -a -G sudo '<SET_USERNAME_HERE>'
+sed -e 's/^# %sudo /%sudo /' -i /etc/sudoers
+
+# ------ Lock the root account ----------------------------------------------
+passwd -l root
+EOF
 
 # Reboot into the freshly installed system:
 reboot

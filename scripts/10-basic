@@ -408,14 +408,14 @@ elif [ "${ID}" == "alpine" ] ; then
       python3
 #       rsplib-tools
       rsync
-#       subnetcalc
+      subnetcalc
       tar
       tcpdump
-#       td-system-tools-basic
-#       td-system-tools-configure-grub
+      td-system-tools-basic
+      td-system-tools-configure-grub
       traceroute
       tree
-#       tsctp
+      tsctp
       tshark
       unzip
       wget
