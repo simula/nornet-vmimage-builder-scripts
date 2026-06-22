@@ -181,7 +181,7 @@ while [ $# -gt 0 ] ; do
       shift
    elif [ "$1" == "--cores" ] || [ "$1" == "-c" ] ; then
       VM_CORES="$2"
-      if [[ ! "${VM_CORES}" =~ ^[0-9]*|NA$ ]] ; then
+      if [[ ! "${VM_CORES}" =~ ^[0-9]+|NA$ ]] ; then
          echo >&2 "ERROR: Bad value for cores: ${VM_CORES}"
          exit 1
       fi
@@ -368,7 +368,7 @@ elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="${HYPERVISOR}-${VM_ARCHITECTURE^^}"
    VM_PLATFORM="linux/${VM_ARCHITECTURE}"
-   if [[ "${VM_PLATFORM}" =~ (.*/arm)(32|64)(v[0-9]*)$ ]] ; then
+   if [[ "${VM_PLATFORM}" =~ (.*/arm)(32|64)(v[0-9]+)$ ]] ; then
       if [ "${BASH_REMATCH[2]}" == "32" ] ; then
          bits=""
       else
@@ -440,7 +440,7 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
    BUILDER_INSTALL="ubuntu-${RELEASE}"
    NAME="${NAME}-Ubuntu-${RELEASE}"
    HTTP_DIRECTORY="http/ubuntu"
-   if [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   if [[ "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
       y=${BASH_REMATCH[1]}
       if [ "$y" -lt 20 ] ; then
          HTTP_DIRECTORY="${HTTP_DIRECTORY}-legacy"
@@ -450,7 +450,7 @@ if [ "${DISTRIBUTION}" == "Ubuntu" ] ; then
       exit 1
    fi
 elif [ "${DISTRIBUTION}" == "Debian" ] ; then
-   if [[ "${RELEASE}" =~ ^([0-9]*)$ ]] ; then
+   if [[ "${RELEASE}" =~ ^([0-9]+)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
    elif [[ "${RELEASE}" =~ ^(Testing|Unstable)$ ]] ; then
       RELEASE=${BASH_REMATCH[1]}
@@ -465,11 +465,19 @@ elif [ "${DISTRIBUTION}" == "Fedora" ] ; then
    BUILDER_INSTALL="fedora-${RELEASE}"
    NAME="${NAME}-Fedora-${RELEASE}"
    HTTP_DIRECTORY="http/fedora"
+elif [ "${DISTRIBUTION}" == "OpenSUSE" ] ; then
+   BUILDER_INSTALL="opensuse-${RELEASE}"
+   NAME="${NAME}-OpenSUSE-${RELEASE}"
+   HTTP_DIRECTORY="http/opensuse"
+   if [[ ! "${RELEASE}" =~ ^([0-9]+.[0-9]+|Tumbleweed)$ ]] ; then
+      echo >&2 "ERROR: Invalid OpenSUSE release ${RELEASE}!"
+      exit 1
+   fi
 elif [ "${DISTRIBUTION}" == "Alpine" ] ; then
    BUILDER_INSTALL="alpine-${RELEASE}"
    NAME="${NAME}-Alpine-${RELEASE}"
    HTTP_DIRECTORY="http/alpine"
-   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
       echo >&2 "ERROR: Invalid Alpine release ${RELEASE}!"
       exit 1
    fi
@@ -477,7 +485,7 @@ elif [ "${DISTRIBUTION}" == "FreeBSD" ] ; then
    BUILDER_INSTALL="freebsd-${RELEASE}"
    NAME="${NAME}-FreeBSD-${RELEASE}"
    HTTP_DIRECTORY="http/freebsd"
-   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)-(RELEASE|STABLE|CURRENT)$ ]] ; then
+   if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)-(RELEASE|STABLE|CURRENT)$ ]] ; then
       echo >&2 "ERROR: Invalid FreeBSD release ${RELEASE}!"
       exit 1
    fi
@@ -485,7 +493,7 @@ elif [ "${DISTRIBUTION}" == "NetBSD" ] ; then
    BUILDER_INSTALL="netbsd-${RELEASE}"
    NAME="${NAME}-NetBSD-${RELEASE}"
    HTTP_DIRECTORY="http/netbsd"
-   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
       echo >&2 "ERROR: Invalid NetBSD release ${RELEASE}!"
       exit 1
    fi
@@ -493,7 +501,7 @@ elif [ "${DISTRIBUTION}" == "OpenBSD" ] ; then
    BUILDER_INSTALL="openbsd-${RELEASE}"
    NAME="${NAME}-OpenBSD-${RELEASE}"
    HTTP_DIRECTORY="http/openbsd"
-   if [[ ! "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+   if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
       echo >&2 "ERROR: Invalid OpenBSD release ${RELEASE}!"
       exit 1
    fi
@@ -770,7 +778,7 @@ vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HY
 vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE}"
 
 # ------ Tag LTS versions ---------------------------------------------------
-if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]*).([0-9]*)$ ]] ; then
+if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
    y=${BASH_REMATCH[1]}
    m=${BASH_REMATCH[2]}
    isNonLTSYear=$(( y%2 ))
