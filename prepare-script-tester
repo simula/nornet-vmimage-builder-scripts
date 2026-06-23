@@ -92,6 +92,10 @@ if ! command -v git || ! command -v joe ; then
       sudo /usr/bin/apt install -y ca-certificates git joe
    elif [ -x /usr/bin/dnf ] ; then
       sudo /usr/bin/dnf install -y git joe
+   elif [ -x /usr/bin/zypper ] ; then
+      sudo /usr/bin/zypper install -y git joe
+   elif [ -x /usr/bin/apk ] ; then
+      sudo /usr/bin/apk add git joe
    elif [ -x /usr/bin/pkg ] ; then
       sudo /usr/bin/pkg install -y git joe
    elif [ -x /usr/pkg/bin/pkgin ] ; then
