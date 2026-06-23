@@ -464,7 +464,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_BUMPMAP} ${imageTemp2} ${imageTemp1}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                                  COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                                  COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                   DEPENDS ${image}
                                           generate_gimpDirStamp
                                           ${gimpDirStamp})
@@ -473,7 +473,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                   COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_RESIZE_WITH_CROPPING} ${image} ${imageTemp1} --aspect ${aspectRatio} --width ${width}
                                   COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                   COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                                  COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                                  COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                   DEPENDS ${image}
                                           generate_gimpDirStamp
                                           ${gimpDirStamp})
@@ -488,7 +488,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${MAKE_OILIFY} ${imageTemp2} ${imageTemp1} --mask-size ${maskSize}
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                               COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                               COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                DEPENDS ${image}
                                        generate_gimpDirStamp
                                        ${gimpDirStamp})
@@ -509,7 +509,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_MOSAIC} ${imageTemp2} ${imageTemp1} --tile-size ${tileSize} --tile-height ${tileHeight} --tile-spacing ${tileHeight} --tile-type hexagons --tile-surface rough
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                               COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                               COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                DEPENDS ${image}
                                        generate_gimpDirStamp
                                        ${gimpDirStamp})
@@ -521,7 +521,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_CLOTHIFY} ${imageTemp2} ${imageTemp1} --depth 5
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                               COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                               COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                DEPENDS ${image}
                                        generate_gimpDirStamp
                                        ${gimpDirStamp})
@@ -533,7 +533,7 @@ FOREACH(resolution IN LISTS TDD_RESOLUTIONS)
                                COMMAND env GIMP2_DIRECTORY=${GIMP_DIRECTORY} GIMP3_DIRECTORY=${GIMP_DIRECTORY} ${GS_OLDPHOTO} ${imageTemp2} ${imageTemp1} --border-size 20
                                COMMAND ${GM} convert ${imageTemp1} -interlace line ${imageWithoutLogo}
                                COMMAND ${EXIFTOOL} -m -q -overwrite_original -Copyright="${TDD_COPYRIGHT}" ${imageWithoutLogo}
-                               COMMAND ${RM} -f ${imageTemp1} ${imageTemp2}
+                               COMMAND rm -f ${imageTemp1} ${imageTemp2}
                                DEPENDS ${image}
                                        generate_gimpDirStamp
                                        ${gimpDirStamp})
