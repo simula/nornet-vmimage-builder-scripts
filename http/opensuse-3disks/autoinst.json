@@ -1,0 +1,121 @@
+{
+  "product": {
+    "id": "Tumbleweed"
+  },
+  "storage": {
+    "boot": {
+      "configure": true
+    },
+    "drives": [
+      {
+        "partitions": [
+          {
+            "filesystem": {
+              "label": "EFI",
+              "mountOptions": [],
+              "path": "/boot/efi",
+              "reuseIfPossible": false,
+              "type": "vfat"
+            },
+            "id": "esp"
+          },
+          {
+            "filesystem": {
+              "label": "Root",
+              "mountOptions": [],
+              "path": "/",
+              "reuseIfPossible": false,
+              "type": {
+                "btrfs": {
+                  "snapshots": true
+                }
+              }
+            }
+          },
+          {
+            "delete": true,
+            "search": {
+              "ifNotFound": "skip"
+            }
+          }
+        ],
+        "search": {
+          "condition": {
+            "name": "/dev/sda"
+          },
+          "ifNotFound": "error"
+        }
+      },
+      {
+        "partitions": [
+          {
+            "filesystem": {
+              "label": "Home",
+              "mountOptions": [],
+              "path": "/home",
+              "reuseIfPossible": false,
+              "type": {
+                "btrfs": {
+                  "snapshots": false
+                }
+              }
+            }
+          },
+          {
+            "delete": true,
+            "search": {
+              "ifNotFound": "skip"
+            }
+          }
+        ],
+        "search": {
+          "condition": {
+            "name": "/dev/sdb"
+          },
+          "ifNotFound": "error"
+        }
+      },
+      {
+        "partitions": [
+          {
+            "filesystem": {
+              "label": "Swap",
+              "mountOptions": [],
+              "path": "swap",
+              "reuseIfPossible": false
+            }
+          },
+          {
+            "delete": true,
+            "search": {
+              "ifNotFound": "skip"
+            }
+          }
+        ],
+        "search": {
+          "condition": {
+            "name": "/dev/sdc"
+          },
+          "ifNotFound": "error"
+        }
+      }
+    ],
+    "mdRaids": [],
+    "volumeGroups": []
+  },
+  "user": {
+    "fullName": "<SET_REALNAME_HERE>",
+    "password": "<SET_PASSWORD_HERE>",
+    "hashedPassword": false,
+    "userName": "<SET_USERNAME_HERE>",
+    "sshPublicKeys": []
+  },
+  "scripts": {
+    "post": [
+      {
+        "interpreter": "shell",
+        "source": "#!/bin/bash\nlocalectl set-xkb-map \"<SET_XKBLAYOUT_HERE>\" \"<SET_XKBMODEL_HERE>\" \"<SET_XKBVARIANT_HERE>\"\nsystemctl enable sshd\nfirewall-offline-cmd --add-service=ssh\nusermod -a -G wheel \"<SET_USERNAME_HERE>\"\necho \"%\nwheel ALL=(ALL) ALL\" >/etc/sudoers.d/wheel\necho \"Defaults !targetpw\" >>/etc/sudoers.d/wheel\nchmod 0440 /etc/sudoers.d/wheel"
+      }
+    ]
+  }
+}

@@ -43,9 +43,9 @@
   // ====== Boot into installer =============================================
   "boot_wait": "10s",
   "boot_command": [
-    "c<wait>",
-    "linux /boot/x86_64/loader/linux netsetup=dhcp inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.xml<enter>",
-    "initrd /boot/x86_64/loader/initrd<enter>",
-    "boot<enter>"
+    "<down>e",
+    "<down><down><end>",
+    " inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.json",
+    "<f10>"
   ]
 }

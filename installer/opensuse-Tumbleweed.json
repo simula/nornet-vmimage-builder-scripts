@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.opensuse.org/tumbleweed/appliances/iso/agama-installer.x86_64-22.0.0-openSUSE-Snapshot20260618.iso",
-  "iso_checksum": "file:https://download.opensuse.org/tumbleweed/appliances/iso/agama-installer.x86_64-22.0.0-openSUSE-Snapshot20260618.iso.sha256",
+  "iso_url": "https://download.opensuse.org/tumbleweed/appliances/iso/agama-installer.x86_64-22.0.0-openSUSE-Snapshot20260623.iso",
+  "iso_checksum": "file:https://download.opensuse.org/tumbleweed/appliances/iso/agama-installer.x86_64-22.0.0-openSUSE-Snapshot20260623.iso.sha256",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -43,9 +43,9 @@
   // ====== Boot into installer =============================================
   "boot_wait": "10s",
   "boot_command": [
-    "c<wait>",
-    "linux /boot/x86_64/loader/linux netsetup=dhcp inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.xml<enter>",
-    "initrd /boot/x86_64/loader/initrd<enter>",
-    "boot<enter>"
+    "e",
+    "<down><down><end>",
+    " inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.json",
+    "<f10>"
   ]
 }
