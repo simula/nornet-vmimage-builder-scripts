@@ -43,9 +43,9 @@
   // ====== Boot into installer =============================================
   "boot_wait": "10s",
   "boot_command": [
-    "<down>e",
-    "<down><down><end>",
-    " inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.json",
-    "<f10>"
+    "e",
+    "<down><down><down><down><end>",
+    " netsetup=dhcp inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.json",
+    "<wait><wait><wait><wait><wait><f10>"
   ]
 }
