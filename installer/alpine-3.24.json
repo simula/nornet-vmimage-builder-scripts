@@ -41,6 +41,9 @@
   "shutdown_command": "echo '{{user `user_password`}}' | doas poweroff",
 
   // ====== Boot into installer =============================================
+  "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--ostype", "Linux_64" ]
+  ],
   "boot_wait": "30s",
   "boot_command": [
     "root<enter>",

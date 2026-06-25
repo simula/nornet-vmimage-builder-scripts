@@ -41,6 +41,9 @@
   "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
 
   // ====== Boot into installer =============================================
+  "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--ostype", "OpenSUSE_64" ]
+  ],
   "boot_wait": "10s",
   "boot_command": [
     "e",
