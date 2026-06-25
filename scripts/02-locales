@@ -116,8 +116,12 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
-   # FIXME! TBD
-   true
+   packages=(
+      musl-locales
+      musl-locales-lang
+      tzdata
+   )
+   apk add "${packages[@]}"
 
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
@@ -138,14 +142,16 @@ fi
 
 # ====== Show available locales =============================================
 set +x
+
+# ------ Show available locales ---------------------------------------------
+installedLocales="$(locale -a | sed -e 's/\..*//' | sort -u)"
 echo "Available locales:"
+echo "${installedLocales}" | xargs
 
-installedLocales="$(locale -a | grep -iE "\.(utf-8|utf8)$")"
-echo -e "${installedLocales}"
-
+# ------ Verify availability of requested locales ---------------------------
 missingLocales=()
 for locale in ${LOCALES} ; do
-   if ! echo -e "${installedLocales}" | grep -iq "^${locale}" ; then
+   if ! grep -iq "^${locale}" <<< "${installedLocales}" ; then
       missingLocales+=("${locale}")
    fi
 done
