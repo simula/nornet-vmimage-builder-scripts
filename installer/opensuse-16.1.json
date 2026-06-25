@@ -45,7 +45,7 @@
   "boot_command": [
     "e",
     "<down><down><down><down><end>",
-    " netsetup=dhcp inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.json",
+    " netsetup=dhcp inst.auto=http://{{ .HTTPIP }}:{{ .HTTPPort }}/autoinst.jsonnet",
     "<wait><wait><wait><wait><wait><f10>"
   ]
 }

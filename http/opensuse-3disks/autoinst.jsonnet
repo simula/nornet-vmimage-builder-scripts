@@ -2,6 +2,10 @@
   "product": {
     "id": "Tumbleweed"
   },
+  "localization": {
+    "keyboard": "<SET_XKBLAYOUT_HERE>",
+    "timezone": "UTC"
+  },
   "storage": {
     "boot": {
       "configure": true
@@ -17,7 +21,8 @@
               "reuseIfPossible": false,
               "type": "vfat"
             },
-            "id": "esp"
+            "id": "esp",
+            "size": "128 MiB"
           },
           {
             "filesystem": {
@@ -110,11 +115,26 @@
     "userName": "<SET_USERNAME_HERE>",
     "sshPublicKeys": []
   },
+  "software": {
+    "packages": ["openssh-server", "virt-what"],
+    "onlyRequired": false
+  },
   "scripts": {
     "post": [
       {
-        "interpreter": "shell",
-        "source": "#!/bin/bash\nlocalectl set-xkb-map \"<SET_XKBLAYOUT_HERE>\" \"<SET_XKBMODEL_HERE>\" \"<SET_XKBVARIANT_HERE>\"\nsystemctl enable sshd\nfirewall-offline-cmd --add-service=ssh\nusermod -a -G wheel \"<SET_USERNAME_HERE>\"\necho \"%\nwheel ALL=(ALL) ALL\" >/etc/sudoers.d/wheel\necho \"Defaults !targetpw\" >>/etc/sudoers.d/wheel\nchmod 0440 /etc/sudoers.d/wheel"
+        "chroot": true,
+        "source": |||
+          #!/usr/bin/bash
+          localectl set-xkb-map "<SET_XKBLAYOUT_HERE>" "<SET_XKBMODEL_HERE>" "<SET_XKBVARIANT_HERE>"
+          systemctl enable sshd
+          if command -v firewall-offline-cmd &> /dev/null ; then
+            firewall-offline-cmd --add-service=ssh
+          fi
+          usermod -a -G wheel "<SET_USERNAME_HERE>"
+          echo "%wheel ALL=(ALL) ALL" >/etc/sudoers.d/wheel
+          echo "Defaults !targetpw" >>/etc/sudoers.d/wheel
+          chmod 0440 /etc/sudoers.d/wheel
+        |||
       }
     ]
   }
