@@ -137,12 +137,15 @@ fi
 
 
 # ====== Show available locales =============================================
+set +x
 echo "Available locales:"
-locale -a
+
+installedLocales="$(locale -a | grep -iE "\.(utf-8|utf8)$")"
+echo -e "${installedLocales}"
 
 missingLocales=()
 for locale in ${LOCALES} ; do
-   if ! locale -a | grep -iq "^${locale}" ; then
+   if ! echo -e "${installedLocales}" | grep -iq "^${locale}" ; then
       missingLocales+=("${locale}")
    fi
 done
@@ -158,3 +161,4 @@ if [ ${#missingLocales[@]} -ne 0 ] ; then
       exit 1
    fi
 fi
+set -x
