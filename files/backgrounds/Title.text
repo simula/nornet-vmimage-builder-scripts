@@ -35,7 +35,7 @@ set -euo pipefail
 # ###### Main program #######################################################
 
 # Using Open Sans ExtraBold style:
-fontName="$(fc-list --format "%{file}: %{fullname[0]}\n" | grep "/OpenSans-Extra[Bb]old.ttf" | sed -e "s/.*: //" || true)"
+fontName="$(fc-list --format "%{file}: %{fullname[0]}\n" | grep "/OpenSans-Extra[Bb]old.ttf" | head -n1 | sed -e "s/.*: //" || true)"
 if [ -z "${fontName}" ] ; then
    echo >&2 "ERROR: Open Sans ExtraBold is not available!"
    exit 1
