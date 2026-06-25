@@ -128,27 +128,6 @@
           #!/usr/bin/bash
           systemctl enable sshd.service
         |||
-      },
-      {
-        "name": "testonly",
-        "chroot": true,
-        "content": |||
-          #!/usr/bin/bash
-          touch /test1.txt
-          date >/test2.txt
-        |||
-      },
-      {
-        "name": "setup.sh",
-        "chroot": true,
-        "content": |||
-          #!/usr/bin/bash
-          localectl set-xkb-map "<SET_XKBLAYOUT_HERE>" "<SET_XKBMODEL_HERE>" "<SET_XKBVARIANT_HERE>"
-          systemctl enable sshd
-          if command -v firewall-offline-cmd &> /dev/null ; then
-            firewall-offline-cmd --add-service=ssh
-          fi
-        |||
       }
     ]
   }
