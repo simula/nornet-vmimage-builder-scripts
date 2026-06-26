@@ -66,7 +66,6 @@ if [ -e /etc/machine-id ] ; then
    # avoid assigning the same IP address to multiple VMs!
    echo -n | sudo tee /etc/machine-id
    if [ -e /var/lib/dbus/machine-id ] ; then
-      sudo truncate -s 0 /var/lib/dbus/machine-id
       if [ -e /var/lib/dbus/machine-id ] ; then
          rm -f /var/lib/dbus/machine-id
       fi
@@ -101,12 +100,13 @@ elif [ "${ID}" == "fedora" ] ; then
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    zypper --non-interactive dist-upgrade -y
-   zypper clean
+   zypper clean --all
 
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
    apk upgrade
+   apk cache clean
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
