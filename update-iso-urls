@@ -247,8 +247,8 @@ function find-fedora-isos ()
 function find-freebsd-isos ()
 {
    system="FreeBSD"
-   major=13
-   minor=5
+   major=14
+   minor=4
    variant="$1"
    latestURL=""
    latestChecksum=""
@@ -257,7 +257,7 @@ function find-freebsd-isos ()
    while true ; do
       location1="https://download.freebsd.org/ftp/releases/ISO-IMAGES/${major}.${minor}"
       location2=""
-      iso1="FreeBSD-${major}.${minor}-${variant}-amd64-disc1.iso"
+      iso1="FreeBSD-${major}.${minor}-${variant}-amd64-bootonly.iso"
       algorithm="sha512"
       checksums="CHECKSUM.SHA512-FreeBSD-${major}.${minor}-${variant}-amd64"
       signature=""
