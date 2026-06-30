@@ -66,6 +66,16 @@ clone-or-update ()
 
 # ###### Main program #######################################################
 
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
@@ -73,12 +83,6 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    exit 1
 fi
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
-
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release is not available!"
-   exit 1
-fi
-. /etc/os-release
 
 
 # ====== Prepare source repositories ========================================
@@ -94,47 +98,16 @@ clone-or-update vmimage-builder-scripts https://dreibh@github.com/simula/nornet-
 
 # ====== Package installation ===============================================
 
-# ------ Debian -------------------------------------------------------------
-if [ "${ID}" == "debian" ] ; then
+# ------ Ubuntu/Debian ------------------------------------------------------
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   # FIXME! Work-around for RSerPool Demo not (yet) in Debian:
-   packages="
-      desktop-file-utils
-      rsplib-fgp-cfgfiles
-      rsplib-registrar
-      rsplib-services
-   "
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
-   systemctl stop rsplib-registrar    || true
-   systemctl disable rsplib-registrar || true
-   systemctl stop rspregistrar        || true
-   systemctl disable rspregistrar     || true
-
-   cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
-   cd "${USER_HOME}/src/rserpooldemo"
-   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
-   sudo -u "${USER_NAME}" make -j"${cores}"
-   make install
-   update-mime-database /usr/share/mime
-   update-desktop-database
-
-   mkdir -p /boot/RSerPoolDemo
-   cp /usr/share/rserpooldemo/splash/Zollverein-*.jpeg /boot/RSerPoolDemo
-   update-grub
-
-# ------ Ubuntu -------------------------------------------------------------
-elif [ "${ID}" == "ubuntu" ] ; then
-
-   packages="
+   packages=(
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
       rsplib-registrar
-   "
-
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   )
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
    systemctl stop rspregistrar
    systemctl disable rspregistrar
@@ -142,15 +115,13 @@ elif [ "${ID}" == "ubuntu" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="
+   packages=(
       rserpooldemo-desktop
       rserpooldemo-development
       rserpooldemo-tool
       rsplib-registrar
-   "
-
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   )
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    systemctl stop rspregistrar
    systemctl disable rspregistrar

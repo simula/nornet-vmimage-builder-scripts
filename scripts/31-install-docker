@@ -77,24 +77,23 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    if [ "${ID}" == "ubuntu" ] ; then
       if [[ "${VERSION_ID}" =~ ^(1[2-9]\.[01][04]|2[01]\.[01][04])$ ]] ; then
          # Old Ubuntu versions do not have docker-buildx and docker-cli:
-         packages="containerd docker.io docker-compose"
+         packages=( containerd docker.io docker-compose )
       else
-         packages="containerd docker.io docker-buildx docker-cli docker-compose-v2"
+         packages=( containerd docker.io docker-buildx docker-cli docker-compose-v2 )
       fi
    elif [ "${ID}" == "debian" ] ; then
       if [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] && [[ "${VERSION_ID}" -lt 13 ]] ; then
          # Old Debian versions do not have docker-buildx and docker-cli:
-         packages="containerd docker.io docker-compose"
+         packages=( containerd docker.io docker-compose )
       else
-         packages="containerd docker.io docker-buildx docker-cli docker-compose"
+         packages=( containerd docker.io docker-buildx docker-cli docker-compose )
       fi
    else
       echo >&2 "ERROR: Inexpected ID ${ID}!"
       exit 1
    fi
 
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends "${packages[@]}"
 
    # Add user to "docker" group:
    usermod -a -G docker "${USER_NAME}"
@@ -103,14 +102,23 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   # Programs:
-   packages="containerd docker docker-buildx docker-cli docker-compose"
-
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   packages=( containerd docker docker-buildx docker-cli docker-compose )
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    # Add user to "docker" group:
    usermod -a -G docker "${USER_NAME}"
+
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   true # FIXME! TBD
+
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   true # FIXME! TBD
 
 
 # ------ FreeBSD ------------------------------------------------------------

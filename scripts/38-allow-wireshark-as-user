@@ -77,8 +77,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    # Allow Wireshark/T-Shark as regular user:
    usermod -a -G wireshark "${USER_NAME}"
 
-# ------ Fedora -------------------------------------------------------------
-elif [ "${ID}" == "fedora" ] ; then
+# ------ Fedora, OpenSUSE, Alpine -------------------------------------------
+elif [ "${ID}" == "fedora"     ] || \
+     [[ "${ID}" =~ ^opensuse- ]] || \
+     [ "${ID}" == "alpine"     ] ; then
 
    # Allow Wireshark/T-Shark as regular user:
    usermod -a -G wireshark "${USER_NAME}"

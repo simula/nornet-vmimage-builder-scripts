@@ -117,16 +117,21 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    done
 
 
-# ------ Fedora -------------------------------------------------------------
-elif [ "${ID}" == "fedora" ] ; then
+# ------ Fedora, OpenSUSE, Alpine -------------------------------------------
+elif [ "${ID}" == "fedora"     ] || \
+     [[ "${ID}" =~ ^opensuse- ]] || \
+     [ "${ID}" == "alpine"     ] ; then
 
+   # Nothing to do here!
    true
 
 
-# ------ FreeBSD ------------------------------------------------------------
-elif [ "${ID}" == "freebsd" ] ; then
+# ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
+elif [ "${ID}" == "freebsd" ] || \
+     [ "${ID}" == "netbsd"  ] || \
+     [ "${ID}" == "openbsd" ] ; then
 
-   # Nothing to do here! FreeBSD sources = ports
+   # Nothing to do here: BSD sources = ports.
    true
 
 # ------ Unknown ------------------------------------------------------------
