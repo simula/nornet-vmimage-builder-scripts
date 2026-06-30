@@ -328,6 +328,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 elif [ "${ID}" == "alpine" ] ; then
 
    packages=(
+      abuild
       autoconf
       automake
       bc
@@ -499,6 +500,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    programs+=( pbuilder reprepro )
 elif [ "${ID}" == "fedora" ] ; then
    programs+=( createrepo mock )
+elif [ "${ID}" == "alpine" ] ; then
+   programs+=( abuild )
 fi
 if [[ "$(uname -m)" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
    # Valgrind is at least available for AMD64 and ARM64:
