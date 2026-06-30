@@ -161,8 +161,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libbz2-dev
       libc-ares-dev
       libcurl4-openssl-dev
-      libgeoip-dev
       liblzma-dev
+      libmaxminddb-dev
       libpqxx-dev
       libsctp-dev
       libssl-dev
@@ -237,9 +237,9 @@ elif [ "${ID}" == "fedora" ] ; then
       boost-devel
       bzip2-devel
       c-ares-devel
-      GeoIP-devel
       libbson-devel
       libcurl-devel
+      libmaxminddb-devel
       libpqxx-devel
       lksctp-tools-devel
       mariadb-connector-c-devel
@@ -302,10 +302,10 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    packages+=(
       boost-devel
       bson-devel
+      c-ares-devel
       libbz2-devel
-      libc-ares-devel
       libcurl-devel
-      libGeoIP-devel
+      libmaxminddb-devel
       libmariadb-devel
       libopenssl-devel
       libpqxx-devel
