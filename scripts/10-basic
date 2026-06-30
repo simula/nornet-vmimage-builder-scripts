@@ -387,7 +387,7 @@ elif [ "${ID}" == "alpine" ] ; then
       findutils-locate
       gptfdisk
       gpm
-#       hipercontracer
+      hipercontracer
       htop
       iproute2
       iptables
@@ -397,7 +397,7 @@ elif [ "${ID}" == "alpine" ] ; then
       libidn
       make
       man-pages
-#       netperfmeter
+      netperfmeter
 #       netplan
       net-tools
       nmap
@@ -406,7 +406,7 @@ elif [ "${ID}" == "alpine" ] ; then
       parallel
       pwgen
       python3
-#       rsplib-tools
+      rsplib-tools
       rsync
       subnetcalc
       tar
