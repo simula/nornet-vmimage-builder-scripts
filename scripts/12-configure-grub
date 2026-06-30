@@ -54,6 +54,8 @@ if [ ! -v BOOTSPLASH ] || [ ! -v VIDEO ] ; then
    echo >&2 "Example: sudo env BOOTSPLASH=/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg VIDEO=1920x1080 $0"
    exit 1
 fi
+
+# ====== Obtain system details ==============================================
 UNAME="$(uname)"
 
 

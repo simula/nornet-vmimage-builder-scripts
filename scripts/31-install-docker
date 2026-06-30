@@ -54,13 +54,15 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
-if [ ! -v VERSION_ID ] ; then
-   VERSION_ID=""
+
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
 
 
@@ -119,6 +121,9 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    # Add user to "docker" group:
    usermod -a -G docker "${USER_NAME}"
+
+   systemctl enable docker.service
+   systemctl start  docker.service || true
 
 
 # ------ Alpine -------------------------------------------------------------

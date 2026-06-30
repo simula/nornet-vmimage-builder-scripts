@@ -48,11 +48,15 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ -e /etc/os-release ] ; then
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
    . /etc/os-release
 fi
-UNAME="$(uname)"
 
 
 # ====== Experiment user configuration ======================================

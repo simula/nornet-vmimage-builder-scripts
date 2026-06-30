@@ -54,11 +54,15 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
 fi
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release is not available!"
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
-. /etc/os-release
 
 
 # ###### Main program #######################################################

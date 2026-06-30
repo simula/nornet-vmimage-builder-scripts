@@ -79,12 +79,15 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
-. /etc/os-release
 
 if [ "${ID}" == "ubuntu" ] ; then
    if [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
