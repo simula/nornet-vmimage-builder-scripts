@@ -48,12 +48,15 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check environment variables ========================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release is not available!"
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
-. /etc/os-release
 
 
 # ====== Package installation ===============================================
@@ -61,32 +64,45 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   packages="
+   packages=(
       texlive-full
-   "
-
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ${packages}
+   )
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "${packages[@]}"
 
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="
+   packages=(
       texlive-scheme-full
-   "
+   )
 
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=(
+      texlive-scheme-full
+   )
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y "${packages[@]}"
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   packages=(
+      "FIXME!"
+   )
+   apk add "${packages[@]}"
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   packages="
+   packages=(
       texlive-full
-   "
-
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
+   )
+   pkg install -y "${packages[@]}"
 
 # ------ Unknown ------------------------------------------------------------
 else

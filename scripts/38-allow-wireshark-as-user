@@ -48,17 +48,22 @@ set -x
 
 # ###### Main program #######################################################
 
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
 
 
 # ====== Allow Wireshark/T-Shark as regular user ============================

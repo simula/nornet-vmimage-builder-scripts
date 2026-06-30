@@ -46,15 +46,18 @@ fi
 set -x
 
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
-
-
 # ###### Main program #######################################################
+
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
 
 # ====== Enable source repositories =========================================
 
