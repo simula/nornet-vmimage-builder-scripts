@@ -135,6 +135,9 @@ elif [ "${ID}" == "alpine" ] ; then
    # Add user to "docker" group:
    addgroup "${USER_NAME}" docker
 
+   rc-update add docker default
+   rc-service docker start || true
+
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
