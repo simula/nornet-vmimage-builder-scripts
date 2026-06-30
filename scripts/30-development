@@ -331,9 +331,60 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 elif [ "${ID}" == "alpine" ] ; then
 
    packages=(
+      autoconf
+      automake
+      bc
+      bison
+      build-base
+      clang
+      cmake
+      exiftool
+      extra-cmake-modules
+      flex
+      font-dejavu
+      font-noto
+      font-opensans
+      font-urw-base35
+      g++
+      gcc
+      gdb
+      ghostscript
+      git-lfs
+      graphicsmagick
+      libtool
+      make
+      pdf2svg
+      pkgconf
+      python3
+      py3-netifaces
+      py3-pip
+      py3-setuptools
+      R
+      shellcheck
+      tidyhtml
+      yamllint
+   )
+
+   # Development files:
+   packages+=(
+      boost-dev
+      bzip2-dev
+      c-ares-dev
+      curl-dev
+      libmaxminddb-dev
+      mariadb-dev
+      mongo-c-driver-dev
+      openssl-dev
+      qt6-qtbase-dev
+      qt6-qttools-dev
+      xz-dev
+      zlib-dev
    )
 
    apk add "${packages[@]}"
+   # Install Valgrind, if available:
+   apk add valgrind || true
+
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
