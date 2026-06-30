@@ -112,13 +112,23 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ OpenSUSE -----------------------------------------------------------
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
-   true # FIXME! TBD
+   packages=( docker docker-buildx docker-compose )
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y "${packages[@]}"
+
+   # Add user to "docker" group:
+   usermod -a -G docker "${USER_NAME}"
 
 
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
-   true # FIXME! TBD
+   packages=( containerd docker docker-cli docker-cli-buildx docker-cli-compose )
+   apk add "${packages[@]}"
+
+   # Add user to "docker" group:
+   addgroup "${USER_NAME}" docker
 
 
 # ------ FreeBSD ------------------------------------------------------------
