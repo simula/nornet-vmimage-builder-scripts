@@ -93,19 +93,21 @@ set -x
 
 # ###### Main program #######################################################
 
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
 # ====== Check/set environment variables ====================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
-fi
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
-fi
-. /etc/os-release
-if [ ! -v VERSION_ID ] ; then
-   VERSION_ID=""
 fi
 
 
@@ -115,7 +117,7 @@ fi
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # Programs:
-   packages="
+   packages=(
       autoconf
       automake
       bc
@@ -151,10 +153,10 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       shellcheck
       tidy
       fonts-urw-base35
-   "
+   )
 
    # Development files:
-   packages="${packages}
+   packages+=(
       libboost-all-dev
       libbz2-dev
       libc-ares-dev
@@ -165,31 +167,29 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       libsctp-dev
       libssl-dev
       zlib1g-dev
-   "
+   )
 
    if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" -le 11 ]] ; then
      # Debian 11: Qt 5
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages+=( extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qtbase5-dev qtbase5-dev-tools qttools5-dev )
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
       # Ubuntu 12.04, 14.04:
-      packages="${packages} libtool libmariadbclient-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages+=( libtool libmariadbclient-dev qtbase5-dev qtbase5-dev-tools qttools5-dev )
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[67]\.[01][04]$ ]] ; then
       # Ubuntu 16.04:
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages+=( extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-client-lgpl-dev qtbase5-dev qtbase5-dev-tools qttools5-dev )
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[89]\.[01][04]$ ]] ; then
      # Ubuntu 18.04: Qt 5
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages+=( extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev )
    elif [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^2[01]\.[01][04]$ ]] ; then
      # Ubuntu 20.04: Qt 5
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev"
+      packages+=( extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin qtbase5-dev qtbase5-dev-tools qttools5-dev )
    else
       # Newer Ubuntu and Debian systems:
-      packages="${packages} extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qt6-base-dev qt6-l10n-tools"
+      packages+=( extra-cmake-modules libmongoc-dev python3-venv yamllint libtool-bin libmariadb-dev qt6-base-dev qt6-l10n-tools )
    fi
 
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends ${packages}
-
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends "${packages[@]}"
    # Install Valgrind, if available:
    env DEBIAN_FRONTEND=noninteractive apt-get install -y -m --no-install-recommends valgrind || true
 
@@ -197,7 +197,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # Programs:
-   packages="
+   packages=(
       autoconf
       automake
       bc
@@ -230,10 +230,10 @@ elif [ "${ID}" == "fedora" ] ; then
       tidy
       urw-base35-fonts
       yamllint
-   "
+   )
 
    # Development files:
-   packages="${packages}
+   packages+=(
       boost-devel
       bzip2-devel
       c-ares-devel
@@ -251,11 +251,9 @@ elif [ "${ID}" == "fedora" ] ; then
       rsplib-librsplib-devel
       xz-devel
       zlib-devel
-   "
+   )
 
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y ${packages}
-
+   dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
    # Install Valgrind, if available:
    dnf install --setopt=install_weak_deps=False -y valgrind || true
 
@@ -263,11 +261,81 @@ elif [ "${ID}" == "fedora" ] ; then
    usermod -a -G mock "${USER_NAME}"
 
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=(
+      autoconf
+      automake
+      bc
+      bison
+      clang
+      cmake
+      dejavu-fonts
+      extra-cmake-modules
+      flex
+      gcc
+      gcc-c++
+      gdb
+      ghostscript
+      git-lfs
+      google-opensans-fonts
+      noto-sans-fonts
+      GraphicsMagick
+      libtool
+      make
+      pdf2svg
+      pkgconfig
+      python3
+      python3-netifaces
+      python3-pip
+      python3-setuptools
+      R-base
+      rpm-build
+      ShellCheck
+      tidy
+      urw-base35-fonts
+      python3-yamllint
+   )
+
+   # Development files:
+   packages+=(
+      boost-devel
+      bson-devel
+      libbz2-devel
+      libc-ares-devel
+      libcurl-devel
+      libGeoIP-devel
+      libmariadb-devel
+      libopenssl-devel
+      libpqxx-devel
+      lksctp-tools-devel
+      mongo-c-driver-devel
+      qt6-base-devel
+      qt6-tools
+      rsplib-libcpprspserver-devel
+      rsplib-librsplib-devel
+      xz-devel
+      zlib-devel
+   )
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y "${packages[@]}"
+
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   packages=(
+   )
+
+   apk add "${packages[@]}"
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
    # Programs:
-   packages="
+   packages=(
       autoconf
       automake
       bison
@@ -293,19 +361,17 @@ elif [ "${ID}" == "freebsd" ] ; then
       R
       urw-base35-fonts
       tidy-html5
-   "
+   )
 
    # Development files:
-   packages="${packages}
+   packages+=(
       boost-all
       mongo-c-driver
       postgresql-libpqxx
       qt6-base
-   "
+   )
 
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
-
+   pkg install -y "${packages[@]}"
    # Install Valgrind, if available:
    pkg install -y valgrind || true
 
@@ -350,52 +416,65 @@ fi
 
 
 # ====== Verify command availability ========================================
-programs="autoconf automake bc bison clang clang++ cmake exiftool flex g++ gcc gdb git-lfs gm gs libtool make pkg-config shellcheck"
+
+# ------ Prepare list of required commands ----------------------------------
+programs=(
+   autoconf
+   automake
+   bc
+   bison
+   clang
+   clang++
+   cmake
+   exiftool
+   flex
+   g++
+   gcc
+   gdb
+   git-lfs
+   gm
+   gs
+   libtool
+   make
+   pkg-config
+   shellcheck
+)
+
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
 else
-   programs="${programs} yamllint"
+   programs+=( yamllint )
+fi
+if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
+   programs+=( pbuilder reprepro )
+elif [ "${ID}" == "fedora" ] ; then
+   programs+=( createrepo mock )
 fi
 if [[ "$(uname -m)" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
    # Valgrind is at least available for AMD64 and ARM64:
-   programs="${programs} valgrind"
+   programs+=( valgrind )
 fi
 
+# ------ Verify command availability ----------------------------------------
+set +x
 echo "Verifying command availability:"
 errors=0
-for command in ${programs} ; do
-   echo -n "${command}: "
-   if command -v "${command}" >/dev/null 2>&1 ; then
-      echo "OK"
-   else
-      echo "FAILED!"
+missing=()
+for command in "${programs[@]}" ; do
+   if ! command -v "${command}" >/dev/null 2>&1 ; then
       errors=$((errors+1))
+      missing+=( "${command}" )
    fi
 done
-if [ "$(uname)" == "Linux" ] ; then
-   if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
-      for command in reprepro pbuilder ; do
-         echo -n "${command}: "
-         if command -v "${command}" >/dev/null 2>&1 ; then
-            echo "OK"
-         else
-            echo "FAILED!"
-            errors=$((errors+1))
-         fi
-      done
-   elif [ "${ID}" == "fedora" ] ; then
-      for command in createrepo mock ; do
-         echo -n "${command}: "
-         if command -v "${command}" >/dev/null 2>&1 ; then
-            echo "OK"
-         else
-            echo "FAILED!"
-            errors=$((errors+1))
-         fi
-      done
-   fi
-fi
 if [ ${errors} -gt 0 ] ; then
-   echo >&2 "ERROR: ${errors} packages are missing!"
+   echo >&2 "ERROR: ${errors} commands are missing:"
+   (
+      for program in "${missing[@]}" ; do
+         echo >&2 " * ${program}"
+      done
+   ) | sort
    exit 1
+else
+   echo "OK"
 fi
+set -x

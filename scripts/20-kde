@@ -82,12 +82,15 @@ set -x
 
 # ###### Main program #######################################################
 
-# ====== Check/set environment variables ====================================
-if [ ! -e /etc/os-release ] ; then
-   echo >&2 "ERROR: /etc/os-release does not exist!"
-   exit 1
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
 fi
-. /etc/os-release
 
 
 # ====== Package installation ===============================================
@@ -95,7 +98,7 @@ fi
 # ------ Ubuntu/Debian ------------------------------------------------------
 if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
-   packages="
+   packages=(
       dia
       fonts-dejavu
       fonts-noto
@@ -116,14 +119,14 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       sddm
       sddm-theme-breeze
       wireshark
-   "
+   )
 
    # ------ Add Firefox package ---------------------------------------------
    if [ "${ID}" == "debian" ] ; then
       # Debian: firefox-esr instead of firefox!
-      packages="${packages} firefox-esr"
+      packages+=( firefox-esr )
    else
-      packages="${packages} firefox"
+      packages+=( firefox )
    fi
 
    # ------ Ubuntu: Get Firefox from PPA, not via Snap ----------------------
@@ -141,9 +144,8 @@ EOF
    fi
 
    # NOTE: Try IPv4-only, if there is a problem. This seems to be necessary for Ubuntu 18.04.
-   # shellcheck disable=SC2086
-   env DEBIAN_FRONTEND=noninteractive apt-get install -y ${packages} || \
-      env DEBIAN_FRONTEND=noninteractive apt-get install -o Acquire::ForceIPv4=true -y ${packages}
+   env DEBIAN_FRONTEND=noninteractive apt-get install -y "${packages[@]}" || \
+      env DEBIAN_FRONTEND=noninteractive apt-get install -o Acquire::ForceIPv4=true -y "${packages[@]}"
 
    # Oxygen style for Qt6 or Qt5:
    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends kde-style-oxygen-qt6 || \
@@ -162,7 +164,7 @@ EOF
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   packages="
+   packages=(
       dejavu-fonts-all
       dia
       firefox
@@ -185,10 +187,9 @@ elif [ "${ID}" == "fedora" ] ; then
       qt6-qtimageformats
       strawberry
       wireshark
-   "
+   )
 
-   # shellcheck disable=SC2086
-   dnf install --setopt=install_weak_deps=False -y --allowerasing ${packages}
+   dnf install --setopt=install_weak_deps=False -y --allowerasing "${packages[@]}"
    dnf remove -y elisa-player
 
    systemctl set-default graphical.target
@@ -197,7 +198,7 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
-   packages="
+   packages=(
       dejavu
       dia
       firefox-esr
@@ -223,10 +224,9 @@ elif [ "${ID}" == "freebsd" ] ; then
       wireshark
       xf86-video-vmware
       xorg
-   "
+   )
 
-   # shellcheck disable=SC2086
-   pkg install -y ${packages}
+   pkg install -y "${packages[@]}"
 
    sysrc dbus_enable="YES" ; service dbus start || true
    sysrc sddm_enable="YES" ; service sddm start || true
