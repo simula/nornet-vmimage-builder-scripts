@@ -321,6 +321,10 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    zypper --non-interactive install \
       --force-resolution --allow-vendor-change --allow-name-change \
       --no-recommends -y "${packages[@]}"
+   # Install Valgrind, if available:
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y valgrind || true
 
 
 # ------ Alpine -------------------------------------------------------------
