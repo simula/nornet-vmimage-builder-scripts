@@ -102,14 +102,22 @@ if ! command -v git || ! command -v joe ; then
       sudo /usr/pkg/bin/pkgin -y install mozilla-rootcerts-openssl git joe
    fi
 fi
-mkdir -p src
-cd src
+mkdir -p ~/src
+cd ~/src
 if [ -d vmimage-builder-scripts ] ; then
    cd vmimage-builder-scripts
    git pull
 else
    git clone https://dreibh@github.com/simula/nornet-vmimage-builder-scripts.git vmimage-builder-scripts
    cd vmimage-builder-scripts
+fi
+cd ~/src
+if [ -d system-tools ] ; then
+   cd system-tools
+   git pull
+else
+   git clone https://dreibh@github.com/dreibh/system-tools.git system-tools
+   cd system-tools
 fi
 "
 
