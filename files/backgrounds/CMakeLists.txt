@@ -120,7 +120,7 @@ ELSE()
            " * FreeBSD:       sudo pkg install -y p5-Image-ExifTool\n"
            " * NetBSD:        sudo pkgin -y install p5-Image-ExifTool\n"
            " * OpenBSD:       sudo pkg_add p5-Image-ExifTool\n"
-           " * Apple:         brew install gimp")
+           " * Apple:         brew install exiftool")
 ENDIF()
 
 # ====== GIMP ===============================================================
