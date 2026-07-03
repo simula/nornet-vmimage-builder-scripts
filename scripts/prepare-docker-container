@@ -131,4 +131,11 @@ case "${ID}" in
    fedora)
       dnf install --setopt=install_weak_deps=False -y systemd
       ;;
+   opensuse-*)
+      # openSUSE includes systemctl inside the main systemd package
+      zypper --non-interactive install --no-recommends -y systemd || true
+      ;;
+   alpine)
+      apk add openrc
+      ;;
 esac
