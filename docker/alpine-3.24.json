@@ -27,16 +27,16 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-// OpenSUSE Tumbleweed
+// Alpine 3.24
 
 {
-  "image":    "opensuse/tumbleweed:latest",
+  "image":    "alpine:3.24",
   "platform": "{{user `vm_platform`}}",
   "pull":     "true",
   "commit":   "true",
   "changes": [
      "ENV LC_ALL C.UTF-8",
      "ENV LANG C.UTF-8",
-     "CMD [ \"/bin/bash\", \"--login\" ]"
+     "CMD [ \"/bin/sh\", \"--login\" ]"
   ]
 }
