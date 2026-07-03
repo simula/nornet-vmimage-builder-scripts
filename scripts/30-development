@@ -271,6 +271,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       cmake
       dejavu-fonts
       extra-cmake-modules
+      exiftool
       flex
       gcc
       gcc-c++
