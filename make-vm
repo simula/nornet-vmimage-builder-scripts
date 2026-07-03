@@ -641,7 +641,7 @@ if [ "${HYPERVISOR}" == "Docker" ] ; then
    cat >>"${JSONTMP}" <<EOF
        {
          "type": "shell",
-         "execute_command": "{{.Vars}} bash '{{.Path}}'",
+         "execute_command": "{{.Vars}} sh '{{.Path}}'",
          "script": "$(realpath scripts/prepare-docker-container)",
          "environment_vars": [ "FQDN=${FQDN}",
                                "USER_NAME=${USER_NAME}",
