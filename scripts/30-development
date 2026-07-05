@@ -406,9 +406,9 @@ elif [ "${ID}" == "freebsd" ] ; then
       opensans-ttf
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
-      py311-distro
-      py311-netifaces
-      py311-yamllint
+      py312-distro
+      py312-netifaces
+      py312-yamllint
       python
       R
       urw-base35-fonts

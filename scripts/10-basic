@@ -451,7 +451,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       parallel
       plocate
       pwgen
-      py311-fail2ban
+      py312-fail2ban
       python3
       rsplib
       rsync
@@ -490,7 +490,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       ossp-uuid
       parallel
       pwgen
-      py311-fail2ban
+      py312-fail2ban
       python3
       rsplib
       rsync
@@ -530,7 +530,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       ossp-uuid
       parallel
       pwgen
-#       py311-fail2ban
+#       py312-fail2ban
       "python--%3"
 #       rsplib
       rsync--
