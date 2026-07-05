@@ -82,9 +82,9 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       # ------ Generate list of packages to be installed --------------------
       for locale in ${LOCALES} ; do
          language="${locale%%_*}"
-         packagesToAdd="$(check-language-support -l "${language}")"
-         if [ -n "${packagesToAdd}" ] ; then
-            packages+=( "${packagesToAdd}" )
+         read -r -a packagesToAdd < <(check-language-support -l "${language}")
+         if [ "${#packagesToAdd[@]}" -ne 0 ] ; then
+            packages+=( "${packagesToAdd[@]}" )
          fi
       done
 
