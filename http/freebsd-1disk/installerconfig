@@ -173,7 +173,7 @@ Latest: {
 EOF
 
 # Run freebsd-update:
-env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
+yes | env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
 
 # Initialise package database. pkg will ask whether to initialise,
 # ASSUME_ALWAYS_YES=YES is necessary to prevent this! "-y" does *not* work!

@@ -106,7 +106,7 @@ service ntpd fetch
 # ====== Basic packages =====================================================
 
 # ------ Run freebsd-update -------------------------------------------------
-env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
+yes | env PAGER=cat freebsd-update -v debug --not-running-from-cron fetch install || true
 
 # ------ Configure package repositories -------------------------------------
 mkdir -p /usr/local/etc/pkg/repos
