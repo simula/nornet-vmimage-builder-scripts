@@ -92,7 +92,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 sysrc zfs_enable="YES"
 
 sysrc moused_enable="YES"
-sysrc allscreens_flags="YES"
+sysrc allscreens_flags="-m on"
 
 sysrc dumpdev="AUTO"
 sysrc sshd_enable="YES"
