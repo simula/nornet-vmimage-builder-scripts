@@ -189,17 +189,18 @@ sed -e 's/^rc_configured=NO/rc_configured="YES"/' \
    $r/etc/rc.conf >/tmp/rc.conf.updated
 mv /tmp/rc.conf.updated $r/etc/rc.conf
 
+# Ensure that current DNS configuration and TLS certificates are available:
+cp /etc/resolv.conf "$r/etc/resolv.conf"
+cp -R /etc/openssl/certs "$r/etc/openssl/"
+cp /etc/openssl/certs.conf "$r/etc/openssl/"
+
 # ------ Initialise package database ----------------------------------------
-
-# kill dhcpcd and relaunch it in chroot
-kill -TERM "$(cat /var/run/dhcpcd/"$interface".pid)" || true
-chroot $r dhcpcd "$interface"
-
+arch="$(uname -m)"
 release="$(uname -r | sed -e 's/_.*//')"
 
-chroot $r pkg_add http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/amd64/"$release"/All/pkgin
+chroot $r pkg_add "http://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/$arch/$release/All/pkgin"
 # shellcheck disable=SC2016
-sed -e 's,^[^#].*$,http://ftp.NetBSD.org/pub/pkgsrc/packages/NetBSD/$arch/'"$release"'/All,' \
+sed -e 's,^[^#].*$,http://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/$arch/'"$release"'/All,' \
    $r/usr/pkg/etc/pkgin/repositories.conf >/tmp/repositories.conf
 mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
