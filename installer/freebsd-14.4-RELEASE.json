@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.4/FreeBSD-14.4-RELEASE-amd64-disc1.iso",
-  "iso_checksum": "sha512:0f7ffc75be1b9393b255ea7ee08dd071029d8d76626c16bf730441b683c4d58b44b3b407bff9d3a6daf1dc6ac636ae0c74c65f8e0d96f5bd6ea36f269d0420d0",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.4/FreeBSD-14.4-RELEASE-amd64-bootonly.iso",
+  "iso_checksum": "sha512:331b01eb44f96deb5882d28f2711f3cb455b8a51536df6f5209bae4c4d298fc53136427b5c4d802c84b129fcc43706eb4b11a318bd2aa4cc2ea8146c0e4d6f4a",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
