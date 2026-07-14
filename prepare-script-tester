@@ -58,7 +58,15 @@ fi
 ssh-copy-id -i ~/.ssh/id_rsa -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
-set -euo pipefail
+set -euox
+UNAME=\"\$(uname)\"
+NAME=\"\${UNAME}\"
+ID=\$(echo \"\${UNAME}\" | tr '[:upper:]' '[:lower:]')
+VERSION=\"\$(uname -r)\"
+VERSION_ID=\"\${VERSION%%_*}\"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
 if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*name[[:space:]]*=[[:space:]]*NorNet Praesum Presum' .gitconfig ; then
    echo \"Updating .gitconfig:\"
    (
@@ -88,19 +96,29 @@ else
    exit 1
 fi
 if ! command -v git || ! command -v joe ; then
-   if [ -x /usr/bin/apt ] ; then
-      sudo /usr/bin/apt install -y ca-certificates git joe
-   elif [ -x /usr/bin/dnf ] ; then
-      sudo /usr/bin/dnf install -y git joe
-   elif [ -x /usr/bin/zypper ] ; then
-      sudo /usr/bin/zypper install -y git joe
-   elif [ -x /sbin/apk ] ; then
-      sudo /sbin/apk add git joe
-   elif [ -x /usr/bin/pkg ] ; then
-      sudo /usr/bin/pkg install -y git joe
-   elif [ -x /usr/pkg/bin/pkgin ] ; then
-      sudo /usr/pkg/bin/pkgin -y install mozilla-rootcerts-openssl git joe
-   fi
+   case \"\${NAME}\" in
+      ubuntu|debian)
+         sudo /usr/bin/apt install -y ca-certificates git joe
+         ;;
+      fedora)
+         sudo /usr/bin/dnf install -y git joe
+         ;;
+      opensuse-*)
+         sudo /usr/bin/zypper install -y git joe
+         ;;
+      alpine)
+         sudo /sbin/apk add git joe
+         ;;
+      netbsd)
+         sudo /usr/bin/pkg install -y git joe
+         ;;
+      openbsd)
+         sudo /usr/pkg/bin/pkgin -y install mozilla-rootcerts-openssl git joe
+         ;;
+      SunOS)
+         sudo /usr/bin/pkg install git joe
+         ;;
+   esac
 fi
 mkdir -p ~/src
 cd ~/src
