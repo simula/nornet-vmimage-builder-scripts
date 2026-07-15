@@ -232,6 +232,7 @@ elif [ "${ID}" == "fedora" ] ; then
       cloud-utils-growpart
       cmake
       curl
+      diff
       ethtool
       fail2ban
       gdisk
