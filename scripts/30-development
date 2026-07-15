@@ -145,7 +145,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       pbuilder
       pkg-config
       python3-distro
-      python3-netifaces
+      python3-psutil
       python3-pip
       r-base
       reprepro
@@ -219,7 +219,7 @@ elif [ "${ID}" == "fedora" ] ; then
       perl-Image-ExifTool
       pkg-config
       python3
-      python3-netifaces
+      python3-psutil
       python3-pip
       python3-setuptools
       R-base
@@ -285,7 +285,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       make
       pkgconfig
       python3
-      python3-netifaces
+      python3-psutil
       python3-pip
       python3-setuptools
       R-base
@@ -354,7 +354,7 @@ elif [ "${ID}" == "alpine" ] ; then
       make
       pkgconf
       python3
-      py3-netifaces
+      py3-psutil
       py3-pip
       py3-setuptools
       R
@@ -407,7 +407,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
       py312-distro
-      py312-netifaces
+      py312-psutil
       py312-yamllint
       python
       R
