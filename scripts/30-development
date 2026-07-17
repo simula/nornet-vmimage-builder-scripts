@@ -514,6 +514,48 @@ elif [ "${ID}" == "netbsd" ] ; then
    fi
 
 
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   # Programs:
+   packages=(
+      "$(pkg_info -Q autoconf | grep -E '^autoconf-[0-9]' | cut -d" " -f1 | sort -V | tail -n 1)"
+      "$(pkg_info -Q automake | grep -E '^automake-[0-9]' | cut -d" " -f1 | sort -V | tail -n 1)"
+      bison
+      cmake
+      # dejavu       -> Shipped natively in the OpenBSD X11 base sets.
+      # flex         -> Included in base as /usr/bin/lex; no package needed.
+      gcc
+      gdb
+      ghostscript--
+      git-lfs
+      graphicsmagick
+      shellcheck
+      # libtool      -> Custom optimized version already included in OpenBSD base.
+      noto-fonts
+      roboto-fonts
+      p5-Image-ExifTool
+      pkgconf
+      py3-distro
+      py3-netifaces
+      py3-psutil
+      py3-yamllint
+      "$(pkg_info -Q python | grep -E '^python-[0-9]' | cut -d" " -f1 | sort -V | tail -n 1)"
+      R
+      tidyp
+   )
+
+   # Development files:
+   packages+=(
+      boost
+      # mongo-c-driver -> Not available in official ports (must build from source).
+      libpqxx
+      qt6
+   )
+
+   pkg_add "${packages[@]}"
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 
