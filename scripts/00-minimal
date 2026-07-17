@@ -338,6 +338,20 @@ elif [ "${ID}" == "openbsd" ] ; then
    )
    pkg_add -r -I "${packages[@]}"
 
+   # ------ Prepare OpenBSD Ports Collection --------------------------------
+   mkdir -p /usr/ports
+   chgrp wsrc /usr/ports
+   chmod 775 /usr/ports
+   cd /usr/ports
+   if [ ! -e .git/config ] ; then
+      git init -b master
+      git remote add origin https://github.com/openbsd/ports.git
+      git config pull.rebase true
+      # Not running this here:
+      # git fetch master
+      # git checkout master
+   fi
+
 # ------ Solaris ------------------------------------------------------------
 elif [ "${ID}" == "sunos" ] ; then
 

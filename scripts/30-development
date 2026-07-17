@@ -502,7 +502,7 @@ elif [ "${ID}" == "netbsd" ] ; then
 
    pkgin -y install "${packages[@]}"
 
-   # Fetch and check out the FreeBSD Ports Collection:
+   # Fetch and check out the NetBSD Ports Collection:
    if [ -d /usr/pkgsrc/.git ] ; then
       cd /usr/pkgsrc
       git fetch --all
@@ -523,21 +523,18 @@ elif [ "${ID}" == "openbsd" ] ; then
       "$(pkg_info -Q automake | grep -E '^automake-[0-9]' | cut -d" " -f1 | sort -V | tail -n 1)"
       bison
       cmake
-      # dejavu       -> Shipped natively in the OpenBSD X11 base sets.
-      # flex         -> Included in base as /usr/bin/lex; no package needed.
+      g++
       gcc
       gdb
       ghostscript--
       git-lfs
       graphicsmagick
+      libtool
       shellcheck
-      # libtool      -> Custom optimized version already included in OpenBSD base.
       noto-fonts
       roboto-fonts
       p5-Image-ExifTool
-      pkgconf
       py3-distro
-      py3-netifaces
       py3-psutil
       py3-yamllint
       "$(pkg_info -Q python | grep -E '^python-[0-9]' | cut -d" " -f1 | sort -V | tail -n 1)"
@@ -554,6 +551,17 @@ elif [ "${ID}" == "openbsd" ] ; then
    )
 
    pkg_add "${packages[@]}"
+
+   # Fetch and check out the OpenBSD Ports Collection:
+   if [ -d /usr/ports/.git ] ; then
+      cd /usr/ports
+      git fetch --all
+      git checkout master
+      git pull
+   else
+      echo >&2 "ERROR: /usr/ports is not initialised as a Git repository!"
+      exit 1
+   fi
 
 
 # ------ Unknown ------------------------------------------------------------
@@ -578,8 +586,6 @@ programs=(
    cmake
    exiftool
    flex
-   g++
-   gcc
    gdb
    git-lfs
    gm
@@ -589,6 +595,12 @@ programs=(
    pkg-config
    shellcheck
 )
+
+if [ "${ID}" == "openbsd" ] ; then
+   programs+=( eg++ egcc )
+else
+   programs+=( g++ gcc )
+fi
 
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
