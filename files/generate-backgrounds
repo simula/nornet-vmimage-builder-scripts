@@ -42,9 +42,20 @@ flock backgrounds.lock bash -c '
    if [ ! -e Makefile ] ; then
       cmake .
    fi
-   cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)
-   if [ "${cores}" == "" ] ; then
-      cores=$(sysctl -a | grep "hw.ncpu" | cut -d ":" -f2 | tr -d " " || true)
+
+   uname="$(uname)"
+   if [ "${uname}" == "Linux" ] ; then
+      cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+   elif [ "${uname}" == "FreeBSD" ] ; then
+      cores="$(sysctl -n hw.ncpu || echo "1")"
+   elif [ "${uname}" == "NetBSD" ] || [ "${uname}" == "OpenBSD" ] ; then
+      cores="$(sysctl -n hw.ncpuonline || echo "1")"
+   elif [ "${uname}" == "SunOS" ] ; then
+      cores="$(psrinfo -t)"
+   elif [ "${uname}" == "Darwin" ] ; then
+      cores="$(sysctl -n machdep.cpu.core_count)"
+   else
+      cores=1
    fi
    echo "This system has ${cores} cores!"
    make -j${cores}
