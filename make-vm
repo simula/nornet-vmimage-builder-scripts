@@ -775,7 +775,14 @@ vm_producturl="https://github.com/simula/nornet-vmimage-builder-scripts"
 vm_vendor="Simula Metropolitan Centre for Digital Engineering"
 vm_vendorurl="https://www.simula.no/people/dreibh"
 vm_description="This is a ${PROJECT} VM with ${DISTRIBUTION} ${RELEASE} for ${HYPERVISOR}."
-vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE}"
+if [ "${HYPERVISOR}" != "Proxmox" ] ; then
+   vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${RELEASE}"
+else
+   # FIXME! Work-around for Packer tagging issue:
+   # https://github.com/hashicorp/packer-plugin-proxmox/issues/328
+   release="${RELEASE/.*/}"
+   vm_tags="${PROJECT//[+-]/;};${DISTRIBUTION};${DISTRIBUTION}-${release}"
+fi
 
 # ------ Tag LTS versions ---------------------------------------------------
 if [ "${DISTRIBUTION}" == "Ubuntu" ] && [[ "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
