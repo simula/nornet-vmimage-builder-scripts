@@ -168,6 +168,22 @@ elif [ "${ID}" == "netbsd" ] ; then
    sudo pkgin -y install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
 elif [ "${ID}" == "openbsd" ] ; then
    sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
+   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+      FONT_DIR="/usr/pkg/share/fonts"
+      TEMP_DIR="$(mktemp -d /tmp/opensans-install.XXXXXX)"
+      trap 'rm -rf "${TEMP_DIR}"' EXIT INT TERM HUP
+      cd "$TEMP_DIR"
+      curl -L -o opensans.zip "https://github.com/googlefonts/opensans/archive/refs/heads/main.zip"
+      unzip -q opensans.zip
+      sudo mkdir -p "$FONT_DIR"
+      sudo cp opensans-main/fonts/ttf/*.ttf "$FONT_DIR"
+      fc-cache -f "$FONT_DIR"
+      rm -rf "${TEMP_DIR}"
+   fi
+fi
+if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+   echo >&2 "ERROR: Open Sans fonts are not available!"
+   exit 1
 fi
 ./generate-backgrounds
 
