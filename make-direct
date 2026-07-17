@@ -190,7 +190,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       install-opensans-fonts "/usr/pkg/share/fonts/X11/TTF"
    fi
 elif [ "${ID}" == "openbsd" ] ; then
-   sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
+   sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git gnugetopt GraphicsMagick p5-Image-ExifTool unzip--
    if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
       install-opensans-fonts "/usr/local/share/fonts"
    fi
