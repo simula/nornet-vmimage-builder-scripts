@@ -471,7 +471,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       cmake
       dejavu-ttf
       flex
-      gcc12
+      gcc15
       gdb
       ghostscript-agpl
       git-lfs
@@ -560,9 +560,14 @@ elif [ "${ID}" == "fedora" ] ; then
 elif [ "${ID}" == "alpine" ] ; then
    programs+=( abuild )
 fi
-if [[ "$(uname -m)" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
-   # Valgrind is at least available for AMD64 and ARM64:
-   programs+=( valgrind )
+
+if [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] ; then
+   true   # No Valgrind in NetBSD and OpenBSD, yet.
+else
+   if [[ "$(uname -m)" =~ ^(amd64|x86_64|arm64|aarch64)$ ]] ; then
+      # Valgrind is at least available for AMD64 and ARM64:
+      programs+=( valgrind )
+   fi
 fi
 
 # ------ Verify command availability ----------------------------------------
