@@ -522,6 +522,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       gmake
 #       hipercontracer
       htop
+      isc-bind--
       joe
       jq
       libidn
@@ -619,12 +620,14 @@ if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; the
 else
    programs+=( delv )
 fi
+
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
    [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No HiPerConTracer in old Ubuntu and Debian versions
 else
    programs+=( hipercontracer )
 fi
+
 if [ "$(uname)" == "Linux" ] ; then
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[234567]\.[01][04]$ ]] ; then
       true   # No netplan in old Ubuntu versions
@@ -635,10 +638,19 @@ if [ "$(uname)" == "Linux" ] ; then
    fi
    programs+=( brctl ethtool growpart ip iptables tc )
 fi
+
 if [ "${ID}" == "debian" ] && [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No rsplib in old Debian versions
+elif [ "${ID}" == "openbsd" ] ; then
+   true   # No rsplib in OpenBSD
 else
    programs+=( rspserver rspterminal )
+fi
+
+if [ "${ID}" == "openbsd" ] ; then
+   true   # No SCTP support in OpenBSD
+else
+   programs+=( tsctp )
 fi
 
 
