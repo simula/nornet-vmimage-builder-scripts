@@ -23,7 +23,13 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-flock backgrounds.lock bash -c '
+if [ "$(uname)" != "SunOS" ] ; then
+   flockCommand=( flock backgrounds.lock )
+else
+   flockCommand=()
+fi
+
+"${flockCommand[@]}" bash -c '
    set -eu
    echo "Generating backgrounds ..."
    cd backgrounds
@@ -58,6 +64,6 @@ flock backgrounds.lock bash -c '
       cores=1
    fi
    echo "This system has ${cores} cores!"
-   make -j${cores}
+   make -j ${cores}
    echo "Done!"
 '
