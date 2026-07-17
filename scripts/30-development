@@ -463,9 +463,43 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
+   # Programs:
    packages=(
+      autoconf
+      automake
+      bison
+      cmake
+      dejavu-ttf
+      flex
+      gcc12
       gdb
+      ghostscript-agpl
+      git-lfs
+      GraphicsMagick
+      shellcheck
+      libtool-base
+      noto-fonts
+      p5-Image-ExifTool
+      p5-PkgConfig
+      py312-distro
+      py312-netifaces
+      py312-psutil
+      py312-yamllint
+      python312
+      R
+      urw-fonts
+      tidy
    )
+
+   # Development files:
+   packages+=(
+      boost-headers
+      boost-libs
+      mongo-c-driver
+      libpqxx
+      qt6
+   )
+
    pkgin -y install "${packages[@]}"
 
    # Fetch and check out the FreeBSD Ports Collection:
