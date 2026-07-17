@@ -326,6 +326,20 @@ elif [ "${ID}" == "openbsd" ] ; then
    )
    pkg_add -r -I "${packages[@]}"
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   packages=(
+      bash
+      bash-completion
+      curl
+      git
+      gnupg
+      sudo
+      # virt-what
+   )
+   pkg install "${packages[@]}"
+
 # ------ Unknown ------------------------------------------------------------
 else
 
@@ -345,8 +359,14 @@ programs=(
    gpg
    ping
    sudo
-   virt-what
 )
+
+if [ "${ID}" == "sunos" ] ; then
+   true   # No virt-what for Solaris
+else
+   programs+=( virt-what )
+fi
+
 
 # ------ Verify command availability ----------------------------------------
 set +x
