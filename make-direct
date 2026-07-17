@@ -32,6 +32,26 @@
 set -euo pipefail
 
 
+# ###### Install OpenSans fonts #############################################
+install-opensans-fonts ()
+{
+   local fontsDirectory="$1"
+   local temporaryDirectory
+
+   temporaryDirectory="$(mktemp -d /tmp/opensans-install.XXXXXX)"
+   trap 'rm -rf "${temporaryDirectory}"' EXIT INT TERM HUP
+   pushd "${temporaryDirectory}" >/dev/null
+   curl -L -o opensans.zip "https://github.com/googlefonts/opensans/archive/refs/heads/main.zip"
+   unzip -q opensans.zip
+   sudo mkdir -p "$fontsDirectory"
+   sudo cp opensans-main/fonts/ttf/*.ttf "$fontsDirectory"
+   sudo fc-cache -f "$fontsDirectory"
+   popd >/dev/null
+
+   rm -rf "${temporaryDirectory}"
+}
+
+
 # ###### Main program #######################################################
 
 # ====== Check/set environment variables ====================================
@@ -165,20 +185,14 @@ elif [ "${ID}" == "freebsd" ] ; then
       cmake flock getopt gimp3-app git GraphicsMagick opensans-ttf p5-Image-ExifTool
    sudo fc-cache -f
 elif [ "${ID}" == "netbsd" ] ; then
-   sudo pkgin -y install cmake getopt gimp git GraphicsMagick tex-opensans p5-Image-ExifTool
+   sudo pkgin -y install cmake getopt gimp git GraphicsMagick p5-Image-ExifTool
+   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+      install-opensans-fonts "/usr/pkg/share/fonts/X11/TTF"
+   fi
 elif [ "${ID}" == "openbsd" ] ; then
    sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git GraphicsMagick tex-opensans p5-Image-ExifTool
    if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
-      FONT_DIR="/usr/pkg/share/fonts"
-      TEMP_DIR="$(mktemp -d /tmp/opensans-install.XXXXXX)"
-      trap 'rm -rf "${TEMP_DIR}"' EXIT INT TERM HUP
-      cd "$TEMP_DIR"
-      curl -L -o opensans.zip "https://github.com/googlefonts/opensans/archive/refs/heads/main.zip"
-      unzip -q opensans.zip
-      sudo mkdir -p "$FONT_DIR"
-      sudo cp opensans-main/fonts/ttf/*.ttf "$FONT_DIR"
-      fc-cache -f "$FONT_DIR"
-      rm -rf "${TEMP_DIR}"
+      install-opensans-fonts "/usr/local/share/fonts"
    fi
 fi
 if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
