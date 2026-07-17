@@ -126,7 +126,8 @@ elif [ "${ID}" == "alpine" ] ; then
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
 elif [ "${UNAME}" == "FreeBSD" ] ||
      [ "${UNAME}" == "NetBSD"  ] ||
-     [ "${UNAME}" == "OpenBSD" ] ; then
+     [ "${UNAME}" == "OpenBSD" ] ||
+     [ "${UNAME}" == "SunOS" ] ; then
 
    # All locales should already be there!
    true

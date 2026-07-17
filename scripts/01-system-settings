@@ -202,6 +202,12 @@ fi
 
 
 # ====== Hardened SSH server configuration ==================================
+if [ "${ID}" == "alpine" ] || [ "${ID}" == "openbsd" ] || [ "${ID}" == "sunos" ] ; then
+   usePAM="# "   # Disable "UsePAM" line.
+else
+   usePAM=""     # Enable "UsePAM" line.
+fi
+
 cat >/etc/ssh/sshd_config <<EOF
 Protocol 2
 
@@ -214,7 +220,7 @@ Ciphers                      aes256-gcm@openssh.com,chacha20-poly1305@openssh.co
 MACs                         hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
 KexAlgorithms                curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 
-UsePAM                       yes
+${usePAM}UsePAM                       yes
 X11Forwarding                yes
 TCPKeepAlive                 yes
 ClientAliveInterval          60
