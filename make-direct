@@ -39,7 +39,6 @@ install-opensans-fonts ()
    local temporaryDirectory
 
    temporaryDirectory="$(mktemp -d /tmp/opensans-install.XXXXXX)"
-   trap 'rm -rf "${temporaryDirectory}"' EXIT INT TERM HUP
    pushd "${temporaryDirectory}" >/dev/null
    curl -L -o opensans.zip "https://github.com/googlefonts/opensans/archive/refs/heads/main.zip"
    unzip -q opensans.zip
@@ -193,6 +192,11 @@ elif [ "${ID}" == "openbsd" ] ; then
    sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git gnugetopt GraphicsMagick p5-Image-ExifTool unzip--
    if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
       install-opensans-fonts "/usr/local/share/fonts"
+   fi
+elif [ "${ID}" == "sunos" ] ; then
+   sudo pkg install pkg://openindiana.org/developer/build/cmake gimp git graphicsmagick image-exiftool || true
+   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+      install-opensans-fonts "/usr/share/fonts/TrueType"
    fi
 fi
 if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
