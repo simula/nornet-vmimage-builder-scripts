@@ -460,6 +460,26 @@ elif [ "${ID}" == "freebsd" ] ; then
    fi
 
 
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   packages=(
+      gdb
+   )
+   pkgin -y install "${packages[@]}"
+
+   # Fetch and check out the FreeBSD Ports Collection:
+   if [ -d /usr/pkgsrc/.git ] ; then
+      cd /usr/pkgsrc
+      git fetch --all
+      git checkout trunk
+      git pull
+   else
+      echo >&2 "ERROR: /usr/pkgsrc is not initialised as a Git repository!"
+      exit 1
+   fi
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 

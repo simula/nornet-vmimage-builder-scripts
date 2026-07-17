@@ -312,6 +312,18 @@ elif [ "${ID}" == "netbsd" ] ; then
    )
    pkgin -y install "${packages[@]}"
 
+   # ------ Prepare NetBSD Ports Collection ---------------------------------
+   mkdir -p /usr/pkgsrc
+   cd /usr/pkgsrc
+   if [ ! -e .git/config ] ; then
+      git init -b trunk
+      git remote add origin https://github.com/NetBSD/pkgsrc.git
+      git config pull.rebase true
+      # Not running this here:
+      # git fetch trunk
+      # git checkout trunk
+   fi
+
 # ------ OpenBSD ------------------------------------------------------------
 elif [ "${ID}" == "openbsd" ] ; then
 
