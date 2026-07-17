@@ -149,8 +149,12 @@ fi
 
 # ====== Run fstrim =========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   if command -v fstrim 2>/dev/null ; then
-      fstrim -av || true
+   if [ "${ID}" == "fedora" ] ; then
+      true   # FIXME! Temporary work-around for Fedora installation issue!
+   else
+      if command -v fstrim 2>/dev/null ; then
+         fstrim -av || true
+      fi
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    sudo zpool trim zroot
