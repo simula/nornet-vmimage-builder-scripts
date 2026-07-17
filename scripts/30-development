@@ -481,11 +481,10 @@ elif [ "${ID}" == "netbsd" ] ; then
       noto-fonts
       p5-Image-ExifTool
       p5-PkgConfig
-      py312-distro
-      py312-netifaces
-      py312-psutil
-      py312-yamllint
-      python312
+      py314-distro
+      py314-psutil
+      py314-yamllint
+      python314
       R
       urw-fonts
       tidy
@@ -604,6 +603,8 @@ fi
 
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; then
    true
+elif [ "${ID}" == "netbsd" ] ; then
+   programs+=( yamllint-3.14 )
 else
    programs+=( yamllint )
 fi
