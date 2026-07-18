@@ -44,12 +44,13 @@
   // ====== Boot into installer =============================================
   "vboxmanage": [
     // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"  ],
-    [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"   ],
+    // [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"   ],
+    [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet" ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "NetBSD_64" ]
   ],
   "boot_wait": "45s",
   "boot_command": [
-    "<enter><enter>e<enter><enter>dhcpcd wm0<enter>sleep 2<enter>",
+    "<enter><enter>e<enter><enter>dhcpcd<enter>sleep 2<enter>",
     "cd /tmp && ",
     "ftp -o installer http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
     "chmod +x installer && ",
