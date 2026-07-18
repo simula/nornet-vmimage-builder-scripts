@@ -112,6 +112,8 @@ case "${ID}" in
    fedora|opensuse-*)
       # Fedora/OpenSUSE: group is "wheel"
       usermod -aG wheel "${USER_NAME}"
+      echo "${USER_NAME} ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/99-${USER_NAME}"
+      chmod 0600 "/etc/sudoers.d/99-${USER_NAME}"
       ;;
    alpine)
       echo 'permit nopass :wheel' >/etc/doas.d/wheel.conf
@@ -119,6 +121,7 @@ case "${ID}" in
       usermod -a -G sudo "${USER_NAME}"
       sed -e 's/^# %sudo /%sudo /' -i /etc/sudoers
       usermod -aG wheel "${USER_NAME}"
+      sed -e 's/^# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' -i /etc/sudoers
       ;;
 esac
 
