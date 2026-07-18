@@ -128,6 +128,18 @@
           #!/usr/bin/bash
           systemctl enable sshd.service
         |||
+      },
+      {
+        "name": "install-qemu-guest-agent",
+        "chroot": true,
+        "content": |||
+          #!/usr/bin/bash
+          if [ "$(virt-what)" = "kvm" ] ; then
+             zypper --non-interactive install --no-recommends -y qemu-guest-agent
+             systemctl enable qemu-guest-agent.service
+             systemctl start qemu-guest-agent.service || true
+          fi
+        |||
       }
     ]
   }

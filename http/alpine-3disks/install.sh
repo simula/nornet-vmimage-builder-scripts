@@ -93,6 +93,14 @@ set -euxo pipefail
 # NOTE: "shadow" provides usermod
 apk add bash btrfs-progs doas shadow sudo virt-what
 
+# ------ QEMU Guest Agent ---------------------------------------------------
+# QEMU installs already need qemu-guest-agent before first boot:
+if [ "\$(virt-what)" = "kvm" ] ; then
+   apk add qemu-guest-agent
+   rc-update add qemu-guest-agent default
+   rc-service qemu-guest-agent start || true
+fi
+
 # ------ Create user --------------------------------------------------------
 adduser -D -g '<SET_REALNAME_HERE>' -s /bin/bash -G wheel '<SET_USERNAME_HERE>'
 echo '<SET_USERNAME_HERE>':'<SET_PASSWORD_HERE>' | chpasswd

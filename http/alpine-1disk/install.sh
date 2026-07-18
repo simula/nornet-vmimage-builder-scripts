@@ -85,6 +85,21 @@ efibootmgr \
   -L Alpine \
   -l '\EFI\alpine\grubx64.efi'
 
+# ====== Basic configuration ================================================
+
+# ------ Configure EFI boot manager -----------------------------------------
+apk add efibootmgr
+efibootmgr -v
+efibootmgr \
+   | sed -nE 's,^Boot([0-9A-F]{4}).*,\1,gp' \
+   | xargs -I% efibootmgr --quiet --delete-bootnum --bootnum %
+efibootmgr \
+  -c \
+  -d "/dev/${DISK_ROOT}" \
+  -p 1 \
+  -L Alpine \
+  -l '\EFI\alpine\grubx64.efi'
+
 # ====== User ===============================================================
 chroot /mnt ash <<EOF
 set -euxo pipefail
@@ -92,6 +107,14 @@ set -euxo pipefail
 # ------ Install required packages ------------------------------------------
 # NOTE: "shadow" provides usermod
 apk add bash btrfs-progs doas shadow sudo virt-what
+
+# ------ QEMU Guest Agent ---------------------------------------------------
+# QEMU installs already need qemu-guest-agent before first boot:
+if [ "\$(virt-what)" = "kvm" ] ; then
+   apk add qemu-guest-agent
+   rc-update add qemu-guest-agent default
+   rc-service qemu-guest-agent start || true
+fi
 
 # ------ Create user --------------------------------------------------------
 adduser -D -g '<SET_REALNAME_HERE>' -s /bin/bash -G wheel '<SET_USERNAME_HERE>'
