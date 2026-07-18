@@ -178,7 +178,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    sudo zypper --non-interactive install \
       --force-resolution --allow-vendor-change --allow-name-change \
       --no-recommends -y \
-      awk cmake exiftool gcc git GraphicsMagick gimp texlive-opensans-fonts
+      awk cmake exiftool gcc git GraphicsMagick gimp google-opensans-fonts
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk add cmake exiftool font-opensans gawk gcc git gimp graphicsmagick make musl-dev
 elif [ "${ID}" == "freebsd" ] ; then
