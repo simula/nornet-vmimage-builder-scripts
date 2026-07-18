@@ -58,7 +58,7 @@ fi
 ssh-copy-id -i ~/.ssh/id_rsa -oStrictHostKeyChecking=no "${USER}@${SERVER}"
 # shellcheck disable=SC2029
 ssh -t "${USER}@${SERVER}" "
-set -euo
+set -eux
 UNAME=\"\$(uname)\"
 NAME=\"\${UNAME}\"
 ID=\$(echo \"\${UNAME}\" | tr '[:upper:]' '[:lower:]')
@@ -96,7 +96,7 @@ else
    exit 1
 fi
 if ! command -v git || ! command -v joe ; then
-   case \"\${NAME}\" in
+   case \"\${ID}\" in
       ubuntu|debian)
          sudo apt install -y ca-certificates git joe
          ;;
@@ -118,7 +118,7 @@ if ! command -v git || ! command -v joe ; then
       openbsd)
          sudo pkg_add git joe
          ;;
-      SunOS)
+      sunos)
          sudo pkg install git joe
          ;;
    esac
