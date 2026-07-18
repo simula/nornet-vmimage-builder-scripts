@@ -76,17 +76,17 @@ USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${US
 if [ ! -e "${BACKGROUND_SDDM}" ] ; then
    dir="$(dirname "${BACKGROUND_SDDM}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_LOCKSCREEN}" ] ; then
    dir="$(dirname "${BACKGROUND_LOCKSCREEN}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_DESKTOP}" ] ; then
    dir="$(dirname "${BACKGROUND_DESKTOP}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
 fi
 
 

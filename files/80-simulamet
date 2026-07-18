@@ -3,4 +3,4 @@
 # These directories should have been created by scripts/01-system-settings.
 # ---------------------------------------------------------------------------
 
-80-simulamet.files/02-simulamet    /tmp/system-info/
+80-simulamet.files/02-simulamet    /tmp/installtmp/system-info/

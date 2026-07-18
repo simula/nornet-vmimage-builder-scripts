@@ -61,7 +61,7 @@ fi
 
 # This directory is created by the configurations in ../files/$0
 # Make sure that the corresponding configuration exists there!
-INPUT_DIRECTORY="/tmp/system-info"
+INPUT_DIRECTORY="/tmp/installtmp/system-info"
 
 if [ -d "${INPUT_DIRECTORY}" ] ; then
    mkdir -p "${systemInfoDirectory}"

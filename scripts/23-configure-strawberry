@@ -78,9 +78,9 @@ EOF
    fi
 
    # ------ Copy playlist ---------------------------------------------------
-   if [ -e /tmp/data-files/Radios.m3u ] ; then
+   if [ -e /tmp/installtmp/data-files/Radios.m3u ] ; then
       mkdir -p "${targetDirectory}/Music"
-      cp /tmp/data-files/Radios.m3u "${targetDirectory}/Music/"
+      cp /tmp/installtmp/data-files/Radios.m3u "${targetDirectory}/Music/"
    fi
 
    # ------ Link playlist to desktop ----------------------------------------

@@ -70,14 +70,14 @@ fi
 
 
 # ====== Initial .bashrc ====================================================
-if [ -e /tmp/configuration-files/bashrc ] ; then
-   cp /tmp/configuration-files/bashrc "${USER_HOME}/.bashrc"
+if [ -e /tmp/installtmp/configuration-files/bashrc ] ; then
+   cp /tmp/installtmp/configuration-files/bashrc "${USER_HOME}/.bashrc"
    if [ "${ID}" == "freebsd" ]  ; then
       mkdir -p /usr/share/skel
-      cp /tmp/configuration-files/bashrc /usr/share/skel/.bashrc
+      cp /tmp/installtmp/configuration-files/bashrc /usr/share/skel/.bashrc
    else
       mkdir -p /etc/skel
-      cp /tmp/configuration-files/bashrc /etc/skel/.bashrc
+      cp /tmp/installtmp/configuration-files/bashrc /etc/skel/.bashrc
    fi
 fi
 
@@ -210,12 +210,12 @@ fi
 
 # ====== User icon ==========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   if [ -e /tmp/face-icons/Face-Tux.png ] ; then
-      sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Tux.png "${USER_HOME}/.face.icon"
+   if [ -e /tmp/installtmp/face-icons/Face-Tux.png ] ; then
+      sudo -u "${USER_NAME}" cp /tmp/installtmp/face-icons/Face-Tux.png "${USER_HOME}/.face.icon"
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
-   if [ -e /tmp/face-icons/Face-Beastie.png ] ; then
-      sudo -u "${USER_NAME}" cp /tmp/face-icons/Face-Beastie.png "${USER_HOME}/.face.icon"
+   if [ -e /tmp/installtmp/face-icons/Face-Beastie.png ] ; then
+      sudo -u "${USER_NAME}" cp /tmp/installtmp/face-icons/Face-Beastie.png "${USER_HOME}/.face.icon"
    fi
 fi
 
@@ -258,14 +258,14 @@ for key in ${KEYS} ; do
    # ------ If this fails, try to fetch the key from the NNTB server --------
    if [ ${foundKey} -eq 0 ] ; then
       if command -v wget 2>/dev/null ; then
-         wget "https://www.nntb.no/~dreibh/${key}.asc" -O "/tmp/${key}.asc" || true
+         wget "https://www.nntb.no/~dreibh/${key}.asc" -O "/tmp/installtmp/${key}.asc" || true
       else
-         curl "https://www.nntb.no/~dreibh/${key}.asc" >"/tmp/${key}.asc" || true
+         curl "https://www.nntb.no/~dreibh/${key}.asc" >"/tmp/installtmp/${key}.asc" || true
       fi
-      if [ -f "/tmp/${key}.asc" ] ; then
+      if [ -f "/tmp/installtmp/${key}.asc" ] ; then
          if sudo -u "${USER_NAME}" gpg \
                --homedir "${USER_HOME}/.gnupg" \
-               --import "/tmp/${key}.asc" ; then
+               --import "/tmp/installtmp/${key}.asc" ; then
             echo "Got ${key} from NNTB web server!"
             foundKey=1
             break

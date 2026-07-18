@@ -69,11 +69,11 @@ if [ "${UNAME}" == "Linux" ] ; then
       if [ ! -e "${BOOTSPLASH}" ] ; then
          dir="$(dirname "${BOOTSPLASH}")"
          mkdir -p "${dir}/"
-         tmpBootsplashFile="/tmp/bootsplash-images/$(basename "${BOOTSPLASH}")"
+         tmpBootsplashFile="/tmp/installtmp/bootsplash-images/$(basename "${BOOTSPLASH}")"
          if [ -e "${tmpBootsplashFile}" ] ; then
             mv "${tmpBootsplashFile}" "${dir}/"
          else
-            echo >&2 "ERROR: Bootsplash file ${BOOTSPLASH} not found locally or in /tmp/bootsplash-images!"
+            echo >&2 "ERROR: Bootsplash file ${BOOTSPLASH} not found locally or in /tmp/installtmp/bootsplash-images!"
             exit 1
          fi
       fi
@@ -90,7 +90,7 @@ if [ "${UNAME}" == "Linux" ] ; then
          exit 1
       fi
       if [ -d /etc/grub.d ] && [ -e /etc/default/grub ] ;  then
-         templateFile="/tmp/configuration-files/06_aaaaa_bootsplash.in"
+         templateFile="/tmp/installtmp/configuration-files/06_aaaaa_bootsplash.in"
          if [ -e "${templateFile}" ] ; then
             sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
                 -e "s%@SET_LOADER_HERE@%${loader}%g" \
