@@ -99,7 +99,7 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ OpenSUSE -----------------------------------------------------------
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
-   zypper --non-interactive dist-upgrade -y
+   zypper --non-interactive --gpg-auto-import-keys dist-upgrade -y
    zypper clean --all
 
 # ------ Alpine -------------------------------------------------------------
