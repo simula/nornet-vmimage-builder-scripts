@@ -83,7 +83,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          #        virtualbox-guest-utils/x11 is missing in Debian 13
          #        => needs to be added manually:
          architecture="$(dpkg --print-architecture)"
-         cd /tmp
+         cd /tmp/installtmp
          wget -rq --no-parent --accept-regex 'virtualbox-guest-.*deb$' https://ftp.debian.org/debian/pool/contrib/v/virtualbox/
          pkg1="$(find /tmp/installtmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-utils_*_${architecture}.deb")"
          if [ ! -e /usr/lib/systemd/system/sddm.service ] ; then
