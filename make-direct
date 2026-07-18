@@ -175,7 +175,9 @@ elif [ "${ID}" == "fedora" ] ; then
       awk cmake gcc git GraphicsMagick gimp open-sans-fonts perl-Image-ExifTool
    sudo fc-cache -f
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper install --no-recommends -y \
+   sudo zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y \
       awk cmake exiftool gcc git GraphicsMagick gimp texlive-opensans-fonts
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk add cmake exiftool font-opensans gawk gcc git gimp graphicsmagick make musl-dev
