@@ -69,6 +69,7 @@ if [ ! -v USER_NAME             ] || [ "${USER_NAME}"             == "" ] ||
    echo >&2 "Example: sudo env USER_NAME=nornetpp KEYBOARD_MODEL=pc105 KEYBOARD_LAYOUTS=\"de:nodeadkeys no us\" BACKGROUND_SDDM=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_LOCKSCREEN=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_DESKTOP=/usr/share/desktop/Flåm-3840x2160-plain.jpeg $0"
    exit 1
 fi
+USER_GROUP="$(id -gn "${USER_NAME}")"
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
 # If the background image files are not at their location, try to move them
@@ -76,17 +77,17 @@ USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${US
 if [ ! -e "${BACKGROUND_SDDM}" ] ; then
    dir="$(dirname "${BACKGROUND_SDDM}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_LOCKSCREEN}" ] ; then
    dir="$(dirname "${BACKGROUND_LOCKSCREEN}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
 fi
 if [ ! -e "${BACKGROUND_DESKTOP}" ] ; then
    dir="$(dirname "${BACKGROUND_DESKTOP}")"
    sudo mkdir -p "${dir}/"
-   sudo cp "/tmp/desktop-backgrounds/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
+   sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"
 fi
 
 
@@ -919,5 +920,5 @@ fi
 
 
 # ====== Fix permissions ====================================================
-chown -R "${USER_NAME}":"${USER_NAME}" "${USER_HOME}/.config"
-chown -R "${USER_NAME}":"${USER_NAME}" "${USER_HOME}/.local"
+chown -R "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.config"
+chown -R "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.local"

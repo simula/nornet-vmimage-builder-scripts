@@ -175,8 +175,10 @@ elif [ "${ID}" == "fedora" ] ; then
       awk cmake gcc git GraphicsMagick gimp open-sans-fonts perl-Image-ExifTool
    sudo fc-cache -f
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
-   sudo zypper install --no-recommends -y \
-      awk cmake exiftool gcc git GraphicsMagick gimp texlive-opensans-fonts
+   sudo zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y \
+      awk cmake exiftool gcc git GraphicsMagick gimp google-opensans-fonts
 elif [ "${ID}" == "alpine" ] ; then
    sudo apk add cmake exiftool font-opensans gawk gcc git gimp graphicsmagick make musl-dev
 elif [ "${ID}" == "freebsd" ] ; then
@@ -194,7 +196,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       install-opensans-fonts "/usr/local/share/fonts"
    fi
 elif [ "${ID}" == "sunos" ] ; then
-   sudo pkg install pkg://openindiana.org/developer/build/cmake gimp git graphicsmagick image-exiftool || true
+   sudo pkg install pkg://openindiana.org/developer/build/cmake gimp git graphicsmagick image-exiftool || [ $? -eq 4 ]
    if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
       install-opensans-fonts "/usr/share/fonts/TrueType"
    fi

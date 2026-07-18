@@ -85,11 +85,11 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          architecture="$(dpkg --print-architecture)"
          cd /tmp
          wget -rq --no-parent --accept-regex 'virtualbox-guest-.*deb$' https://ftp.debian.org/debian/pool/contrib/v/virtualbox/
-         pkg1="$(find /tmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-utils_*_${architecture}.deb")"
+         pkg1="$(find /tmp/installtmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-utils_*_${architecture}.deb")"
          if [ ! -e /usr/lib/systemd/system/sddm.service ] ; then
             packages="${pkg1}"
          else
-            pkg2="$(find /tmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-x11_*_${architecture}.deb")"
+            pkg2="$(find /tmp/installtmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-x11_*_${architecture}.deb")"
             packages="${pkg1} ${pkg2}"
          fi
          version="$(echo "${packages}" | xargs -n1 | sed -e 's/\(.*\)_\([^/-]*\)-.*$/\2/' | sort -urV | head -n1)"

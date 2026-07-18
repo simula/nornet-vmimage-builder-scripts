@@ -75,6 +75,7 @@ APPLICATIONS="
    firefox-esr
    fractgen
    gimp
+   kfractgen
    libreoffice-startcenter
    org.gnome.Dia
    org.inkscape.Inkscape

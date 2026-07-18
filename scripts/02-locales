@@ -159,8 +159,9 @@ done
 if [ ${#missingLocales[@]} -ne 0 ] ; then
    if [ "${UNAME}" == "FreeBSD" ] ||
       [ "${UNAME}" == "NetBSD"  ] ||
-      [ "${UNAME}" == "OpenBSD" ] ; then
-      # Some locales are missing in FreeBSD, e.g. ar_YE, bs_BA, en_DK.
+      [ "${UNAME}" == "OpenBSD" ] ||
+      [ "${UNAME}" == "SunOS" ] ; then
+      # Some locales are missing, e.g. ar_YE, bs_BA, en_DK.
       # This can only be fixed upstream.
       echo >&2 "WARNING: Some locales are missing: ${missingLocales[*]}!"
    else

@@ -5,8 +5,8 @@
 
 # This is /etc/skel/.bashrc of Ubuntu 24.04 LTS, with added
 # /usr/local path lookup for bash completions:
-05-user-settings.files/bashrc                          /tmp/configuration-files/
+05-user-settings.files/bashrc                          /tmp/installtmp/configuration-files/
 
 # User images:
-05-user-settings.files/Face-Beastie.png                /tmp/face-icons/
-05-user-settings.files/Face-Tux.png                    /tmp/face-icons/
+05-user-settings.files/Face-Beastie.png                /tmp/installtmp/face-icons/
+05-user-settings.files/Face-Tux.png                    /tmp/installtmp/face-icons/

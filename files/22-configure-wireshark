@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------------------
 
 # Wireshark configuration files:
-22-configure-wireshark.files/colorfilters      /tmp/wireshark/
-22-configure-wireshark.files/decode_as_entries /tmp/wireshark/
-22-configure-wireshark.files/dfilters          /tmp/wireshark/
-22-configure-wireshark.files/preferences       /tmp/wireshark/
+22-configure-wireshark.files/colorfilters      /tmp/installtmp/wireshark/
+22-configure-wireshark.files/decode_as_entries /tmp/installtmp/wireshark/
+22-configure-wireshark.files/dfilters          /tmp/installtmp/wireshark/
+22-configure-wireshark.files/preferences       /tmp/installtmp/wireshark/

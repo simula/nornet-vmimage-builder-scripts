@@ -195,6 +195,72 @@ elif [ "${ID}" == "fedora" ] ; then
    systemctl set-default graphical.target
    systemctl disable plasma-setup.service
 
+
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=(
+      dejavu-fonts
+      dia
+      firefox
+      fractgen
+      gimp
+      inkscape
+      kate
+      patterns-kde-kde_plasma
+      kile
+      konsole
+      libreoffice
+      google-noto-fonts
+      okteta
+      okular
+      google-opensans-fonts
+      kde-oxygen-fonts
+      kf6-oxygen-icons
+      oxygen6
+      plasma6-session-x11
+      qt6-imageformats
+      strawberry
+      wireshark
+   )
+
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change \
+      --no-recommends -y "${packages[@]}"
+
+   systemctl set-default graphical.target
+
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   packages=(
+      font-dejavu
+      firefox
+#      fractgen
+      gimp
+      inkscape
+      kate
+      plasma-desktop-meta
+#      kile
+      konsole
+      libreoffice
+      font-noto-all
+      okteta
+      okular
+      font-opensans
+      oxygen
+      plasma-workspace
+      qt6-qtimageformats
+      strawberry
+      wireshark
+   )
+
+   apk add "${packages[@]}"
+
+   rc-update add sddm default
+
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
@@ -230,6 +296,25 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    sysrc dbus_enable="YES" ; service dbus start || true
    sysrc sddm_enable="YES" ; service sddm start || true
+
+
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   false # FIXME! TBD!
+   packages=(
+   )
+
+   pkgin -y install "${packages[@]}"
+
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   false # FIXME! TBD!
+   packages=(
+   )
+   pkg_add -r -I "${packages[@]}"
 
 
    # ------ Unknown ------------------------------------------------------------

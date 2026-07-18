@@ -279,6 +279,7 @@ directories="
 "
 
 for directory in ${directories} ; do
-   mkdir -p "/tmp/${directory}"
-   chown "${USER_NAME}":"${USER_GROUP}" "/tmp/${directory}"
+   mkdir -p "/tmp/installtmp/${directory}"
+   chown "${USER_NAME}":"${USER_GROUP}" "/tmp/installtmp/${directory}"
 done
+chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp

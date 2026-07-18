@@ -97,8 +97,8 @@ elif [ "${ID}" == "ubuntu" ] ; then
 # ------ Fedora -------------------------------------------------------------
 elif [ "${ID}" == "fedora" ] ; then
 
-   wget -O /tmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
-   dnf install --setopt=install_weak_deps=False -y /tmp/dbeaver.rpm
+   wget -O /tmp/installtmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
+   dnf install --setopt=install_weak_deps=False -y /tmp/installtmp/dbeaver.rpm
 
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then

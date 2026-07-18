@@ -157,7 +157,7 @@ function install-xpi ()
    # There are two different URLs to try:
    URL1="https://addons.mozilla.org/firefox/downloads/latest/${number}/addon-${number}-latest.xpi"
    URL2="https://addons.mozilla.org/firefox/downloads/file/${number}/"
-   MY_XPI="/tmp/${number}.xpi"
+   MY_XPI="/tmp/installtmp/${number}.xpi"
 
    echo "Downloading add-on ${number} to ${MY_XPI} ..."
    if wget -q -O "${MY_XPI}" "${URL1}" || wget -q -O "${MY_XPI}" "${URL2}" ; then

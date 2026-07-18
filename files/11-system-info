@@ -3,4 +3,4 @@
 # These directories should have been created by scripts/01-system-settings.
 # ---------------------------------------------------------------------------
 
-11-system-info.files/01-hostname     /tmp/system-info/
+11-system-info.files/01-hostname     /tmp/installtmp/system-info/

@@ -64,7 +64,7 @@ UNAME="$(uname)"
 
 
 # ====== Wireshark filter rules =============================================
-if [ -d /tmp/wireshark ] ; then
+if [ -d /tmp/installtmp/wireshark ] ; then
    skelDirectory="/etc/skel"
    if [ "${UNAME}" == "FreeBSD" ] ; then
       skelDirectory="/usr/share/skel"
@@ -75,7 +75,7 @@ if [ -d /tmp/wireshark ] ; then
    mkdir -p "${skelDirectory}/.config/wireshark"
 
    for configurationFile in colorfilters decode_as_entries dfilters preferences ; do
-      sourceConfigurationFile="/tmp/wireshark/${configurationFile}"
+      sourceConfigurationFile="/tmp/installtmp/wireshark/${configurationFile}"
       if [ -e "${sourceConfigurationFile}" ] ; then
          cp "${sourceConfigurationFile}" /root/.config/wireshark/
          cp "${sourceConfigurationFile}" "${USER_HOME}/.config/wireshark/"
@@ -86,6 +86,6 @@ if [ -d /tmp/wireshark ] ; then
    done
    chown -R "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.config/wireshark"
 else
-   echo >&2 "ERROR: Source directory /tmp/wireshark does not exist!"
+   echo >&2 "ERROR: Source directory /tmp/installtmp/wireshark does not exist!"
    exit 1
 fi

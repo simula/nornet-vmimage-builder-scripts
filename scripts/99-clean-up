@@ -59,6 +59,10 @@ if [ -f /etc/os-release ] ; then
 fi
 
 
+# ====== Clean up the temporary directory (created in 01-system-settings) ===
+rm -rf /tmp/installtmp
+
+
 # ====== Reset machine identity =============================================
 if [ -e /etc/machine-id ] ; then
    # Ensure to create a new machine ID on the next boot.
@@ -99,7 +103,7 @@ elif [ "${ID}" == "fedora" ] ; then
 # ------ OpenSUSE -----------------------------------------------------------
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
-   zypper --non-interactive dist-upgrade -y
+   zypper --non-interactive --gpg-auto-import-keys dist-upgrade -y
    zypper clean --all
 
 # ------ Alpine -------------------------------------------------------------
