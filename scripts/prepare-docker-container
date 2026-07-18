@@ -117,9 +117,6 @@ case "${ID}" in
       ;;
    alpine)
       echo 'permit nopass :wheel' >/etc/doas.d/wheel.conf
-      addgroup sudo
-      usermod -a -G sudo "${USER_NAME}"
-      sed -e 's/^# %sudo /%sudo /' -i /etc/sudoers
       usermod -aG wheel "${USER_NAME}"
       sed -e 's/^# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' -i /etc/sudoers
       ;;
