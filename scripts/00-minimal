@@ -364,7 +364,7 @@ elif [ "${ID}" == "sunos" ] ; then
       sudo
       # virt-what
    )
-   pkg install "${packages[@]}"
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
 
 # ------ Unknown ------------------------------------------------------------
 else
