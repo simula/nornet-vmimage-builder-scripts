@@ -278,6 +278,7 @@ directories="
    wireshark
 "
 
+chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp
 for directory in ${directories} ; do
    mkdir -p "/tmp/installtmp/${directory}"
    chown "${USER_NAME}":"${USER_GROUP}" "/tmp/installtmp/${directory}"
