@@ -197,11 +197,13 @@ cp /etc/openssl/certs.conf "$r/etc/openssl/"
 # ------ Initialise package database ----------------------------------------
 arch="$(uname -m)"
 release="$(uname -r | sed -e 's/_.*//')"
+pkgsrcURL="https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD"
+# pkgsrcURL="https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD"
 
 chroot $r certctl rehash
-chroot $r pkg_add "https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/$arch/$release/All/pkgin"
+chroot $r pkg_add -v "$pkgsrcURL/$arch/$release/All/pkgin"
 # shellcheck disable=SC2016
-sed -e 's,^[^#].*$,https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/$arch/'"$release"'/All,' \
+sed -e 's,^[^#].*$,'"$pkgsrcURL"'/$arch/'"$release"'/All,' \
    $r/usr/pkg/etc/pkgin/repositories.conf >/tmp/repositories.conf
 mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
