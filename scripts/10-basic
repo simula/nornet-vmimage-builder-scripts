@@ -496,35 +496,57 @@ elif [ "${ID}" == "netbsd" ] ; then
       chrpath
       cmake
       curl
+      fail2ban
       gawk
       gmake
-      hipercontracer
+#      hipercontracer
       htop
       joe
       jq
       libidn
-      netperfmeter
+#      netperfmeter
       nmap
       openssl
       ossp-uuid
       parallel
       pwgen
-      py312-fail2ban
-      python3
-      rsplib
-      rsync
-      slocate
-      subnetcalc
+      python314
+#      rsplib
+#      subnetcalc
       tcpdump
-      td-system-tools
+#      td-system-tools
       tree
-      tsctp
+#      tsctp
       tshark
       wget
       zip
    )
 
    pkgin -y install "${packages[@]}"
+
+   # ------ Build missing programs from sources -----------------------------
+   mkdir -p /root/src
+   cd /root/src
+   if ! command -v print-utf8 >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt  figlet mbuffer ossp-uuid pwgen
+      clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
+      ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
+   fi
+   if ! command -v subnetcalc >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt  libidn2 libiberty libmaxminddb
+      clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
+      ( cd /root/src/subnetcalc && ./autogen.sh && make install )
+   fi
+   if ! command -v netperfmeter >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt
+      clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
+      ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
+   fi
+   if ! command -v hipercontracer >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt  boost-devel
+      clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
+      ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
+   fi
 
 
 # ------ OpenBSD ------------------------------------------------------------
@@ -586,7 +608,7 @@ elif [ "${ID}" == "openbsd" ] ; then
    fi
 # FIXME!
 #   if ! command -v hipercontracer >/dev/null ; then
-#      pkg_add -r -I cmake gettext gnugetopt
+#      pkg_add -r -I cmake gettext gnugetopt  boost
 #      clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
 #      ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
 #   fi
