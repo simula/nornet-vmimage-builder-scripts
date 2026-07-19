@@ -569,14 +569,11 @@ programs=(
    base64
    bwm-ng
    bzip2
-   chrpath
    curl
    diff
    dig
    find
    flock
-   gdisk
-   getfacl
    htop
    idn
    ifconfig
@@ -595,7 +592,6 @@ programs=(
    python3
    random-sleep
    rsync
-   setfacl
    strings
    subnetcalc
    tar
@@ -619,6 +615,17 @@ if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] ; the
    true
 else
    programs+=( delv )
+fi
+
+if [ "${ID}" == "openbsd" ] ; then
+   true
+else
+   programs+=(
+      chrpath
+      gdisk
+      getfacl
+      setfacl
+   )
 fi
 
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
