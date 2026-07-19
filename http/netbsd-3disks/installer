@@ -195,10 +195,10 @@ cp -R /etc/openssl/certs "$r/etc/openssl/"
 cp /etc/openssl/certs.conf "$r/etc/openssl/"
 
 # ------ Initialise package database ----------------------------------------
-arch="$(uname -m)"
-release="$(uname -r | sed -e 's/_.*//')"
 pkgsrcURL="https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD"
 # pkgsrcURL="https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD"
+arch="$(uname -p)"
+release="$(uname -r | cut -d_ -f1)_2026Q1"   # FIXME: !!! Using 2026Q1 !!!
 
 chroot $r certctl rehash
 chroot $r pkg_add -v "$pkgsrcURL/$arch/$release/All/pkgin"

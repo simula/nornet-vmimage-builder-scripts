@@ -50,7 +50,7 @@
   ],
   "boot_wait": "45s",
   "boot_command": [
-    "<enter><enter>e<enter><enter>dhcpcd<enter>sleep 2<enter>",
+    "<enter><enter>e<enter><enter>dhcpcd -4<enter>sleep 2<enter>",
     "cd /tmp && ",
     "ftp -o installer http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
     "chmod +x installer && ",
