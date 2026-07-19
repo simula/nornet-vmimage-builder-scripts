@@ -102,6 +102,24 @@ if [ -f /etc/os-release ] ; then
 fi
 
 
+# ###### Clone or update Git repository #####################################
+clone-or-update ()
+{
+   local repository="$1"
+   local url="$2"
+   local clone_maxtrials=10
+   local clone_delay=60
+   if [ ! -e "${repository}" ] ; then
+      try-hard ${clone_maxtrials} ${clone_delay} -- git clone "${url}" "${repository}"
+   else
+      pushd "${repository}" >/dev/null
+      try-hard ${clone_maxtrials} ${clone_delay} -- git fetch --all
+      try-hard ${clone_maxtrials} ${clone_delay} -- git pull
+      popd >/dev/null
+   fi
+}
+
+
 # ====== Package installation ===============================================
 
 # ------ Ubuntu/Debian ------------------------------------------------------
@@ -548,6 +566,31 @@ elif [ "${ID}" == "openbsd" ] ; then
    )
    pkg_add -r -I "${packages[@]}"
 
+   # ------ Build missing programs from sources -----------------------------
+   mkdir -p /root/src
+   cd /root/src
+   if ! command -v print-utf8 >/dev/null ; then
+      pkg_add -r -I cmake gettext gnugetopt  buffer figlet ossp-uuid pwgen
+      clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
+      ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
+   fi
+   if ! command -v subnetcalc >/dev/null ; then
+      pkg_add -r -I cmake gettext gnugetopt  libidn2 libmaxminddb
+      clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
+      ( cd /root/src/subnetcalc && ./autogen.sh && make install )
+   fi
+   if ! command -v netperfmeter >/dev/null ; then
+      pkg_add -r -I cmake gettext gnugetopt
+      clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
+      ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
+   fi
+# FIXME!
+#   if ! command -v hipercontracer >/dev/null ; then
+#      pkg_add -r -I cmake gettext gnugetopt
+#      clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
+#      ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
+#   fi
+
 
 # ------ Unknown ------------------------------------------------------------
 else
@@ -601,7 +644,6 @@ programs=(
    traceroute
    tree
    try-hard
-   tsctp
    tshark
    unixts2time
    unzip
@@ -625,12 +667,15 @@ else
       gdisk
       getfacl
       setfacl
+      tsctp
    )
 fi
 
 if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[2345]\.[01][04]$ ]] || \
    [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No HiPerConTracer in old Ubuntu and Debian versions
+elif [ "${ID}" == "openbsd" ] ; then
+   true   # FIXME!
 else
    programs+=( hipercontracer )
 fi
