@@ -624,6 +624,41 @@ elif [ "${ID}" == "openbsd" ] ; then
 #   fi
 
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   packages=(
+      bwm-ng
+      pkg://openindiana.org/developer/build/cmake
+      curl
+      fail2ban
+      gawk
+      gptfdisk
+#      hipercontracer
+      htop
+      joe
+      jq
+      libidn
+#      netperfmeter
+      nmap
+      openssl
+      parallel
+      pwgen
+      python-314
+#      rsplib
+#      subnetcalc
+      tcpdump
+#      td-system-tools
+      tree
+#      tsctp
+      tshark
+      wget
+      zip
+   )
+
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 
@@ -702,7 +737,7 @@ else
    )
 fi
 
-if [ "${ID}" != "netbsd" ] && [ "${ID}" != "openbsd" ] && [ "${ID}" != "sunos" ] ; then
+if [ "${ID}" != "netbsd" ] && [ "${ID}" != "openbsd" ] ; then
    programs+=( gdisk )
 fi
 
