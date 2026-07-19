@@ -124,7 +124,7 @@ ELSE()
 ENDIF()
 
 # ====== GIMP ===============================================================
-FIND_PROGRAM(GIMP gimp HINTS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
+FIND_PROGRAM(GIMP gimp gimp-3.6 gimp-3.4 gimp-3.2 gimp-3.0 gimp-2.8 gimp-3.6 HINTS /bin /usr/bin /usr/local/bin /usr/pkg/bin)
 IF(GIMP)
    EXECUTE_PROCESS(COMMAND ${GIMP} --version | head -n1
                    OUTPUT_VARIABLE GIMP_OUTPUT
