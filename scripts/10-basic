@@ -547,6 +547,16 @@ elif [ "${ID}" == "netbsd" ] ; then
       clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
       ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
    fi
+   if ! command -v tsctp >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt  libidn2 libiberty libmaxminddb
+      clone-or-update tsctp https://dreibh@github.com/dreibh/tsctp
+      ( cd /root/src/tsctp && ./autogen.sh && make install )
+   fi
+   if ! command -v rsplib >/dev/null ; then
+      pkgin -y install cmake gettext gnugetopt  libidn2 libiberty libmaxminddb
+      clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
+      ( cd /root/src/rsplib && ./autogen.sh -DWITH_QT=OFF && make install )
+   fi
 
 
 # ------ OpenBSD ------------------------------------------------------------
