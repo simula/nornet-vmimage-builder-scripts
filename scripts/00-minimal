@@ -307,6 +307,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       git
       gnupg2
       mozilla-rootcerts-openssl
+      pkg_alternatives
       sudo
       virt-what
    )
