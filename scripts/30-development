@@ -549,7 +549,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       qt6
    )
 
-   pkg_add "${packages[@]}"
+   pkg_add -r -I "${packages[@]}"
 
    # Fetch and check out the OpenBSD Ports Collection:
    if [ -d /usr/ports/.git ] ; then

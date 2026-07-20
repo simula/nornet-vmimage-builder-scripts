@@ -93,6 +93,18 @@ elif [ "${ID}" == "freebsd" ] ; then
    packages=( texlive-full )
    pkg install -y "${packages[@]}"
 
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   packages=( texlive-collection-all )
+   pkgin -y install "${packages[@]}"
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   packages=( texlive_texmf-full )
+   pkg_add -r -I "${packages[@]}"
+
 # ------ Unknown ------------------------------------------------------------
 else
 

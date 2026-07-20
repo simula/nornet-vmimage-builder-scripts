@@ -92,6 +92,19 @@ elif [ "${ID}" == "freebsd" ] ; then
    # The user is already in group "wheel". Allow it to read from /dev/bpf:
    chmod g+r /dev/bpf
 
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd" ] ; then
+
+   sudo groupadd wireshark
+   sudo usermod -G wireshark "${USER_NAME}"
+   sudo chown root:wireshark /usr/pkg/bin/dumpcap
+   sudo chmod 4750 /usr/pkg/bin/dumpcap
+
+# ------ OpenBSD ------------------------------------------------------------
+elif [ "${ID}" == "openbsd" ] ; then
+
+   usermod -G _wireshark "${USER_NAME}"
+
 # ------ Unknown ------------------------------------------------------------
 else
 
