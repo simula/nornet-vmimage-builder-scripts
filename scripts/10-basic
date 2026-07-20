@@ -594,6 +594,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       tree
 #       tsctp
       tshark
+      unzip--
       wget
       zip
    )
@@ -684,7 +685,6 @@ programs=(
    diff
    dig
    find
-   flock
    htop
    idn
    ifconfig
@@ -732,6 +732,7 @@ if [ "${ID}" == "openbsd" ] ; then
 else
    programs+=(
       chrpath
+      flock
       getfacl
       setfacl
       tsctp
