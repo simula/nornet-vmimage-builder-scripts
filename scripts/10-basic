@@ -513,6 +513,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       pwgen
       python314
 #      rsplib
+      rsync
 #      subnetcalc
       tcpdump
 #      td-system-tools
@@ -556,7 +557,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    if ! command -v rspterminal >/dev/null ; then
       pkgin -y install cmake gettext
       clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
-      ( cd /root/src/rsplib && ./autogen.sh -- -DWITH_QT=OFF && make install )
+      ( cd /root/src/rsplib && ./autogen.sh -- -DENABLE_ICONS=OFF -DENABLE_QT=OFF && make install )
    fi
 
 
