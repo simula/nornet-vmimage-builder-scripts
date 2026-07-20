@@ -71,6 +71,17 @@ fi
 # ------ Install required packages ------------------------------------------
 pkg_add -r -I bash sudo-- virt-what
 
+# ====== QEMU Guest Agent ===================================================
+# QEMU installs already need qemu-guest-agent before first boot:
+if [ "$(virt-what)" = "kvm" ] ; then
+   pkg_add -r -I qemu-ga
+   # Guest agent has to use ISA serial port:
+   # https://openports.pl/path/emulators/qemu,-ga
+   rcctl set qemu_ga flags "-m isa-serial -p /dev/cua00"
+   rcctl enable qemu_ga
+   rcctl start qemu_ga || true
+fi
+
 # ====== User ===============================================================
 
 user="$(id -nu 1000)"   # The user was already create by install.conf!
