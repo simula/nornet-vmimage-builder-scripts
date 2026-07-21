@@ -103,18 +103,17 @@ fi
 
 
 # ###### Clone or update Git repository #####################################
+# NOTE: System-Tools may not be installed, yet! No use of try-hard, etc.
 clone-or-update ()
 {
    local repository="$1"
    local url="$2"
-   local clone_maxtrials=10
-   local clone_delay=60
    if [ ! -e "${repository}" ] ; then
-      try-hard ${clone_maxtrials} ${clone_delay} -- git clone "${url}" "${repository}"
+      git clone "${url}" "${repository}"
    else
       pushd "${repository}" >/dev/null
-      try-hard ${clone_maxtrials} ${clone_delay} -- git fetch --all
-      try-hard ${clone_maxtrials} ${clone_delay} -- git pull
+      git fetch --all
+      git pull
       popd >/dev/null
    fi
 }
@@ -512,6 +511,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       pwgen
       python314
 #      rsplib
+      rsync
 #      subnetcalc
       tcpdump
 #      td-system-tools
@@ -528,34 +528,34 @@ elif [ "${ID}" == "netbsd" ] ; then
    mkdir -p /root/src
    cd /root/src
    if ! command -v print-utf8 >/dev/null ; then
-      pkgin -y install cmake gettext  figlet mbuffer ossp-uuid pwgen
+      pkgin -y install cmake pkgconf  figlet gettext mbuffer ossp-uuid pwgen
       clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
    if ! command -v subnetcalc >/dev/null ; then
-      pkgin -y install cmake gettext  libidn2 libiberty libmaxminddb
+      pkgin -y install cmake pkgconf  gettext libidn2 libiberty libmaxminddb
       clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
       ( cd /root/src/subnetcalc && ./autogen.sh && make install )
    fi
    if ! command -v netperfmeter >/dev/null ; then
-      pkgin -y install cmake gettext
+      pkgin -y install cmake pkgconf
       clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
       ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
    fi
    if ! command -v hipercontracer >/dev/null ; then
-      pkgin -y install cmake gettext  boost lzmalib zstd
+      pkgin -y install cmake pkgconf  boost lzmalib zstd
       clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
       ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
    fi
    if ! command -v tsctp >/dev/null ; then
-      pkgin -y install cmake gettext
+      pkgin -y install cmake pkgconf
       clone-or-update tsctp https://dreibh@github.com/dreibh/tsctp
       ( cd /root/src/tsctp && ./autogen.sh && make install )
    fi
    if ! command -v rspterminal >/dev/null ; then
-      pkgin -y install cmake gettext
+      pkgin -y install cmake pkgconf
       clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
-      ( cd /root/src/rsplib && ./autogen.sh -- -DWITH_QT=OFF && make install )
+      ( cd /root/src/rsplib && ./autogen.sh -- -DENABLE_ICONS=OFF -DENABLE_QT=OFF && make install )
    fi
 
 
@@ -593,6 +593,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       tree
 #       tsctp
       tshark
+      unzip--
       wget
       zip
    )
@@ -602,23 +603,23 @@ elif [ "${ID}" == "openbsd" ] ; then
    mkdir -p /root/src
    cd /root/src
    if ! command -v print-utf8 >/dev/null ; then
-      pkg_add -r -I cmake gettext gnugetopt  buffer figlet ossp-uuid pwgen
+      pkg_add -r -I cmake gnugetopt  buffer figlet gettext-runtime gettext-tools ossp-uuid pwgen
       clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
    if ! command -v subnetcalc >/dev/null ; then
-      pkg_add -r -I cmake gettext gnugetopt  libidn2 libmaxminddb
+      pkg_add -r -I cmake gnugetopt  gettext-runtime gettext-tools libidn2 libmaxminddb
       clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
       ( cd /root/src/subnetcalc && ./autogen.sh && make install )
    fi
    if ! command -v netperfmeter >/dev/null ; then
-      pkg_add -r -I cmake gettext gnugetopt
+      pkg_add -r -I cmake gnugetopt
       clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
       ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
    fi
 # FIXME!
 #   if ! command -v hipercontracer >/dev/null ; then
-#      pkg_add -r -I cmake gettext gnugetopt  boost xz zstd
+#      pkg_add -r -I cmake gnugetopt  boost xz zstd
 #      clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
 #      ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
 #   fi
@@ -658,6 +659,49 @@ elif [ "${ID}" == "sunos" ] ; then
 
    pkg install "${packages[@]}" || [ $? -eq 4 ]
 
+   # ------ Build missing programs from sources -----------------------------
+   mkdir -p /root/src
+   cd /root/src
+   if ! command -v bwm-ng >/dev/null ; then
+      pkg install build/autoconf build/automake
+      clone-or-update bwm-ng https://github.com/vgropp/bwm-ng
+      ( cd bwm-ng && ./autogen.sh --prefix=/usr && make && make install )
+   fi
+   if ! command -v figlet >/dev/null ; then
+      clone-or-update figlet https://github.com/cmatsuoka/figlet.git
+      ( cd figlet && make CFLAGS="-Wall -DTLF_FONTS -include alloca.h" && make install )
+   fi
+   if ! command -v print-utf8 >/dev/null ; then
+      pkg install build/cmake pkgconf  gnu-gettext mbuffer pwgen || [ $? -eq 4 ]
+      clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
+      ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
+   fi
+   if ! command -v subnetcalc >/dev/null ; then
+      pkg install build/cmake pkgconf  gnu-gettext libidn2 || [ $? -eq 4 ]
+      clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
+      ( cd /root/src/subnetcalc && ./autogen.sh -- -DWITH_GEOIP=OFF && make install )
+   fi
+   if ! command -v netperfmeter >/dev/null ; then
+      pkg install build/cmake pkgconf  compress/bzip2 || [ $? -eq 4 ]
+      clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
+      ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
+   fi
+   if ! command -v hipercontracer >/dev/null ; then
+      pkg install build/cmake pkgconf  library/boost compress/bzip2 compress/xz compress/zstd || [ $? -eq 4 ]
+      clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
+      ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
+   fi
+   if ! command -v tsctp >/dev/null ; then
+      pkg install build/cmake pkgconf || [ $? -eq 4 ]
+      clone-or-update tsctp https://dreibh@github.com/dreibh/tsctp
+      ( cd /root/src/tsctp && ./autogen.sh && make install )
+   fi
+#   if ! command -v rspterminal >/dev/null ; then
+#      pkg install build/cmake pkgconf || [ $? -eq 4 ]
+#      clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
+#      ( cd /root/src/rsplib && ./autogen.sh -- -DENABLE_ICONS=OFF -DENABLE_QT=OFF && make install )
+#   fi
+
 
 # ------ Unknown ------------------------------------------------------------
 else
@@ -683,7 +727,6 @@ programs=(
    diff
    dig
    find
-   flock
    htop
    idn
    ifconfig
@@ -714,7 +757,6 @@ programs=(
    tshark
    unixts2time
    unzip
-   uuid
    wget
    xargs
    zip
@@ -728,12 +770,21 @@ fi
 
 if [ "${ID}" == "openbsd" ] ; then
    true
-else
+elif [ "${ID}" == "sunos" ] ; then
    programs+=(
-      chrpath
       getfacl
       setfacl
       tsctp
+      uuidgen
+   )
+else
+   programs+=(
+      chrpath
+      flock
+      getfacl
+      setfacl
+      tsctp
+      uuid
    )
 fi
 
@@ -765,6 +816,8 @@ if [ "${ID}" == "debian" ] && [[ ! "${VERSION_ID}" =~ ^1[01]$ ]] ; then
    true   # No rsplib in old Debian versions
 elif [ "${ID}" == "openbsd" ] ; then
    true   # No rsplib in OpenBSD
+elif [ "${ID}" == "sunos" ] ; then
+   true   # FIXME! No rsplib in Solaris
 else
    programs+=( rspserver rspterminal )
 fi

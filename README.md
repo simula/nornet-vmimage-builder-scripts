@@ -23,7 +23,11 @@
     -   [Ubuntu Linux](#ubuntu-linux)
     -   [Debian Linux](#debian-linux)
     -   [Fedora Linux](#fedora-core-linux)
+    -   [OpenSUSE Linux](#opensuse-linux)
+    -   [Alpine Linux](#opensuse-linux)
     -   [FreeBSD](#freebsd)
+    -   [NetBSD](#netbsd)
+    -   [OpenBSD](#openbsd)
 -   [Projects](#projects)
     -   [Minimal](#minimal)
     -   [Basic](#basic)
@@ -172,7 +176,11 @@ The following operating systems are currently supported as VM guests:
 * [Ubuntu Linux](https://ubuntu.com/)
 * [Debian Linux](https://www.debian.org/)
 * [Fedora Linux](https://getfedora.org/de/)
+* [OpenSUSE Linux](https://www.opensuse.org/)
+* [Alpine Linux](https://alpinelinux.org/)
 * [FreeBSD](https://www.freebsd.org/)
+* [NetBSD](https://www.netbsd.org/)
+* [OpenBSD](https://www.openbsd.org/)
 
 Details can be found in the directories [installer](https://github.com/simula/nornet-vmimage-builder-scripts/tree/master/installer) and [http](https://github.com/simula/nornet-vmimage-builder-scripts/tree/master/http).
 
@@ -203,6 +211,22 @@ General settings:
 * Using XFS for `/` and `/home`
 * Added COPR PPA dreibh/ppa (<https://copr.fedorainfracloud.org/coprs/dreibh/ppa/>)
 
+## OpenSUSE Linux
+
+General settings:
+
+* Base: OpenSUSE Agama installer ISO
+* EFI boot
+* Using BTRFS for `/` and `/home`
+
+## Alpine Linux
+
+General settings:
+
+* Base: Alpine standard installer ISO
+* EFI boot
+* Using BTRFS for `/` and `/home`
+
 ## FreeBSD
 
 General settings:
@@ -210,6 +234,20 @@ General settings:
 * Base: FreeBSD installation ISO
 * EFI boot
 * Using ZFS for `/` and `/home`
+
+## NetBSD
+
+General settings:
+
+* Base: NetBSD installation ISO
+* EFI boot
+
+## OpenBSD
+
+General settings:
+
+* Base: OpenBSD installation ISO
+* EFI boot
 
 
 # 📦 Projects

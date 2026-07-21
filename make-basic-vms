@@ -37,10 +37,11 @@ set -euo pipefail
 
 
 HYPERVISOR="VirtualBox"
-# SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
-SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.0-RELEASE"
-SYSTEMS="Ubuntu-24.04"
+SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+# SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
+# SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.0-RELEASE"
+# SYSTEMS="Ubuntu-26.04 OpenSUSE-Tumbleweed Alpine-3.24"
+# SYSTEMS="NetBSD-11.0 OpenBSD-7.9"
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
@@ -52,7 +53,7 @@ USER_REALNAME="NorNet Praesum Presum"
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
-MEMORY=2048
+MEMORY=3072
 BALLOON=1024
 DISK_ROOT=32768
 DISK_HOME=16384
