@@ -407,6 +407,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       opensans-ttf
       p5-Image-ExifTool
       p5-PkgConfig-LibPkgConf
+      pkgconf
       py312-distro
       py312-netifaces
       py312-psutil
@@ -481,6 +482,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       noto-fonts
       p5-Image-ExifTool
       p5-PkgConfig
+      pkgconf
       py314-distro
       py314-psutil
       py314-yamllint
@@ -533,6 +535,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       noto-fonts
       roboto-fonts
       p5-Image-ExifTool
+      pkgconf
       py3-distro
       py3-psutil
       py3-yamllint
