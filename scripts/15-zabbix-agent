@@ -125,6 +125,12 @@ elif [ "${ID}" == "openbsd" ] ; then
    packages=( "zabbix-agent" )
    pkg_add -r -I "${packages[@]}"
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   packages=( "zabbix-agent" )
+   pkg install "${packages[@]}"
+
 # ------ Unknown ------------------------------------------------------------
 else
 
