@@ -49,14 +49,31 @@
   ],
   "boot_wait": "45s",
   "boot_command": [
-    "<enter><wait2s>",    // Country (default: US)
-    "<enter><wait2s>",    // Language (default: English)
-    "3<enter><wait2s>",   // Shell
-    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer -o /tmp/installer && ",
-    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig -o /tmp/installerconfig && ",
-    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot -o /tmp/zfsboot && ",
-    "chmod +x /tmp/installer /tmp/zfsboot /tmp/installerconfig && ",
-    "ping -c3 -i0.3 www.heise.de && ",
-    "/tmp/installer /tmp/installerconfig<enter>"
+    // Set language and keyboard layout to default (US English):
+    "<enter><wait10s>",
+    "<enter><wait30s>",
+    "1<enter><wait10s>",
+    // Prepare storage:
+    "<f2><wait10s>",
+    "<f2><wait10s>",
+    "<right><enter><wait10s>",
+    "<f2><wait10s>",
+    // Set hostname and automatic network configuration:
+    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}.{{user `host_domain`}}<down><f2><wait5s>",
+    // Select time zone and date/time:
+    "<f2><wait5s><f2>",
+    // User settings:
+    "{{user `user_password`}}<down>",
+    "{{user `user_password`}}<down>",
+    "{{user `user_realname`}}<down>",
+    "{{user `user_name`}}<down>",
+    "{{user `user_password`}}<down>",
+    "{{user `user_password`}}<down>",
+    "<f2><wait5s>",
+    // Confirm:
+    "<f2>",
+    "<wait300s><wait300s>",
+    // Shell after installation:
+    "<f9>3<enter>"
   ]
 }
