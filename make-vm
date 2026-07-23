@@ -293,7 +293,7 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--hypervisor|-H VirtualBox|QEMU|vSphere]"
       echo >&2 "   [--vsphere|-VC vsphere_configuration_file]"
       echo >&2 "   [--project|-P Template|NEAT|MELODIC|...]"
-      echo >&2 "   [--destination|-D Ubuntu|Fedora|FreeBSD]"
+      echo >&2 "   [--distribution|-D Ubuntu|Debian|Fedora|FreeBSD|NetBSD|OpenBSD|OpenIndiana]"
       echo >&2 "   [--release|-R RELEASE]"
       echo >&2 "   [--system|-D DISTRIBUTION-RELEASE]"
       echo >&2 "   [--architecture|-A architecture]"
@@ -503,6 +503,14 @@ elif [ "${DISTRIBUTION}" == "OpenBSD" ] ; then
    HTTP_DIRECTORY="http/openbsd"
    if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
       echo >&2 "ERROR: Invalid OpenBSD release ${RELEASE}!"
+      exit 1
+   fi
+elif [ "${DISTRIBUTION}" == "OpenIndiana" ] ; then
+   BUILDER_INSTALL="openindiana-${RELEASE}"
+   NAME="${NAME}-OpenIndiana-${RELEASE}"
+   HTTP_DIRECTORY="http/openindiana"
+   if [[ ! "${RELEASE}" =~ ^([0-9]+).([0-9]+)$ ]] ; then
+      echo >&2 "ERROR: Invalid OpenIndiana release ${RELEASE}!"
       exit 1
    fi
 else

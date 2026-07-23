@@ -31,9 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC6/SHA512 | grep -- -amd64.iso
-  "iso_url": "https://ftp.nluug.nl/pub/os/openindiana.org/dlc/isos/hipster/20260430/OI-hipster-text-20260430.iso",
-  "iso_checksum": "file:https://ftp.nluug.nl/pub/os/openindiana.org/dlc/isos/hipster/20260430/OI-hipster-text-20260430.iso.sha256sum",
+  "iso_url": "https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso",
+  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso.sha256sum",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -43,12 +42,21 @@
 
   // ====== Boot into installer =============================================
   "vboxmanage": [
-    // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"  ],
-    [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
+    // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"       ],
+    // [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
     [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"      ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "OpenSolaris_64" ]
   ],
   "boot_wait": "45s",
   "boot_command": [
+    "<enter><wait2s>",    // Country (default: US)
+    "<enter><wait2s>",    // Language (default: English)
+    "3<enter><wait2s>",   // Shell
+    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer -o /tmp/installer && ",
+    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/installerconfig -o /tmp/installerconfig && ",
+    "curl -s http://{{ .HTTPIP }}:{{ .HTTPPort }}/zfsboot -o /tmp/zfsboot && ",
+    "chmod +x /tmp/installer /tmp/zfsboot /tmp/installerconfig && ",
+    "ping -c3 -i0.3 www.heise.de && ",
+    "/tmp/installer /tmp/installerconfig<enter>"
   ]
 }

@@ -62,7 +62,7 @@
 
   "audio_controller": "ac97",
 
-  "iso_interface": "virtio",
+  "iso_interface": "ide",
   "hard_drive_interface": "virtio",
   "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
