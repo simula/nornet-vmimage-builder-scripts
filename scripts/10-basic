@@ -668,9 +668,9 @@ elif [ "${ID}" == "sunos" ] ; then
       ( cd bwm-ng && ./autogen.sh --prefix=/usr && make && make install )
    fi
    if ! command -v figlet >/dev/null ; then
-      pkg install build/autoconf build/automake gcc-14 || [ $? -eq 4 ]
+      pkg install gcc-14 || [ $? -eq 4 ]
       clone-or-update figlet https://github.com/cmatsuoka/figlet.git
-      ( cd figlet && make CFLAGS="-Wall -DTLF_FONTS -include alloca.h" && make install )
+      ( cd figlet && sed -e 's%^prefix\t=.*$%prefix\t= /usr%' -i Makefile && make CFLAGS="-Wall -DTLF_FONTS -include alloca.h" && make install )
    fi
    if ! command -v print-utf8 >/dev/null ; then
       pkg install build/cmake gcc-14 pkgconf  gnu-gettext mbuffer pwgen || [ $? -eq 4 ]
