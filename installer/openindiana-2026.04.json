@@ -43,7 +43,7 @@
   // ====== Boot into installer =============================================
   "vboxmanage": [
     // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"       ],
-    // [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
+    [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
     [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"      ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "OpenSolaris_64" ]
   ],
