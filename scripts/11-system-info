@@ -53,13 +53,17 @@ UNAME="$(uname)"
 
 
 # ====== Configure System-Info ==============================================
-if [ "${UNAME}" == "FreeBSD" ] ; then
-   systemInfoDirectory="/usr/local/etc/system-info.d"
-elif [ "${UNAME}" == "NetBSD" ] ; then
-   systemInfoDirectory="/usr/pkg/etc/system-info.d"
-else
-   systemInfoDirectory="/etc/system-info.d"
-fi
+case "${UNAME}" in
+   FreeBSD|OpenBSD)
+      systemInfoDirectory="/usr/local/etc/system-info.d"
+      ;;
+   NetBSD)
+      systemInfoDirectory="/usr/pkg/etc/system-info.d"
+      ;;
+   *)
+      systemInfoDirectory="/etc/system-info.d"
+      ;;
+esac
 
 # This directory is created by the configurations in ../files/$0
 # Make sure that the corresponding configuration exists there!
