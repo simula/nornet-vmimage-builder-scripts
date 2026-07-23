@@ -663,41 +663,42 @@ elif [ "${ID}" == "sunos" ] ; then
    mkdir -p /root/src
    cd /root/src
    if ! command -v bwm-ng >/dev/null ; then
-      pkg install build/autoconf build/automake
+      pkg install build/autoconf build/automake gcc-14 || [ $? -eq 4 ]
       clone-or-update bwm-ng https://github.com/vgropp/bwm-ng
       ( cd bwm-ng && ./autogen.sh --prefix=/usr && make && make install )
    fi
    if ! command -v figlet >/dev/null ; then
+      pkg install build/autoconf build/automake gcc-14 || [ $? -eq 4 ]
       clone-or-update figlet https://github.com/cmatsuoka/figlet.git
       ( cd figlet && make CFLAGS="-Wall -DTLF_FONTS -include alloca.h" && make install )
    fi
    if ! command -v print-utf8 >/dev/null ; then
-      pkg install build/cmake pkgconf  gnu-gettext mbuffer pwgen || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf  gnu-gettext mbuffer pwgen || [ $? -eq 4 ]
       clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
    if ! command -v subnetcalc >/dev/null ; then
-      pkg install build/cmake pkgconf  gnu-gettext libidn2 || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf  gnu-gettext libidn2 || [ $? -eq 4 ]
       clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
       ( cd /root/src/subnetcalc && ./autogen.sh -- -DWITH_GEOIP=OFF && make install )
    fi
    if ! command -v netperfmeter >/dev/null ; then
-      pkg install build/cmake pkgconf  compress/bzip2 || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf  compress/bzip2 || [ $? -eq 4 ]
       clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
       ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
    fi
    if ! command -v hipercontracer >/dev/null ; then
-      pkg install build/cmake pkgconf  library/boost compress/bzip2 compress/xz compress/zstd || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf  library/boost compress/bzip2 compress/xz compress/zstd || [ $? -eq 4 ]
       clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
       ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
    fi
    if ! command -v tsctp >/dev/null ; then
-      pkg install build/cmake pkgconf || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf || [ $? -eq 4 ]
       clone-or-update tsctp https://dreibh@github.com/dreibh/tsctp
       ( cd /root/src/tsctp && ./autogen.sh && make install )
    fi
 #   if ! command -v rspterminal >/dev/null ; then
-#      pkg install build/cmake pkgconf || [ $? -eq 4 ]
+#      pkg install build/cmake gcc-14 pkgconf || [ $? -eq 4 ]
 #      clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
 #      ( cd /root/src/rsplib && ./autogen.sh -- -DENABLE_ICONS=OFF -DENABLE_QT=OFF && make install )
 #   fi
