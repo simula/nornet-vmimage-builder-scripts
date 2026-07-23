@@ -49,11 +49,9 @@
     [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"  ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "OpenBSD_64" ]
   ],
-  "boot_wait": "30s",
+  "boot_wait": "60s",
   "boot_command": [
     "S<enter><wait>",
-    // "ifconfig em0 inet autoconf<enter>",
-    // "ifconfig em0 inet6 autoconf<enter>",
     "NIC=$(ifconfig | sed -n -e '/^[a-z]/!d' -e '/^lo/d' -e '/^enc/d' -e '/^pflog/d' -e 's/:.*//p' | sed 1q)<enter>",
     "ifconfig $NIC inet autoconf<enter>",
     "ifconfig $NIC inet6 autoconf<enter>",
