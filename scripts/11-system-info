@@ -84,10 +84,20 @@ if [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
       touch  /etc/profile
    fi
    if ! grep -q "Source profile.d directories" /etc/profile; then
+
+      # ------ Directories for lookup of profile scripts --------------------
       profileDirectories=(
          /etc/profile.d
          /usr/local/etc/profile.d
       )
+      if [ "${UNAME}" == "NetBSD" ] ; then
+         profileDirectories+=( /usr/pkg/etc/profile.d )
+      fi
+
+      # ------ Write block to /etc/profile ----------------------------------
+      if [ -s /etc/profile ] ; then
+         echo >>/etc/profile
+      fi
       cat >>/etc/profile << EOF
 # ====== Source profile.d directories =======================================
 for dir in ${profileDirectories[@]} ; do
