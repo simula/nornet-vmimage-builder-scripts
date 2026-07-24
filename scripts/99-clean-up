@@ -130,6 +130,11 @@ elif [ "${ID}" == "openbsd" ] ; then
    syspatch
    pkg_add -u
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   pkg update || [ $? -eq 4 ]
+
 # ------ Unknown ------------------------------------------------------------
 else
 
@@ -148,6 +153,8 @@ elif [ "${UNAME}" == "FreeBSD" ] ; then
    /etc/periodic/weekly/310.locate
 elif [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
    /usr/libexec/locate.updatedb
+elif [ "${UNAME}" == "SunOS" ] ; then
+   updatedb
 fi
 
 
@@ -159,6 +166,8 @@ if [ "${UNAME}" == "Linux" ] ; then
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    sudo zpool trim zroot
+elif [ "${UNAME}" == "SunOS" ] ; then
+   sudo zpool trim rpool
 fi
 
 

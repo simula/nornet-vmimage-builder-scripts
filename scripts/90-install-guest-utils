@@ -58,7 +58,11 @@ if [ -f /etc/os-release ] ; then
    . /etc/os-release
 fi
 
-HYPERVISOR=" $(virt-what | xargs) "
+if command -v virt-what >/dev/null ; then
+   HYPERVISOR=" $(virt-what | xargs) "
+else
+   HYPERVISOR=""
+fi
 
 
 # ====== Package installation ===============================================
@@ -298,6 +302,12 @@ elif [ "${ID}" == "openbsd" ] ; then
       pkg_delete qemu-ga || true
    fi
 
+
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   # FIXME!
+   true
 
 # ------ Unknown ------------------------------------------------------------
 else

@@ -124,13 +124,27 @@ elif [ "${ID}" == "alpine" ] ; then
    apk add "${packages[@]}"
 
 # ------ FreeBSD, NetBSD, OpenBSD -------------------------------------------
-elif [ "${UNAME}" == "FreeBSD" ] ||
-     [ "${UNAME}" == "NetBSD"  ] ||
-     [ "${UNAME}" == "OpenBSD" ] ||
-     [ "${UNAME}" == "SunOS" ] ; then
+elif [ "${ID}" == "freebsd" ] ||
+     [ "${ID}" == "netbsd"  ] ||
+     [ "${ID}" == "openbsd" ] ; then
 
    # All locales should already be there!
    true
+
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   declare -A seenLanguages
+   packages=()
+   for locale in ${LOCALES} ; do
+      language="${locale%%_*}"
+      if [[ -n "${language}" && ! -v "seenLanguages[$language]" ]] ; then
+         seenLanguages["${language}"]=1
+         packages+=( "pkg://openindiana.org/locale/${language}" )
+      fi
+   done
+
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
 
 # ------ Unknown ------------------------------------------------------------
 else
@@ -157,10 +171,10 @@ for locale in ${LOCALES} ; do
    fi
 done
 if [ ${#missingLocales[@]} -ne 0 ] ; then
-   if [ "${UNAME}" == "FreeBSD" ] ||
-      [ "${UNAME}" == "NetBSD"  ] ||
-      [ "${UNAME}" == "OpenBSD" ] ||
-      [ "${UNAME}" == "SunOS" ] ; then
+   if [ "${ID}" == "freebsd" ] ||
+      [ "${ID}" == "netbsd"  ] ||
+      [ "${ID}" == "openbsd" ] ||
+      [ "${ID}" == "sunos"   ] ; then
       # Some locales are missing, e.g. ar_YE, bs_BA, en_DK.
       # This can only be fixed upstream.
       echo >&2 "WARNING: Some locales are missing: ${missingLocales[*]}!"

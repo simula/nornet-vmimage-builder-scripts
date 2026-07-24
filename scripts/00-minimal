@@ -367,6 +367,9 @@ elif [ "${ID}" == "sunos" ] ; then
    )
    pkg install "${packages[@]}" || [ $? -eq 4 ]
 
+   # Running "sudo" as root has to be allowed (root is superuser):
+   echo "Defaults:root !pam_acct_mgmt" >/etc/sudoers.d/01-sudo-no_pam_acct_mgmt
+
 # ------ Unknown ------------------------------------------------------------
 else
 
