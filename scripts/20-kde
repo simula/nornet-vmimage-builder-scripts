@@ -205,6 +205,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       firefox
       fractgen
       gimp
+      gstreamer-plugins-good
       inkscape
       kate
       patterns-kde-kde_plasma
@@ -220,6 +221,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       oxygen6
       plasma6-session-x11
       qt6-imageformats
+      sddm-qt6
       strawberry
       wireshark
    )
@@ -254,11 +256,25 @@ elif [ "${ID}" == "alpine" ] ; then
       qt6-qtimageformats
       strawberry
       wireshark
+
+      mesa-dri-gallium mesa-va-gallium
+      xf86-video-qxl xf86-video-vmware xf86-video-vesa
    )
 
    apk add "${packages[@]}"
 
+   setup-devd udev
+   rc-update add udev sysinit
+   rc-service udev start
+
+   rc-update add elogind default
+   rc-service elogind start
+
    rc-update add sddm default
+
+#    adduser <your-username> audio
+#    adduser <your-username> video
+#    adduser <your-username> input
 
 
 # ------ FreeBSD ------------------------------------------------------------
@@ -301,11 +317,13 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
+   false   # TBD! Not working, yet!
+
    packages=(
       dejavu-ttf
       dia
       firefox
-#      fractgen
+#       fractgen
       gimp
       inkscape
       kate
@@ -329,17 +347,19 @@ elif [ "${ID}" == "netbsd" ] ; then
    echo "dbus=YES" >> /etc/rc.conf
    echo "sddm=YES" >> /etc/rc.conf
 
-   pkgin -y install "${packages[@]}"
+   cp /usr/pkg/share/examples/pam.d/sddm* /etc/pam.d/
 
 
 # ------ OpenBSD ------------------------------------------------------------
 elif [ "${ID}" == "openbsd" ] ; then
 
+   false   # TBD! Not working, yet!
+
    packages=(
       dejavu
       dia
       firefox
-#      fractgen
+#       fractgen
       gimp
       inkscape
       kate
@@ -365,6 +385,8 @@ elif [ "${ID}" == "openbsd" ] ; then
 
 # ------ Solaris ------------------------------------------------------------
 elif [ "${ID}" == "sunos" ] ; then
+
+   false   # TBD! Not working, yet!
 
    packages=(
       desktop/kde
