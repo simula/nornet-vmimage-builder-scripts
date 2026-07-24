@@ -170,8 +170,8 @@ elif [ "${ID}" == "freebsd" ] ; then
    # sudo podman run -it --rm --os=linux docker.io/dreibh/basic-debian:13 bash --login
 
 
-# ------ NetBSD and OpenBSD -------------------------------------------------
-elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ]; then
+# ------ NetBSD, OpenBSD, and Solaris ---------------------------------------
+elif [ "${ID}" == "netbsd" ] || [ "${ID}" == "openbsd" ] || [ "${ID}" == "sunos" ] ; then
 
    exit 0   # There is no Docker -> nothing to do!
 

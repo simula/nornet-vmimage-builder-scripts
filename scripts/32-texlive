@@ -105,6 +105,12 @@ elif [ "${ID}" == "openbsd" ] ; then
    packages=( texlive_texmf-full )
    pkg_add -r -I "${packages[@]}"
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   packages=( print/texlive )
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
+
 # ------ Unknown ------------------------------------------------------------
 else
 

@@ -51,7 +51,7 @@ set -x
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
-   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
+   echo >&2 "Example: env USER_NAME=nornetpp $0"
    exit 1
 fi
 
@@ -95,15 +95,26 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
-   sudo groupadd wireshark || true
-   sudo usermod -G wireshark "${USER_NAME}"
-   sudo chown root:wireshark /usr/pkg/bin/dumpcap
-   sudo chmod 4750 /usr/pkg/bin/dumpcap
+   groupadd wireshark || true
+   usermod -G wireshark "${USER_NAME}"
+   chown root:wireshark /usr/pkg/bin/dumpcap
+   chmod 4750 /usr/pkg/bin/dumpcap
 
 # ------ OpenBSD ------------------------------------------------------------
 elif [ "${ID}" == "openbsd" ] ; then
 
    usermod -G _wireshark "${USER_NAME}"
+
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   groupadd wireshark || true
+   chgrp wireshark /usr/sbin/dumpcap
+   chmod 4750 /usr/sbin/dumpcap
+   usermod -G wireshark "${USER_NAME}"
+
+   # Possible alternative:
+   # usermod -K defaultpriv=basic,net_observability "${USER_NAME}"
 
 # ------ Unknown ------------------------------------------------------------
 else

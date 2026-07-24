@@ -134,6 +134,14 @@ elif [ "${ID}" == "freebsd" ] || \
    # Nothing to do here: BSD sources = ports.
    true
 
+
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   # Nothing to do here!
+   true
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 
