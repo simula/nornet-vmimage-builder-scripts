@@ -309,14 +309,13 @@ elif [ "${ID}" == "netbsd" ] ; then
       gimp
       inkscape
       kate
-      kde
+      kf5
       kile
       konsole
       libreoffice
-      noto-fonts
+      noto-ttf
       okteta
       okular
-      open-sans-ttf
       R
       sddm
       strawberry
