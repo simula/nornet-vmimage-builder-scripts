@@ -77,3 +77,28 @@ else
    echo >&2 "ERROR: ${INPUT_DIRECTORY} does not exist!"
    exit 1
 fi
+
+# ====== Set up /etc/profile ================================================
+if [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
+   if [ ! -e /etc/profile ] ; then
+      touch  /etc/profile
+   fi
+   if ! grep -q "Source profile.d directories" /etc/profile; then
+      profileDirectories=(
+         /etc/profile.d
+         /usr/local/etc/profile.d
+      )
+      cat >>/etc/profile << EOF
+# ====== Source profile.d directories =======================================
+for dir in ${profileDirectories[@]} ; do
+    if [ -d "\$dir" ]; then
+        for script in "\$dir"/*.sh; do
+            # The [ -r ... ] check ensures non-matching wildcards are not sourced:
+            [ -r "\$script" ] && . "\$script"
+        done
+    fi
+done
+unset dir script
+EOF
+   fi
+fi
