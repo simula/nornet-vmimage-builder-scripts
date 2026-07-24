@@ -673,7 +673,7 @@ elif [ "${ID}" == "sunos" ] ; then
       ( cd figlet && sed -e 's%^prefix\t=.*$%prefix\t= /usr%' -i Makefile && make CFLAGS="-Wall -DTLF_FONTS -include alloca.h" && make install )
    fi
    if ! command -v print-utf8 >/dev/null ; then
-      pkg install build/cmake gcc-14 pkgconf  gnu-gettext mbuffer pwgen || [ $? -eq 4 ]
+      pkg install build/cmake gcc-14 pkgconf  gnu-gettext icu mbuffer pwgen || [ $? -eq 4 ]
       clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
