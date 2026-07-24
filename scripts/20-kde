@@ -301,9 +301,34 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
-   false # FIXME! TBD!
    packages=(
+      dejavu-ttf
+      dia
+      firefox
+#      fractgen
+      gimp
+      inkscape
+      kate
+      kde
+      kile
+      konsole
+      libreoffice
+      noto-fonts
+      okteta
+      okular
+      open-sans-ttf
+      R
+      sddm
+      strawberry
+      wireshark
    )
+
+   pkgin -y install "${packages[@]}"
+
+   cp /usr/pkg/share/examples/rc.d/dbus /etc/rc.d/
+   cp /usr/pkg/share/examples/rc.d/sddm /etc/rc.d/
+   echo "dbus=YES" >> /etc/rc.conf
+   echo "sddm=YES" >> /etc/rc.conf
 
    pkgin -y install "${packages[@]}"
 
@@ -317,7 +342,16 @@ elif [ "${ID}" == "openbsd" ] ; then
    pkg_add -r -I "${packages[@]}"
 
 
-   # ------ Unknown ------------------------------------------------------------
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   false # FIXME! TBD!
+   packages=(
+   )
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
+
+
+# ------ Unknown ------------------------------------------------------------
 else
 
    echo >&2 "ERROR: Unknown ID ${ID} in /etc/os-release. The installation script may need an update for supporting this system!"
