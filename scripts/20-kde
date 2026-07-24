@@ -220,6 +220,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       oxygen6
       plasma6-session-x11
       qt6-imageformats
+      sddm-qt6
       strawberry
       wireshark
    )
