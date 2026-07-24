@@ -95,7 +95,7 @@ elif [ "${ID}" == "freebsd" ] ; then
 # ------ NetBSD -------------------------------------------------------------
 elif [ "${ID}" == "netbsd" ] ; then
 
-   sudo groupadd wireshark
+   sudo groupadd wireshark || true
    sudo usermod -G wireshark "${USER_NAME}"
    sudo chown root:wireshark /usr/pkg/bin/dumpcap
    sudo chmod 4750 /usr/pkg/bin/dumpcap

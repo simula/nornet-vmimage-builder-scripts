@@ -55,7 +55,7 @@ fi
    elif [ "${uname}" == "FreeBSD" ] ; then
       cores="$(sysctl -n hw.ncpu || echo "1")"
    elif [ "${uname}" == "NetBSD" ] || [ "${uname}" == "OpenBSD" ] ; then
-      cores="$(sysctl -n hw.ncpuonline || echo "1")"
+      cores="$(/sbin/sysctl -n hw.ncpuonline || echo "1")"
    elif [ "${uname}" == "SunOS" ] ; then
       cores="$(psrinfo -t)"
    elif [ "${uname}" == "Darwin" ] ; then
