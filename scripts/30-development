@@ -565,6 +565,43 @@ elif [ "${ID}" == "openbsd" ] ; then
    fi
 
 
+# ------ Solaris ------------------------------------------------------------
+elif [ "${ID}" == "sunos" ] ; then
+
+   # Programs:
+   packages=(
+      developer/build/autoconf
+      developer/build/automake
+      developer/build/cmake
+      developer/build/libtool
+      developer/build/make
+      developer/build/pkg-config
+      developer/clang-18
+      developer/gcc-14
+      developer/debug/gdb
+      developer/lexer/flex
+      developer/parser/bison
+      image/graphicsmagick
+      library/security/openssl
+      runtime/python-314
+      text/tidy
+      python/yamllint
+   )
+
+   # Development files:
+   packages+=(
+      database/mariadb-114/library
+      developer/object-file
+      library/boost
+      library/zlib
+      system/header
+   )
+
+   pkg install "${packages[@]}"
+   # Install Valgrind, if available:
+   pkg install valgrind || true
+
+
 # ------ Unknown ------------------------------------------------------------
 else
 
