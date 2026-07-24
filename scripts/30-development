@@ -535,7 +535,6 @@ elif [ "${ID}" == "openbsd" ] ; then
       noto-fonts
       roboto-fonts
       p5-Image-ExifTool
-      pkgconf
       py3-distro
       py3-psutil
       py3-yamllint
