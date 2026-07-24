@@ -528,7 +528,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    mkdir -p /root/src
    cd /root/src
    if ! command -v print-utf8 >/dev/null ; then
-      pkgin -y install cmake pkgconf  figlet gettext mbuffer ossp-uuid pwgen
+      pkgin -y install cmake pkgconf  getopt figlet gettext mbuffer ossp-uuid pwgen
       clone-or-update system-tools https://dreibh@github.com/dreibh/system-tools
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
@@ -538,12 +538,12 @@ elif [ "${ID}" == "netbsd" ] ; then
       ( cd /root/src/subnetcalc && ./autogen.sh && make install )
    fi
    if ! command -v netperfmeter >/dev/null ; then
-      pkgin -y install cmake pkgconf
+      pkgin -y install cmake pkgconf  getopt
       clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
       ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
    fi
    if ! command -v hipercontracer >/dev/null ; then
-      pkgin -y install cmake pkgconf  boost lzmalib zstd
+      pkgin -y install cmake pkgconf  boost getopt lzmalib zstd
       clone-or-update hipercontracer https://dreibh@github.com/dreibh/hipercontracer
       ( cd /root/src/hipercontracer && ./autogen.sh -- -DWITH_ICONS=OFF -DWITH_IMPORTER=OFF -DWITH_QUERY=OFF -DWITH_LIBHPCTDB=OFF -DWITH_LIBUNIVERSALIMPORTER=OFF && make install )
    fi
@@ -608,7 +608,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       ( cd /root/src/system-tools && ./autogen.sh -- -DWITH_CONFIGURE_GRUB=OFF -DWITH_GIMP_SCRIPTS=OFF -DWITH_GIMP_SCRIPTS_EXAMPLES=OFF && make install )
    fi
    if ! command -v subnetcalc >/dev/null ; then
-      pkg_add -r -I cmake gnugetopt  gettext-runtime gettext-tools libidn2 libmaxminddb
+      pkg_add -r -I cmake  gettext-runtime gettext-tools libidn2 libmaxminddb
       clone-or-update subnetcalc https://dreibh@github.com/dreibh/subnetcalc
       ( cd /root/src/subnetcalc && ./autogen.sh && make install )
    fi
