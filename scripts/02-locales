@@ -140,7 +140,12 @@ elif [ "${ID}" == "sunos" ] ; then
       language="${locale%%_*}"
       if [[ -n "${language}" && ! -v "seenLanguages[$language]" ]] ; then
          seenLanguages["${language}"]=1
-         packages+=( "pkg://openindiana.org/locale/${language}" )
+         for candidate in "pkg://openindiana.org/system/osnet/locale/${language}" "pkg://openindiana.org/locale/${language}" ; do
+            # Check if the package exists in the remote repository:
+            if pkg list -a -q "${candidate}" 2>/dev/null; then
+               packages+=( "${candidate}" )
+            fi
+         done
       fi
    done
 
