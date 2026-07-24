@@ -330,7 +330,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    echo "dbus=YES" >> /etc/rc.conf
    echo "sddm=YES" >> /etc/rc.conf
 
-   pkgin -y install "${packages[@]}"
+   cp /usr/pkg/share/examples/pam.d/sddm* /etc/pam.d/
 
 
 # ------ OpenBSD ------------------------------------------------------------
