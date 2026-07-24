@@ -336,19 +336,58 @@ elif [ "${ID}" == "netbsd" ] ; then
 # ------ OpenBSD ------------------------------------------------------------
 elif [ "${ID}" == "openbsd" ] ; then
 
-   false # FIXME! TBD!
    packages=(
+      dejavu
+      dia
+      firefox
+#      fractgen
+      gimp
+      inkscape
+      kate
+      kde
+      kde-plasma
+      kile
+      konsole
+      libreoffice
+      noto-fonts
+      okteta
+      okular
+      open-sans-ttf
+      R
+      sddm
+      strawberry
+      wireshark
    )
+
    pkg_add -r -I "${packages[@]}"
 
+   rcctl enable messagebus || true
+   rcctl enable sddm || true
 
 # ------ Solaris ------------------------------------------------------------
 elif [ "${ID}" == "sunos" ] ; then
 
-   false # FIXME! TBD!
    packages=(
+      desktop/kde
+      desktop/sddm
+      desktop/kate
+      desktop/konsole
+      desktop/libreoffice
+      desktop/okteta
+      desktop/okular
+      diagnostic/wireshark
+      graphics/dia
+      image/editor/gimp
+      image/inkscape
+      math/r
+      system/font/truetype/dejavu
+      system/font/truetype/open-sans
+      web/browser/firefox
    )
-   pkg install "${packages[@]}" || [ $? -eq 4 ]
+
+   pkg install --accept "${packages[@]}" || [ $? -eq 4 ]
+
+   svcadm enable -r application/graphical-login/sddm
 
 
 # ------ Unknown ------------------------------------------------------------
