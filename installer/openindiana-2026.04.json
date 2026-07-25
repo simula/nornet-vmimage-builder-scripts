@@ -38,7 +38,7 @@
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -p now",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -y",
 
   // ====== Boot into installer =============================================
   "vboxmanage": [
