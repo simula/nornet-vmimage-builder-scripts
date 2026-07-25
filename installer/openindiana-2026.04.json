@@ -58,8 +58,8 @@
     "<f2><wait10s>",
     "<right><enter><wait10s>",
     "<f2><wait10s>",
-    // Set hostname and automatic network configuration:
-    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}.{{user `host_domain`}}<down><f2><wait5s>",
+    // Set hostname, and select automatic network configuration:
+    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}<down><f2><wait5s>",
     // Select time zone and date/time:
     "<f2><wait5s><f2>",
     // User settings:
@@ -74,6 +74,6 @@
     "<f2>",
     "<wait300s><wait300s>",
     // Shell after installation:
-    "<f9>3<enter>"
+    "<f9>3<enter><wait5s>"
   ]
 }
