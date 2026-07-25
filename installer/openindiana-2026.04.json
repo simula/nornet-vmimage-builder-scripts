@@ -79,6 +79,6 @@
     "<f9>3<enter><wait5s>",
     // VirtualBox again boots the CD-ROM, so it must be ejected.
     // Copy "reboot" command, eject the CD-ROM, and then forcefully reboot:
-    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q"
+    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>"
   ]
 }
