@@ -49,7 +49,7 @@
     [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"  ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "OpenBSD_64" ]
   ],
-  "boot_wait": "60s",
+  "boot_wait": "90s",
   "boot_command": [
     "S<enter><wait>",
     "NIC=$(ifconfig | sed -n -e '/^[a-z]/!d' -e '/^lo/d' -e '/^enc/d' -e '/^pflog/d' -e 's/:.*//p' | sed 1q)<enter>",
