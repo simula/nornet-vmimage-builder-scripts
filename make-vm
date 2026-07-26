@@ -640,6 +640,7 @@ cat <<EOF
 EOF
 ) >>"${JSONTMP}"
 
+
 # ====== Provisioners =======================================================
 cat >>"${JSONTMP}" <<EOF
   "provisioners": [
@@ -766,6 +767,14 @@ if [ "${HYPERVISOR}" == "QEMU" ] ; then
 elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
    jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <"${JSONTMP}" >"${JSON}"
+elif [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+   # NetBSD, OpenBSD, and OpenIndiana do not support virtio for storage:
+   if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana) ]] ; then
+      jq '.builders[0].hard_drive_interface = "sata" | .builders[0].iso_interface = "sata"' \
+         <"${JSONTMP}" >"${JSON}"
+   else
+      jq . <"${JSONTMP}" >"${JSON}"
+   fi
 else
    jq . <"${JSONTMP}" >"${JSON}"
 fi

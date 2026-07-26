@@ -31,9 +31,9 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC6/SHA512 | grep -- -amd64.iso
-  "iso_url": "https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC6/NetBSD-11.0_RC6-amd64.iso",
-  "iso_checksum": "file:https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC6/SHA512",
+  // Checksum: curl -s https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC7/SHA512 | grep -- -amd64.iso
+  "iso_url": "https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC7/NetBSD-11.0_RC7-amd64.iso",
+  "iso_checksum": "file:https://www.nic.funet.fi/pub/NetBSD/images/11.0_RC7/SHA512",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

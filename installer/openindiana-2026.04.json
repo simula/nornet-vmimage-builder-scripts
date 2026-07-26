@@ -38,7 +38,7 @@
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -p now",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -y",
 
   // ====== Boot into installer =============================================
   "vboxmanage": [
@@ -58,10 +58,11 @@
     "<f2><wait10s>",
     "<right><enter><wait10s>",
     "<f2><wait10s>",
-    // Set hostname and automatic network configuration:
-    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}.{{user `host_domain`}}<down><f2><wait5s>",
+    // Set hostname, and select automatic network configuration:
+    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}<down><wait10s>",
+    "<f2><wait10s>",
     // Select time zone and date/time:
-    "<f2><wait5s><f2>",
+    "<f2><wait5s><f2><wait5s>",
     // User settings:
     "{{user `user_password`}}<down>",
     "{{user `user_password`}}<down>",
@@ -69,11 +70,15 @@
     "{{user `user_name`}}<down>",
     "{{user `user_password`}}<down>",
     "{{user `user_password`}}<down>",
-    "<f2><wait5s>",
+    "<wait10s><f2>",
     // Confirm:
     "<f2>",
-    "<wait300s><wait300s>",
+    // Installation usually takes around 22 minutes ...
+    "<wait300s><wait300s><wait300s><wait300s><wait300s>",
     // Shell after installation:
-    "<f9>3<enter>"
+    "<f9>3<enter><wait5s>",
+    // VirtualBox again boots the CD-ROM, so it must be ejected.
+    // Copy "reboot" command, eject the CD-ROM, and then forcefully reboot:
+    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>"
   ]
 }
