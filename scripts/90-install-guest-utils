@@ -306,8 +306,22 @@ elif [ "${ID}" == "openbsd" ] ; then
 # ------ Solaris ------------------------------------------------------------
 elif [ "${ID}" == "sunos" ] ; then
 
-   # FIXME!
-   true
+   # NOTE: virt-what is not available, HYPERVISOR is empty!
+
+   # ------ VirtualBox ------------------------------------------------------
+   if ! prtconf -vp | grep -qE "pci80ee" ; then
+      pkg install virtualbox-additions || [ $? -eq 4 ]
+
+      # FIXME: Work-around for  mouse service failing under VirtualBox!
+      # Bug report: https://www.illumos.org/issues/18284
+      svcadm disable svc:/application/virtualbox/vboxmslnk:default || true
+      svcadm clear svc:/application/virtualbox/vboxmslnk:default || true
+
+   # ------ QEMU ------------------------------------------------------------
+   elif ! prtdiag | grep -qE "pci1af4,3|isa|asy" ; then
+      # See https://gist.github.com/jimklimov/b79ef519add34af96e1fcc59de58165c
+      pkg install qemu || [ $? -eq 4 ]
+   fi
 
 # ------ Unknown ------------------------------------------------------------
 else
