@@ -38,13 +38,13 @@
   "ssh_pty": true,
   "ssh_timeout": "60m",
   "ssh_handshake_attempts": "1024",
-  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -y",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
 
   // ====== Boot into installer =============================================
   "vboxmanage": [
     // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"       ],
     [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
-    [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"      ],
+    // [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"      ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "OpenSolaris_64" ]
   ],
   "boot_wait": "45s",

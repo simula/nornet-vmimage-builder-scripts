@@ -160,10 +160,11 @@ fi
 
 # ====== Run fstrim =========================================================
 if [ "${UNAME}" == "Linux" ] ; then
-   true   # FIXME! Temporary work-around for installation issue!
-   if command -v fstrim 2>/dev/null ; then
-      fstrim -av || true
-   fi
+   # FIXME! Temporary work-around for installation issue!
+   true
+   # if command -v fstrim 2>/dev/null ; then
+   #    fstrim -av || true
+   # fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    sudo zpool trim zroot
 elif [ "${UNAME}" == "SunOS" ] ; then
