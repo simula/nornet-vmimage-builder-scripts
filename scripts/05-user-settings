@@ -83,7 +83,8 @@ fi
 
 if [ "${UNAME}" == "FreeBSD" ] ||
    [ "${UNAME}" == "NetBSD"  ] ||
-   [ "${UNAME}" == "OpenBSD" ] ; then
+   [ "${UNAME}" == "OpenBSD" ] ||
+   [ "${UNAME}" == "SunOS"   ] ; then
    if [ ! -e "${USER_HOME}/.bash_profile" ] ; then
       cat >"${USER_HOME}/.bash_profile" <<EOF
 test -f ~/.bashrc && source ~/.bashrc
