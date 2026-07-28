@@ -145,7 +145,6 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       pbuilder
       pkg-config
       python3-distro
-      python3-netifaces
       python3-psutil
       python3-pip
       r-base
@@ -409,7 +408,6 @@ elif [ "${ID}" == "freebsd" ] ; then
       p5-PkgConfig-LibPkgConf
       pkgconf
       py312-distro
-      py312-netifaces
       py312-psutil
       py312-yamllint
       python
