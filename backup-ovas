@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Template VM Image Builder
+# Copyright (C) 2017-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+set -euo pipefail
+
+STORAGE="nornetpp@oesthorn.proxmox.crnalab.net:/ringnes/OVAs"
+source ./directories.config
+
+
+hypervisor="VirtualBox"
+VMs=$(find "${OUTPUT_DIRECTORY}" -mindepth 1 -maxdepth 1 -type d -name "${hypervisor}*")
+for vm in ${VMs} ; do
+   if [ -e "${vm}/successfully-built.txt" ] ; then
+      ovaFullName=$(find "${vm}" -mindepth 2 -maxdepth 2 -name "*.ova")
+      if [ -e "${ovaFullName}" ] ; then
+         ovaBaseName="$(basename "${ovaFullName}")"
+         if [[ "${ovaBaseName}" =~ ^([a-zA-Z0-9]+)-([a-zA-Z0-9]+)-([a-zA-Z0-9\.-]+)\.ova$ ]] ; then
+            project="${BASH_REMATCH[1]}"
+            distribution="${BASH_REMATCH[2]}"
+            release="${BASH_REMATCH[3]}"
+            date="$(date -r "${ovaFullName}" +"%Y-%m-%d")"
+
+            echo "H=$hypervisor P=$project D=$distribution R=$release T=${date}"
+            rsync -a --partial --info=progress2 "${ovaFullName}" "${STORAGE}/${project}/${date}/"
+         fi
+      fi
+   fi
+done
