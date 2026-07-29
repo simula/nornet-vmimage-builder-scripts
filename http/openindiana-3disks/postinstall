@@ -2,16 +2,15 @@
 
 set -euxo pipefail
 
-if prtconf -vp | grep -qE "pci1af4,3" ; then
+if prtdiag | grep -q "QEMU" ; then
 
   pkg install qemu
 
   mkdir -p /etc/qemu
   cat >/etc/qemu/qemu-ga.conf <<EOF
 [general]
-method = virtio-serial
-### May need a kernel driver for virtio, would be something like:
-path=/devices/pci@0,0/pci1b36,1@5/pci1af4,3@1:a
+method = isa-serial
+path=/dev/ttya
 daemon = false
 pidfile = /var/run/qemu-ga.pid
 logfile = /var/log/qemu-ga.log
@@ -38,4 +37,7 @@ EOF
 </service_bundle>
 EOF
 
+   svccfg import /lib/svc/manifest/system/qemu-ga.xml
+   svcadm enable qemu-ga
+   svcadm clear qemu-ga
 fi
