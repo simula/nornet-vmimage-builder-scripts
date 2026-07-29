@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+if prtconf -vp | grep -qE "pci1af4,3" ; then
+
+  pkg install qemu
+
+  mkdir -p /etc/qemu
+  cat >/etc/qemu/qemu-ga.conf <<EOF
+[general]
+method = virtio-serial
+### May need a kernel driver for virtio, would be something like:
+path=/devices/pci@0,0/pci1b36,1@5/pci1af4,3@1:a
+daemon = false
+pidfile = /var/run/qemu-ga.pid
+logfile = /var/log/qemu-ga.log
+statedir = /var/run
+EOF
+
+  cat >/lib/svc/manifest/system/qemu-ga.xml <<EOF
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+<service_bundle type='manifest' name='qemu-ga'>
+  <service name='system/qemu-ga' type='service' version='1'>
+    <dependency name='fs-local' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local'/>
+    </dependency>
+    <exec_method type='method' name='start' exec='/usr/bin/qemu-ga -c /etc/qemu/qemu-ga.conf' timeout_seconds='60'/>
+    <exec_method type='method' name='stop' exec=':kill' timeout_seconds='60'/>
+    <instance name='default' enabled='true'/>
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>QEMU Guest Agent</loctext>
+      </common_name>
+    </template>
+  </service>
+</service_bundle>
+EOF
+
+fi
