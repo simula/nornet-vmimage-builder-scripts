@@ -51,25 +51,28 @@
   "boot_command": [
     // Set language and keyboard layout to default (US English):
     "<enter><wait10s>",
-    "<enter><wait30s>",
+    "<enter><wait10s>",
+    // Change terminal to "sun-color":
+    "4<enter><wait10s>sun-color<enter><wait5s>",
+    // Select "Install OpenIndiana":
     "1<enter><wait10s>",
     // Prepare storage:
-    "<f2><wait10s>",
-    "<f2><wait10s>",
+    "<f2><wait30s>",
+    "<f2><wait30s>",
     "<right><enter><wait10s>",
     "<f2><wait10s>",
     // Set hostname, and select automatic network configuration:
-    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}<down><wait10s>",
+    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}<tab><wait10s>",
     "<f2><wait10s>",
     // Select time zone and date/time:
     "<f2><wait5s><f2><wait5s>",
     // User settings:
-    "{{user `user_password`}}<down>",
-    "{{user `user_password`}}<down>",
-    "{{user `user_realname`}}<down>",
-    "{{user `user_name`}}<down>",
-    "{{user `user_password`}}<down>",
-    "{{user `user_password`}}<down>",
+    "{{user `user_password`}}<tab>",
+    "{{user `user_password`}}<tab>",
+    "{{user `user_realname`}}<tab>",
+    "{{user `user_name`}}<tab>",
+    "{{user `user_password`}}<tab>",
+    "{{user `user_password`}}<tab>",
     "<wait10s><f2>",
     // Confirm:
     "<f2>",
@@ -79,6 +82,15 @@
     "<f9>3<enter><wait5s>",
     // VirtualBox again boots the CD-ROM, so it must be ejected.
     // Copy "reboot" command, eject the CD-ROM, and then forcefully reboot:
-    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>"
+    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>",
+    // Rebooting ...
+    "<wait120s>",
+    // Log in and perform post-installation steps:
+    "{{user `user_name`}}<enter>",
+    "{{user `user_password`}}<enter><wait5s>",
+    "wget -O /tmp/postinstall http://{{ .HTTPIP }}:{{ .HTTPPort }}/postinstall && ",
+    "chmod +x /tmp/postinstall && ",
+    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall",
+    "<enter>"
   ]
 }
