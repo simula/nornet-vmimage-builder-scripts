@@ -37,7 +37,7 @@ set -euo pipefail
 
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS="Ubuntu-24.04"
 
 # ------ Parameters ---------------------------------------

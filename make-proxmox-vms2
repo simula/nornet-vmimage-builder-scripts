@@ -37,7 +37,7 @@ set -euo pipefail
 
 
 HYPERVISOR="Proxmox"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE"
 
 # ------ Parameters ---------------------------------------

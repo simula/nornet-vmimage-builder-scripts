@@ -37,7 +37,7 @@ set -euo pipefail
 
 
 HYPERVISOR="Proxmox"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
+SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
 # SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE OpenSUSE-Tumbleweed Alpine-3.24"
 # SYSTEMS="NetBSD-11.0 OpenBSD-7.9"   # !!! Not working yet! -> https://github.com/hashicorp/packer-plugin-proxmox/issues/276 !!!
