@@ -38,9 +38,9 @@ set -euo pipefail
 
 HYPERVISOR="VirtualBox"
 SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
-# SYSTEMS="${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY}"
-# SYSTEMS="Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE"
-# SYSTEMS="NetBSD-11.0 OpenBSD-7.9"
+# SYSTEMS=(  "${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY[@]}" )
+# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
+# SYSTEMS=( NetBSD-11.0 OpenBSD-7.9 )
 
 # ------ Parameters ---------------------------------------
 PROJECTS="Minimal"

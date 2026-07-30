@@ -37,8 +37,7 @@ if [ ! -e "${CACHE_DIRECTORY}" ] ; then
 fi
 
 # ====== Default architecture ===============================================
-ARCHITECTURES="$(uname -m)"
-ARCHITECTURES="${ARCHITECTURES/x86_64/amd64}"
+ARCHITECTURES=( "$(uname -m | sed -e 's/^x86_64$/amd64/')" )
 
 
 # ###### Check for invalid combinations #####################################
@@ -94,8 +93,8 @@ build-defined-vms ()
 
    isFirst=1
    for project in ${PROJECTS} ; do
-      for system in ${SYSTEMS} ; do
-         for architecture in ${ARCHITECTURES} ; do
+      for system in ${SYSTEMS[@]} ; do
+         for architecture in ${ARCHITECTURES[@]} ; do
 
             # shellcheck disable=SC2001
             distribution=$(echo "${system}" | sed -e "s/-.*$//g")
