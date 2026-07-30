@@ -196,7 +196,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       install-opensans-fonts "/usr/local/share/fonts"
    fi
 elif [ "${ID}" == "sunos" ] ; then
-   sudo pkg install pkg://openindiana.org/developer/build/cmake gimp git gnu-getopt graphicsmagick image-exiftool || [ $? -eq 4 ]
+   sudo pkg install pkg://openindiana.org/developer/build/cmake gcc-14 gimp git gnu-getopt graphicsmagick image-exiftool || [ $? -eq 4 ]
    if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
       install-opensans-fonts "/usr/share/fonts/TrueType"
    fi
