@@ -42,7 +42,7 @@ SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
 # SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="HiPerConTracer"
+PROJECTS=( HiPerConTracer )
 HOSTNAME="dbtest.hipercontracer.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="hpct4me!"

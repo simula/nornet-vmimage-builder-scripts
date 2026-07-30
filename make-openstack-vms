@@ -41,7 +41,7 @@ SYSTEMS=( "${DEFAULT_LINUX_UBUNTU_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( Ubuntu-22.04 )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="5gVINNI-OpenStack"   # 5gVINNI-OpenStack 5gVINNI-OpenStack-Development
+PROJECTS=( 5gVINNI-OpenStack )   # 5gVINNI-OpenStack 5gVINNI-OpenStack-Development
 
 HOSTNAME="albacete.openstack"
 USER_NAME="nornetpp"

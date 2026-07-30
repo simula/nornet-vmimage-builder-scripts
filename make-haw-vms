@@ -41,7 +41,10 @@ SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="HAW-Router HAW-Desktop"
+PROJECTS=(
+   HAW-Router
+   HAW-Desktop
+)
 # HOSTNAME="baumwall.haw.nornet"
 USER_NAME="student"
 USER_PASSWORD="b00tloader"
@@ -65,7 +68,7 @@ OPTIONS=""
 VIDEO="FHD"
 # ---------------------------------------------------------
 
-for project in ${PROJECTS} ; do
+for project in ${PROJECTS[@]} ; do
    if [ "${project}" == "HAW-Desktop" ] ; then
       HOSTNAME="baumwall.haw.nornet"
       CORES=4
@@ -77,7 +80,7 @@ for project in ${PROJECTS} ; do
       MEMORY=2048
       BALLOON=1024
    fi
-   PROJECTS="${project}"
+   PROJECTS=( "${project}" )
    # shellcheck disable=SC2119
    build-defined-vms &
 done

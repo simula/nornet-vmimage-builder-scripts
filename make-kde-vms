@@ -41,7 +41,7 @@ SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="KDE"   # Minimal Basic Development KDE KDE+Development
+PROJECTS=( KDE )   # Minimal Basic Development KDE KDE+Development
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"

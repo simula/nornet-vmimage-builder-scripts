@@ -39,7 +39,7 @@ set -euo pipefail
 HYPERVISOR="Docker"
 ARCHITECTURES=(
    amd64
-   # arm64v8 riscv64 ppc64le s390x
+   arm64v8 riscv64 ppc64le s390x
    # arm32v7 arm32v5 i386
 )
 SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" )
@@ -48,7 +48,11 @@ SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( Debian-Unstable )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal Basic Development"   # Minimal Basic Development
+PROJECTS=(
+   Minimal
+   Basic
+   # Development
+)
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"

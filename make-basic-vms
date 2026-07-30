@@ -44,7 +44,13 @@ SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( NetBSD-11.0 OpenBSD-7.9 )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Basic"   # Minimal Basic Development KDE KDE+Development
+PROJECTS=(
+   # Minimal
+   Basic
+   # Development
+   # KDE
+   # KDE+Development
+)
 HOSTNAME="localhost"
 USER_NAME="nornetpp"
 USER_PASSWORD="!NorNetInst!"

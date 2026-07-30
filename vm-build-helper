@@ -92,7 +92,7 @@ build-defined-vms ()
    fi
 
    isFirst=1
-   for project in ${PROJECTS} ; do
+   for project in ${PROJECTS[@]} ; do
       for system in ${SYSTEMS[@]} ; do
          for architecture in ${ARCHITECTURES[@]} ; do
 
