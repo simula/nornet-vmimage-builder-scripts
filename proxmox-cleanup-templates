@@ -90,9 +90,9 @@ BEGIN {
       if [ "${dryRun}" -eq 0 ] ; then
          echo -e "\x1b[35mRemoving ${id} (${name}) with status \"${status}\" ...\x1b[0m"
          echo -e "\x1b[36mqm stop ${id}\x1b[0m"
-         qm stop ${id}
+         qm stop "${id}"
          echo -e "\x1b[36mqm destroy ${id}\x1b[0m"
-         qm destroy ${id}
+         qm destroy "${id}"
       else
          echo -e "\x1b[35mDRY RUN ONLY: Would remove ${id} (${name}) with status \"${status}\" ...\x1b[0m"
          echo -e "\x1b[36mqm stop ${id}\x1b[0m"

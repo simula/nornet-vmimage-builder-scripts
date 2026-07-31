@@ -187,21 +187,21 @@ elif [ "${ID}" == "freebsd" ] ; then
    sudo fc-cache -f
 elif [ "${ID}" == "netbsd" ] ; then
    sudo pkgin -y install cmake getopt gimp git GraphicsMagick p5-Image-ExifTool
-   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+   if ! fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep -q "^Open Sans" ; then
       install-opensans-fonts "/usr/pkg/share/fonts/X11/TTF"
    fi
 elif [ "${ID}" == "openbsd" ] ; then
    sudo pkg_add -r -I cmake flock "$(pkg_info -z "gimp->=3")" git gnugetopt GraphicsMagick p5-Image-ExifTool unzip--
-   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+   if ! fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep -q "^Open Sans" ; then
       install-opensans-fonts "/usr/local/share/fonts"
    fi
 elif [ "${ID}" == "sunos" ] ; then
    sudo pkg install pkg://openindiana.org/developer/build/cmake gcc-14 gimp git gnu-getopt graphicsmagick image-exiftool || [ $? -eq 4 ]
-   if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+   if ! fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep -q "^Open Sans" ; then
       install-opensans-fonts "/usr/share/fonts/TrueType"
    fi
 fi
-if [ -z "$(fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep "^Open Sans")" ] ; then
+if ! fc-list : family style -f "%{family[0]} %{style[0]}\n" | grep -q "^Open Sans" ; then
    echo >&2 "ERROR: Open Sans fonts are not available!"
    exit 1
 fi

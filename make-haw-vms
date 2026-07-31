@@ -68,7 +68,7 @@ OPTIONS=""
 VIDEO="FHD"
 # ---------------------------------------------------------
 
-for project in ${PROJECTS[@]} ; do
+for project in "${PROJECTS[@]}" ; do
    if [ "${project}" == "HAW-Desktop" ] ; then
       HOSTNAME="baumwall.haw.nornet"
       CORES=4
