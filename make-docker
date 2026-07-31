@@ -51,7 +51,7 @@ SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" )
 PROJECTS=(
    Minimal
    Basic
-   # Development
+   Development
 )
 HOSTNAME="gummersbach.simula.nornet"
 USER_NAME="nornetpp"
