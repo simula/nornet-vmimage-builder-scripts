@@ -37,8 +37,11 @@ set -euo pipefail
 
 
 HYPERVISOR="VirtualBox"
-SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
+SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" "${DEFAULT_FREEBSD_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
+# SYSTEMS=( Ubuntu-26.04 OpenSUSE-Tumbleweed Alpine-3.24 )
+# SYSTEMS=( FreeBSD-15.1-RELEASE OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-44 )
+# SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
 PROJECTS=( KDE )   # Minimal Basic Development KDE KDE+Development

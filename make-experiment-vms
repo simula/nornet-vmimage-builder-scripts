@@ -37,8 +37,8 @@ set -euo pipefail
 
 
 HYPERVISOR="VirtualBox"
-SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
-# SYSTEMS=( Ubuntu-24.04 )
+SYSTEMS=( "${DEFAULT_LINUX_UBUNTU_SYSTEMS_CURRENT[@]}" "${DEFAULT_LINUX_FEDORA_SYSTEMS_CURRENT[@]}" )
+# SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
 PROJECTS=( NorNet-Experiment )
