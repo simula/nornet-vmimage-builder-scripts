@@ -37,11 +37,11 @@ set -euo pipefail
 
 
 HYPERVISOR="VirtualBox"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
-# SYSTEMS="Ubuntu-24.04"
+SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
+# SYSTEMS=( Ubuntu-24.04 )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="NorNet-Experiment"
+PROJECTS=( NorNet-Experiment )
 
 HOSTNAME="experiment.hu.nornet"
 USER_NAME="nornetpp"

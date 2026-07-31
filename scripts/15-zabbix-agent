@@ -129,7 +129,7 @@ elif [ "${ID}" == "openbsd" ] ; then
 elif [ "${ID}" == "sunos" ] ; then
 
    packages=( "zabbix-agent" )
-   pkg install "${packages[@]}"
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
 
 # ------ Unknown ------------------------------------------------------------
 else

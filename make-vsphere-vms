@@ -37,11 +37,11 @@ set -euo pipefail
 
 
 HYPERVISOR="vSphere"
-SYSTEMS="${DEFAULT_SYSTEMS_CURRENT}"
-# SYSTEMS="Ubuntu-24.04"
+SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
+# SYSTEMS=( Ubuntu-24.04 )
 
 # ------ Parameters ---------------------------------------
-PROJECTS="Minimal NorNet NorNet-Desktop"   #  NorNet-Desktop
+PROJECTS=( Minimal NorNet NorNet-Desktop )   #  NorNet-Desktop
 
 HOSTNAME="tjuvholmen.simula.nornet"
 USER_NAME="nornetpp"

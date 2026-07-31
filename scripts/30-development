@@ -596,7 +596,7 @@ elif [ "${ID}" == "sunos" ] ; then
       system/header
    )
 
-   pkg install "${packages[@]}"
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
    # Install Valgrind, if available:
    pkg install valgrind || true
 
@@ -624,13 +624,11 @@ programs=(
    exiftool
    flex
    gdb
-   git-lfs
    gm
    gs
    libtool
    make
    pkg-config
-   shellcheck
 )
 
 if [ "${ID}" == "openbsd" ] ; then
@@ -661,6 +659,12 @@ else
       # Valgrind is at least available for AMD64 and ARM64:
       programs+=( valgrind )
    fi
+fi
+
+if [  "${ID}" == "sunos" ] ; then
+   true   # No git-lfs and Shell-Check in Solaris, yet.
+else
+   programs+=( git-lfs shellcheck )
 fi
 
 # ------ Verify command availability ----------------------------------------
