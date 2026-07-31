@@ -47,5 +47,5 @@ EOF
 
    svccfg import /lib/svc/manifest/system/qemu-ga.xml
    svcadm enable qemu-ga
-   svcadm clear qemu-ga
+   svcadm clear qemu-ga || true
 fi
