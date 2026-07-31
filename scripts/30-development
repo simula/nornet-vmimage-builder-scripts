@@ -408,6 +408,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       p5-PkgConfig-LibPkgConf
       pkgconf
       py312-distro
+      py312-netifaces   # FIXME! This should be removed soon!
       py312-psutil
       py312-yamllint
       python
@@ -570,7 +571,7 @@ elif [ "${ID}" == "sunos" ] ; then
    packages=(
       developer/build/autoconf
       developer/build/automake
-      developer/build/cmake
+      pkg://openindiana.org/developer/build/cmake
       developer/build/libtool
       developer/build/make
       developer/build/pkg-config
