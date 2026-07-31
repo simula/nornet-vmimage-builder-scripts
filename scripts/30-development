@@ -595,7 +595,7 @@ elif [ "${ID}" == "sunos" ] ; then
       system/header
    )
 
-   pkg install "${packages[@]}"
+   pkg install "${packages[@]}" || [ $? -eq 4 ]
    # Install Valgrind, if available:
    pkg install valgrind || true
 
