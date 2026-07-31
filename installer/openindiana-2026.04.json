@@ -84,13 +84,13 @@
     // Copy "reboot" command, eject the CD-ROM, and then forcefully reboot:
     "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>",
     // Rebooting ...
-    "<wait120s>",
+    "<wait200s>",
     // Log in and perform post-installation steps:
     "{{user `user_name`}}<enter>",
     "{{user `user_password`}}<enter><wait5s>",
     "wget -O /tmp/postinstall http://{{ .HTTPIP }}:{{ .HTTPPort }}/postinstall && ",
     "chmod +x /tmp/postinstall && ",
-    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall",
+    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall && reboot",
     "<enter>"
   ]
 }
