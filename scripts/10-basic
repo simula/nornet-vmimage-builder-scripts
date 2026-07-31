@@ -660,6 +660,10 @@ elif [ "${ID}" == "sunos" ] ; then
 
    pkg install "${packages[@]}" || [ $? -eq 4 ]
 
+   # FIXME: Work-around for svc:/application/desktop-cache/input-method-cache:default issue:
+   svcadm clear svc:/application/desktop-cache/input-method-cache:default || true
+   svcadm restart svc:/application/desktop-cache/input-method-cache:default || true
+
    # ------ Build missing programs from sources -----------------------------
    mkdir -p /root/src
    cd /root/src
