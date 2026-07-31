@@ -38,7 +38,9 @@ for vm in ${VMs} ; do
             date="$(date -r "${ovaFullName}" +"%Y-%m-%d")"
 
             echo "H=$hypervisor P=$project D=$distribution R=$release T=${date}"
-            rsync -a --partial --info=progress2 "${ovaFullName}" "${STORAGE}/${project}/${date}/"
+            rsync -a --partial --info=progress2 \
+               --perms --chmod=D755,F644 \
+               "${ovaFullName}" "${STORAGE}/${project}/${date}/"
          fi
       fi
    fi
