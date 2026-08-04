@@ -51,11 +51,11 @@
   "boot_wait": "45s",
   "boot_command": [
     "<enter><enter>e<enter><enter>dhcpcd -4<enter><wait5s>",
-    "cd /tmp && ",
+    "mkdir -p /tmp/autoinstall && ",
     "ping -c3 -i1 {{ .HTTPIP }} && ",
-    "ftp -o installer http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
-    "chmod +x installer && ",
+    "ftp -o /tmp/autoinstall/installer http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
+    "chmod +x /tmp/autoinstall/installer && ",
     "ping -c3 -i0.3 www.heise.de && ",
-    "./installer<enter>"
+    "/tmp/autoinstall/installer<enter>"
   ]
 }
