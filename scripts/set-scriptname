@@ -31,7 +31,7 @@
 # Bash options:
 set -euo pipefail
 
-for script in [0-9][0-9]* ; do
+for script in [0-9][0-9]* prepare* ; do
    echo "${script}"
    basename="$(basename "${script}")"
 

@@ -33,13 +33,14 @@ set -euo pipefail
 
 
 # ###### Print script name, to make Packer output easier readable ###########
+SCRIPT="80-simulamet"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;35m█" "▀" "█\e[0m"
-   figlet -w 156 "$(basename "$0")" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;35m█\e[22m" "\e[1;35m█\e[0m"
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;35m█" "▄" "█\e[0m"
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
+   figlet -w 156 "${SCRIPT}" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;31m█\e[22m" "\e[1;31m█\e[0m"
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▄" "█\e[0m"
 else
-   echo -e "\e[1;34;22m########## $(basename "$0") ##########\e[0m"
+   echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
 # Enable printing the command-lines executed:
