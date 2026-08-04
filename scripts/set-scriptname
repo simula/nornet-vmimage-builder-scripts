@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+for script in [0-9][0-9]* ; do
+   echo "${script}"
+   basename="$(basename "${script}")"
+
+   sed -e "s/^SCRIPT=\"[^\"]*\"/SCRIPT=\"${basename}/" -i "${script}"
+done
