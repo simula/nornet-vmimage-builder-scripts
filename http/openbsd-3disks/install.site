@@ -73,12 +73,12 @@ pkg_add -r -I bash sudo-- virt-what
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
-if [ "$(virt-what)" = "kvm" ] ; then
+if [ "$(/usr/local/sbin/virt-what)" = "kvm" ] ; then
    pkg_add -r -I qemu-ga
+   rcctl enable qemu_ga
    # Guest agent has to use ISA serial port:
    # https://openports.pl/path/emulators/qemu,-ga
    rcctl set qemu_ga flags "-m isa-serial -p /dev/cua00"
-   rcctl enable qemu_ga
    rcctl start qemu_ga || true
 fi
 
@@ -92,9 +92,9 @@ chmod 0600 /etc/doas.conf
 
 # ------ sudo configuration -------------------------------------------------
 mkdir -p /etc/sudoers.d
-echo "$user ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/99-$user"
-chmod 0600 "/etc/sudoers.d/99-$user"
-if ! grep -q -E "^#(include|includedir) /etc/sudoers.d" /etc/sudoers; then
-   echo "" >> /etc/sudoers
-   echo "#includedir /etc/sudoers.d" >> /etc/sudoers
+echo "$user ALL=(ALL:ALL) NOPASSWD: ALL" >"/etc/sudoers.d/99-$user"
+chmod 0440 "/etc/sudoers.d/99-$user"
+if ! grep -q -E "^#(include|includedir) /etc/sudoers.d" /etc/sudoers ; then
+   echo "" >>/etc/sudoers
+   echo "#includedir /etc/sudoers.d" >>/etc/sudoers
 fi
