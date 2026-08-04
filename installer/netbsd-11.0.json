@@ -50,8 +50,9 @@
   ],
   "boot_wait": "45s",
   "boot_command": [
-    "<enter><enter>e<enter><enter>dhcpcd -4<enter>sleep 2<enter>",
+    "<enter><enter>e<enter><enter>dhcpcd -4<enter><wait5s>",
     "cd /tmp && ",
+    "ping -c3 -i1 {{ .HTTPIP }} && ",
     "ftp -o installer http://{{ .HTTPIP }}:{{ .HTTPPort }}/installer && ",
     "chmod +x installer && ",
     "ping -c3 -i0.3 www.heise.de && ",
