@@ -273,7 +273,7 @@ chroot $r useradd -u 1000 -g "<SET_USERNAME_HERE>" \
 mkdir -p $r/usr/pkg/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" \
    >"$r/usr/pkg/etc/sudoers.d/99-<SET_USERNAME_HERE>"
-chmod 0600 "$r/usr/pkg/etc/sudoers.d/99-<SET_USERNAME_HERE>"
+chmod 0440 "$r/usr/pkg/etc/sudoers.d/99-<SET_USERNAME_HERE>"
 
 
 # ====== Reboot =============================================================
