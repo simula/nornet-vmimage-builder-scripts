@@ -769,6 +769,8 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <"${JSONTMP}" | \
    if [[ "${DISTRIBUTION}" =~ ^(OpenIndiana) ]] ; then
       jq '.builders[0].disks[0].type = "sata" | .builders[0].disks[1].type = "sata" | .builders[0].disks[2].type = "sata" | .builders[0].disks[0].io_thread = false | .builders[0].disks[1].io_thread = false | .builders[0].disks[2].io_thread = false | .builders[0].network_adapters[0].model = "e1000"'
+   elif [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD) ]] ; then
+      jq '.builders[0].qemu_agent = "isa"'
    else
       jq . <"${JSONTMP}"
    fi >"${JSON}"
