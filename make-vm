@@ -772,7 +772,7 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    elif [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD) ]] ; then
       jq '.builders[0].qemu_agent = "isa"'
    else
-      jq . <"${JSONTMP}"
+      cat
    fi >"${JSON}"
 elif [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    # NetBSD, OpenBSD, and OpenIndiana do not support virtio for storage:
