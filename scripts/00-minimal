@@ -203,7 +203,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    zypper addrepo -f "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/" dreibh-obs || true
 
    # Ensure that the installed packages are up-to-date:
-   zypper --non-interactive update -y
+   zypper --non-interactive update --replacefiles -y
 
    packages=(
       bash
@@ -219,7 +219,9 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       virt-what
    )
 
-   zypper --non-interactive install --no-recommends -y "${packages[@]}"
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
+      --no-recommends -y "${packages[@]}"
 
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then

@@ -82,7 +82,7 @@ case "${ID}" in
       dnf install --setopt=install_weak_deps=False -y sudo
       ;;
    opensuse-*)
-      zypper --non-interactive install --no-recommends -y bash sudo system-group-wheel
+      zypper --non-interactive install --replacefiles --no-recommends -y bash sudo system-group-wheel
       ;;
    alpine)
       apk add bash doas shadow sudo
