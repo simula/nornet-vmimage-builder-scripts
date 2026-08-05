@@ -214,12 +214,28 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       konsole
       libreoffice
       google-noto-fonts
+      google-noto-coloremoji-fonts
+      google-noto-sans-cjk-fonts
+      google-noto-sans-hk-fonts
+      google-noto-sans-hk-mono-fonts
+      google-noto-sans-jp-fonts
+      google-noto-sans-jp-mono-fonts
+      google-noto-sans-kr-fonts
+      google-noto-sans-kr-mono-fonts
+      google-noto-sans-sc-mono-fonts
+      google-noto-sans-tc-fonts
+      google-noto-sans-tc-mono-fonts
+      google-noto-serif-hk-fonts
+      google-noto-serif-jp-fonts
+      google-noto-serif-kr-fonts
+      google-noto-serif-tc-fonts
       okteta
       okular
       google-opensans-fonts
       kde-oxygen-fonts
       kf6-oxygen-icons
       oxygen6
+      plasma6-desktop
       plasma6-session-x11
       qt6-imageformats
       sddm-qt6
