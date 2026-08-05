@@ -318,11 +318,11 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       zlib-devel
    )
    zypper --non-interactive install \
-      --force-resolution --allow-vendor-change --allow-name-change \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
       --no-recommends -y "${packages[@]}"
    # Install Valgrind, if available:
    zypper --non-interactive install \
-      --force-resolution --allow-vendor-change --allow-name-change \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
       --no-recommends -y valgrind || true
 
 

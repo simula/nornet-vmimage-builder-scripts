@@ -107,7 +107,9 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    packages=(
       glibc-i18ndata
    )
-   zypper --non-interactive install --no-recommends -y "${packages[@]}"
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
+      --no-recommends -y "${packages[@]}"
 
    # Locales:
    for locale in ${LOCALES} ; do

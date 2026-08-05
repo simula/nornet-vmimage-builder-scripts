@@ -117,7 +117,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    packages=( docker docker-buildx docker-compose )
    zypper --non-interactive install \
-      --force-resolution --allow-vendor-change --allow-name-change \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
       --no-recommends -y "${packages[@]}"
 
    # Add user to "docker" group:

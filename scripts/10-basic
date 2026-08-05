@@ -382,7 +382,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
    )
 
    zypper --non-interactive install \
-      --force-resolution --allow-vendor-change --allow-name-change \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
       --no-recommends -y "${packages[@]}"
 
 
