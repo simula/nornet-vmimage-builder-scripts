@@ -328,17 +328,20 @@ elif [ "${ID}" == "netbsd" ] ; then
       gimp
       inkscape
       kate
-      kf5
       kile
       konsole
       libreoffice
       noto-ttf
       okteta
       okular
+      plasma6-workspace
+      plasma6-oxygen
       R
       sddm
       strawberry
       wireshark
+
+      xterm   # FIXME!
    )
 
    pkgin -y install "${packages[@]}"
