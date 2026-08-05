@@ -66,10 +66,16 @@ rm -rf /tmp/installtmp
 
 # ====== Reset machine identity =============================================
 if [ -e /etc/machine-id ] ; then
-   # Ensure to create a new machine ID on the next boot.
    # The machine ID is used e.g. as DHCP Identifier, it must be unique to
    # avoid assigning the same IP address to multiple VMs!
-   echo -n | sudo tee /etc/machine-id
+   if command -v dbus-uuidgen >/dev/null ; then
+      # Generate new ID already now:
+      rm -f /etc/machine-id
+      dbus-uuidgen --ensure=/etc/machine-id
+   else
+      # The ID should be reset during the next boot:
+      truncate -s 0 /etc/machine-id
+   fi
    if [ -e /var/lib/dbus/machine-id ] ; then
       if [ -e /var/lib/dbus/machine-id ] ; then
          rm -f /var/lib/dbus/machine-id
