@@ -235,6 +235,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       kde-oxygen-fonts
       kf6-oxygen-icons
       oxygen6
+      plasma6-desktop
       plasma6-session-x11
       qt6-imageformats
       sddm-qt6
