@@ -172,13 +172,13 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    # ------ VirtualBox ------------------------------------------------------
    if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      zypper --non-interactive install --no-recommends -y virtualbox-guest-tools
+      zypper --non-interactive install --replacefiles --no-recommends -y virtualbox-guest-tools
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
-      zypper --non-interactive install --no-recommends -y open-vm-tools
+      zypper --non-interactive install --replacefiles --no-recommends -y open-vm-tools
    # ------ QEMU ------------------------------------------------------------
    elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
-      zypper --non-interactive install --no-recommends -y qemu-guest-agent
+      zypper --non-interactive install --replacefiles --no-recommends -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
