@@ -105,6 +105,19 @@ elif [ "${ID}" == "fedora" ] ; then
    systemctl enable zabbix-agent || true
    systemctl start  zabbix-agent || true
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   packages=( "zabbix-agent" )
+   zypper --non-interactive install \
+      --force-resolution --allow-vendor-change --allow-name-change --replacefiles \
+      --no-recommends -y "${packages[@]}"
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   apk add zabbix-agent
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
