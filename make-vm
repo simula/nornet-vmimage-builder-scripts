@@ -783,6 +783,8 @@ elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
       elif [[ "${DISTRIBUTION}" =~ ^(Hurd) ]] ; then
          # Hurd needs BIOS and machine type "pc" for HPET enabled!
          jq '.builders[0].bios = "seabios" | .builders[0].machine = "pc" | .builders[0].disks[0].type = "sata" | .builders[0].disks[1].type = "sata" | .builders[0].disks[2].type = "sata" | .builders[0].disks[0].io_thread = false | .builders[0].disks[1].io_thread = false | .builders[0].disks[2].io_thread = false | .builders[0].network_adapters[0].model = "e1000"'
+      else
+         cat
       fi
    else
       jq '.builders[0].os = "l26"'
