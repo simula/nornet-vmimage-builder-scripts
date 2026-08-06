@@ -513,6 +513,14 @@ elif [ "${DISTRIBUTION}" == "OpenIndiana" ] ; then
       echo >&2 "ERROR: Invalid OpenIndiana release ${RELEASE}!"
       exit 1
    fi
+elif [ "${DISTRIBUTION}" == "Hurd" ] ; then
+   BUILDER_INSTALL="hurd-${RELEASE}"
+   NAME="${NAME}-Hurd-${RELEASE}"
+   HTTP_DIRECTORY="http/hurd"
+   if [[ ! "${RELEASE}" =~ ^(TBD)$ ]] ; then
+      echo >&2 "ERROR: Invalid Hurd release ${RELEASE}!"
+      exit 1
+   fi
 else
    echo >&2 "ERROR: Invalid distribution ${DISTRIBUTION}!"
    exit 1
@@ -763,28 +771,32 @@ EOF
 # ====== Clean up and check =================================================
 if [ "${HYPERVISOR}" == "QEMU" ] ; then
    # QEMU has no vboxmanage!
-   jq "del(.builders[].vboxmanage)" <"${JSONTMP}" >"${JSON}"
+   jq "del(.builders[].vboxmanage)" <"${JSONTMP}"
 elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
    jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <"${JSONTMP}" | \
-   if [[ "${DISTRIBUTION}" =~ ^(OpenIndiana) ]] ; then
-      jq '.builders[0].disks[0].type = "sata" | .builders[0].disks[1].type = "sata" | .builders[0].disks[2].type = "sata" | .builders[0].disks[0].io_thread = false | .builders[0].disks[1].io_thread = false | .builders[0].disks[2].io_thread = false | .builders[0].network_adapters[0].model = "e1000"'
-   elif [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD) ]] ; then
+   if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana|Hurd) ]] ; then
       jq '.builders[0].qemu_agent = "isa"'
+   fi | \
+   if [[ "${DISTRIBUTION}" =~ ^(OpenIndiana) ]] ; then
+      jq '.builders[0].os = "solaris" | .builders[0].disks[0].type = "sata" | .builders[0].disks[1].type = "sata" | .builders[0].disks[2].type = "sata" | .builders[0].disks[0].io_thread = false | .builders[0].disks[1].io_thread = false | .builders[0].disks[2].io_thread = false | .builders[0].network_adapters[0].model = "e1000"'
+   elif [[ "${DISTRIBUTION}" =~ ^(Hurd) ]] ; then
+      # Hurd needs BIOS and machine type "pc" for HPET enabled!
+      jq '.builders[0].os = "other" | .builders[0].bios = "seabios" | .builders[0].machine = "pc" | .builders[0].disks[0].type = "sata" | .builders[0].disks[1].type = "sata" | .builders[0].disks[2].type = "sata" | .builders[0].disks[0].io_thread = false | .builders[0].disks[1].io_thread = false | .builders[0].disks[2].io_thread = false | .builders[0].network_adapters[0].model = "e1000"'
    else
-      cat
-   fi >"${JSON}"
+      jq '.builders[0].os = "other"'
+   fi
 elif [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    # NetBSD, OpenBSD, and OpenIndiana do not support virtio for storage:
    if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana) ]] ; then
       jq '.builders[0].hard_drive_interface = "sata" | .builders[0].iso_interface = "sata"' \
-         <"${JSONTMP}" >"${JSON}"
+         <"${JSONTMP}"
    else
-      jq . <"${JSONTMP}" >"${JSON}"
+      jq . <"${JSONTMP}"
    fi
 else
-   jq . <"${JSONTMP}" >"${JSON}"
-fi
+   jq . <"${JSONTMP}"
+fi >"${JSON}"
 rm -f "${JSONTMP}"
 
 
