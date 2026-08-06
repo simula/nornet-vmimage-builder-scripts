@@ -385,7 +385,7 @@ elif [ "${ID}" == "sunos" ] ; then
 
    # Running "sudo" as root has to be allowed (root is superuser):
    echo "Defaults:root !pam_acct_mgmt" >/etc/sudoers.d/01-sudo-no_pam_acct_mgmt
-   chown root:root /etc/sudoers.d/01-sudo-no_pam_acct_mgmt
+   chown 0:0 /etc/sudoers.d/01-sudo-no_pam_acct_mgmt
    chmod 0440 /etc/sudoers.d/01-sudo-no_pam_acct_mgmt
    visudo -c
 
