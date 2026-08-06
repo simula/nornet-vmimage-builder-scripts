@@ -50,19 +50,10 @@
   ],
   "boot_wait": "10s",
   "boot_command": [
-    "e<down><down><down><end>priority=critical",
-    " fb=false",
-    " auto=true",
-    " debconf/frontend=noninteractive",
-    " console-setup/ask_detect=false",
-    " debian-installer=en_US",
-    " kbd-chooser/method=us",
-    " keyboard-configuration/layout=USA",
-    " keyboard-configuration/variant=USA",
-    " locale=en_US",
-    " netcfg/get_domain={{user `host_domain`}}",
-    " netcfg/get_hostname={{user `host_name`}}",
-    " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/debian.preseed",
-    "<wait><leftCtrlOn>x<leftCtrlOff>"
-   ]
+     // Select "Automated Install":
+     "<down><down><down><wait1s><enter><wait90s>",
+     // Set preseed URL:
+     // "http://{{ .HTTPIP }}:{{ .HTTPPort }}/hurd.preseed<wait3s><enter>"
+     ""
+  ]
 }
