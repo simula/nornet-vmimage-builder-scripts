@@ -106,6 +106,13 @@ elif [ "${ID}" == "freebsd" ] ; then
 
    pkg install -y dbeaver
 
+# ------ NetBSD -------------------------------------------------------------
+elif [ "${ID}" == "netbsd"  ] || \
+     [ "${ID}" == "openbsd" ] || \
+     [ "${ID}" == "sunos"   ] ; then
+
+   exit 0   # No DBeaver available!
+
 # ------ Unknown ------------------------------------------------------------
 else
 
