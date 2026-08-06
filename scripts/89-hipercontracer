@@ -114,6 +114,8 @@ ci/get-dependencies --install
 if [ "${ID}" == "ubuntu" ] && [ "${VERSION_CODENAME}" == "resolute" ] ; then
    echo "FIXME! Disabling PostgresSQL support in Ubuntu 26.04, due to broken libpqxx!"
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_BACKEND_POSTGRESQL=OFF
+elif [ "${ID}" == "alpine" ] ; then
+   sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_BACKEND_POSTGRESQL=OFF
 else
    sudo -u "${USER_NAME}" cmake . -DCMAKE_INSTALL_PREFIX=/usr
 fi
