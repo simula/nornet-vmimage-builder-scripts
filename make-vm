@@ -567,7 +567,7 @@ JSONTMP="${JSON}.tmp"
 
 
 # ====== Read and insert JSON block =========================================
-insert-json()
+insert-json ()
 {
    sed -e "/^[ \t]*\/\/.*$/d" <"$1" | jq . | \
       sed -e '1d; $d'
@@ -769,7 +769,7 @@ EOF
 
 
 # ====== Clean up and check =================================================
-cat "${JSONTMP}" | \
+jq . <"${JSONTMP}" | \
 if [ "${HYPERVISOR}" == "QEMU" ] ; then
    # QEMU has no vboxmanage!
    jq "del(.builders[].vboxmanage)"
