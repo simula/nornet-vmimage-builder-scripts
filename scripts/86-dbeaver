@@ -101,6 +101,18 @@ elif [ "${ID}" == "fedora" ] ; then
    wget -O /tmp/installtmp/dbeaver.rpm "https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm"
    dnf install --setopt=install_weak_deps=False -y /tmp/installtmp/dbeaver.rpm
 
+# ------ OpenSUSE -----------------------------------------------------------
+elif [[ "${ID}" =~ ^opensuse- ]] ; then
+
+   zypper --non-interactive install --replacefiles --no-recommends -y flatpak
+   flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+   flatpak install -y flathub io.dbeaver.DBeaverCommunity
+
+# ------ Alpine -------------------------------------------------------------
+elif [ "${ID}" == "alpine" ] ; then
+
+   exit 0   # FIXME! TBD!
+
 # ------ FreeBSD ------------------------------------------------------------
 elif [ "${ID}" == "freebsd" ] ; then
 
