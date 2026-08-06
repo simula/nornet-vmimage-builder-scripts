@@ -220,6 +220,7 @@ elif [ "${ID}" == "fedora" ] ; then
       perl-Image-ExifTool
       pkg-config
       python3
+      python3-distro
       python3-psutil
       python3-pip
       python3-setuptools
@@ -286,6 +287,7 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       make
       pkgconfig
       python3
+      python3-distro
       python3-psutil
       python3-pip
       python3-setuptools
@@ -355,6 +357,7 @@ elif [ "${ID}" == "alpine" ] ; then
       make
       pkgconf
       python3
+      py3-distro
       py3-psutil
       py3-pip
       py3-setuptools
@@ -409,7 +412,6 @@ elif [ "${ID}" == "freebsd" ] ; then
       p5-PkgConfig-LibPkgConf
       pkgconf
       py312-distro
-      py312-netifaces   # FIXME! This should be removed soon!
       py312-psutil
       py312-yamllint
       python
