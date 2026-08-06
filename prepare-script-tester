@@ -84,13 +84,19 @@ if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*name[[:space:]]*=[[:space:]]*
 else
    echo \"Leaving .gitconfig unchanged!\"
 fi
-echo \"nornetpp ALL=(ALL) NOPASSWD:ALL\" | \
+echo \"nornetpp ALL=(ALL:ALL) NOPASSWD: ALL\" | \
 if [ -d /etc/sudoers.d ] ; then
    sudo tee /etc/sudoers.d/99-nornetpp
+   sudo chmod 0440 /etc/sudoers.d/99-nornetpp
+   sudo visudo -c -f /etc/sudoers.d/99-nornetpp
 elif [ -d /usr/local/etc/sudoers.d ] ; then
    sudo tee /usr/local/etc/sudoers.d/99-nornetpp
+   sudo chmod 0440 /usr/local/etc/sudoers.d/99-nornetpp
+   sudo visudo -c -f /usr/local/etc/sudoers.d/99-nornetpp
 elif [ -d /usr/pkg/etc/sudoers.d ] ; then
    sudo tee /usr/pkg/etc/sudoers.d/99-nornetpp
+   sudo chmod 0440 /usr/pkg/etc/sudoers.d/99-nornetpp
+   sudo visudo -c -f /usr/pkg/etc/sudoers.d/99-nornetpp
 else
    echo >&2 \"ERROR: Unable to find location for sudoers configuration!\"
    exit 1
