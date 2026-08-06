@@ -29,12 +29,12 @@
 
 // GNU Hurd
 
-**** TBD, this does not work, yet ... ****
+// **** TBD, this does not work, yet ... ****
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://cdimage.debian.org/cdimage/ports/latest/hurd-amd64/20260314/debian-sid-hurd-amd64-NETINST-1.iso"
-  "iso_checksum": "https://cdimage.debian.org/cdimage/ports/latest/hurd-amd64/20260314/MD5SUMS",
+  "iso_url": "https://cdimage.debian.org/cdimage/ports/latest/hurd-amd64/20260314/debian-sid-hurd-amd64-NETINST-1.iso",
+  "iso_checksum": "file:https://cdimage.debian.org/cdimage/ports/latest/hurd-amd64/20260314/MD5SUMS",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -45,7 +45,7 @@
   // ====== Boot into installer =============================================
   "vboxmanage": [
     [ "modifyvm", "{{.Name}}", "--hpet",     "on"       ],
-    [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM"  ],   // Am79C973
+    [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM"  ],
     [ "modifyvm", "{{.Name}}", "--ostype",   "Other_64" ]
   ],
   "boot_wait": "10s",

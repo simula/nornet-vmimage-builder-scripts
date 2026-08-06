@@ -63,7 +63,6 @@
     "ftp -o \"/tmp/autoinstall/site$V.tgz\" http://{{ .HTTPIP }}:{{ .HTTPPort }}/site.tgz && ",
     "sed -i\"\" \"s/<VERSION_DOT>/$VDOT/g; s/<VERSION>/$V/g; s/<NIC>/$NIC/g\" /tmp/autoinstall/install.conf && ",
     "ping -c3 -i0.3 www.heise.de && ",
-    "install -a -f /tmp/autoinstall/install.conf && ",
-    "reboot<enter>"
+    "install -a -f /tmp/autoinstall/install.conf && reboot<enter>"
   ]
 }
