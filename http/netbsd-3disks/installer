@@ -155,6 +155,7 @@ chroot $r usermod -p "$rootPasswordHash" root
 
 # ------ Configure console --------------------------------------------------
 echo 'wscons="YES"' >>$r/etc/rc.conf
+echo 'wsmoused="YES"' >>$r/etc/rc.conf
 cat >>"$r/etc/profile" <<EOF
 export LANG="C.UTF-8"
 export LC_CTYPE="C.UTF-8"
