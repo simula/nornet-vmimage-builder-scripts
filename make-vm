@@ -791,6 +791,8 @@ elif [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    # NetBSD, OpenBSD, and OpenIndiana do not support virtio for storage:
    if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana) ]] ; then
       jq '.builders[0].hard_drive_interface = "sata" | .builders[0].iso_interface = "sata"'
+   else
+      cat
    fi
 fi >"${JSON}"
 rm -f "${JSONTMP}"
