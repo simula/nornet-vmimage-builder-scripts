@@ -79,11 +79,11 @@ if prtdiag | grep -q "QEMU" ; then
   mkdir -p /etc/qemu
   cat >/etc/qemu/qemu-ga.conf <<EOF
 [general]
-method = isa-serial
-path=/dev/ttya
-daemon = false
-pidfile = /var/run/qemu-ga.pid
-logfile = /var/log/qemu-ga.log
+method   = isa-serial
+path     = /dev/ttya
+daemon   = false
+pidfile  = /var/run/qemu-ga.pid
+logfile  = /var/log/qemu-ga.log
 statedir = /var/run
 EOF
 

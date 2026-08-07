@@ -76,8 +76,11 @@
     "<wait10s><f2>",
     // Confirm:
     "<f2>",
-    // Installation usually takes around 22 minutes ...
-    "<wait300s><wait300s><wait300s><wait300s><wait300s>",
+    // Installation usually takes around 22 minutes in VirtualBox ...
+    "<wait300s><wait300s><wait300s><wait1s>",
+    "<wait300s><wait300s><wait300s><wait1s>",
+    "<wait300s><wait300s><wait300s><wait1s>",
+    "<wait300s><wait300s><wait300s><wait1s>",
     // Shell after installation:
     "<f9>3<enter><wait5s>",
     // VirtualBox again boots the CD-ROM, so it must be ejected.
@@ -90,7 +93,7 @@
     "{{user `user_password`}}<enter><wait5s>",
     "wget -O /tmp/postinstall http://{{ .HTTPIP }}:{{ .HTTPPort }}/postinstall && ",
     "chmod +x /tmp/postinstall && ",
-    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall && reboot",
+    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall",
     "<enter>"
   ]
 }
