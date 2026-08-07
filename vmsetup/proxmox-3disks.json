@@ -48,10 +48,15 @@
   "insecure_skip_tls_verify": true,
   "http_bind_address": "{{user `proxmox_http_ip`}}",
 
+  "boot_key_interval": "250ms",
   "bios": "ovmf",
   "efi_config": {
     "efi_storage_pool": "{{user `proxmox_disk_storage`}}",
     "efi_type": "4m"
+  },
+  "tpm_config": {
+    "tpm_storage_pool": "{{user `proxmox_disk_storage`}}",
+    "tpm_version": "v2.0"
   },
 
   "iso_storage_pool": "{{user `proxmox_iso_storage`}}",
