@@ -1,11 +1,81 @@
 #!/usr/bin/env bash
+# ==========================================================================
+#  ___         _        _ _      _   _            ___         _      _
+# |_ _|_ _  __| |_ __ _| | |__ _| |_(_)___ _ _   / __| __ _ _(_)_ __| |_ ___
+#  | || ' \(_-<  _/ _` | | / _` |  _| / _ \ ' \  \__ \/ _| '_| | '_ \  _(_-<
+# |___|_||_/__/\__\__,_|_|_\__,_|\__|_\___/_||_| |___/\__|_| |_| .__/\__/__/
+#                                                              |_|
+#
+#   --- Virtual Machine Image Builder and System Installation Scripts ---
+#            https://www.nntb.no/~dreibh/vmimage-builder-scripts/
+# ==========================================================================
+#
+# System Installation Scripts
+# Copyright (C) 2017-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
 
 set -euxo pipefail
 
+
+# ###### Install QEMU Guest Agent #########################################
 if prtdiag | grep -q "QEMU" ; then
 
-  pkg install qemu || [ $? -eq 4 ]
+  # ====== Install QEMU Guest Agent =========================================
+  # FIXME! The QEMU package is buggy: https://www.illumos.org/issues/18320
+  # pkg install qemu || [ $? -eq 4 ]
 
+  # Work-around: install from sources!
+  pkg install \
+   developer/gcc-14 \
+   developer/build/gnu-make \
+   developer/build/ninja \
+   developer/versioning/git \
+   library/glib2 \
+   runtime/python-314 \
+   developer/build/pkg-config || [ $? -eq 4 ]
+
+  mkdir -p /root/src
+  cd /root/src
+  if [ ! -d qemu ] ; then
+     git clone https://gitlab.com/qemu-project/qemu.git
+     cd qemu
+  else
+     cd qemu
+     git pull
+  fi
+
+  export CC=gcc
+  export CXX=g++
+  export MAKE=gmake
+  export MAKEFLAGS="-j $(psrinfo -t)"
+
+  mkdir build && cd build
+  ../configure \
+    --python=/usr/bin/python3.14 \
+    --extra-ldflags="-lsocket -lnsl" \
+    --disable-system \
+    --disable-user \
+    --disable-tools \
+    --enable-guest-agent
+
+  gmake qemu-ga
+  cp qga/qemu-ga /usr/bin/qemu-ga
+
+  # ====== QEMU Guest Agent Service Setup ===================================
   mkdir -p /etc/qemu
   cat >/etc/qemu/qemu-ga.conf <<EOF
 [general]

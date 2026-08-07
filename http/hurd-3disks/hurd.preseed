@@ -1,0 +1,186 @@
+# ==========================================================================
+#  ___         _        _ _      _   _            ___         _      _
+# |_ _|_ _  __| |_ __ _| | |__ _| |_(_)___ _ _   / __| __ _ _(_)_ __| |_ ___
+#  | || ' \(_-<  _/ _` | | / _` |  _| / _ \ ' \  \__ \/ _| '_| | '_ \  _(_-<
+# |___|_||_/__/\__\__,_|_|_\__,_|\__|_\___/_||_| |___/\__|_| |_| .__/\__/__/
+#                                                              |_|
+#
+#   --- Virtual Machine Image Builder and System Installation Scripts ---
+#            https://www.nntb.no/~dreibh/vmimage-builder-scripts/
+# ==========================================================================
+#
+# System Installation Scripts
+# Copyright (C) 2017-2026 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: thomas.dreibholz@gmail.com
+
+# Debian Preseed Configuration
+
+# ====== Auto-Install =======================================================
+d-i auto-install/enable                 boolean true
+debconf debconf/priority                select critical
+
+# ====== Localization and Keyboard ==========================================
+# Using Irish locale (€, metric units, etc.):
+d-i debian-installer/country            string NO
+d-i debian-installer/language           string en_IE:en
+d-i debian-installer/locale             string en_IE.UTF-8
+
+# These lines are necessary to fill variables, but are not actually applied!
+# Need to set keyboard layout by late_command ...
+d-i console-setup/ask_detect            boolean false
+d-i keyboard-configuration/modelcode    string pc105
+d-i keyboard-configuration/layoutcode   string de
+d-i keyboard-configuration/xkb-keymap   select de
+d-i keyboard-configuration/variantcode  string nodeadkeys
+d-i keyboard-configuration/optionscode  string ""
+
+# ====== Network ============================================================
+d-i netcfg/choose_interface             select auto
+d-i netcfg/disable_autoconfig           boolean false
+d-i netcfg/disable_dhcp                 boolean false
+d-i netcfg/confirm_static               boolean true
+
+d-i netcfg/get_hostname                 string <SET_HOSTNAME_HERE>
+d-i netcfg/get_domain                   string <SET_DOMAINNAME_HERE>
+
+# ====== Time ===============================================================
+d-i clock-setup/utc                     boolean true
+d-i clock-setup/ntp                     boolean true
+d-i clock-setup/ntp-server              string pool.ntp.org
+d-i time/zone                           string UTC
+
+# ====== User ===============================================================
+d-i passwd/root-login                   boolean false
+d-i passwd/make-user                    boolean true
+d-i passwd/user-fullname                string  <SET_REALNAME_HERE>
+d-i passwd/username                     string  <SET_USERNAME_HERE>
+d-i passwd/user-password-crypted        password <SET_HASHED_PASSWORD_HERE>
+# NOTE: Example to add crypted password: echo "my password" | mkpasswd -s -m sha-512
+d-i passwd/user-uid                     string  1000
+d-i passwd/user-default-groups          string  adm cdrom sudo dip plugdev lpadmin sambashare
+d-i user-setup/encrypt-home             boolean false
+
+# ====== Disk  ==============================================================
+d-i partman-basicfilesystems/no_swap    boolean false   # Disable "no swap" warning!
+
+d-i partman/confirm                     boolean true
+d-i partman/confirm_write_new_label     boolean true
+d-i partman/confirm_nooverwrite         boolean true
+d-i partman/choose_partition            select finish
+
+# See https://www.bishnet.net/tim/blog/2015/01/29/understanding-partman-autoexpert_recipe/
+# for details on configuring partman-auto/expert_recipe!
+d-i partman-auto/disk                   string <SET_ROOT_DISK_DEVICE_HERE>
+d-i partman-auto/method                 string regular
+d-i partman-auto/choose_recipe          string root
+d-i partman-auto/expert_recipe          string \
+      root ::                                                     \
+              62 62 62 fat16                                      \
+                      $gptonly{ }                                 \
+                      $primary{ }                                 \
+                      method{ efi } format{ }                     \
+                      label{ EFI }                                \
+              .                                                   \
+              6144 16384 -1 btrfs                                 \
+                      $primary{ } $bootable{ }                    \
+                      method{ format } format{ }                  \
+                      label{ Root }                               \
+                      use_filesystem{ } filesystem{ btrfs }       \
+                      mountpoint{ / }                             \
+              .                                                   \
+
+# Additional partitions for GPT/EFI:
+#               1 1 1 free                                          \
+#                       $gptonly{ }                                 \
+#                       $primary{ }                                 \
+#                       $bios_boot{ }                               \
+#                       method{ biosgrub }                          \
+#                       label{ BIOS }                               \
+#               .                                                   \
+
+# ====== Mirror =============================================================
+d-i mirror/protocol                                 string http
+d-i mirror/http/proxy                               string
+d-i mirror/http/hostname                            string ftp.debian.org
+d-i mirror/http/directory                           string /debian
+
+# ====== Grub ===============================================================
+grub-pc grub-pc/install_devices                     string <SET_ROOT_DISK_DEVICE_HERE>
+d-i grub-pc/install_devices_empty                   boolean yes
+d-i grub-installer/bootdev                          string <SET_ROOT_DISK_DEVICE_HERE>
+d-i grub-installer/only_debian                      boolean true
+d-i grub-installer/with_other_os                    boolean true
+
+# ====== Packages ===========================================================
+# Repositories:
+popularity-contest popularity-contest/participate   boolean true   # !!! May be disabled! !!!
+d-i apt-setup/contrib                               boolean true
+d-i apt-setup/non-free                              boolean true
+d-i apt-setup/non-free-firmware                     boolean true
+
+# Package settings:
+tasksel tasksel/first                               multiselect standard, ssh-server
+d-i pkgsel/language-packs                           multiselect en
+d-i pkgsel/install-language-support                 boolean true
+d-i pkgsel/update-policy                            select unattended-upgrades
+d-i pkgsel/upgrade                                  select full-upgrade
+d-i pkgsel/updatedb                                 boolean true
+d-i pkgsel/include                                  string acpid bash-completion gdisk openssh-server qemu-guest-agent
+# d-i base-installer/kernel/override-image          string <SET_NEW_KERNEL_HERE>
+
+# ====== Post-Install =======================================================
+# The following tasks are performed:
+# * Handle 3-disk layout (separate disks for root, home, swap)
+# * Set the keyboard layout (the installer does not set it!)
+d-i preseed/late_command                            string \
+ : "====== Change partition names ========================================" ; \
+ in-target /sbin/sgdisk --change-name=1:EFI --change-name=2:Root <SET_ROOT_DISK_DEVICE_HERE> ; \
+ in-target /bin/bash -c -- 'if [ -e "<SET_HOME_DISK_DEVICE_HERE>" ] ; then /sbin/sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home <SET_HOME_DISK_DEVICE_HERE> ; mkfs.btrfs -L Home "<SET_HOME_DISK_DEVICE_HERE>1" ; fi' ; \
+ in-target /bin/bash -c -- 'if [ -e "<SET_SWAP_DISK_DEVICE_HERE>" ] ; then /sbin/sgdisk --zap-all -g --new 1:0:0 --typecode 1:8200 --change-name=1:Swap <SET_SWAP_DISK_DEVICE_HERE> ; mkswap -L Swap "<SET_SWAP_DISK_DEVICE_HERE>1" ; fi' ; \
+ : "====== Move files in /home to new subvolume ==========================" ; \
+ if [ -e "<SET_HOME_DISK_DEVICE_HERE>" ] && [ -e "<SET_SWAP_DISK_DEVICE_HERE>" ] ; then \
+    mkdir -p /tmp/old && \
+    mkdir -p /tmp/new && \
+    mount -t btrfs "<SET_ROOT_DISK_DEVICE_HERE>2" /tmp/old && \
+    mount -t btrfs "<SET_HOME_DISK_DEVICE_HERE>1" /tmp/new && \
+    btrfs subvolume create /tmp/new/@home && \
+    if [ -e /tmp/old/@home ] ; then \
+       btrfs subvolume snapshot /tmp/old/@home /tmp/old/@home_ro && \
+       cp -a /tmp/old/@home_ro/* /tmp/new/@home/ && \
+       btrfs subvolume delete /tmp/old/@home_ro /tmp/old/@home ; \
+    else \
+       mv /tmp/old/@*/home/* /tmp/new/@home/ && \
+       rm -rf /tmp/old/@*/home ; \
+    fi ; \
+    umount /tmp/old && \
+    umount /tmp/new && \
+    mount -t btrfs -o subvol=@home "<SET_HOME_DISK_DEVICE_HERE>1" /target/home ; \
+    in-target /bin/bash -c -- '( cat /etc/fstab | grep -v "/home" | grep -v "/swapfile" ; echo "UUID=$(blkid "<SET_HOME_DISK_DEVICE_HERE>1" | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//") /home           btrfs   defaults,subvol=@home 0       2" ; echo "UUID=$(blkid "<SET_SWAP_DISK_DEVICE_HERE>1" | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//") none            swap    sw              0       0") >/etc/fstab.new' && \
+    in-target mv /etc/fstab.new /etc/fstab ; \
+ fi ; \
+ : "====== Configure keyboard ============================================" ; \
+ in-target /bin/sed -i "s/XKBMODEL=\"[a-z0-9]*\"/XKBMODEL=\"pc105\"/g" /etc/default/keyboard ; \
+ in-target /bin/sed -i "s/XKBLAYOUT=\"[a-z]*\"/XKBLAYOUT=\"de\"/g" /etc/default/keyboard ; \
+ in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
+ in-target /bin/sed -i "s/XKBOPTIONS=\"[a-z]*\"/XKBOPTIONS=\"\"/g" /etc/default/keyboard ; \
+ in-target /usr/sbin/dpkg-reconfigure -fnoninteractive keyboard-configuration ; \
+ : "====== Further post-install ==========================================" ; \
+ in-target true # <SET_POSTINSTALL_COMMANDS_HERE>
+
+# ====== Power Off after installation =======================================
+d-i finish-install/reboot_in_progress               note
+# d-i debian-installer/exit/poweroff                  boolean true
