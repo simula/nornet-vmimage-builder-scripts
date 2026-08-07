@@ -107,11 +107,11 @@ swapctl -a /dev/"$WEDGE_SWAP"
 
 # ------ Mount filesystems --------------------------------------------------
 r=/targetroot
-mount /dev/"$WEDGE_ROOT" $r
+mount -o async /dev/"$WEDGE_ROOT" $r
 mkdir -p $r/boot/efi
 mount /dev/"$WEDGE_EFI" $r/boot/efi
 mkdir -p $r/home
-mount /dev/"$WEDGE_HOME" $r/home
+mount -o async /dev/"$WEDGE_HOME" $r/home
 
 # ------ Extract sets -------------------------------------------------------
 suffix=tgz
@@ -128,14 +128,14 @@ done
 mkdir -p $r/kern
 mkdir -p $r/proc
 cat <<EOF >$r/etc/fstab
-NAME=Root        /            ffs     rw,log        1 1
-NAME=EFI-system  /boot/efi    msdos   rw            0 0
-NAME=Home        /home        ffs     rw,log        1 2
-NAME=Swap        none         swap    sw,dp         0 0
-kernfs           /kern        kernfs  rw            0 0
-procfs           /proc        procfs  rw            0 0
-fdesc            /dev         fdesc   ro,-o=union   0 0
-ptyfs            /dev/pts     ptyfs   rw            0 0
+NAME=Root        /            ffs     rw,log,noatime 1 1
+NAME=EFI-system  /boot/efi    msdos   rw             0 0
+NAME=Home        /home        ffs     rw,log,noatime 1 2
+NAME=Swap        none         swap    sw,dp          0 0
+kernfs           /kern        kernfs  rw             0 0
+procfs           /proc        procfs  rw             0 0
+fdesc            /dev         fdesc   ro,-o=union    0 0
+ptyfs            /dev/pts     ptyfs   rw             0 0
 tmpfs            /tmp tmpfs   rw,-m1777,-sram%25
 EOF
 
