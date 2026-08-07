@@ -85,7 +85,7 @@ if [ "$(/usr/local/sbin/virt-what)" = "kvm" ] ; then
    rcctl enable qemu_ga
    # Guest agent has to use ISA serial port:
    # https://openports.pl/path/emulators/qemu,-ga
-   rcctl set qemu_ga flags "-m isa-serial -p /dev/cua01"
+   rcctl set qemu_ga flags "-m isa-serial -p /dev/cua00"
    rcctl start qemu_ga || true
 fi
 
