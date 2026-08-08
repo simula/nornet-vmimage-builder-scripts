@@ -34,12 +34,12 @@ set -euxo pipefail
 # ###### Install QEMU Guest Agent #########################################
 if prtdiag | grep -q "QEMU" ; then
 
-  # ====== Install QEMU Guest Agent =========================================
-  # FIXME! The QEMU package is buggy: https://www.illumos.org/issues/18320
-  # pkg install qemu || [ $? -eq 4 ]
+   # ====== Install QEMU Guest Agent =========================================
+   # FIXME! The QEMU package is buggy: https://www.illumos.org/issues/18320
+   # pkg install qemu || [ $? -eq 4 ]
 
-  # Work-around: install from sources!
-  pkg install \
+   # Work-around: install from sources!
+   pkg install \
    developer/gcc-14 \
    developer/build/gnu-make \
    developer/build/ninja \
@@ -48,36 +48,45 @@ if prtdiag | grep -q "QEMU" ; then
    runtime/python-314 \
    developer/build/pkg-config || [ $? -eq 4 ]
 
-  mkdir -p /root/src
-  cd /root/src
-  if [ ! -d qemu ] ; then
-     git clone https://gitlab.com/qemu-project/qemu.git
-     cd qemu
-  else
-     cd qemu
-     git pull
-  fi
+   mkdir -p /root/src
+   cd /root/src
+   if [ ! -d qemu ] ; then
+      git clone https://gitlab.com/qemu-project/qemu.git
+      cd qemu
+   else
+      cd qemu
+      git pull
+   fi
 
-  export CC=gcc
-  export CXX=g++
-  export MAKE=gmake
-  export MAKEFLAGS="-j $(psrinfo -t)"
+   export CC=gcc
+   export CXX=g++
+   export MAKE=gmake
+   export MAKEFLAGS="-j $(psrinfo -t)"
 
-  mkdir build && cd build
-  ../configure \
-    --python=/usr/bin/python3.14 \
-    --extra-ldflags="-lsocket -lnsl" \
-    --disable-system \
-    --disable-user \
-    --disable-tools \
-    --enable-guest-agent
+   mkdir build && cd build
+   ../configure \
+      --python=/usr/bin/python3.14 \
+      --extra-ldflags="-lsocket -lnsl" \
+      --disable-system \
+      --disable-user \
+      --disable-tools \
+      --enable-guest-agent
 
-  gmake qemu-ga
-  cp qga/qemu-ga /usr/bin/qemu-ga
+   gmake qemu-ga
+   cp qga/qemu-ga /usr/bin/qemu-ga
 
-  # ====== QEMU Guest Agent Service Setup ===================================
-  mkdir -p /etc/qemu
-  cat >/etc/qemu/qemu-ga.conf <<EOF
+   # FIXME: qemu-ga contains hard-coded shutdown command paths:
+   # * https://gitlab.com/qemu-project/qemu/-/work_items/4141)
+   # * https://www.illumos.org/issues/18331
+   # Temporary work-around:
+   ln -s /usr/sbin/poweroff /sbin/poweroff
+   ln -s /usr/sbin/shutdown /sbin/shutdown
+   ln -s /usr/sbin/halt     /sbin/halt
+   ln -s /usr/sbin/reboot   /sbin/reboot
+
+   # ====== QEMU Guest Agent Service Setup ===================================
+   mkdir -p /etc/qemu
+   cat >/etc/qemu/qemu-ga.conf <<EOF
 [general]
 method   = isa-serial
 path     = /dev/ttya

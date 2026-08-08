@@ -320,8 +320,14 @@ elif [ "${ID}" == "sunos" ] ; then
 
    # ------ QEMU ------------------------------------------------------------
    elif prtdiag | grep -q "QEMU" ; then
-      # See https://gist.github.com/jimklimov/b79ef519add34af96e1fcc59de58165c
-      pkg install qemu || [ $? -eq 4 ]
+      if [ -x /usr/bin/qemu-ga ] ; then
+         # FIXME: http/openindiana-*/postinstall needs to install up-to-date
+         #        qemu-ga from sources to fix issues!
+         true
+      else
+         # See https://gist.github.com/jimklimov/b79ef519add34af96e1fcc59de58165c
+         pkg install qemu || [ $? -eq 4 ]
+      fi
    fi
 
 # ------ Unknown ------------------------------------------------------------
