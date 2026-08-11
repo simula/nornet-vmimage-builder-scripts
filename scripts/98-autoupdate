@@ -95,7 +95,7 @@ elif [ "${ID}" == "fedora" ] ; then
    # Packages:
    dnf install --setopt=install_weak_deps=False -y dnf-automatic
 
-   if [ ! -e /etc/dnf/automatic.conf ] ; then
+   if [ ! -f /etc/dnf/automatic.conf ] ; then
       cp /usr/share/dnf5/dnf5-plugins/automatic.conf /etc/dnf/automatic.conf
    fi
    sed -e 's/^apply_updates = no/apply_updates = yes/' -i /etc/dnf/automatic.conf

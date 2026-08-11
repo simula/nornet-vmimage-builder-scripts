@@ -100,7 +100,7 @@ sudo -u "${USER_NAME}" mkdir -p "${DESKTOP_DIRECTORY}"
 
 # ====== Create links for directories =======================================
 for directory in ${DIRECTORIES} ; do
-   basename=$(basename "${directory}")
+   basename="$(basename "${directory}")"
    if [ "${basename}" == "/" ] ; then
       basename="root"
    fi
@@ -115,7 +115,7 @@ done
 for application in ${APPLICATIONS} ; do
    found=0
    for source in /usr/share/applications /usr/local/share/applications /var/lib/snapd/desktop/applications /var/lib/flatpak/exports/share/applications ; do
-      if [ -e "${source}/${application}.desktop" ] ; then
+      if [ -f "${source}/${application}.desktop" ] ; then
          found=1
          echo "FOUND: ${application} -> ${source}/${application}.desktop"
          if [ ! -e "${DESKTOP_DIRECTORY}/${application}.desktop" ] ; then

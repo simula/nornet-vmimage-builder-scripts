@@ -138,7 +138,7 @@ fi
 # ====== Make initial configuration =========================================
 sudo -u "${USER_NAME}" mkdir -p "${dbeaverConfigurationDirectory}/General/.dbeaver"
 sudo -u "${USER_NAME}" mkdir -p "${dbeaverConfigurationDirectory}/.metadata/.plugins/org.eclipse.core.runtime/.settings"
-if [ ! -e "${dbeaverConfigurationDirectory}/General/.dbeaver/data-sources.json" ] ; then
+if [ ! -f "${dbeaverConfigurationDirectory}/General/.dbeaver/data-sources.json" ] ; then
 
    echo "{}" | sudo -u "${USER_NAME}" tee "${dbeaverConfigurationDirectory}/General/.dbeaver/data-sources.json"
 

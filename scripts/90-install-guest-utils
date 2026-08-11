@@ -72,7 +72,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 
    # ------ Prevent suspend/hibernation -------------------------------------
    if [ "${HYPERVISOR}" != "" ] ; then
-      if [ -e /etc/systemd/sleep.conf ] ; then
+      if [ -f /etc/systemd/sleep.conf ] ; then
          sed -e "s/^#\?AllowSuspend=.*$/AllowSuspend=no/" \
              -e "s/^#\?AllowHibernation=.*$/AllowHibernation=no/" \
              -i /etc/systemd/sleep.conf
@@ -90,7 +90,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          cd /tmp/installtmp
          wget -rq --no-parent --accept-regex 'virtualbox-guest-.*deb$' https://ftp.debian.org/debian/pool/contrib/v/virtualbox/
          pkg1="$(find /tmp/installtmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-utils_*_${architecture}.deb")"
-         if [ ! -e /usr/lib/systemd/system/sddm.service ] ; then
+         if [ ! -f /usr/lib/systemd/system/sddm.service ] ; then
             packages="${pkg1}"
          else
             pkg2="$(find /tmp/installtmp/ftp.debian.org/debian/pool/contrib/v/virtualbox/ -name "virtualbox-guest-x11_*_${architecture}.deb")"
@@ -106,7 +106,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       else
          env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             virtualbox-guest-utils || true
-         if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+         if [ -f /usr/lib/systemd/system/sddm.service ] ; then
             # System has X11 -> also install X11 utilities as well:
             env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
                virtualbox-guest-x11 || true
@@ -116,7 +116,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          open-vm-tools
-      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+      if [ -f /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
          env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
             open-vm-tools-desktop || true
@@ -149,7 +149,7 @@ elif [ "${ID}" == "fedora" ] ; then
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
       dnf install --setopt=install_weak_deps=False -y open-vm-tools
-      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+      if [ -f /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
          dnf install --setopt=install_weak_deps=False -y open-vm-tools-desktop
       fi
@@ -216,7 +216,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       sysrc vboxservice_enable="YES" ; service vboxservice start || true
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
-      if [ -e /usr/lib/systemd/system/sddm.service ] ; then
+      if [ -f /usr/lib/systemd/system/sddm.service ] ; then
          # System has X11 -> also install X11 utilities as well:
          pkg install -y open-vm-tools
       else

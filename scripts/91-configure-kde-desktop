@@ -75,17 +75,17 @@ USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${US
 
 # If the background image files are not at their location, try to move them
 # from tmp/. They should have been placed there by the file provisioner.
-if [ ! -e "${BACKGROUND_SDDM}" ] ; then
+if [ ! -f "${BACKGROUND_SDDM}" ] ; then
    dir="$(dirname "${BACKGROUND_SDDM}")"
    sudo mkdir -p "${dir}/"
    sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_SDDM}")" "${dir}/"
 fi
-if [ ! -e "${BACKGROUND_LOCKSCREEN}" ] ; then
+if [ ! -f "${BACKGROUND_LOCKSCREEN}" ] ; then
    dir="$(dirname "${BACKGROUND_LOCKSCREEN}")"
    sudo mkdir -p "${dir}/"
    sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_LOCKSCREEN}")" "${dir}/"
 fi
-if [ ! -e "${BACKGROUND_DESKTOP}" ] ; then
+if [ ! -f "${BACKGROUND_DESKTOP}" ] ; then
    dir="$(dirname "${BACKGROUND_DESKTOP}")"
    sudo mkdir -p "${dir}/"
    sudo cp "/tmp/installtmp/desktop-backgrounds/$(basename "${BACKGROUND_DESKTOP}")" "${dir}/"

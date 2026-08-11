@@ -76,9 +76,7 @@ if [ -e /etc/machine-id ] ; then
       truncate -s 0 /etc/machine-id
    fi
    if [ -e /var/lib/dbus/machine-id ] ; then
-      if [ -e /var/lib/dbus/machine-id ] ; then
-         rm -f /var/lib/dbus/machine-id
-      fi
+      rm -f /var/lib/dbus/machine-id
       sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
    fi
 fi

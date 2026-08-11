@@ -70,7 +70,7 @@ fi
 
 for targetDirectory in "${USER_HOME}" "${skelDirectory}" ; do
    # ------ Create configuration file ---------------------------------------
-   if [ ! -e "${targetDirectory}/.config/strawberry/strawberry.conf" ] ; then
+   if [ ! -f "${targetDirectory}/.config/strawberry/strawberry.conf" ] ; then
       mkdir -p "${targetDirectory}/.config/strawberry"
       cat >"${targetDirectory}/.config/strawberry/strawberry.conf" <<EOF
 [MainWindow]
