@@ -70,59 +70,77 @@ if [ -f /etc/os-release ] ; then
 fi
 
 
-# ====== Initial .bashrc ====================================================
-if [ -e /tmp/installtmp/configuration-files/bashrc ] ; then
-   cp /tmp/installtmp/configuration-files/bashrc "${USER_HOME}/.bashrc"
-   if [ "${ID}" == "freebsd" ]  ; then
-      mkdir -p /usr/share/skel
-      cp /tmp/installtmp/configuration-files/bashrc /usr/share/skel/.bashrc
-   else
-      mkdir -p /etc/skel
-      cp /tmp/installtmp/configuration-files/bashrc /etc/skel/.bashrc
-   fi
-fi
-
-if [ "${UNAME}" == "FreeBSD" ] ||
-   [ "${UNAME}" == "NetBSD"  ] ||
-   [ "${UNAME}" == "OpenBSD" ] ||
-   [ "${UNAME}" == "SunOS"   ] ; then
-   if [ ! -e "${USER_HOME}/.bash_profile" ] ; then
-      cat >"${USER_HOME}/.bash_profile" <<EOF
-test -f ~/.bashrc && source ~/.bashrc
-EOF
-   fi
-   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bash_profile"
-fi
-
-
-# ====== Make some additions to .bashrc =====================================
-if [ ! -e "${USER_HOME}/.bashrc" ] ; then
-   touch "${USER_HOME}/.bashrc"
-fi
-cat >>"${USER_HOME}/.bashrc" <<EOF
-
-
-# ---------------------------------------------------------------------------
-
-alias runws="sudo echo Starting Wireshark && ( sudo wireshark & )"
-
-ulimit -c unlimited
-
-export EDITOR=joe
-export CVSEDITOR=\${EDITOR}
-export SVN_EDITOR=\${EDITOR}
-export XZ_DEFAULTS="--threads=0"
-
-if [ "\$(uname)" = "FreeBSD" ] ; then
-   cores=\$(sysctl -n hw.ncpu 2>/dev/null || echo "1")
+# ====== Initial .bashrc and .profile =======================================
+skelDirectory=""
+if [ "${ID}" == "freebsd" ]  ; then
+   skelDirectory="/usr/share/skel"
 else
-   cores=\$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")
+   skelDirectory="/usr/skel"
 fi
-if [ -n "\${cores}" ] && [ "\${cores}" -gt 1 ] ; then
-   export MAKEFLAGS="-j\${cores}"
+if [ -e /tmp/installtmp/configuration-files/bashrc ] ; then
+   mkdir -p "${skelDirectory}"
+   cp /tmp/installtmp/configuration-files/bashrc  "${skelDirectory}/.bashrc"
+   cp /tmp/installtmp/configuration-files/profile "${skelDirectory}/.profile"
 fi
-EOF
-chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bashrc"
+
+
+# ====== Prepare user's .profile ============================================
+if [ ! -e "${USER_HOME}/.profile" ] ; then
+   cp "${skelDirectory}/.profile" "${USER_HOME}/.profile"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.profile"
+fi
+
+
+# ====== Prepare user's .bashrc =============================================
+if [ ! -e "${USER_HOME}/.bashrc" ] || \
+   ! grep -q "User Customisation" "${USER_HOME}/.bashrc" ; then
+   cp "${skelDirectory}/.bashrc" "${USER_HOME}/.bashrc"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bashrc"
+fi
+
+# cat >>"${USER_HOME}/.bashrc" <<EOF
+#
+# # ===========================================================================
+#
+# # ------ Limits -------------------------------------------------------------
+# ulimit -c unlimited   # Allow core dumps
+#
+# # ------ Aliases ------------------------------------------------------------
+# alias runws="sudo echo Starting Wireshark && ( sudo wireshark & )"
+#
+# # ------ Environment variables ----------------------------------------------
+# export EDITOR="joe"
+# export CVSEDITOR="\${EDITOR}"
+# export SVN_EDITOR="\${EDITOR}"
+# export XZ_DEFAULTS="--threads=0"
+#
+# # ------ Set MAKEFLAGS ------------------------------------------------------
+# uname="\$(uname)"
+# case "\${uname}" in
+#    Linux)
+#       cores="\$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+#       ;;
+#    FreeBSD)
+#       cores="\$(sysctl -n hw.ncpu 2>/dev/null || echo "1")"
+#       ;;
+#    NetBSD|OpenBSD)
+#       cores="\$(/sbin/sysctl -n hw.ncpuonline 2>/dev/null || echo "1")"
+#       ;;
+#    SunOS)
+#       cores="\$(getconf NPROCESSORS_ONLN 2>/dev/null || echo "1")"
+#       ;;
+#    Darwin)
+#       cores="\$(sysctl -n hw.logicalcpu 2>/dev/null || echo "1")"
+#       ;;
+#    *)
+#       cores=1
+#       ;;
+# esac
+# if [ "\${cores}" -gt 1 ] ; then
+#    export MAKEFLAGS="-j \${cores}"
+# fi
+# EOF
+# chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bashrc"
 
 
 # ====== Make some directories ==============================================
