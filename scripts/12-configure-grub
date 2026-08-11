@@ -32,7 +32,9 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="12-configure-grub"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -43,18 +45,15 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-
-# ###### Main program #######################################################
-
 # ====== Check/set environment variables ====================================
 if [ ! -v BOOTSPLASH ] || [ ! -v VIDEO ] ; then
    echo >&2 "Usage: env BOOTSPLASH=<bootsplash> VIDEO=<widthxheight> $0"
    echo >&2 "Example: sudo env BOOTSPLASH=/usr/share/bootsplash/Bjørnsund-3840x2160.jpeg VIDEO=1920x1080 $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"

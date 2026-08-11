@@ -32,7 +32,9 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="11-system-info"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -45,9 +47,6 @@ fi
 
 # Enable printing the command-lines executed:
 set -x
-
-
-# ###### Main program #######################################################
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
