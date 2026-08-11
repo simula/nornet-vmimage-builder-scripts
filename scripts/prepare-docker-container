@@ -32,7 +32,9 @@
 set -eu
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="prepare-docker-container"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -43,18 +45,15 @@ else
    printf "\x1b[1;34;22m########## %s ##########\033[0m\n" "${SCRIPT}"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-
-# ###### Main program #######################################################
-
 # ====== Check/set environment variables ====================================
 if [ -z "${USER_NAME:-}" ] || [ -z "${USER_REALNAME:-}" ] || [ -z "${USER_PASSWORD:-}" ] ; then
    echo "Usage: env USER_NAME=<user> USER_REALNAME=\"<full user name>\" USER_PASSWORD=\"<password>\" $0" >&2
    echo "Example: sudo env USER_NAME=nornetpp USER_REALNAME=\"NorNet Praesum Presum\" USER_PASSWORD=\"test\" $0" >&2
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"

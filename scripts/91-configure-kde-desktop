@@ -32,21 +32,6 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
-SCRIPT="91-configure-kde-desktop"   # Set to "$(basename "$0")" of this file!
-if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
-   echo
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
-   figlet -w 156 "${SCRIPT}" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;31m█\e[22m" "\e[1;31m█\e[0m"
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▄" "█\e[0m"
-else
-   echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
-fi
-
-# Enable printing the command-lines executed:
-set -x
-
-
 # NOTE:
 # The following environment variables are expected:
 # - USER_NAME
@@ -59,6 +44,17 @@ set -x
 
 # ###### Main program #######################################################
 
+# ====== Print script name, to make Packer output easier readable ===========
+SCRIPT="91-configure-kde-desktop"   # Set to "$(basename "$0")" of this file!
+if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
+   echo
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
+   figlet -w 156 "${SCRIPT}" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;31m█\e[22m" "\e[1;31m█\e[0m"
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▄" "█\e[0m"
+else
+   echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
+fi
+
 # ====== Make sure the background images are there ==========================
 if [ ! -v USER_NAME             ] || [ "${USER_NAME}"             == "" ] ||
    [ ! -v KEYBOARD_MODEL        ] || [ "${KEYBOARD_MODEL}"        == "" ] ||
@@ -70,6 +66,10 @@ if [ ! -v USER_NAME             ] || [ "${USER_NAME}"             == "" ] ||
    echo >&2 "Example: sudo env USER_NAME=nornetpp KEYBOARD_MODEL=pc105 KEYBOARD_LAYOUTS=\"de:nodeadkeys no us\" BACKGROUND_SDDM=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_LOCKSCREEN=/usr/share/desktop/Flåm-3840x2160-mosaic.jpeg BACKGROUND_DESKTOP=/usr/share/desktop/Flåm-3840x2160-plain.jpeg $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
+
 USER_GROUP="$(id -gn "${USER_NAME}")"
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 

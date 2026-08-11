@@ -32,7 +32,9 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Ensure that script is executed by the user account =================
 SCRIPT="38-allow-wireshark-as-user"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -43,18 +45,15 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-
-# ###### Main program #######################################################
-
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: env USER_NAME=nornetpp $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"

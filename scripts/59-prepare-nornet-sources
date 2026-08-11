@@ -32,21 +32,6 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
-SCRIPT="59-prepare-nornet-sources"   # Set to "$(basename "$0")" of this file!
-if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
-   echo
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
-   figlet -w 156 "${SCRIPT}" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;31m█\e[22m" "\e[1;31m█\e[0m"
-   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▄" "█\e[0m"
-else
-   echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
-fi
-
-# Enable printing the command-lines executed:
-set -x
-
-
 # ###### Clone or update Git repository #####################################
 clone-or-update ()
 {
@@ -67,12 +52,27 @@ clone-or-update ()
 
 # ###### Main program #######################################################
 
+# ====== Ensure that script is executed by the user account =================
+SCRIPT="59-prepare-nornet-sources"   # Set to "$(basename "$0")" of this file!
+if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
+   echo
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
+   figlet -w 156 "${SCRIPT}" | LC_ALL=C.UTF-8 print-utf8 -x 160 -n -C "\e[1;31m█\e[22m" "\e[1;31m█\e[0m"
+   LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▄" "█\e[0m"
+else
+   echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
+fi
+
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
+
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
 # ====== Obtain system details ==============================================
