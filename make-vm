@@ -914,6 +914,9 @@ fi
 echo "Running Packer for ${JSON}:"
 cd "${OUTPUT_DIRECTORY}/${NAME}"
 rm -rf "${vm_name}"
+if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+   rm -rf "${HOME}/VirtualBox VMs/${vm_name}"
+fi
 env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRECTORY}" "${PACKER}" build --force \
    -warn-on-undeclared-var \
    -timestamp-ui \
