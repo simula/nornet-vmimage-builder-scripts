@@ -43,9 +43,6 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
 
 # ###### Main program #######################################################
 
@@ -56,6 +53,10 @@ if [ ! -v USER_NAME ]     || [ "${USER_NAME}"     == "" ] || \
    echo >&2 "Example: sudo env USER_NAME=nornetpp USER_REALNAME=\"NorNet Praesum Presum\" $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
+
 USER_GROUP="$(id -gn "${USER_NAME}")"
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
@@ -70,7 +71,7 @@ if [ -f /etc/os-release ] ; then
 fi
 
 
-# ====== Initial .bashrc and .profile =======================================
+# ====== Prepare skel directory =============================================
 skelDirectory=""
 if [ "${ID}" == "freebsd" ]  ; then
    skelDirectory="/usr/share/skel"
@@ -78,138 +79,103 @@ else
    skelDirectory="/etc/skel"
 fi
 mkdir -p "${skelDirectory}"
-if [ -e /tmp/installtmp/configuration-files/bashrc ] ; then
+
+if [ -f /tmp/installtmp/configuration-files/bashrc ] ; then
    cp /tmp/installtmp/configuration-files/bashrc  "${skelDirectory}/.bashrc"
 fi
-if [ -e /tmp/installtmp/configuration-files/profile ] ; then
+if [ -f /tmp/installtmp/configuration-files/profile ] ; then
    cp /tmp/installtmp/configuration-files/profile "${skelDirectory}/.profile"
+fi
+if [ -f /tmp/installtmp/configuration-files/gdbinit ] ; then
+   cp /tmp/installtmp/configuration-files/gdbinit "${skelDirectory}/.gdbinit"
+fi
+if [ -f /tmp/installtmp/configuration-files/gitconfig ] ; then
+   cp /tmp/installtmp/configuration-files/gitconfig "${skelDirectory}/.gitconfig"
+fi
+
+if [ "${UNAME}" == "Linux" ] ; then
+   if [ -f /tmp/installtmp/face-icons/Face-Tux.png ] ; then
+      cp /tmp/installtmp/face-icons/Face-Tux.png "${skelDirectory}/.face.icon"
+   fi
+elif [ "${UNAME}" == "FreeBSD" ] ; then
+   if [ -f /tmp/installtmp/face-icons/Face-Beastie.png ] ; then
+      cp /tmp/installtmp/face-icons/Face-Beastie.png "${skelDirectory}/.face.icon"
+   fi
 fi
 
 
 # ====== Prepare user's .profile ============================================
-if [ ! -e "${USER_HOME}/.profile" ] ; then
+if [ ! -f "${USER_HOME}/.profile" ] ; then
    cp "${skelDirectory}/.profile" "${USER_HOME}/.profile"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.profile"
 fi
 
 
 # ====== Prepare user's .bashrc =============================================
-if [ ! -e "${USER_HOME}/.bashrc" ] || \
+if [ ! -f "${USER_HOME}/.bashrc" ] || \
    ! grep -q "User Customisation" "${USER_HOME}/.bashrc" ; then
    cp "${skelDirectory}/.bashrc" "${USER_HOME}/.bashrc"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bashrc"
 fi
 
 
-# ====== Make some directories ==============================================
-sudo -u "${USER_NAME}" mkdir -p "${USER_HOME}/src"
-if command -v chattr 2>/dev/null ; then
-   sudo -u "${USER_NAME}" chattr +c "${USER_HOME}/src" || true
+# ====== Prepare user's .gdbinit ============================================
+if [ ! -f "${USER_HOME}/.gdbinit" ] ; then
+   cp "${skelDirectory}/.gdbinit" "${USER_HOME}/.gdbinit"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gdbinit"
 fi
-sudo -u "${USER_NAME}" mkdir -p "${USER_HOME}/tmp"
-
-sudo -u "${USER_NAME}" mkdir -p "${USER_HOME}/.ssh"
-sudo -u "${USER_NAME}" chmod 700 "${USER_HOME}/.ssh"
-sudo -u "${USER_NAME}" touch "${USER_HOME}/.ssh/authorized_keys"
-sudo -u "${USER_NAME}" chmod 600 "${USER_HOME}/.ssh/authorized_keys"
-
-sudo -u "${USER_NAME}" mkdir -p "${USER_HOME}/.cache"
-sudo -u "${USER_NAME}" chmod 700 "${USER_HOME}/.cache"
 
 
-# ====== Git configuration file =============================================
-if ! sudo -u "${USER_NAME}" test -e "${USER_HOME}/.gitconfig" ; then
+# ====== Prepare user's .gitconfig ==========================================
+if [ ! -f "${USER_HOME}/.gitconfig" ] ; then
    hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
-   (
-      cat <<EOF
-[user]
-	name = ${USER_REALNAME}
-	email = ${USER_NAME}@${hostname}
-[push]
-	default = simple
-	autoSetupRemote = true
-[pull]
-	rebase = false
-[init]
-	defaultBranch = master
-[commit]
-	# Enable GnuPG by default signing here (needs key setup first):
-	# gpgsign = true
-[color]
-	ui = auto
-EOF
-   ) | sudo -u "${USER_NAME}" tee "${USER_HOME}/.gitconfig"
+   sed -e "s/^\([ \t]*\)\(#[ \t]*name[ \t]*=.*\)$/\1name = ${USER_REALNAME}/" \
+       -e "s/^\([ \t]*\)\(#[ \t]*name[ \t]*=.*\)$/\1email = ${USER_NAME}@${hostname}/" \
+       <"${skelDirectory}/.gitconfig" >"${USER_HOME}/.gitconfig"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gitconfig"
 fi
 
 
-# ====== GDB configuration file =============================================
-if ! sudo -u "${USER_NAME}" test -e "${USER_HOME}/.gdbinit" ; then
-   (
-      cat <<EOF
-# Enable project-specific local configuration:
-set auto-load safe-path /
-set auto-load local-gdbinit on
-
-# Load missing debug information:
-set debuginfod enabled on
-
-# Disable pagination:
-set pagination off
-
-# Enable Text User Interface (TUI):
-tui enable
-focus cmd
-# NOTE: <Shift> key is needed for normal console text selection!
-#       This can be turned off here:
-# set tui mouse-events off
-
-# Command history:
-set history save on
-set history filename ~/.gdb_history
-set history size 10000
-
-# Pretty printing for libstdc++:
-python
-import os
-import sys
-gcc_python_path = '/usr/share/gcc/python'
-if os.path.exists(gcc_python_path):
-   sys.path.insert(0, gcc_python_path)
-   try:
-      from libstdcxx.v6.printers import register_libstdcxx_printers
-      register_libstdcxx_printers (None)
-   except ImportError:
-      pass
-end
-EOF
-   ) | sudo -u "${USER_NAME}" tee "${USER_HOME}/.gdbinit"
+# ====== User user's icon ===================================================
+if [ -f "${skelDirectory}/.face.icon" ] ; then
+   cp "${skelDirectory}/.face.icon" "${USER_HOME}/.face.icon"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.face.icon"
 fi
 
 
-# ====== User icon ==========================================================
-if [ "${UNAME}" == "Linux" ] ; then
-   if [ -e /tmp/installtmp/face-icons/Face-Tux.png ] ; then
-      sudo -u "${USER_NAME}" cp /tmp/installtmp/face-icons/Face-Tux.png "${USER_HOME}/.face.icon"
-   fi
-elif [ "${UNAME}" == "FreeBSD" ] ; then
-   if [ -e /tmp/installtmp/face-icons/Face-Beastie.png ] ; then
-      sudo -u "${USER_NAME}" cp /tmp/installtmp/face-icons/Face-Beastie.png "${USER_HOME}/.face.icon"
-   fi
+# ====== Prepare user's directories =========================================
+mkdir -p "${USER_HOME}/src"
+if command -v chattr 2>/dev/null ; then
+   chattr +c "${USER_HOME}/src" || true
 fi
+mkdir -p "${USER_HOME}/tmp"
+chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/tmp"
+
+mkdir -p "${USER_HOME}/.ssh"
+chmod 700 "${USER_HOME}/.ssh"
+chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.ssh"
+touch "${USER_HOME}/.ssh/authorized_keys"
+chmod 600 "${USER_HOME}/.ssh/authorized_keys"
+chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.ssh/authorized_keys"
+
+mkdir -p "${USER_HOME}/.cache"
+chmod 700 "${USER_HOME}/.cache"
+chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.cache"
 
 
 # ====== GnuPG configuration file ===========================================
-if ! sudo -u "${USER_NAME}" test -e "${USER_HOME}/.gnupg/gpg.conf" ; then
+if [ ! -f "${USER_HOME}/.gnupg/gpg.conf" ] ; then
    sudo -u "${USER_NAME}" mkdir -p "${USER_HOME}/.gnupg"
    sudo -u "${USER_NAME}" chmod 700 "${USER_HOME}/.gnupg"
-   (
-      cat <<EOF
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gnupg"
+   cat >"${USER_HOME}/.gnupg/gpg.conf" <<EOF
 # use-agent
 # default-key       <YOUR_DEFAULT_KEY_ID>
 keyserver         hkps://keyserver.ubuntu.com
 keyserver-options no-self-sigs-only
 EOF
-   ) | sudo -u "${USER_NAME}" tee "${USER_HOME}/.gnupg/gpg.conf"
+   chmod 600 "${USER_HOME}/.gnupg/gpg.conf"
+   chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gnupg/gpg.conf"
 fi
 
 

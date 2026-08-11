@@ -7,6 +7,8 @@
 # /usr/local path lookup for bash completions:
 05-user-settings.files/bashrc             /tmp/installtmp/configuration-files/
 05-user-settings.files/profile            /tmp/installtmp/configuration-files/
+05-user-settings.files/gdbinit            /tmp/installtmp/configuration-files/
+05-user-settings.files/gitconfig          /tmp/installtmp/configuration-files/.gitconfig
 
 # User images:
 05-user-settings.files/Face-Beastie.png   /tmp/installtmp/face-icons/
