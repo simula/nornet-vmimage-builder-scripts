@@ -130,9 +130,11 @@ ulimit -c unlimited   # Allow core dumps
 alias runws="sudo echo Starting Wireshark && ( sudo wireshark & )"
 
 # ------ Environment variables ----------------------------------------------
+export ENV="$HOME/.shrc"
 export EDITOR="joe"
 export CVSEDITOR="${EDITOR}"
 export SVN_EDITOR="${EDITOR}"
+export PAGER="less"
 export XZ_DEFAULTS="--threads=0"
 
 # ------ Set MAKEFLAGS ------------------------------------------------------
