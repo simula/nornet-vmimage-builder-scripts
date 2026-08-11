@@ -75,6 +75,10 @@ fi
 # sed -i "" 's/:setenv=/:lang=en_US.UTF-8:\/g' /etc/login.conf
 # cap_mkdb /etc/login.conf
 
+echo "mouse.scaling=0.1" >/etc/wsconsctl.conf
+rcctl enable wsmoused
+rcctl start wsmoused || true
+
 # ------ Install required packages ------------------------------------------
 pkg_add -r -I bash sudo-- virt-what
 
