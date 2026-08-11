@@ -101,7 +101,7 @@ if [ "${UNAME}" == "Linux" ] ; then
    # With new Ubuntu autoinstaller:
    # /etc/cloud/cloud.cfg.d/99-installer.cfg disables growpart and resizefs
    # => fixing this here:
-   if [ -e /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
+   if [ -f /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
       sed -e "s#growpart: {mode: 'off'}#growpart: {mode: 'auto'}#g" \
           -e "s#resize_rootfs: false#resize_rootfs: true#g" \
           -i /etc/cloud/cloud.cfg.d/99-installer.cfg
@@ -117,7 +117,7 @@ if [ "${UNAME}" == "Linux" ] ; then
 sctp
 EOF
    else
-      if [ -e /etc/modules ] ; then
+      if [ -f /etc/modules ] ; then
          (
             grep -v "^sctp" /etc/modules || true
             echo "sctp"
@@ -126,7 +126,7 @@ EOF
       fi
    fi
 
-   if [ -e /etc/modprobe.d/sctp-blacklist.conf ] ; then
+   if [ -f /etc/modprobe.d/sctp-blacklist.conf ] ; then
       # Remove blacklisting of SCTP in Fedora:
       # Just removing the blacklist file is not sufficient, since it would be
       # installed again by an update of kernel-modules-extra!
@@ -235,7 +235,7 @@ KbdInteractiveAuthentication yes
 AcceptEnv                    LANG LC_*
 EOF
 for sftp in /usr/lib/openssh/sftp-server /usr/libexec/openssh/sftp-server /usr/libexec/sftp-server ; do
-   if [ -e "${sftp}" ] ; then
+   if [ -x "${sftp}" ] ; then
       echo "Subsystem sftp ${sftp}" >>/etc/ssh/sshd_config
       break
    fi

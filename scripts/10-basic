@@ -108,7 +108,7 @@ clone-or-update ()
 {
    local repository="$1"
    local url="$2"
-   if [ ! -e "${repository}" ] ; then
+   if [ ! -d "${repository}" ] ; then
       git clone "${url}" "${repository}"
    else
       pushd "${repository}" >/dev/null
@@ -295,7 +295,7 @@ elif [ "${ID}" == "fedora" ] ; then
    dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
 
    # Make initial NetPlan configuration:
-   if [ ! -e /etc/netplan/netplan.yaml ] ; then
+   if [ ! -f /etc/netplan/netplan.yaml ] ; then
       interface="$(ip route show default | awk '{ for(i=1;i<=NF;i++) if($i=="dev") print $(i+1) }')"
       cat >/etc/netplan/netplan.yaml <<EOF
 network:
@@ -313,7 +313,7 @@ EOF
    # netplan-configure.service is not enabled by default:
    systemctl enable netplan-configure.service || true
 
-   if [ -e /etc/selinux/config ] ; then
+   if [ -f /etc/selinux/config ] ; then
       # FIXME!
       # Fedora is buggy, preventing NetworkManager startup with NetPlan:
       # https://bugzilla.redhat.com/show_bug.cgi?id=2308655
@@ -862,9 +862,9 @@ set -x
 
 # ====== Enable DNSSEC ======================================================
 resolvedConf=""
-if [ -e /etc/systemd/resolved.conf ] ; then
+if [ -f /etc/systemd/resolved.conf ] ; then
    resolvedConf="/etc/systemd/resolved.conf"
-elif [ -e /usr/lib/systemd/resolved.conf ] ; then
+elif [ -f /usr/lib/systemd/resolved.conf ] ; then
    resolvedConf="/usr/lib/systemd/resolved.conf"
 fi
 if [ "${resolvedConf}" != "" ] ; then

@@ -80,7 +80,7 @@ fi
 
 # ====== Set up /etc/profile ================================================
 if [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
-   if [ ! -e /etc/profile ] ; then
+   if [ ! -f /etc/profile ] ; then
       touch  /etc/profile
    fi
    if ! grep -q "Source profile.d directories" /etc/profile; then

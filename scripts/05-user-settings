@@ -72,40 +72,43 @@ fi
 
 # ====== Prepare skel directory =============================================
 skelDirectory=""
+skelDotPrefix=""
 if [ "${ID}" == "freebsd" ]  ; then
    skelDirectory="/usr/share/skel"
+   skelDotPrefix="dot."
 else
    skelDirectory="/etc/skel"
+   skelDotPrefix="."
 fi
 mkdir -p "${skelDirectory}"
 
 if [ -f /tmp/installtmp/configuration-files/bashrc ] ; then
-   cp /tmp/installtmp/configuration-files/bashrc  "${skelDirectory}/.bashrc"
+   cp /tmp/installtmp/configuration-files/bashrc  "${skelDirectory}/${skelDotPrefix}bashrc"
 fi
 if [ -f /tmp/installtmp/configuration-files/profile ] ; then
-   cp /tmp/installtmp/configuration-files/profile "${skelDirectory}/.profile"
+   cp /tmp/installtmp/configuration-files/profile "${skelDirectory}/${skelDotPrefix}profile"
 fi
 if [ -f /tmp/installtmp/configuration-files/gdbinit ] ; then
-   cp /tmp/installtmp/configuration-files/gdbinit "${skelDirectory}/.gdbinit"
+   cp /tmp/installtmp/configuration-files/gdbinit "${skelDirectory}/${skelDotPrefix}gdbinit"
 fi
 if [ -f /tmp/installtmp/configuration-files/gitconfig ] ; then
-   cp /tmp/installtmp/configuration-files/gitconfig "${skelDirectory}/.gitconfig"
+   cp /tmp/installtmp/configuration-files/gitconfig "${skelDirectory}/${skelDotPrefix}gitconfig"
 fi
 
 if [ "${UNAME}" == "Linux" ] ; then
    if [ -f /tmp/installtmp/face-icons/Face-Tux.png ] ; then
-      cp /tmp/installtmp/face-icons/Face-Tux.png "${skelDirectory}/.face.icon"
+      cp /tmp/installtmp/face-icons/Face-Tux.png "${skelDirectory}/${skelDotPrefix}face.icon"
    fi
 elif [ "${UNAME}" == "FreeBSD" ] ; then
    if [ -f /tmp/installtmp/face-icons/Face-Beastie.png ] ; then
-      cp /tmp/installtmp/face-icons/Face-Beastie.png "${skelDirectory}/.face.icon"
+      cp /tmp/installtmp/face-icons/Face-Beastie.png "${skelDirectory}/${skelDotPrefix}face.icon"
    fi
 fi
 
 
 # ====== Prepare user's .profile ============================================
-if [ ! -f "${USER_HOME}/.profile" ] && [ -f "${skelDirectory}/.profile" ] ; then
-   cp "${skelDirectory}/.profile" "${USER_HOME}/.profile"
+if [ -f "${skelDirectory}/${skelDotPrefix}profile" ] ; then
+   cp "${skelDirectory}/${skelDotPrefix}profile" "${USER_HOME}/.profile"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.profile"
 fi
 
@@ -113,33 +116,33 @@ fi
 # ====== Prepare user's .bashrc =============================================
 if [ ! -f "${USER_HOME}/.bashrc" ] || \
    ! grep -q "User Customisation" "${USER_HOME}/.bashrc" ; then
-   if [ -f "${skelDirectory}/.bashrc" ] ; then
-      cp "${skelDirectory}/.bashrc" "${USER_HOME}/.bashrc"
+   if [ -f "${skelDirectory}/${skelDotPrefix}bashrc" ] ; then
+      cp "${skelDirectory}/${skelDotPrefix}bashrc" "${USER_HOME}/.bashrc"
       chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.bashrc"
    fi
 fi
 
 
 # ====== Prepare user's .gdbinit ============================================
-if [ ! -f "${USER_HOME}/.gdbinit" ] && [ -f "${skelDirectory}/.gdbinit" ] ; then
-   cp "${skelDirectory}/.gdbinit" "${USER_HOME}/.gdbinit"
+if [ ! -f "${USER_HOME}/.gdbinit" ] && [ -f "${skelDirectory}/${skelDotPrefix}gdbinit" ] ; then
+   cp "${skelDirectory}/${skelDotPrefix}gdbinit" "${USER_HOME}/.gdbinit"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gdbinit"
 fi
 
 
 # ====== Prepare user's .gitconfig ==========================================
-if [ ! -f "${USER_HOME}/.gitconfig" ] && [ -f "${skelDirectory}/.gitconfig" ] ; then
+if [ ! -f "${USER_HOME}/.gitconfig" ] && [ -f "${skelDirectory}/${skelDotPrefix}gitconfig" ] ; then
    hostname="$(hostname -f 2>/dev/null || hostname 2>/dev/null || echo "localhost")"
    sed -e "s/^\([ \t]*\)\(#[ \t]*name[ \t]*=.*\)$/\1name = ${USER_REALNAME}/" \
-       -e "s/^\([ \t]*\)\(#[ \t]*name[ \t]*=.*\)$/\1email = ${USER_NAME}@${hostname}/" \
-       <"${skelDirectory}/.gitconfig" >"${USER_HOME}/.gitconfig"
+       -e "s/^\([ \t]*\)\(#[ \t]*email[ \t]*=.*\)$/\1email = ${USER_NAME}@${hostname}/" \
+       <"${skelDirectory}/${skelDotPrefix}gitconfig" >"${USER_HOME}/.gitconfig"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.gitconfig"
 fi
 
 
 # ====== User user's icon ===================================================
-if [ -f "${skelDirectory}/.face.icon" ] && [ -f "${skelDirectory}/.face.icon" ] ; then
-   cp "${skelDirectory}/.face.icon" "${USER_HOME}/.face.icon"
+if [ -f "${skelDirectory}/${skelDotPrefix}face.icon" ] && [ -f "${skelDirectory}/${skelDotPrefix}face.icon" ] ; then
+   cp "${skelDirectory}/${skelDotPrefix}face.icon" "${USER_HOME}/.face.icon"
    chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/.face.icon"
 fi
 

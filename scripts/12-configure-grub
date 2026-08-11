@@ -66,12 +66,12 @@ if [ "${UNAME}" == "Linux" ] ; then
    if [ "${BOOTSPLASH}" != "" ] ; then
       # If the background image files are not at their location, try to move them
       # from tmp/. They should have been placed there by the file provisioner.
-      if [ ! -e "${BOOTSPLASH}" ] ; then
+      if [ ! -f "${BOOTSPLASH}" ] ; then
          dir="$(dirname "${BOOTSPLASH}")"
          mkdir -p "${dir}/"
          tmpBootsplashFile="/tmp/installtmp/bootsplash-images/$(basename "${BOOTSPLASH}")"
-         if [ -e "${tmpBootsplashFile}" ] ; then
-            mv "${tmpBootsplashFile}" "${dir}/"
+         if [ -f "${tmpBootsplashFile}" ] ; then
+            cp "${tmpBootsplashFile}" "${dir}/"
          else
             echo >&2 "ERROR: Bootsplash file ${BOOTSPLASH} not found locally or in /tmp/installtmp/bootsplash-images!"
             exit 1
@@ -89,9 +89,9 @@ if [ "${UNAME}" == "Linux" ] ; then
          echo >&2 "ERROR: Unknown bootsplash image format of ${BOOTSPLASH}!"
          exit 1
       fi
-      if [ -d /etc/grub.d ] && [ -e /etc/default/grub ] ;  then
+      if [ -d /etc/grub.d ] && [ -f /etc/default/grub ] ;  then
          templateFile="/tmp/installtmp/configuration-files/06_aaaaa_bootsplash.in"
-         if [ -e "${templateFile}" ] ; then
+         if [ -f "${templateFile}" ] ; then
             sed -e "s%@SET_BOOTSPLASH_HERE@%${BOOTSPLASH}%g" \
                 -e "s%@SET_LOADER_HERE@%${loader}%g" \
                 <"${templateFile}" >/etc/grub.d/06_aaaaa_bootsplash
@@ -104,8 +104,8 @@ if [ "${UNAME}" == "Linux" ] ; then
    fi
 
    # ------ Update GRUB configuration ---------------------------------------
-   if [ -e /etc/default/grub ] ; then
-      if [ -e /usr/share/configure-grub/grub-defaults-nornet ] ; then
+   if [ -f /etc/default/grub ] ; then
+      if [ -f /usr/share/configure-grub/grub-defaults-nornet ] ; then
          configure-grub /usr/share/configure-grub/grub-defaults-nornet \
             -V "auto,${VIDEO},1024x768" \
             -o /etc/default/grub
