@@ -152,6 +152,8 @@ mkdir -p "${USER_HOME}/src"
 if command -v chattr 2>/dev/null ; then
    chattr +c "${USER_HOME}/src" || true
 fi
+chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/src"
+
 mkdir -p "${USER_HOME}/tmp"
 chown "${USER_NAME}":"${USER_GROUP}" "${USER_HOME}/tmp"
 
