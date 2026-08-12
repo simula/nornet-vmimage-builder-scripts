@@ -593,7 +593,13 @@ elif [ "${ID}" == "sunos" ] ; then
       developer/parser/bison
       image/graphicsmagick
       library/security/openssl
+      perl-5/image-exiftool
+      print/filter/ghostscript
+      print/filter/ghostscript/fonts/gnu-gs-fonts-std
+      print/filter/ghostscript/fonts/gnu-gs-fonts-other
       runtime/python-314
+      system/font/truetype/dejavu
+      text/texlive/texmf
       text/tidy
       python/yamllint
    )
