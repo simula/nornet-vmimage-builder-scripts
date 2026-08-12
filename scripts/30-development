@@ -505,7 +505,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    pkgin -y install "${packages[@]}"
 
    # Fetch and check out the NetBSD Ports Collection:
-   if [ -d "/usr/pkgsrc/.git" ] ; then
+   if [ -d /usr/pkgsrc/.git ] ; then
       cd /usr/pkgsrc
       git fetch --all
       git checkout trunk
@@ -514,8 +514,8 @@ elif [ "${ID}" == "netbsd" ] ; then
       echo >&2 "ERROR: /usr/pkgsrc is not initialised as a Git repository!"
       exit 1
    fi
-   if [ -d "/usr/pkgsrc/wip/.git" ] ; then
-      cd /usr/pkgsrc
+   if [ -d /usr/pkgsrc/wip/.git ] ; then
+      cd /usr/pkgsrc/wip
       git fetch --all
       git checkout master
       git pull
