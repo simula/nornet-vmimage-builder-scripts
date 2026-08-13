@@ -796,6 +796,8 @@ elif [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    else
       cat
    fi
+else
+   cat
 fi >"${JSON}"
 rm -f "${JSONTMP}"
 
