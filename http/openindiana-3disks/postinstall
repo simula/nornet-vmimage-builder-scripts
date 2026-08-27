@@ -79,11 +79,11 @@ zfs destroy -f rpool/swap || true
 grep -v '/dev/zvol/dsk/rpool/swap' /etc/vfstab >/tmp/vfstab.tmp && cp /tmp/vfstab.tmp /etc/vfstab && rm /tmp/vfstab.tmp
 
 # Create swap on $DISK_SWAP:
-zpool create -f swappool "/dev/dsk/${DISK_SWAP}s0" || zpool create -f swappool "/dev/dsk/${DISK_SWAP}"
+zpool create -f swappool "/dev/dsk/${DISK_SWAP}"
 
-# Subtract a 16MB buffer for ZFS pool metadata:
+# Leave 64 MiB for metadata, use the rest as swap space:
 AVAILABLE_BYTES=$(zfs get -Hp -o value avail swappool)
-SWAP_SIZE_BYTES=$(( AVAILABLE_BYTES - 16777216 ))
+SWAP_SIZE_BYTES=$(( AVAILABLE_BYTES - 64*1024*1024 ))
 
 # -o refreserv=none disables strict ZFS volume space reservation:
 zfs create -V "${SWAP_SIZE_BYTES}" -o refreserv=none swappool/swap
@@ -94,7 +94,7 @@ if ! grep -q "swappool/swap" /etc/vfstab; then
 fi
 
 # Migrate /home to $DISK_HOME:
-zpool create -f homepool "/dev/dsk/${DISK_HOME}s0" || zpool create -f homepool "/dev/dsk/${DISK_HOME}"
+zpool create -f homepool "/dev/dsk/${DISK_HOME}"
 
 mkdir -p /mnt/newhome
 zfs set mountpoint=/mnt/newhome homepool
