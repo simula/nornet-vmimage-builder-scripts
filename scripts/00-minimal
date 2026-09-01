@@ -114,7 +114,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       echo "ppaDistribution=${ppaDistribution}"
 
       curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" | \
-         gpg --yes --batch -o /etc/apt/keyrings/dreibh-obs.gpg
+         gpg --yes --dearmour --batch -o /etc/apt/keyrings/dreibh-obs.gpg
       cat >/etc/apt/sources.list.d/obs-dreibh.list <<EOF
 deb [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
 # deb-src [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
