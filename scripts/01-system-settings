@@ -269,6 +269,10 @@ EOF
 
 
 # ====== Prepare temporary directories for further setup ====================
+rm -rf /tmp/installtmp
+mkdir -p /tmp/installtmp
+chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp
+
 directories="
    bootsplash-images
    configuration-files
@@ -278,9 +282,7 @@ directories="
    system-info
    wireshark
 "
-
 for directory in ${directories} ; do
    mkdir -p "/tmp/installtmp/${directory}"
    chown "${USER_NAME}":"${USER_GROUP}" "/tmp/installtmp/${directory}"
 done
-chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp
