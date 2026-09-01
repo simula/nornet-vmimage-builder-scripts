@@ -222,11 +222,14 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
+   # BusyBox wget sometimes has problems with IPv6, it seems. Install wget ...
+   apk add wget
+
    # Add Open Build Service PPA home:dreibh
    ppaDistribution="Alpine_Latest_community"
    wget -O \
       /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
-      https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub
+      "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
    if ! grep -q "^https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" ; then
       echo "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" \
          >>/etc/apk/repositories
