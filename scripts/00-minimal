@@ -97,7 +97,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    elif [ "${ID}" == "debian" ] ; then
       apt-get update
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-         gnupg curl
+         curl ca-certificates gnupg
 
       if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] ; then
          ppaDistribution="Debian_${VERSION_ID^}"
@@ -113,8 +113,8 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       fi
       echo "ppaDistribution=${ppaDistribution}"
 
-      curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" \
-         | gpg --dearmor -o /etc/apt/keyrings/dreibh-obs.gpg
+      curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" | \
+         gpg --yes --batch -o /etc/apt/keyrings/dreibh-obs.gpg
       cat >/etc/apt/sources.list.d/obs-dreibh.list <<EOF
 deb [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
 # deb-src [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
