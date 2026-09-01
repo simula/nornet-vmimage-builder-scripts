@@ -81,9 +81,9 @@ grep -v '/dev/zvol/dsk/rpool/swap' /etc/vfstab >/tmp/vfstab.tmp && cp /tmp/vfsta
 # Create swap on $DISK_SWAP:
 zpool create -f swappool "/dev/dsk/${DISK_SWAP}"
 
-# Leave 64 MiB for metadata, use the rest as swap space:
+# Use 96% of pool capacity as swap space:
 AVAILABLE_BYTES=$(zfs get -Hp -o value avail swappool)
-SWAP_SIZE_BYTES=$(( AVAILABLE_BYTES - 64*1024*1024 ))
+SWAP_SIZE_BYTES=$(( AVAILABLE_BYTES * 96 / 100 ))
 
 # -o refreserv=none disables strict ZFS volume space reservation:
 zfs create -V "${SWAP_SIZE_BYTES}" -o refreserv=none swappool/swap
