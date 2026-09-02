@@ -118,7 +118,7 @@ VSPHERE_NETWORK="MY-VSPHERE-NETWORK"
 VSPHERE_HTTP_IP="MY-VSPHERE-HTTP-IP"
 
 PROXMOX_USERNAME="MY-PROXMOX-USERNAME"
-PROXMOX_PASSWORD="MY-PROXMOX-PASSWORD"
+PROXMOX_TOKEN="MY-PROXMOX-TOKEN"
 PROXMOX_URL="MY-PROXMOX-URL"
 PROXMOX_NODE="MY-PROXMOX-NODE"
 PROXMOX_POOL="MY-PROXMOX-POOL"
@@ -965,7 +965,7 @@ env CHECKPOINT_DISABLE=1 PACKER_LOG=${PACKER_LOG} PACKER_CACHE_DIR="${CACHE_DIRE
    -var "vsphere_network=${VSPHERE_NETWORK}"               \
    -var "vsphere_http_ip=${VSPHERE_HTTP_IP}"               \
    -var "proxmox_username=${PROXMOX_USERNAME}"             \
-   -var "proxmox_password=${PROXMOX_PASSWORD}"             \
+   -var "proxmox_token=${PROXMOX_TOKEN}"             \
    -var "proxmox_url=${PROXMOX_URL}"                       \
    -var "proxmox_node=${PROXMOX_NODE}"                     \
    -var "proxmox_pool=${PROXMOX_POOL}"                     \

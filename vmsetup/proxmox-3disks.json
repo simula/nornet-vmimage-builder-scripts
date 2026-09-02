@@ -41,7 +41,7 @@
   "tags": "{{user `vm_tags`}}",
 
   "username": "{{user `proxmox_username`}}",
-  "password": "{{user `proxmox_password`}}",
+  "token": "{{user `proxmox_token`}}",
   "proxmox_url": "{{user `proxmox_url`}}",
   "node": "{{user `proxmox_node`}}",
   "pool": "{{user `proxmox_pool`}}",
