@@ -169,10 +169,13 @@ if [ "${UNAME}" == "Linux" ] ; then
    # if command -v fstrim 2>/dev/null ; then
    #    fstrim -av || true
    # fi
-elif [ "${UNAME}" == "FreeBSD" ] ; then
-   sudo zpool trim zroot
-elif [ "${UNAME}" == "SunOS" ] ; then
-   sudo zpool trim rpool
+elif [ "${UNAME}" == "FreeBSD" ] || [ "${UNAME}" == "SunOS" ] ; then
+   zpools="$(zpool list -H 2>/dev/null | cut -f1 || true)"
+   if [ -n "${zpools}" ] ; then
+      for zpool in ${zpools} ; do
+         zpool trim "${zpool}" || true
+      done
+   fi
 fi
 
 
