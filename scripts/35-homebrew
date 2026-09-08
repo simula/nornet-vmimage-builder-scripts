@@ -36,7 +36,7 @@ set -euo pipefail
 # ###### Main program #######################################################
 
 # ====== Ensure that script is executed by the user account =================
-SCRIPT="86-dbeaver"   # Set to "$(basename "$0")" of this file!
+SCRIPT="35-homebrew"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
    LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
@@ -95,11 +95,15 @@ if [ "${UNAME}" == "Linux" ] ; then
    # Execute Homebrew installer as non-root user:
    sudo -u "${USER_NAME}" NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-   homebrewLocation="/home/linuxbrew/.linuxbrew"
-   sudo -u "${USER_NAME}" tee --append "${USER_HOME}/.bashrc" <<EOF
+   if ! grep -qs "brew shellenv" "${USER_HOME}/.bashrc" ; then
+      homebrewLocation="/home/linuxbrew/.linuxbrew"
+      sudo -u "${USER_NAME}" tee --append "${USER_HOME}/.bashrc" <<EOF
 
 # ------ Homebrew -----------------------------------------------------------
-eval "\$(${homebrewLocation}/bin/brew shellenv)"
+if [ -x "${homebrewLocation}/bin/brew" ] ; then
+   eval "\$(${homebrewLocation}/bin/brew shellenv)"
+fi
 EOF
+   fi
 
 fi
