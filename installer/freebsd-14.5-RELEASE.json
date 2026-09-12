@@ -27,12 +27,12 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-// FreeBSD 14.4 with EFI Boot
+// FreeBSD 14.5 with EFI Boot
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.4/FreeBSD-14.4-RELEASE-amd64-bootonly.iso",
-  "iso_checksum": "sha512:331b01eb44f96deb5882d28f2711f3cb455b8a51536df6f5209bae4c4d298fc53136427b5c4d802c84b129fcc43706eb4b11a318bd2aa4cc2ea8146c0e4d6f4a",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/14.5/FreeBSD-14.5-RELEASE-amd64-bootonly.iso",
+  "iso_checksum": "sha512:aca2c6146a975176eee6320f6b2ec063c3ada097cf1da7fa98c24c22fc6abc89bff32602ed6e8fa6d8d27a37abd18306d33413756425322f3c66f208ca2cb3a5",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
