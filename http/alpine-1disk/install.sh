@@ -85,24 +85,12 @@ efibootmgr \
   -L Alpine \
   -l '\EFI\alpine\grubx64.efi'
 
-# ====== Basic configuration ================================================
-
-# ------ Configure EFI boot manager -----------------------------------------
-apk add efibootmgr
-efibootmgr -v
-efibootmgr \
-   | sed -nE 's,^Boot([0-9A-F]{4}).*,\1,gp' \
-   | xargs -I% efibootmgr --quiet --delete-bootnum --bootnum %
-efibootmgr \
-  -c \
-  -d "/dev/${DISK_ROOT}" \
-  -p 1 \
-  -L Alpine \
-  -l '\EFI\alpine\grubx64.efi'
-
 # ====== User ===============================================================
 chroot /mnt ash <<EOF
 set -euxo pipefail
+
+# ------ Enable swap on boot ------------------------------------------------
+rc-update add swap boot
 
 # ------ Install required packages ------------------------------------------
 # NOTE: "shadow" provides usermod

@@ -67,7 +67,7 @@ VERSION_ID=\"\${VERSION%%_*}\"
 if [ -f /etc/os-release ] ; then
    . /etc/os-release
 fi
-if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*name[[:space:]]*=[[:space:]]*NorNet Praesum Presum' .gitconfig ; then
+if [ ! -e .gitconfig ] || grep -q -E '^[[:space:]]*(name|#[[:space:]]*name)[[:space:]]*=[[:space:]]*(NorNet Praesum Presum|YOUR_NAME)' .gitconfig ; then
    echo \"Updating .gitconfig:\"
    (
       echo \"[user]\"

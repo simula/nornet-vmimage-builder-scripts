@@ -37,8 +37,11 @@ set -euo pipefail
 
 
 HYPERVISOR="Proxmox"
-SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
-# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
+SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" "${DEFAULT_FREEBSD_SYSTEMS_CURRENT[@]}" )
+# SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY[@]}" )
+# SYSTEMS=( OpenIndiana-2026.04 FreeBSD-15.1-RELEASE NetBSD-11.0 OpenBSD-7.9 OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-44 )
+# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE OpenSUSE-Tumbleweed Alpine-3.24 )
+# SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
 PROJECTS=( Development )   # Development KDE KDE+Development
@@ -53,10 +56,10 @@ FIRMWARE=efi
 CORES=4
 MEMORY=4096
 BALLOON=2048
-DISK_ROOT=32768
-DISK_HOME=16384
+DISK_ROOT=65536
+DISK_HOME=32768
 DISK_SWAP=4096
-OPTIONS="--proxmox $HOME/.config/proxmox.config"
+OPTIONS="--proxmox $HOME/.config/proxmox-ka23.config"
 
 # Explicitly set full-HD for boot screen:
 VIDEO="FHD"
@@ -64,4 +67,4 @@ VIDEO="FHD"
 
 files/generate-backgrounds
 # shellcheck disable=SC2119
-build-defined-vms 300
+build-defined-vms 900

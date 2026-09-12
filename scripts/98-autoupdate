@@ -32,7 +32,9 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="98-autoupdate"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -45,9 +47,6 @@ fi
 
 # Enable printing the command-lines executed:
 set -x
-
-
-# ###### Main program #######################################################
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
@@ -74,12 +73,14 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       # Ubuntu:
       # shellcheck disable=SC2016
       sed -e 's#^//\([ \t]*"${distro_id}:${distro_codename}-updates";\)#  \1\n\t"LP-PPA-dreibh:${distro_codename}";\n\t"LP-PPA-mozillateam:${distro_codename}";\n\t"Zabbix:${distro_codename}";#' \
-         </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
+         </etc/apt/apt.conf.d/50unattended-upgrades \
+         >/etc/apt/apt.conf.d//50unattended-upgrades.new
    else
       # Debian:
       # shellcheck disable=SC2016
       sed -e 's#^//\([ \t]*"origin=.*,codename=${distro_codename}-updates";\)#  \1\n\t"origin=Zabbix,codename=${distro_codename}";#' \
-         </etc/apt/apt.conf.d/50unattended-upgrades | tee /etc/apt/apt.conf.d//50unattended-upgrades.new >/dev/null
+         </etc/apt/apt.conf.d/50unattended-upgrades \
+         >/etc/apt/apt.conf.d//50unattended-upgrades.new
    fi
 
    diff --color /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d//50unattended-upgrades.new || true
@@ -94,7 +95,7 @@ elif [ "${ID}" == "fedora" ] ; then
    # Packages:
    dnf install --setopt=install_weak_deps=False -y dnf-automatic
 
-   if [ ! -e /etc/dnf/automatic.conf ] ; then
+   if [ ! -f /etc/dnf/automatic.conf ] ; then
       cp /usr/share/dnf5/dnf5-plugins/automatic.conf /etc/dnf/automatic.conf
    fi
    sed -e 's/^apply_updates = no/apply_updates = yes/' -i /etc/dnf/automatic.conf

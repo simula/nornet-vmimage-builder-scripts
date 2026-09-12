@@ -46,7 +46,9 @@ set -euo pipefail
 # ###########################################################################
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="00-minimal"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -59,9 +61,6 @@ fi
 
 # Enable printing the command-lines executed:
 set -x
-
-
-# ###### Main program #######################################################
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"
@@ -98,7 +97,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    elif [ "${ID}" == "debian" ] ; then
       apt-get update
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-         gnupg curl
+         curl ca-certificates gnupg
 
       if [[ "${VERSION_ID}" =~ ^[0-9]+$ ]] ; then
          ppaDistribution="Debian_${VERSION_ID^}"
@@ -114,15 +113,12 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       fi
       echo "ppaDistribution=${ppaDistribution}"
 
-      curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" \
-         | gpg --dearmor \
-         | tee /etc/apt/keyrings/dreibh-obs.gpg >/dev/null
-      (
-         cat <<EOF
+      curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" | \
+         gpg --yes --dearmour --batch -o /etc/apt/keyrings/dreibh-obs.gpg
+      cat >/etc/apt/sources.list.d/obs-dreibh.list <<EOF
 deb [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
 # deb-src [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
 EOF
-      ) | tee /etc/apt/sources.list.d/obs-dreibh.list >/dev/null
    fi
 
    # Ensure that the installed packages are up-to-date:
@@ -145,7 +141,7 @@ EOF
    # Old Ubuntu versions 12.04/14.04/16.04 show a splash image during boot,
    # which may lead to a blank screen -> turning splash off as work-around:
    if [ "${ID}" == "ubuntu" ] && [[ "${VERSION_ID}" =~ ^1[246]\.[01][04]$ ]] ; then
-      if [ -e /etc/default/grub ] ; then
+      if [ -f /etc/default/grub ] ; then
          sed -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=\(.*\) splash\(.*\)$/GRUB_CMDLINE_LINUX_DEFAULT=\1\2/' \
              -i /etc/default/grub
          update-grub
@@ -226,13 +222,18 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 # ------ Alpine -------------------------------------------------------------
 elif [ "${ID}" == "alpine" ] ; then
 
+   # BusyBox wget sometimes has problems with IPv6, it seems. Install wget ...
+   apk add wget
+
    # Add Open Build Service PPA home:dreibh
    ppaDistribution="Alpine_Latest_community"
-   sudo wget -O \
+   wget -O \
       /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
-      https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub
-   echo "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" | \
-      sudo tee -a /etc/apk/repositories >/dev/null
+      "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
+   if ! grep -q "^https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" ; then
+      echo "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" \
+         >>/etc/apk/repositories
+   fi
 
    packages=(
       bash
@@ -272,7 +273,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    # ------ Prepare FreeBSD Sources -----------------------------------------
    mkdir -p /usr/src
    cd /usr/src
-   if [ ! -e .git/config ] ; then
+   if [ ! -f .git/config ] ; then
       git init -b main
       git remote add freebsd https://github.com/freebsd/freebsd.git
       git config --add remote.freebsd.fetch "+refs/notes/*:refs/notes/*"
@@ -286,7 +287,7 @@ elif [ "${ID}" == "freebsd" ] ; then
    mkdir -p /usr/ports
    cd /usr/ports
    # See: https://wiki.freebsd.org/Ports/GitQuickStart
-   if [ ! -e .git/config ] ; then
+   if [ ! -f .git/config ] ; then
       git init -b main
       git remote add freebsd https://git.freebsd.org/ports.git
       git remote set-url --push freebsd ssh://git@gitrepo.freebsd.org/ports.git
@@ -357,7 +358,7 @@ elif [ "${ID}" == "openbsd" ] ; then
    chgrp wsrc /usr/ports
    chmod 775 /usr/ports
    cd /usr/ports
-   if [ ! -e .git/config ] ; then
+   if [ ! -f .git/config ] ; then
       git init -b master
       git remote add origin https://github.com/openbsd/ports.git
       git config pull.rebase true

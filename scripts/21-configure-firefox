@@ -44,7 +44,9 @@ set -euo pipefail
 HOMEPAGE="https://www.nntb.no/~dreibh"
 
 
-# ###### Ensure that script is executed by the user account #################
+# ###### Main program #######################################################
+
+# ====== Ensure that script is executed by the user account =================
 if [ "$(id -u)" -eq 0 ] ; then
    # Running as root using sudo. Run the script again, but as user!
    echo "Running as ROOT! SUDO_USER=${SUDO_USER}"
@@ -62,8 +64,7 @@ else
    echo "Running as ${USER}! SUDO_USER=${SUDO_USER:-}"
 fi
 
-
-# ###### Print script name, to make Packer output easier readable ###########
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="21-configure-firefox"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -76,9 +77,6 @@ fi
 
 # Enable printing the command-lines executed:
 set -x
-
-
-# ###### Main program #######################################################
 
 # ====== Obtain system details ==============================================
 UNAME="$(uname)"

@@ -89,6 +89,9 @@ efibootmgr \
 chroot /mnt ash <<EOF
 set -euxo pipefail
 
+# ------ Enable swap on boot ------------------------------------------------
+rc-update add swap boot
+
 # ------ Install required packages ------------------------------------------
 # NOTE: "shadow" provides usermod
 apk add bash btrfs-progs doas shadow sudo virt-what

@@ -32,10 +32,11 @@
 set -euo pipefail
 
 
+
 # ###### Main program #######################################################
 
-# ====== Print script name, to make Packer output easier readable ===========
-SCRIPT="11-system-info"   # Set to "$(basename "$0")" of this file!
+# ====== Ensure that script is executed by the user account =================
+SCRIPT="35-homebrew"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
    LC_ALL=C.UTF-8 print-utf8 -x 160 -n -s "\e[1;31m█" "▀" "█\e[0m"
@@ -45,70 +46,64 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-# ====== Obtain system details ==============================================
-UNAME="$(uname)"
-
-
-# ====== Configure System-Info ==============================================
-case "${UNAME}" in
-   FreeBSD|OpenBSD)
-      systemInfoDirectory="/usr/local/etc/system-info.d"
-      ;;
-   NetBSD)
-      systemInfoDirectory="/usr/pkg/etc/system-info.d"
-      ;;
-   *)
-      systemInfoDirectory="/etc/system-info.d"
-      ;;
-esac
-
-# This directory is created by the configurations in ../files/$0
-# Make sure that the corresponding configuration exists there!
-INPUT_DIRECTORY="/tmp/installtmp/system-info"
-
-if [ -d "${INPUT_DIRECTORY}" ] ; then
-   mkdir -p "${systemInfoDirectory}"
-   find "${INPUT_DIRECTORY}" -type f -exec chmod +x {} \;
-   find "${INPUT_DIRECTORY}" -type f -exec cp {} "${systemInfoDirectory}/" \;
-else
-   echo >&2 "ERROR: ${INPUT_DIRECTORY} does not exist!"
+# ====== Check environment variables ========================================
+if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
+   echo >&2 "Usage: env USER_NAME=<user> $0"
+   echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
 
-# ====== Set up /etc/profile ================================================
-if [ "${UNAME}" == "NetBSD" ] || [ "${UNAME}" == "OpenBSD" ] ; then
-   if [ ! -f /etc/profile ] ; then
-      touch  /etc/profile
-   fi
-   if ! grep -q "Source profile.d directories" /etc/profile; then
+# Enable printing the command-lines executed:
+set -x
 
-      # ------ Directories for lookup of profile scripts --------------------
-      profileDirectories=(
-         /etc/profile.d
-         /usr/local/etc/profile.d
-      )
-      if [ "${UNAME}" == "NetBSD" ] ; then
-         profileDirectories+=( /usr/pkg/etc/profile.d )
-      fi
+USER_GROUP="$(id -gn "${USER_NAME}")"
+USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 
-      # ------ Write block to /etc/profile ----------------------------------
-      if [ -s /etc/profile ] ; then
-         echo >>/etc/profile
-      fi
-      cat >>/etc/profile << EOF
-# ====== Source profile.d directories =======================================
-for dir in ${profileDirectories[@]} ; do
-    if [ -d "\$dir" ]; then
-        for script in "\$dir"/*.sh; do
-            # The [ -r ... ] check ensures non-matching wildcards are not sourced:
-            [ -r "\$script" ] && . "\$script"
-        done
-    fi
-done
-unset dir script
+# ====== Obtain system details ==============================================
+UNAME="$(uname)"
+NAME="${UNAME}"
+ID="${UNAME,,}"
+VERSION="$(uname -r)"
+VERSION_ID="${VERSION/_*/}"
+if [ -f /etc/os-release ] ; then
+   . /etc/os-release
+fi
+
+
+# ====== Install Homebrew ===================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   case "${ID}" in
+      debian|ubuntu)
+         env DEBIAN_FRONTEND=noninteractive apt-get update && \
+         env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential procps curl file git
+         ;;
+      fedora)
+         dnf install -y gcc gcc-c++ make procps-ng curl file git
+         ;;
+      opensuse*)
+         zypper --non-interactive install gcc gcc-c++ make procps curl file git
+         ;;
+      alpine)
+         apk add --no-cache build-base procps curl file git bash gcompat
+         ;;
+   esac
+
+   # Create target directory and grant ownership to non-root user:
+   mkdir -p /home/linuxbrew/.linuxbrew
+   chown -R "${USER_NAME}:${USER_GROUP}" /home/linuxbrew
+
+   # Execute Homebrew installer as non-root user:
+   sudo -u "${USER_NAME}" NONINTERACTIVE=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+   if ! grep -qs "brew shellenv" "${USER_HOME}/.bashrc" ; then
+      homebrewLocation="/home/linuxbrew/.linuxbrew"
+      sudo -u "${USER_NAME}" tee --append "${USER_HOME}/.bashrc" <<EOF
+
+# ------ Homebrew -----------------------------------------------------------
+if [ -x "${homebrewLocation}/bin/brew" ] ; then
+   eval "\$(${homebrewLocation}/bin/brew shellenv)"
+fi
 EOF
    fi
+
 fi

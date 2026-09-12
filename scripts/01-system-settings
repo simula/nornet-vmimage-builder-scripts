@@ -32,7 +32,9 @@
 set -euo pipefail
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="01-system-settings"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -43,12 +45,6 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-
-# ###### Main program #######################################################
-
 # ====== Check/set environment variables ====================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] || \
    [ ! -v TIMEZONE  ] || [ "${TIMEZONE}"  == "" ] ; then
@@ -56,6 +52,10 @@ if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] || \
    echo >&2 "Example: sudo env USER_NAME=nornetpp TIMEZONE=\"Europe/Oslo\" $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
+
 USER_GROUP="$(id -gn "${USER_NAME}")"
 
 # ====== Obtain system details ==============================================
@@ -101,7 +101,7 @@ if [ "${UNAME}" == "Linux" ] ; then
    # With new Ubuntu autoinstaller:
    # /etc/cloud/cloud.cfg.d/99-installer.cfg disables growpart and resizefs
    # => fixing this here:
-   if [ -e /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
+   if [ -f /etc/cloud/cloud.cfg.d/99-installer.cfg ] ; then
       sed -e "s#growpart: {mode: 'off'}#growpart: {mode: 'auto'}#g" \
           -e "s#resize_rootfs: false#resize_rootfs: true#g" \
           -i /etc/cloud/cloud.cfg.d/99-installer.cfg
@@ -117,7 +117,7 @@ if [ "${UNAME}" == "Linux" ] ; then
 sctp
 EOF
    else
-      if [ -e /etc/modules ] ; then
+      if [ -f /etc/modules ] ; then
          (
             grep -v "^sctp" /etc/modules || true
             echo "sctp"
@@ -126,7 +126,7 @@ EOF
       fi
    fi
 
-   if [ -e /etc/modprobe.d/sctp-blacklist.conf ] ; then
+   if [ -f /etc/modprobe.d/sctp-blacklist.conf ] ; then
       # Remove blacklisting of SCTP in Fedora:
       # Just removing the blacklist file is not sufficient, since it would be
       # installed again by an update of kernel-modules-extra!
@@ -235,7 +235,7 @@ KbdInteractiveAuthentication yes
 AcceptEnv                    LANG LC_*
 EOF
 for sftp in /usr/lib/openssh/sftp-server /usr/libexec/openssh/sftp-server /usr/libexec/sftp-server ; do
-   if [ -e "${sftp}" ] ; then
+   if [ -x "${sftp}" ] ; then
       echo "Subsystem sftp ${sftp}" >>/etc/ssh/sshd_config
       break
    fi
@@ -269,6 +269,10 @@ EOF
 
 
 # ====== Prepare temporary directories for further setup ====================
+rm -rf /tmp/installtmp
+mkdir -p /tmp/installtmp
+chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp
+
 directories="
    bootsplash-images
    configuration-files
@@ -278,9 +282,7 @@ directories="
    system-info
    wireshark
 "
-
 for directory in ${directories} ; do
    mkdir -p "/tmp/installtmp/${directory}"
    chown "${USER_NAME}":"${USER_GROUP}" "/tmp/installtmp/${directory}"
 done
-chown "${USER_NAME}":"${USER_GROUP}" /tmp/installtmp

@@ -31,9 +31,9 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://releases.ubuntu.com/resolute/SHA256SUMS | grep ubuntu-26.04-live-server-amd64.iso
-  "iso_url": "https://releases.ubuntu.com/resolute/ubuntu-26.04-live-server-amd64.iso",
-  "iso_checksum": "sha256:dec49008a71f6098d0bcfc822021f4d042d5f2db279e4d75bdd981304f1ca5d9",
+  // Checksum: curl -s https://releases.ubuntu.com/resolute/SHA256SUMS | grep ubuntu-26.04.1-live-server-amd64.iso
+  "iso_url": "https://releases.ubuntu.com/26.04.1/ubuntu-26.04.1-live-server-amd64.iso",
+  "iso_checksum": "sha256:cc8a95cde20f6ced61a322420de00f10cc3c90ced545daa46cb9c1a117f1d927",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

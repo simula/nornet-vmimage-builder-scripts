@@ -47,6 +47,7 @@
   "boot_wait": "10s",
   "boot_command": [
     "e<down><down><down><end>priority=critical",
+    " scsi_mod.scan=sync",
     " fb=false",
     " auto=true",
     " debconf/frontend=noninteractive",

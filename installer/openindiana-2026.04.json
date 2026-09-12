@@ -80,7 +80,6 @@
     "<wait300s><wait300s><wait300s><wait1s>",
     "<wait300s><wait300s><wait300s><wait1s>",
     "<wait300s><wait300s><wait300s><wait1s>",
-    "<wait300s><wait300s><wait300s><wait1s>",
     // Shell after installation:
     "<f9>3<enter><wait5s>",
     // VirtualBox again boots the CD-ROM, so it must be ejected.

@@ -36,7 +36,9 @@ set -euo pipefail
 # Non-root user permission will be given in 38-allow-wireshark-as-user, not here!
 
 
-# ###### Print script name, to make Packer output easier readable ###########
+# ###### Main program #######################################################
+
+# ====== Print script name, to make Packer output easier readable ===========
 SCRIPT="22-configure-wireshark"   # Set to "$(basename "$0")" of this file!
 if command -v figlet >/dev/null && command -v print-utf8 >/dev/null ; then
    echo
@@ -47,18 +49,16 @@ else
    echo -e "\e[1;31;22m########## ${SCRIPT} ##########\e[0m"
 fi
 
-# Enable printing the command-lines executed:
-set -x
-
-
-# ###### Main program #######################################################
-
 # ====== Check environment variables ========================================
 if [ ! -v USER_NAME ] || [ "${USER_NAME}" == "" ] ; then
    echo >&2 "Usage: env USER_NAME=<user> $0"
    echo >&2 "Example: sudo env USER_NAME=nornetpp $0"
    exit 1
 fi
+
+# Enable printing the command-lines executed:
+set -x
+
 USER_GROUP="$(id -gn "${USER_NAME}")"
 USER_HOME="$(getent passwd "${USER_NAME}" | cut -d: -f6 || awk -F: -v user="${USER_NAME}" '$1==user { print $6 }' /etc/passwd)"
 UNAME="$(uname)"

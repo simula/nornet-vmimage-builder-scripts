@@ -38,9 +38,9 @@ set -euo pipefail
 
 HYPERVISOR="Proxmox"
 SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" "${DEFAULT_FREEBSD_SYSTEMS_CURRENT[@]}" )
-# SYSTEMS=(  "${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY[@]}" )
+# SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY[@]}" )
+# SYSTEMS=( OpenIndiana-2026.04 FreeBSD-15.1-RELEASE NetBSD-11.0 OpenBSD-7.9 OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-44 )
 # SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE OpenSUSE-Tumbleweed Alpine-3.24 )
-# SYSTEMS=( NetBSD-11.0 OpenBSD-7.9 OpenIndiana-2026.04 )   # !!! Not working yet! -> https://github.com/hashicorp/packer-plugin-proxmox/issues/276 !!!
 # SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
@@ -54,12 +54,12 @@ USER_REALNAME="NorNet Praesum Presum"
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
-MEMORY=3072
+MEMORY=4096
 BALLOON=1024
 DISK_ROOT=32768
 DISK_HOME=16384
 DISK_SWAP=2048
-OPTIONS="--proxmox $HOME/.config/proxmox.config"
+OPTIONS="--proxmox $HOME/.config/proxmox-ka23.config"
 
 # Explicitly set full-HD for boot screen:
 VIDEO="FHD"
@@ -67,4 +67,4 @@ VIDEO="FHD"
 
 files/generate-backgrounds
 # shellcheck disable=SC2119
-build-defined-vms 90
+build-defined-vms 900
