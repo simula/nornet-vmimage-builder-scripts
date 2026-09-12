@@ -44,9 +44,6 @@
   // !!! IMPORTANT: The "vboxmanage" here will REPLACE all "vboxmanage"
   //                settings from vmsetup/virtualbox*.json!
   "vboxmanage": [
-    // FIXME! virtio NIC type does not work for FreeBSD guest in current VirtualBox!
-    // [ "modifyvm", "{{.Name}}", "--nictype1", "82545EM" ],
-    // FreeBSD guest in current VirtualBox needs VBoxSVGA!
     [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"   ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "FreeBSD_64" ]
   ],
