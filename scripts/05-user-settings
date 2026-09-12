@@ -70,6 +70,23 @@ if [ -f /etc/os-release ] ; then
 fi
 
 
+# ====== Use Bash profile ===================================================
+if [ "${UNAME}" == "FreeBSD" ] ; then
+   # Bash does not use /etc/profile, only /usr/local/etc/profile. This needs to
+   # be created, in order to get /etc/profile loaded!
+   # See: https://forums.freebsd.org/threads/what-happened-to-etc-profile.78406/
+   if [ ! -f /usr/local/etc/profile ] ; then
+      cat >/usr/local/etc/profile <<EOF
+if [ "\${_loaded}" = "" ] ; then
+   if [ -e /etc/profile ] ; then
+      . /etc/profile
+   fi
+fi
+EOF
+   fi
+fi
+
+
 # ====== Prepare skel directory =============================================
 skelDirectory=""
 skelDotPrefix=""
