@@ -636,12 +636,14 @@ if [ ! -e ${BUILDER_INSTALLTYPE}/"${BUILDER_INSTALL}".json ] ; then
    exit 1
 fi
 (
-   insert-json "vmsetup/${BUILDER_VMSETUP}.json"
+   insert-json "vmsetup/${BUILDER_VMSETUP}.json" | \
+      sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage1":/'
    echo ","
    if [ "${BUILDER_INSTALLTYPE}" == "installer" ] ; then
       echo "\"http_directory\": \"http\","
    fi
-   insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json"
+   insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json" | \
+      sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage2":/'
 cat <<EOF
     }
   ],
@@ -769,7 +771,7 @@ EOF
 
 
 # ====== Clean up and check =================================================
-jq . <"${JSONTMP}" | \
+jq '.builders[] |= (.vboxmanage = (.vboxmanage1 // []) + (.vboxmanage2 // []) | del(.vboxmanage1, .vboxmanage2))' <"${JSONTMP}" | \
 if [ "${HYPERVISOR}" == "QEMU" ] ; then
    # QEMU has no vboxmanage!
    jq "del(.builders[].vboxmanage)"
