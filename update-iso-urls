@@ -47,7 +47,7 @@ function process-result ()
 
    if [ "${system}" == "FreeBSD" ] ; then
       systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}-${variant}.json"
-   elif [ "${system}" == "OpenSUSE" ] && [ "${latestMinor}" != "" ] ; then
+   elif [ "${system}" == "NetBSD" ] || ( [ "${system}" == "OpenSUSE" ] && [ "${latestMinor}" != "" ] ) ; then
       systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}.json"
    else
       systemJSON="installer/${system,,}-${latestMajor}.json"
@@ -117,10 +117,12 @@ function find-isos ()
             rm -f "${checksums}" "${signature}"
             return 1
          fi
+      else
+         echo "*** NO SIGNATURE ***"
       fi
 
       # ====== Get ISO checksum =============================================
-      if [[ "${checksums}" =~ FreeBSD ]] ; then
+      if [[ "${checksums}" =~ FreeBSD ]] || [ "${system}" == "NetBSD" ] ; then
          sum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
       elif [[ "${iso}" =~ ubuntu ]] ; then
          i2="${iso//\.0-/-}"
@@ -270,7 +272,7 @@ function find-alpine-isos ()
       iso1="alpine-${variant}-${major}.${minor}-x86_64.iso"
       algorithm="sha512"
       checksums="${iso1}.sha512"
-      signature=""
+      signature="${iso1}.asc"
       find-isos || return 0
     done
 }
@@ -346,6 +348,28 @@ function find-freebsd-isos ()
 }
 
 
+# ###### Find NetBSD ISOs ###################################################
+function find-netbsd-isos ()
+{
+   system="NetBSD"
+   major=11
+   minor=0
+   latestURL=""
+   latestChecksum=""
+   latestMajor=""
+   latestMinor=""
+   while true ; do
+      location1="https://cdn.netbsd.org/pub/NetBSD/images/${major}.${minor}"
+      location2="https://ftp.netbsd.org/pub/NetBSD/images/${major}.${minor}"
+      iso1="NetBSD-${major}.${minor}-amd64.iso"
+      algorithm="sha512"
+      checksums="SHA512"
+      signature=""
+      find-isos || return 0
+    done
+}
+
+
 
 # ###### Main program #######################################################
 find-ubuntu-isos
@@ -356,3 +380,4 @@ find-alpine-isos
 find-opensuse-leap-isos
 
 find-freebsd-isos RELEASE
+find-netbsd-isos
