@@ -32,6 +32,10 @@ set -euo pipefail
 #
 # openSUSE Image Keys:
 # gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x35A2F86E29B700A4
+#
+# NetBSD Image Keys (NetBSD Security Officer):
+# gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x271133262BF35CB50D4F504689261E17F5EF49FF
+
 
 # ###### Process result #####################################################
 function process-result ()
@@ -106,15 +110,26 @@ function find-isos ()
       echo -e "\e[37mISO location is ${location} ...\e[0m"
 
       # ====== Look for signatures file =====================================
+      sigFile=""
       if [ "${signature}" != "" ] ; then
-         rm -f "${signature}"
-         if wget -q "${location}/${signature}" -O "${signature}" ; then
-            if ! gpg --verify "${signature}" "${checksums}" ; then
-               rm -f "${checksums}" "${signature}"
-               return 1
+         sigFile="$(basename "${signature}")"
+         rm -f "${sigFile}"
+         sigURL="${signature}"
+         if [[ ! "${sigURL}" =~ ^https?:// ]] ; then
+            sigURL="${location}/${signature}"
+         fi
+         if wget -q "${sigURL}" -O "${sigFile}" ; then
+            if ! gpg --verify "${sigFile}" "${checksums}" >/dev/null 2>&1 && \
+               ! gpg --verify "${sigFile}" >/dev/null 2>&1 ; then
+               echo "*** INVALID SIGNATURE (PUBLIC KEY MISSING?) ***"
+               gpg --verify "${sigFile}" || true
+               gpg --verify "${sigFile}" "${checksums}" || true
+               rm -f "${checksums}" "${sigFile}"
+               exit 1
             fi
          else
-            rm -f "${checksums}" "${signature}"
+            echo "*** NO SIGNATURE FILE ***"
+            rm -f "${checksums}" "${sigFile}"
             return 1
          fi
       else
@@ -137,7 +152,7 @@ function find-isos ()
          latestChecksum="${sum}"
          latestMajor=${major}
          latestMinor=${minor}
-         rm -f "${checksums}" "${signature}"
+         rm -f "${checksums}" "${sigFile}"
 
          # ====== Increment minor version ===================================
          minor=$((minor+1))
@@ -272,7 +287,7 @@ function find-alpine-isos ()
       iso1="alpine-${variant}-${major}.${minor}-x86_64.iso"
       algorithm="sha512"
       checksums="${iso1}.sha512"
-      signature="${iso1}.asc"
+      signature=""   # FIXME! Alpine only provides ISO signatures, not checksum signatures!
       find-isos || return 0
     done
 }
@@ -364,7 +379,7 @@ function find-netbsd-isos ()
       iso1="NetBSD-${major}.${minor}-amd64.iso"
       algorithm="sha512"
       checksums="SHA512"
-      signature=""
+      signature="https://cdn.netbsd.org/pub/NetBSD/security/hashes/NetBSD-${major}.${minor}_hashes.asc"
       find-isos || return 0
     done
 }
@@ -372,6 +387,7 @@ function find-netbsd-isos ()
 
 
 # ###### Main program #######################################################
+
 find-ubuntu-isos
 find-debian-isos
 find-fedora-isos
