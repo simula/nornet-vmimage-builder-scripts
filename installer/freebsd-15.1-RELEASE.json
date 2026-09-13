@@ -41,9 +41,8 @@
   // No shutdown_command needed!
 
   // ====== Boot into installer =============================================
-  // !!! IMPORTANT: The "vboxmanage" here will REPLACE all "vboxmanage"
-  //                settings from vmsetup/virtualbox*.json!
   "vboxmanage": [
+    // FreeBSD guest in current VirtualBox needs VBoxSVGA!
     [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"   ],
     [ "modifyvm", "{{.Name}}", "--ostype",             "FreeBSD_64" ]
   ],
