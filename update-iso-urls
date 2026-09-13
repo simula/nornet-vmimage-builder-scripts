@@ -27,6 +27,9 @@ set -euo pipefail
 # Fedora Image Keys:
 # curl https://fedoraproject.org/fedora.gpg | gpg --import
 
+# Alpine Image Keys:
+# gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 293ACD0907D9495A
+
 
 # ###### Process result #####################################################
 function process-result ()
@@ -148,15 +151,18 @@ function find-isos ()
    else
       return 1
    fi
-   if [[ "${major}" =~ [\.] ]] ; then   # Ubuntu version: e.g. 24.04
+   if [ "${system}" == "Ubuntu" ] ; then   # Ubuntu version: e.g. 24.04 (LTS only)
       a="${major//[\.]*/}"
       b="${major//[0-9]*\./}"
-
-      # NOTE: Iterating LTS versions only!
       a=$((a+2))
       major="${a}.${b}"
+   elif [ "${system}" == "Alpine" ] ; then # Alpine version: e.g. 3.20 -> 3.21
+      a="${major//[\.]*/}"
+      b="${major//[0-9]*\./}"
+      b=$((b+1))
+      major="${a}.${b}"
    else
-      major=$((major+1))   # Debian version: just a number
+      major=$((major+1))   # Debian / Fedora version: just a number
    fi
    minor=0
 }
@@ -243,6 +249,29 @@ function find-fedora-isos ()
 }
 
 
+# ###### Find Alpine ISOs ###################################################
+function find-alpine-isos ()
+{
+   system="Alpine"
+   major=3.24
+   minor=0
+   variant="${1:-standard}"
+   latestURL=""
+   latestChecksum=""
+   latestMajor=""
+   latestMinor=""
+   while true ; do
+      location1="https://dl-cdn.alpinelinux.org/alpine/v${major}/releases/x86_64"
+      location2="https://uk.alpinelinux.org/alpine/v${major}/releases/x86_64"
+      iso1="alpine-${variant}-${major}.${minor}-x86_64.iso"
+      algorithm="sha512"
+      checksums="${iso1}.sha512"
+      signature=""
+      find-isos || return 0
+    done
+}
+
+
 # ###### Find FreeBSD ISOs ##################################################
 function find-freebsd-isos ()
 {
@@ -257,7 +286,7 @@ function find-freebsd-isos ()
    while true ; do
       location1="https://download.freebsd.org/ftp/releases/ISO-IMAGES/${major}.${minor}"
       location2=""
-      iso1="FreeBSD-${major}.${minor}-${variant}-amd64-bootonly.iso"
+      iso1="FreeBSD-${major}.${minor}-${variant}-amd64-disc1.iso"
       algorithm="sha512"
       checksums="CHECKSUM.SHA512-FreeBSD-${major}.${minor}-${variant}-amd64"
       signature=""
@@ -271,4 +300,5 @@ function find-freebsd-isos ()
 find-ubuntu-isos
 find-debian-isos
 find-fedora-isos
+find-alpine-isos
 find-freebsd-isos RELEASE

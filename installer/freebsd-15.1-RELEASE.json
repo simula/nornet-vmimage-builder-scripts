@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/15.1/FreeBSD-15.1-RELEASE-amd64-bootonly.iso",
-  "iso_checksum": "sha512:67e245a1e6ab32d4abdf3b1f3827b24b6eab7d71724e09c3cb77d58042aaffc1fc9c0c408d74223992f740e770b337903d3ea54dd488ef8b45f45acd4a96662c",
+  "iso_url": "https://download.freebsd.org/ftp/releases/ISO-IMAGES/15.1/FreeBSD-15.1-RELEASE-amd64-disc1.iso",
+  "iso_checksum": "sha512:7b844d390648eb9888a74da02e63a76fad58b5722ab25624cf547395e687a2c5de4275781fdfc55a4d717fc4c245913893f1449976fb778be5e160495c538e28",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
