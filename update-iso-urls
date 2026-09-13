@@ -23,13 +23,15 @@ set -euo pipefail
 
 # Debian Images Key: https://keyring.debian.org/
 # gpg --quiet --keyserver hkp://keyring.debian.org --recv-keys 0xDF9B9C49EAA9298432589D76DA87E80D6294BE9B
-
+#
 # Fedora Image Keys:
 # curl https://fedoraproject.org/fedora.gpg | gpg --import
-
+#
 # Alpine Image Keys:
-# gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 293ACD0907D9495A
-
+# gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 0482D84022F52DF1C4E7CD43293ACD0907D9495A
+#
+# openSUSE Image Keys:
+# gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x35A2F86E29B700A4
 
 # ###### Process result #####################################################
 function process-result ()
@@ -45,6 +47,8 @@ function process-result ()
 
    if [ "${system}" == "FreeBSD" ] ; then
       systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}-${variant}.json"
+   elif [ "${system}" == "OpenSUSE" ] && [ "${latestMinor}" != "" ] ; then
+      systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}.json"
    else
       systemJSON="installer/${system,,}-${latestMajor}.json"
    fi
@@ -272,6 +276,53 @@ function find-alpine-isos ()
 }
 
 
+# ###### Find OpenSUSE Tumbleweed ISOs ######################################
+function find-opensuse-tumbleweed-isos ()
+{
+   system="OpenSUSE"
+   major="Tumbleweed"
+   minor=0
+   latestURL=""
+   latestChecksum=""
+   latestMajor=""
+   latestMinor=""
+
+   location1="https://download.opensuse.org/tumbleweed/appliances/iso"
+   location2=""
+   iso1="agama-installer.x86_64-openSUSE.iso"
+   algorithm="sha256"
+   checksums="${iso1}.sha256"
+   signature="${checksums}.asc"
+
+   if find-isos ; then
+      latestMinor=""
+      process-result
+   fi
+}
+
+
+# ###### Find OpenSUSE Leap ISOs ############################################
+function find-opensuse-leap-isos ()
+{
+   system="OpenSUSE"
+   major=16
+   minor=1
+   latestURL=""
+   latestChecksum=""
+   latestMajor=""
+   latestMinor=""
+   while true ; do
+      location1="https://download.opensuse.org/distribution/leap/${major}.${minor}/installer/iso"
+      location2=""
+      iso1="agama-installer.x86_64-Leap_${major}.${minor}.iso"
+      algorithm="sha256"
+      checksums="${iso1}.sha256"
+      signature="${checksums}.asc"
+      find-isos || return 0
+    done
+}
+
+
 # ###### Find FreeBSD ISOs ##################################################
 function find-freebsd-isos ()
 {
@@ -301,4 +352,7 @@ find-ubuntu-isos
 find-debian-isos
 find-fedora-isos
 find-alpine-isos
+# --- find-opensuse-tumbleweed-isos   # Using file:... for checksum file instead!
+find-opensuse-leap-isos
+
 find-freebsd-isos RELEASE

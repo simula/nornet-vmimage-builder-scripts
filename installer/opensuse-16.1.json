@@ -32,7 +32,7 @@
 {
   // ====== ISO settings ====================================================
   "iso_url": "https://download.opensuse.org/distribution/leap/16.1/installer/iso/agama-installer.x86_64-Leap_16.1.iso",
-  "iso_checksum": "file:https://download.opensuse.org/distribution/leap/16.1/installer/iso/agama-installer.x86_64-Leap_16.1.iso.sha256",
+  "iso_checksum": "sha256:01cdd081192b512fa52c6e7888829ead2a87ae1feae13c7be521ec6a35dab03e",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
