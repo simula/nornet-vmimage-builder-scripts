@@ -51,7 +51,7 @@ function process-result ()
 
    if [ "${system}" == "FreeBSD" ] ; then
       systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}-${variant}.json"
-   elif [ "${system}" == "NetBSD" ] || ( [ "${system}" == "OpenSUSE" ] && [ "${latestMinor}" != "" ] ) ; then
+   elif [ "${system}" == "NetBSD" ] || [ "${system}" == "OpenBSD" ] || { [ "${system}" == "OpenSUSE" ] && [ "${latestMinor}" != "" ]; } ; then
       systemJSON="installer/${system,,}-${latestMajor}.${latestMinor}.json"
    else
       systemJSON="installer/${system,,}-${latestMajor}.json"
@@ -119,8 +119,24 @@ function find-isos ()
             sigURL="${location}/${signature}"
          fi
          if wget -q "${sigURL}" -O "${sigFile}" ; then
-            if ! gpg --verify "${sigFile}" "${checksums}" >/dev/null 2>&1 && \
-               ! gpg --verify "${sigFile}" >/dev/null 2>&1 ; then
+            if [[ "${sigFile}" =~ \.sig$ ]] ; then
+               SIGNIFY="$(command -v signify-openbsd || command -v signify || true)"
+               if [ -z "${SIGNIFY}" ] ; then
+                  echo "ERROR: Neither signify-openbsd nor signify was found!" >&2
+                  exit 1
+               fi
+               mkdir -p keys
+               publicKey="openbsd-${major}${minor}-base.pub"
+               if [ ! -f "${publicKey}" ] ; then
+                  wget -q --max-redirect 0 "https://ftp.openbsd.org/pub/OpenBSD/${major}.${minor}/${publicKey}" -O "keys/${publicKey}"
+               fi
+               if ! "${SIGNIFY}" -V -p "keys/${publicKey}" -x "${sigFile}" -m "${checksums}" >/dev/null 2>&1 ; then
+                  echo "*** INVALID SIGNIFY SIGNATURE ***"
+                  rm -f "${checksums}" "${sigFile}"
+                  return 1
+               fi
+            elif ! gpg --verify "${sigFile}" "${checksums}" >/dev/null 2>&1 && \
+                 ! gpg --verify "${sigFile}" >/dev/null 2>&1 ; then
                echo "*** INVALID SIGNATURE (PUBLIC KEY MISSING?) ***"
                gpg --verify "${sigFile}" || true
                gpg --verify "${sigFile}" "${checksums}" || true
@@ -137,7 +153,7 @@ function find-isos ()
       fi
 
       # ====== Get ISO checksum =============================================
-      if [[ "${checksums}" =~ FreeBSD ]] || [ "${system}" == "NetBSD" ] ; then
+      if [[ "${checksums}" =~ FreeBSD ]] || [ "${system}" == "NetBSD" ] || [ "${system}" == "OpenBSD" ] ; then
          sum="$(grep "${iso})" "${checksums}" | sed -e 's/^.* = //g')"
       elif [[ "${iso}" =~ ubuntu ]] ; then
          i2="${iso//\.0-/-}"
@@ -276,7 +292,7 @@ function find-alpine-isos ()
    system="Alpine"
    major=3.24
    minor=0
-   variant="${1:-standard}"
+   variant="standard"
    latestURL=""
    latestChecksum=""
    latestMajor=""
@@ -385,6 +401,28 @@ function find-netbsd-isos ()
 }
 
 
+# ###### Find OpenBSD ISOs ##################################################
+function find-openbsd-isos ()
+{
+   system="OpenBSD"
+   major=7
+   minor=9
+   latestURL=""
+   latestChecksum=""
+   latestMajor=""
+   latestMinor=""
+   while true ; do
+      location1="https://cdn.openbsd.org/pub/OpenBSD/${major}.${minor}/amd64"
+      location2="https://ftp.openbsd.org/pub/OpenBSD/${major}.${minor}/amd64"
+      iso1="install${major}${minor}.iso"
+      algorithm="sha256"
+      checksums="SHA256"
+      signature="SHA256.sig"
+      find-isos || return 0
+    done
+}
+
+
 
 # ###### Main program #######################################################
 
@@ -397,3 +435,4 @@ find-opensuse-leap-isos
 
 find-freebsd-isos RELEASE
 find-netbsd-isos
+find-openbsd-isos

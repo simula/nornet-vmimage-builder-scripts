@@ -32,8 +32,8 @@
 {
   // ====== ISO settings ====================================================
   // Checksum: curl -s https://cdn.openbsd.org/pub/OpenBSD/7.9/amd64/SHA256 | grep -- .iso
-  "iso_url": "https://ftp.eu.openbsd.org/pub/OpenBSD/7.9/amd64/install79.iso",
-  "iso_checksum": "file:https://ftp.eu.openbsd.org/pub/OpenBSD/7.9/amd64/SHA256",
+  "iso_url": "https://cdn.openbsd.org/pub/OpenBSD/7.9/amd64/install79.iso",
+  "iso_checksum": "sha256:7a4a92e953618035097c796a90b54424a0f3ae775552e1e7d102cf8a5130449f",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
