@@ -771,13 +771,18 @@ EOF
 
 
 # ====== Clean up and check =================================================
-jq '.builders[] |= (.vboxmanage = (.vboxmanage1 // []) + (.vboxmanage2 // []) | del(.vboxmanage1, .vboxmanage2))' <"${JSONTMP}" | \
-if [ "${HYPERVISOR}" == "QEMU" ] ; then
-   # QEMU has no vboxmanage!
-   jq "del(.builders[].vboxmanage)"
-elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
+# shellcheck disable=SC2002
+cat "${JSONTMP}" | \
+if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+   # Append "vboxmanage" entries:
+   jq '.builders[] |= (.vboxmanage = (.vboxmanage1 // []) + (.vboxmanage2 // []) | del(.vboxmanage1, .vboxmanage2))'
+else
+   # There is no "vboxmanage" for non-VirtualBox builders:
+   jq 'del(.builders[].vboxmanage)'
+fi | \
+if [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
-   jq "del(.builders[].vboxmanage,.builders[].shutdown_command)" <"${JSONTMP}" | \
+   jq 'del(builders[].shutdown_command)' | \
    if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana|Hurd) ]] ; then
       jq '.builders[0].os = "other" | .builders[0].qemu_agent = "isa"' | \
       if [[ "${DISTRIBUTION}" =~ ^(OpenIndiana) ]] ; then
