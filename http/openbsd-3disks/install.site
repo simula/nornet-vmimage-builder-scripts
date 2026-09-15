@@ -109,3 +109,6 @@ if ! grep -q -E "^#(include|includedir) /etc/sudoers.d" /etc/sudoers ; then
    echo "" >>/etc/sudoers
    echo "#includedir /etc/sudoers.d" >>/etc/sudoers
 fi
+
+# ====== Disable direct login as root user ==================================
+usermod -p "*" root
