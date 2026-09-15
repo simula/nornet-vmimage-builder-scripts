@@ -149,10 +149,6 @@ cp /usr/mdec/bootx64.efi $r/boot/efi/EFI/BOOT/BOOTX64.EFI
 
 # ====== Basic configuration ================================================
 
-# ------ Set root password --------------------------------------------------
-rootPasswordHash="$(chroot $r pwhash "<SET_PASSWORD_HERE>")"
-chroot $r usermod -p "$rootPasswordHash" root
-
 # ------ Configure console --------------------------------------------------
 echo 'wscons="YES"' >>$r/etc/rc.conf
 echo 'wsmoused="YES"' >>$r/etc/rc.conf
@@ -275,6 +271,11 @@ mkdir -p $r/usr/pkg/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" \
    >"$r/usr/pkg/etc/sudoers.d/99-<SET_USERNAME_HERE>"
 chmod 0440 "$r/usr/pkg/etc/sudoers.d/99-<SET_USERNAME_HERE>"
+
+
+# ====== Disable direct login as root user ==================================
+chroot $r sed -e 's/^root:[^:]*/root:*/' -i /etc/master.passwd
+chroot $r pwd_mkdb -p /etc/master.passwd
 
 
 # ====== Reboot =============================================================
