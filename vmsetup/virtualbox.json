@@ -85,6 +85,7 @@
     [ "setextradata", "global",    "GUI/SuppressMessages",      "all"                   ]
   ],
   "vboxmanage_post": [
-    // [ "modifyvm", "{{.Name}}", "--nic1", "bridged" ]
+     // [ "modifyvm", "{{.Name}}", "--nic1",            "bridged" ],
+     // [ "modifyvm", "{{.Name}}", "--bridge-adapter1", "eno1" ]
   ]
 }
