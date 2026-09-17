@@ -38,9 +38,8 @@ set -euo pipefail
 
 HYPERVISOR="VirtualBox"
 SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" "${DEFAULT_FREEBSD_SYSTEMS_CURRENT[@]}" )
-# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
 # SYSTEMS=( Ubuntu-26.04 OpenSUSE-Tumbleweed Alpine-3.24 )
-# SYSTEMS=( FreeBSD-15.1-RELEASE OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-44 )
+# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 FreeBSD-15.1-RELEASE )
 # SYSTEMS=( Ubuntu-26.04 )
 
 # ------ Parameters ---------------------------------------
@@ -53,8 +52,8 @@ USER_REALNAME="NorNet Praesum Presum"
 CHIPSET=ich9
 FIRMWARE=efi
 CORES=4
-MEMORY=3072
-BALLOON=1024
+MEMORY=4096
+BALLOON=2048
 DISK_ROOT=32768
 DISK_HOME=16384
 DISK_SWAP=2048
@@ -63,4 +62,4 @@ OPTIONS=""
 
 files/generate-backgrounds
 # shellcheck disable=SC2119
-build-defined-vms
+build-defined-vms 900
