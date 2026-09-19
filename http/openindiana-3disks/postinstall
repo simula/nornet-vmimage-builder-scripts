@@ -41,7 +41,8 @@ if [ -z "$DISK_ROOT" ]; then
 fi
 
 # Identify all connected disks:
-ALL_DISKS="$(diskinfo -H 2>/dev/null | awk '{print $2}' || ls /dev/dsk/c* 2>/dev/null | sed -E 's|/dev/dsk/||; s/[sp][0-9]+$//' | sort -u)"
+# shellcheck disable=SC2012
+ALL_DISKS="$(diskinfo -H 2>/dev/null | awk '{ print $2 }' || ls /dev/dsk/c* 2>/dev/null | sed -E 's|/dev/dsk/||; s/[sp][0-9]+$//' | sort -u)"
 DISK_HOME=""
 DISK_SWAP=""
 
@@ -108,10 +109,41 @@ zfs destroy -r -f rpool/export/home || true
 zfs set mountpoint=/export/home homepool
 
 
-# ====== Install QEMU Guest Agent =========================================
+# ====== Disable direct login as root user ==================================
+passwd -N root
+
+
+# ====== Configure keyboard layout ==========================================
+# The layout string has to be as listed by "kbd -s":
+keyboardLayout="<SET_XKBLAYOUT_HERE>"
+case "${keyboardLayout}" in
+   de) solarisKeyboardLayout="German"     ;;
+   dk) solarisKeyboardLayout="Danish"     ;;
+   es) solarisKeyboardLayout="Spanish"    ;;
+   fr) solarisKeyboardLayout="French"     ;;
+   gb) solarisKeyboardLayout="UK-English" ;;
+   ie) solarisKeyboardLayout="UK-English" ;;
+   it) solarisKeyboardLayout="Italian"    ;;
+   no) solarisKeyboardLayout="Norwegian"  ;;
+   se) solarisKeyboardLayout="Swedish"    ;;
+   us) solarisKeyboardLayout="US-English" ;;
+   *)
+      echo >&2 "WARNING: Unknown keyboard setting \"${keyboardLayout}\", using US-English as fallback!"
+      solarisKeyboardLayout="US-English"
+      ;;
+esac
+svccfg -s keymap:default setprop keymap/layout = "${solarisKeyboardLayout}"
+svcadm refresh keymap
+svcadm restart keymap
+
+echo "Active keymap layout:"
+svcprop -p keymap/layout keymap:default
+
+
+# ====== Install QEMU Guest Agent ===========================================
 if prtdiag | grep -q "QEMU" ; then
 
-   # ====== Install QEMU Guest Agent =========================================
+   # ====== Install QEMU Guest Agent ========================================
    # FIXME! The QEMU package is buggy: https://www.illumos.org/issues/18320
    # pkg install qemu || [ $? -eq 4 ]
 
@@ -138,7 +170,8 @@ if prtdiag | grep -q "QEMU" ; then
    export CC=gcc
    export CXX=g++
    export MAKE=gmake
-   export MAKEFLAGS="-j $(psrinfo -t)"
+   MAKEFLAGS="-j $(psrinfo -t)"
+   export MAKEFLAGS
 
    mkdir build && cd build
    ../configure \
