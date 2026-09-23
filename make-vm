@@ -642,8 +642,10 @@ fi
    if [ "${BUILDER_INSTALLTYPE}" == "installer" ] ; then
       echo "\"http_directory\": \"http\","
    fi
-   insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json" | \
-      sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage2":/'
+   if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
+      insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json" | \
+         sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage2":/'
+   fi
 cat <<EOF
     }
   ],
