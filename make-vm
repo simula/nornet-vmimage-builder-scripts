@@ -782,7 +782,7 @@ else
 fi | \
 if [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
-   jq 'del(builders[].shutdown_command)' | \
+   jq 'del(.builders[].shutdown_command)' | \
    if [[ "${DISTRIBUTION}" =~ ^(NetBSD|OpenBSD|OpenIndiana|Hurd) ]] ; then
       jq '.builders[0].os = "other" | .builders[0].qemu_agent = "isa"' | \
       if [[ "${DISTRIBUTION}" =~ ^(OpenIndiana) ]] ; then
