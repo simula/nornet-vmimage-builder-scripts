@@ -642,10 +642,8 @@ fi
    if [ "${BUILDER_INSTALLTYPE}" == "installer" ] ; then
       echo "\"http_directory\": \"http\","
    fi
-   if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
-      insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json" | \
-         sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage2":/'
-   fi
+   insert-json "${BUILDER_INSTALLTYPE}/${BUILDER_INSTALL}.json" | \
+      sed -e 's/^\([ ]*\)"vboxmanage":/\1"vboxmanage2":/'
 cat <<EOF
     }
   ],
@@ -780,7 +778,7 @@ if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
    jq '.builders[] |= (.vboxmanage = (.vboxmanage1 // []) + (.vboxmanage2 // []) | del(.vboxmanage1, .vboxmanage2))'
 else
    # There is no "vboxmanage" for non-VirtualBox builders:
-   jq 'del(.builders[].vboxmanage)'
+   jq 'del(.builders[].vboxmanage) | del(.builders[].vboxmanage2)'
 fi | \
 if [ "${HYPERVISOR}" == "Proxmox" ] ; then
    # Proxmox has no shutdown_command/vboxmanage!
