@@ -85,7 +85,7 @@ EOF
    mkdir -p /etc/apt/trusted.gpg.d
    rm -f /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    curl -fsSL https://repo.zabbix.com/zabbix-official-repo.key | \
-      gpg --batch --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
+      gpg --batch --yes --dearmor -o /etc/apt/trusted.gpg.d/zabbix-official-repo.gpg
    apt-get update
 
    # ------ Install ---------------------------------------------------------
