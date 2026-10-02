@@ -422,10 +422,10 @@ elif [ "${ID}" == "alpine" ] ; then
       openssl
       ossp-uuid
       parallel
+      pwgen
       python3
       rsplib-tools
       rsync
-      secpwgen
       subnetcalc
       tar
       tcpdump
