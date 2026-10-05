@@ -114,7 +114,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
       echo "ppaDistribution=${ppaDistribution}"
 
       curl -fsSL "https://build.opensuse.org/projects/home:dreibh/signing_keys/download?kind=gpg" | \
-         gpg --yes --dearmour --batch -o /etc/apt/keyrings/dreibh-obs.gpg
+         gpg --batch --yes --dearmor -o /etc/apt/keyrings/dreibh-obs.gpg
       cat >/etc/apt/sources.list.d/obs-dreibh.list <<EOF
 deb [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
 # deb-src [signed-by=/etc/apt/keyrings/dreibh-obs.gpg] https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/ /
@@ -230,7 +230,7 @@ elif [ "${ID}" == "alpine" ] ; then
    wget -O \
       /etc/apk/keys/home:dreibh@build.opensuse.org-527a4e72.rsa.pub \
       "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}/x86_64/home:dreibh%40build.opensuse.org-527a4e72.rsa.pub"
-   if ! grep -q "^https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" ; then
+   if ! grep -q "^https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" /etc/apk/repositories ; then
       echo "https://download.opensuse.org/repositories/home:/dreibh/${ppaDistribution}" \
          >>/etc/apk/repositories
    fi
