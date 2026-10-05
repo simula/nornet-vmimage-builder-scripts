@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.1-x86_64.iso",
-  "iso_checksum": "sha512:fd80cc7aeb60e40af60a683790e89385b8a506d7430ea972793f8d0f318d4bc95276ee38923fa784ee9413eb47dd297006b808a5935ac6ec00eadf1e12095e71",
+  "iso_url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.2-x86_64.iso",
+  "iso_checksum": "sha512:013ab9e0780d2fb73975d6dae0cf6ddcbe7eb1531e535c1c6c78bb2cadefd2d8a8aca3fffe2aae5853f6d0ea5f23de2dadbc18559724317a1d6a74be8d452354",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
