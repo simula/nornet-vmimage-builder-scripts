@@ -140,7 +140,7 @@ export XZ_DEFAULTS="--threads=0"
 # ------ Set MAKEFLAGS ------------------------------------------------------
 uname="$(uname)"
 case "${uname}" in
-   Linux)
+   Linux|GNU)
       cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo "1")"
       ;;
    FreeBSD)
