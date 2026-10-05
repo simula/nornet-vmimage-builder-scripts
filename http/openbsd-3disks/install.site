@@ -12,7 +12,9 @@ set -eux
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# ====== Find disks =========================================================
+# ====== Partitioning =======================================================
+
+# ------ Find disks ---------------------------------------------------------
 # Disk names extracted dynamically from sysctl hw.disknames
 VALID_DISKS=""
 for entry in $(sysctl -n hw.disknames | tr "," " ") ; do
@@ -34,15 +36,6 @@ set -- $VALID_DISKS
 DISK_ROOT="${1:-}"
 DISK_HOME="${2:-}"
 DISK_SWAP="${3:-}"
-
-# ====== Partitioning =======================================================
-
-# ------ Boot loader --------------------------------------------------------
-cat >/etc/boot.conf <<EOF
-tty pc0
-set timeout 10
-boot
-EOF
 
 # ------ Home disk ----------------------------------------------------------
 if [ -n "$DISK_HOME" ]; then
@@ -70,6 +63,13 @@ if [ -n "$DISK_SWAP" ]; then
 fi
 
 # ====== Basic configuration ================================================
+
+# ------ Boot loader --------------------------------------------------------
+cat >/etc/boot.conf <<EOF
+tty pc0
+set timeout 10
+boot
+EOF
 
 # ------ Configure console --------------------------------------------------
 # sed -i "" 's/:setenv=/:lang=en_US.UTF-8:\/g' /etc/login.conf
