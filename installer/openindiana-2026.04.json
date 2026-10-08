@@ -88,7 +88,7 @@
     // Rebooting ...
     "<wait200s>",
     // Log in and perform post-installation steps:
-    "{{user `user_name`}}<enter>",
+    "{{user `user_name`}}<enter><wait5s>",
     "{{user `user_password`}}<enter><wait5s>",
     "wget -O /tmp/postinstall http://{{ .HTTPIP }}:{{ .HTTPPort }}/postinstall && ",
     "chmod +x /tmp/postinstall && ",
