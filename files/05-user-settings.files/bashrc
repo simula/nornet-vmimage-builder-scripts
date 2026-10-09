@@ -124,7 +124,7 @@ fi
 # ====== User Customisation =================================================
 
 # ------ Limits -------------------------------------------------------------
-ulimit -c unlimited   # Allow core dumps
+ulimit -c unlimited 2>/dev/null   # Allow core dumps
 
 # ------ Aliases ------------------------------------------------------------
 alias runws="sudo echo Starting Wireshark && ( sudo wireshark & )"
