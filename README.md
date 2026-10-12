@@ -22,9 +22,9 @@
 -   [Systems](#systems)
     -   [Ubuntu Linux](#ubuntu-linux)
     -   [Debian Linux](#debian-linux)
-    -   [Fedora Linux](#fedora-core-linux)
+    -   [Fedora Linux](#fedora-linux)
     -   [OpenSUSE Linux](#opensuse-linux)
-    -   [Alpine Linux](#opensuse-linux)
+    -   [Alpine Linux](#alpine-linux)
     -   [FreeBSD](#freebsd)
     -   [NetBSD](#netbsd)
     -   [OpenBSD](#openbsd)
@@ -53,7 +53,7 @@ As part of the VM setup process, it is also possible to set custom boot-splashes
 
 # 💾 Sources
 
-The Virtual Machine Image Builder and System Installation Scripts are released under the [GNU General Public Licence&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
+The Virtual Machine Image Builder and System Installation Scripts are released under the [GNU General Public License&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
 
 The Git repository of the Virtual Machine Image Builder and System Installation Scripts sources can be found at [https://github.com/simula/nornet-vmimage-builder-scripts](https://github.com/simula/nornet-vmimage-builder-scripts):
 
@@ -81,7 +81,7 @@ The following installations of dependencies are necessary:
 
   - [Packer](https://www.packer.io) (get up-to-date version from <https://www.packer.io>, the Ubuntu-provided package or snap are currently out-of-date!)
 
-  - Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g.&nbsp;VirtualBox, QEMU, Proxmox, ...
+  - Required [Packer](https://www.packer.io) plug-ins for the hypervisor, e.g., VirtualBox, QEMU, Proxmox, ...
 
     ```
     packer plugins install github.com/hashicorp/virtualbox
@@ -121,7 +121,7 @@ The following installations of dependencies are necessary:
 
 ## Run on a pre-installed system directly
 
-Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing on the system itself (i.e.&nbsp;*not* building VMs but configuring the machine directly):
+Take a look at the script [make-direct](https://github.com/simula/nornet-vmimage-builder-scripts/blob/master/make-direct) for installing on the system itself (i.e., *not* building VMs but configuring the machine directly):
 ```
 ./make-direct <PROJECT>
 ```
@@ -478,4 +478,4 @@ Basic for general-purpose desktop usage, particularly for working with [5G-VINNI
 * [SEARCH – Synthetic Healthcare Data Governance Hub](https://ihi-search.eu/)
 * [MELODIC – Multi-Cloud Execution-Ware for Large-scale Optimised Data-Intensive Computing](https://melodic.cloud/)
 * [NEAT – A New, Evolutive API and Transport-Layer Architecture for the Internet](https://neat.nntb.no/)
-* [RITE  – Reducing Internet Transport Latency](https://web.archive.org/web/20221006013921/https://riteproject.eu/)
+* [RITE – Reducing Internet Transport Latency](https://web.archive.org/web/20221006013921/https://riteproject.eu/)

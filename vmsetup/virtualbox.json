@@ -64,7 +64,7 @@
 
   "iso_interface": "virtio",
   "hard_drive_interface": "virtio",
-  "hard_drive_discard": true,
+  // "hard_drive_discard": true,
   "hard_drive_nonrotational": true,
   "keep_registered": true,
 
