@@ -51,20 +51,21 @@ if [ "$(print-utf8 -w "💻")" -lt 1 ] ; then
    icon=""
 else
    case "$(uname)" in
-      Linux)   icon="🐧" ;;
-      FreeBSD) icon="😈" ;;
-      NetBSD)  icon="🚩" ;;
-      OpenBSD) icon="🐡" ;;
-      SunOS)   icon="🌞" ;;
-      Darwin)  icon="🍎" ;;
-      GNU)     icon="🦬" ;;
-      *)       icon="💻" ;;
+      Linux)                           icon="🐧" ;;
+      FreeBSD)                         icon="😈" ;;
+      NetBSD)                          icon="🚩" ;;
+      OpenBSD)                         icon="🐡" ;;
+      SunOS)                           icon="🌞" ;;
+      Darwin)                          icon="🍎" ;;
+      GNU)                             icon="🦬" ;;
+      CYGWIN*|MINGW*|MSYS*|Windows_NT) icon="🪟" ;;
+      *)                               icon="💻" ;;
    esac
 fi
 
 # ------ Print top separator ------------------------------------------------
 echo -en "${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo
 center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
 
@@ -80,12 +81,12 @@ center "${color1}-- ${color2}$(gettext "Welcome on the System") ${color1}--"
       fi
    fi
 ) | while IFS= read -r line ; do
-   center "${line}"
+   center "${line//[$'\r\n']/}"
 done
 
 # ------ Print bottom separator ---------------------------------------------
 echo -en "${reset}${color1}"
-separator " *${icon}" "=" "${icon}*"
+separator " *${icon}" "=" "${icon}* "
 echo -e "${reset}"
 
 
