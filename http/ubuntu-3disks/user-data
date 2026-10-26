@@ -210,13 +210,12 @@ autoinstall:
   # ###### Package Management ###############################################
   apt:
     preserve_sources_list: false
-    geoip: true
+    geoip: false
     primary:
-      - arches: [default]
-        uri: "http://dk.archive.ubuntu.com/ubuntu"
+      - arches: [ default ]
+        uri: "https://archive.ubuntu.com/ubuntu"
   packages:
     - qemu-guest-agent
-    - virt-what
   ssh:
     install-server: true
 
@@ -228,8 +227,8 @@ autoinstall:
       set -eux
       # qemu-guest-agent has to be installed in advance, since apt-get
       # cannot download here any more => remove, if unnecessary.
-      if [ ! "$(chroot /target virt-what)" = "kvm" ] ; then
-         chroot /target apt-get autoremove --purge -y qemu-guest-agent
+      if [ "$(systemd-detect-virt --vm 2>/dev/null || true)" != "kvm" ] ; then
+         curtin in-target --target=/target -- apt-get autoremove --purge -y qemu-guest-agent
       fi
 
     # ====== Let Netplan ask the DHCP or DNS server for the hostname ========
@@ -309,12 +308,13 @@ autoinstall:
 
       # ------ 5. Update /etc/fstab -----------------------------------------
       sed -i "/$ROOT_UUID/s/defaults/defaults,subvol=@/" /target/etc/fstab
-      if [ -n "$HOME_UUID" ] ; then
-         sed -i "/$HOME_UUID/s/defaults/defaults,subvol=@home/" /target/etc/fstab
-      fi
       if [ -n "$SWAP_UUID" ] ; then
          sed -i "/$SWAP_UUID/s/ sw / sw,discard /" /target/etc/fstab
       fi
+      if [ -n "$HOME_UUID" ] ; then
+         sed -i "/$HOME_UUID/s/defaults/defaults,subvol=@home/" /target/etc/fstab
+      fi
+      sed -i '/^# .* was on .*/d' /target/etc/fstab
 
       # ------ 6. Reinstall GRUB and update config --------------------------
       mount -o bind /dev  /target/dev
@@ -330,7 +330,9 @@ autoinstall:
       # (leaves /target, /target/boot, /target/boot/efi, /target/home intact):
       umount /target/sys/firmware/efi/efivars /target/proc /target/sys /target/run /target/dev
 
-    # # ====== Remove snapd (can be installed explicitly later, if needed) ====
-    # - |
-    #   chroot /target apt-get autoremove -y --purge snapd
-    #   echo -en "# Prevent the installation of snapd:\nPackage: snapd\nPin: release a=*\nPin-Priority: -16\n" >/target/etc/apt/preferences.d/block-snapd.pref
+    # ====== Remove snapd (can be installed explicitly later, if needed) ====
+    - |
+      set -eux
+
+      curtin in-target --target=/target -- apt-get autoremove -y --purge snapd
+      echo -en "# Prevent the installation of snapd:\nPackage: snapd\nPin: release a=*\nPin-Priority: -16\n" >/target/etc/apt/preferences.d/block-snapd.pref
