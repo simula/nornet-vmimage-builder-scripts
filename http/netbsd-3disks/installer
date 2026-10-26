@@ -206,7 +206,7 @@ mv /tmp/repositories.conf $r/usr/pkg/etc/pkgin/repositories.conf
 chroot $r pkgin -y update
 
 # ------ Install required packages ------------------------------------------
-chroot $r /usr/pkg/bin/pkgin -y install bash sudo virt-what
+chroot $r /usr/pkg/bin/pkgin -y install bash sudo
 
 
 # ====== Enable SCTP ========================================================
@@ -249,11 +249,13 @@ EOF
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
-if [ "$(chroot $r /usr/pkg/sbin/virt-what)" = "kvm" ] ; then
-   chroot $r pkgin -y install qemu-guest-agent
-   cp $r/usr/pkg/share/examples/rc.d/qemu-guest-agent $r/etc/rc.d/
-   echo 'qemu_guest_agent="YES"' >>$r/etc/rc.conf
-fi
+case "$(/sbin/sysctl -n machdep.dmi.system-vendor machdep.dmi.system-product 2>/dev/null || true)" in
+   *QEMU*|*KVM*)
+      chroot $r pkgin -y install qemu-guest-agent
+      cp $r/usr/pkg/share/examples/rc.d/qemu-guest-agent $r/etc/rc.d/
+      echo 'qemu_guest_agent="YES"' >>$r/etc/rc.conf
+      ;;
+esac
 
 
 # ====== User ===============================================================

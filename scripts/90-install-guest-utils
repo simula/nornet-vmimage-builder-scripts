@@ -83,13 +83,13 @@ case "${UNAME}" in
       esac
       ;;
    NetBSD)
-      dmi_info="$(sysctl -n machdep.dmi.system-vendor machdep.dmi.system-product 2>/dev/null || true)"
+      dmi_info="$(/sbin/sysctl -n machdep.dmi.system-vendor machdep.dmi.system-product 2>/dev/null || true)"
       ;;
    OpenBSD)
       dmi_info="$(sysctl -n hw.vendor hw.product 2>/dev/null || true)"
       ;;
    SunOS)
-      dmi_info="$(prtdiag 2>/dev/null || /usr/sbin/smbios -t SMB_PRT_SYS 2>/dev/null || true)"
+      dmi_info="$(prtdiag 2>/dev/null || true)"
       ;;
 esac
 
