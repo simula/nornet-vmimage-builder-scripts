@@ -58,10 +58,47 @@ if [ -f /etc/os-release ] ; then
    . /etc/os-release
 fi
 
-if command -v virt-what >/dev/null ; then
-   HYPERVISOR=" $(virt-what | xargs) "
-else
-   HYPERVISOR=""
+
+# ====== Hypervisor detection ===============================================
+HYPERVISOR=""
+dmi_info=""
+
+case "${UNAME}" in
+   Linux)
+      virt="$(systemd-detect-virt --vm 2>/dev/null || true)"
+      case "${virt}" in
+         oracle)   HYPERVISOR="virtualbox" ;;
+         kvm|qemu) HYPERVISOR="kvm" ;;
+         vmware)   HYPERVISOR="vmware" ;;
+         *)        dmi_info="$(cat /sys/class/dmi/id/sys_vendor /sys/class/dmi/id/product_name 2>/dev/null || true)" ;;
+      esac
+      ;;
+   FreeBSD)
+      vm_guest="$(sysctl -n kern.vm_guest 2>/dev/null || true)"
+      case "${vm_guest}" in
+         vbox*|virtualbox) HYPERVISOR="virtualbox" ;;
+         kvm|qemu)         HYPERVISOR="kvm" ;;
+         vmware)           HYPERVISOR="vmware" ;;
+         *)                dmi_info="$(kenv smbios.system.maker 2>/dev/null || true) $(kenv smbios.system.product 2>/dev/null || true)" ;;
+      esac
+      ;;
+   NetBSD)
+      dmi_info="$(sysctl -n machdep.dmi.system-vendor machdep.dmi.system-product 2>/dev/null || true)"
+      ;;
+   OpenBSD)
+      dmi_info="$(sysctl -n hw.vendor hw.product 2>/dev/null || true)"
+      ;;
+   SunOS)
+      dmi_info="$(prtdiag 2>/dev/null || /usr/sbin/smbios -t SMB_PRT_SYS 2>/dev/null || true)"
+      ;;
+esac
+
+if [ -z "${HYPERVISOR}" ] && [ -n "${dmi_info}" ] ; then
+   case "${dmi_info,,}" in
+      *virtualbox*|*innotek*) HYPERVISOR="virtualbox" ;;
+      *vmware*)               HYPERVISOR="vmware" ;;
+      *qemu*|*kvm*)           HYPERVISOR="kvm" ;;
+   esac
 fi
 
 
@@ -80,7 +117,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
    fi
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       # shellcheck disable=SC2071
       if [ "${ID}" == "debian" ] && [[ "${VERSION_ID}" =~ ^[0-9]+$  ]] && [[ "${VERSION_ID}" -gt 12 ]] ; then
          # FIXME! Yet another ugly Debian work-around:
@@ -113,7 +150,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
          fi
       fi
    # ------ vSphere ---------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " vmware " ]] ; then
+   elif [ "${HYPERVISOR}" == "vmware" ] ; then
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          open-vm-tools
       if [ -f /usr/lib/systemd/system/sddm.service ] ; then
@@ -122,19 +159,19 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
             open-vm-tools-desktop || true
       fi
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
          qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      # NOTE: qemu-guest-agent may have been installed as part of th
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of the
       #       initial setup, since e.g. the Proxmox builder may expect it!
       apt-get autoremove -y --purge qemu-guest-agent || true
    fi
 
-   # ------ Not in QEMU -> remove open-vm-tools -----------------------------
+   # ------ Not in VMware -> remove open-vm-tools ---------------------------
    if [ "${HYPERVISOR}" != "vmware" ] ; then
       apt-get autoremove -y --purge open-vm-tools || true
    fi
@@ -144,7 +181,7 @@ if [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] ; then
 elif [ "${ID}" == "fedora" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       dnf install --setopt=install_weak_deps=False -y virtualbox-guest-additions
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
@@ -154,13 +191,13 @@ elif [ "${ID}" == "fedora" ] ; then
          dnf install --setopt=install_weak_deps=False -y open-vm-tools-desktop
       fi
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       dnf install --setopt=install_weak_deps=False -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
-      # NOTE: qemu-guest-agent may have been installed as part of th
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
+      # NOTE: qemu-guest-agent may have been installed as part of the
       #       initial setup, since e.g. the Proxmox builder may expect it!
       dnf remove -y qemu-guest-agent || true
    fi
@@ -170,18 +207,18 @@ elif [ "${ID}" == "fedora" ] ; then
 elif [[ "${ID}" =~ ^opensuse- ]] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       zypper --non-interactive install --replacefiles --no-recommends -y virtualbox-guest-tools
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
       zypper --non-interactive install --replacefiles --no-recommends -y open-vm-tools
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       zypper --non-interactive install --replacefiles --no-recommends -y qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
       zypper --non-interactive remove -y qemu-guest-agent || true
    fi
 
@@ -190,18 +227,18 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
 elif [ "${ID}" == "alpine" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       apk add virtualbox-guest-additions
    # ------ vSphere ---------------------------------------------------------
    elif [ "${HYPERVISOR}" == "vmware" ] ; then
       apk add open-vm-tools
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       apk add qemu-guest-agent
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
       apk del qemu-guest-agent || true
    fi
 
@@ -210,7 +247,7 @@ elif [ "${ID}" == "alpine" ] ; then
 elif [ "${ID}" == "freebsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       pkg install -y virtualbox-ose-additions-72
       sysrc vboxguest_enable="YES"   ; service vboxguest   start || true
       sysrc vboxservice_enable="YES" ; service vboxservice start || true
@@ -224,13 +261,13 @@ elif [ "${ID}" == "freebsd" ] ; then
       fi
       sysrc vmware_guestd_enable="YES" ; service vmware-guestd start || true
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       pkg install -y qemu-guest-agent
       sysrc qemu_guest_agent_enable="YES" ; service qemu-guest-agent start || true
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
       # NOTE: qemu-guest-agent may have been installed as part of the
       #       initial setup, since e.g. the Proxmox builder expects it!
       pkg remove -y qemu-guest-agent || true
@@ -242,7 +279,7 @@ elif [ "${ID}" == "freebsd" ] ; then
 elif [ "${ID}" == "netbsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       # There are no VirtualBox Guest Utils for NetBSD, yet.
       true
    # ------ vSphere ---------------------------------------------------------
@@ -256,7 +293,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       fi
       service vmtools start || true
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       pkgin -y install qemu-guest-agent
       cp /usr/pkg/share/examples/rc.d/qemu-guest-agent /etc/rc.d/
       if grep -q "^qemu_guest_agent=" /etc/rc.conf ; then
@@ -268,7 +305,7 @@ elif [ "${ID}" == "netbsd" ] ; then
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
       # NOTE: qemu-guest-agent may have been installed as part of the
       #       initial setup, since e.g. the Proxmox builder expects it!
       pkgin -y remove qemu-guest-agent || true
@@ -280,7 +317,7 @@ elif [ "${ID}" == "netbsd" ] ; then
 elif [ "${ID}" == "openbsd" ] ; then
 
    # ------ VirtualBox ------------------------------------------------------
-   if [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       # There are no VirtualBox Guest Utils for OpenBSD, yet.
       true
    # ------ vSphere ---------------------------------------------------------
@@ -288,7 +325,7 @@ elif [ "${ID}" == "openbsd" ] ; then
       # There are no Open VM Tools for OpenBSD, yet.
       true
    # ------ QEMU ------------------------------------------------------------
-   elif [[ "${HYPERVISOR}" =~ " kvm " ]] ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       pkg_add -r -I qemu-ga
       # Guest agent has to use ISA serial port:
       # https://openports.pl/path/emulators/qemu,-ga
@@ -298,7 +335,7 @@ elif [ "${ID}" == "openbsd" ] ; then
    fi
 
    # ------ Not in QEMU -> remove qemu-guest-agent --------------------------
-   if [[ ! "${HYPERVISOR}" =~ " kvm " ]] || [[ "${HYPERVISOR}" =~ " virtualbox " ]] ; then
+   if [ "${HYPERVISOR}" != "kvm" ] ; then
       pkg_delete qemu-ga || true
    fi
 
@@ -306,10 +343,8 @@ elif [ "${ID}" == "openbsd" ] ; then
 # ------ Solaris ------------------------------------------------------------
 elif [ "${ID}" == "sunos" ] ; then
 
-   # NOTE: virt-what is not available, HYPERVISOR is empty!
-
    # ------ VirtualBox ------------------------------------------------------
-   if prtdiag | grep -q "VirtualBox" ; then
+   if [ "${HYPERVISOR}" == "virtualbox" ] ; then
       pkg install virtualbox-additions || [ $? -eq 4 ]
 
       # FIXME: Work-around for mouse service failing under VirtualBox!
@@ -318,7 +353,7 @@ elif [ "${ID}" == "sunos" ] ; then
       svcadm clear svc:/application/virtualbox/vboxmslnk:default || true
 
    # ------ QEMU ------------------------------------------------------------
-   elif prtdiag | grep -q "QEMU" ; then
+   elif [ "${HYPERVISOR}" == "kvm" ] ; then
       if [ -x /usr/bin/qemu-ga ] ; then
          # FIXME: http/openindiana-*/postinstall needs to install up-to-date
          #        qemu-ga from sources to fix issues!
