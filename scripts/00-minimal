@@ -42,7 +42,6 @@ set -euo pipefail
 # * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
 # * [Ping](https://linux.die.net/man/8/ping) (network connectivity check)
 # * [Sudo](https://www.sudo.ws/) (privileged command execution)
-# * [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 # ###########################################################################
 
 
@@ -135,7 +134,6 @@ EOF
       iputils-ping
       openssh-server
       sudo
-      virt-what
    )
 
    # Old Ubuntu versions 12.04/14.04/16.04 show a splash image during boot,
@@ -180,7 +178,6 @@ elif [ "${ID}" == "fedora" ] ; then
       kernel-modules-extra
       openssh-server
       sudo
-      virt-what
    )
 
    dnf install --setopt=install_weak_deps=False -y "${packages[@]}"
@@ -212,7 +209,6 @@ elif [[ "${ID}" =~ ^opensuse- ]] ; then
       iputils
       openssh-server
       sudo
-      virt-what
    )
 
    zypper --non-interactive install \
@@ -248,7 +244,6 @@ elif [ "${ID}" == "alpine" ] ; then
       openssh-server
       shadow
       sudo
-      virt-what
    )
 
    apk add "${packages[@]}"
@@ -266,7 +261,6 @@ elif [ "${ID}" == "freebsd" ] ; then
       git
       gnupg
       sudo
-      virt-what
    )
    pkg install -y "${packages[@]}"
 
@@ -313,7 +307,6 @@ elif [ "${ID}" == "netbsd" ] ; then
       mozilla-rootcerts-openssl
       pkg_alternatives
       sudo
-      virt-what
    )
    pkgin -y install "${packages[@]}"
 
@@ -349,7 +342,6 @@ elif [ "${ID}" == "openbsd" ] ; then
       git
       gnupg
       sudo--
-      virt-what
    )
    pkg_add -r -I "${packages[@]}"
 
@@ -377,7 +369,6 @@ elif [ "${ID}" == "sunos" ] ; then
       git
       gnupg
       sudo
-      # virt-what
    )
    pkg install "${packages[@]}" || [ $? -eq 4 ]
 
@@ -410,13 +401,6 @@ programs=(
    ping
    sudo
 )
-
-if [ "${ID}" == "sunos" ] ; then
-   true   # No virt-what for Solaris
-else
-   programs+=( virt-what )
-fi
-
 
 # ------ Verify command availability ----------------------------------------
 set +x

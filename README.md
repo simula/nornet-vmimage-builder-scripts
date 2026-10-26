@@ -266,7 +266,6 @@ Provided packages:
 * [GnuPG](https://www.gnupg.org/) (cryptography for signature checks)
 * [Ping](https://linux.die.net/man/8/ping) (network connectivity check)
 * [Sudo](https://www.sudo.ws/) (privileged command execution)
-* [Virt-What](https://people.redhat.com/~rjones/virt-what/) (identification of virtualisation environment)
 
 Further properties:
 
