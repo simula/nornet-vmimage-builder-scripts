@@ -143,16 +143,18 @@ env ASSUME_ALWAYS_YES=YES pkg bootstrap -f
 # ------ Install required packages ------------------------------------------
 pkg update
 pkg upgrade -y
-pkg install -y bash sudo virt-what
+pkg install -y bash sudo
 
 
 # ====== QEMU Guest Agent ===================================================
 # QEMU installs already need qemu-guest-agent before first boot:
-if [ "$(/usr/local/sbin/virt-what)" = "kvm" ] ; then
-   pkg install -y qemu-guest-agent
-   sysrc qemu_guest_agent_enable="YES"
-   service qemu-guest-agent start || true
-fi
+case "$(sysctl -n kern.vm_guest 2>/dev/null || true)" in
+   kvm|qemu)
+      pkg install -y qemu-guest-agent
+      sysrc qemu_guest_agent_enable="YES"
+      service qemu-guest-agent start || true
+      ;;
+esac
 
 
 # ====== User ===============================================================
