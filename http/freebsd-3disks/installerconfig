@@ -1,3 +1,4 @@
+# kate: syntax Bash;
 # ==========================================================================
 #  ___         _        _ _      _   _            ___         _      _
 # |_ _|_ _  __| |_ __ _| | |__ _| |_(_)___ _ _   / __| __ _ _(_)_ __| |_ ___
@@ -155,13 +156,19 @@ fi
 
 
 # ====== User ===============================================================
+
+# The user was already created by the installer!
+
+# ------ Set password -------------------------------------------------------
 echo "<SET_PASSWORD_HERE>" | pw useradd -u 1000 -n "<SET_USERNAME_HERE>" -h 0 -s /bin/sh -G wheel -c "<SET_REALNAME_HERE>" -m
 
+# ------ Shell configuration ------------------------------------------------
+chsh -s /usr/local/bin/bash "<SET_USERNAME_HERE>"
+
+# ------ sudo configuration -------------------------------------------------
 mkdir -p /usr/local/etc/sudoers.d
 echo "<SET_USERNAME_HERE> ALL=(ALL) NOPASSWD: ALL" >"/usr/local/etc/sudoers.d/99-<SET_USERNAME_HERE>"
 chmod 0600 "/usr/local/etc/sudoers.d/99-<SET_USERNAME_HERE>"
-
-chsh -s /usr/local/bin/bash "<SET_USERNAME_HERE>"
 
 
 # ====== Disable direct login as root user ==================================
