@@ -94,15 +94,17 @@ rc-update add swap boot
 
 # ------ Install required packages ------------------------------------------
 # NOTE: "shadow" provides usermod
-apk add bash btrfs-progs doas shadow sudo virt-what
+apk add bash btrfs-progs doas shadow sudo
 
 # ------ QEMU Guest Agent ---------------------------------------------------
 # QEMU installs already need qemu-guest-agent before first boot:
-if [ "\$(virt-what)" = "kvm" ] ; then
-   apk add qemu-guest-agent
-   rc-update add qemu-guest-agent default
-   rc-service qemu-guest-agent start || true
-fi
+case "$(cat /sys/class/dmi/id/sys_vendor /sys/class/dmi/id/product_name 2>/dev/null || true)" in
+   *QEMU*|*KVM*)
+      apk add qemu-guest-agent
+      rc-update add qemu-guest-agent default
+      rc-service qemu-guest-agent start || true
+      ;;
+esac
 
 # ------ Create user --------------------------------------------------------
 adduser -D -g '<SET_REALNAME_HERE>' -s /bin/bash -G wheel '<SET_USERNAME_HERE>'
