@@ -116,7 +116,7 @@
     "sshPublicKeys": []
   },
   "software": {
-    "packages": ["openssh-server", "virt-what"],
+    "packages": ["openssh-server"],
     "onlyRequired": false
   },
   "scripts": {
@@ -134,7 +134,7 @@
         "chroot": true,
         "content": |||
           #!/usr/bin/bash
-          if [ "$(virt-what)" = "kvm" ] ; then
+          if [ "$(systemd-detect-virt --vm 2>/dev/null || true)" = "kvm" ] ; then
              zypper --non-interactive install --no-recommends -y qemu-guest-agent
              systemctl enable qemu-guest-agent.service
              systemctl start qemu-guest-agent.service || true
