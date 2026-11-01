@@ -164,7 +164,7 @@ EOF
    # Wayland's lack of session management just sucks!!! It is still unusable!
    # Enable X11 again:
    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      plasma-session-x11 || true
+      kwin-x11 plasma-session-x11 || true
    # Disable as much of Wayland as possible:
    mkdir -p /etc/sddm.conf.d
    tee /etc/sddm.conf.d/10-x11.conf <<EOF
