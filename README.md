@@ -85,10 +85,15 @@ The following installations of dependencies are necessary:
 
     ```
     packer plugins install github.com/hashicorp/virtualbox
-    packer plugins install github.com/hashicorp/proxmox
     packer plugins install github.com/hashicorp/qemu
     packer plugins install github.com/hashicorp/docker
     packer plugins install github.com/hashicorp/vsphere
+    ...
+    # Proxmox:
+    # packer plugins install github.com/hashicorp/proxmox
+    # For Proxmox with ISA-based Guest Agent (for NetBSD, OpenBSD, Solaris guests):
+    # See: https://github.com/hashicorp/packer-plugin-proxmox/pull/364
+    packer plugins install --path ./packer-plugin-proxmox github.com/simula/proxmox
     ...
     packer plugins installed
     ```
