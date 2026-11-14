@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso",
-  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso.sha256sum",
+  "iso_url": "https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-text-20261030.iso",
+  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-text-20261030.iso.sha256sum",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
@@ -50,8 +50,8 @@
   "boot_wait": "45s",
   "boot_command": [
     // Set language and keyboard layout to default (US English):
-    "<enter><wait10s>",
-    "<enter><wait10s>",
+    "<enter><wait15s>",
+    "<enter><wait45s>",
     // Change terminal to "sun-color":
     "4<enter><wait10s>sun-color<enter><wait5s>",
     // Select "Install OpenIndiana":
