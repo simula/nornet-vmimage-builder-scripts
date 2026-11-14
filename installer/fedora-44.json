@@ -31,8 +31,8 @@
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Server/x86_64/iso/Fedora-Server-netinst-x86_64-44-1.7.iso",
-  "iso_checksum": "file:https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Server/x86_64/iso/Fedora-Server-44-1.7-x86_64-CHECKSUM",
+  "iso_url": "https://ftp.agdsn.de/fedora/linux/releases/44/Server//x86_64/iso//Fedora-Server-netinst-x86_64-44-1.7.iso",
+  "iso_checksum": "sha256:ae20c06bea746913cadea7d80463e13f4bf55bee4df2918111c921c674b70283",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,

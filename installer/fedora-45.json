@@ -1,0 +1,64 @@
+// ==========================================================================
+//    __   ____  __   ___                       ___      _ _    _
+//    \ \ / /  \/  | |_ _|_ __  __ _ __ _ ___  | _ )_  _(_) |__| |___ _ _
+//     \ V /| |\/| |  | || '  \/ _` / _` / -_) | _ \ || | | / _` / -_) '_|
+//      \_/ |_|  |_| |___|_|_|_\__,_\__, \___| |___/\_,_|_|_\__,_\___|_|
+//                                  |___/
+//
+//   --- Virtual Machine Image Builder and System Installation Scripts ---
+//            https://www.nntb.no/~dreibh/vmimage-builder-scripts/
+// ==========================================================================
+//
+// VM Image Builder Scripts
+// Copyright (C) 2017-2026 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: thomas.dreibholz@gmail.com
+
+// Fedora 44 Server with EFI Boot
+
+{
+  // ====== ISO settings ====================================================
+  "iso_url": "https://ftp.agdsn.de/fedora/linux/releases/45/Server//x86_64/iso//Fedora-Server-netinst-x86_64-45-1.4.iso",
+  "iso_checksum": "sha256:a1e916f139a05955b943cf183b020780cca9c399b02b8f5ec4354c9e5c1dff1a",
+  "ssh_username": "{{user `user_name`}}",
+  "ssh_password": "{{user `user_password`}}",
+  "ssh_pty": true,
+  "ssh_timeout": "60m",
+  "ssh_handshake_attempts": "1024",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S shutdown -P now",
+
+  // ====== Boot into installer =============================================
+  "vboxmanage": [
+    [ "modifyvm", "{{.Name}}", "--ostype", "Fedora_64" ]
+  ],
+  "boot_wait": "3s",
+  "boot_command": [
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<left><wait>",
+    "<esc>c<wait>",
+    "linuxefi /images/pxeboot/vmlinuz --- text inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>",
+    "initrd /images/pxeboot/initrd.img<enter><wait>",
+    "boot<enter>"
+  ]
+}
