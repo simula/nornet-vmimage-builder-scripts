@@ -1,0 +1,98 @@
+// ==========================================================================
+//    __   ____  __   ___                       ___      _ _    _
+//    \ \ / /  \/  | |_ _|_ __  __ _ __ _ ___  | _ )_  _(_) |__| |___ _ _
+//     \ V /| |\/| |  | || '  \/ _` / _` / -_) | _ \ || | | / _` / -_) '_|
+//      \_/ |_|  |_| |___|_|_|_\__,_\__, \___| |___/\_,_|_|_\__,_\___|_|
+//                                  |___/
+//
+//   --- Virtual Machine Image Builder and System Installation Scripts ---
+//            https://www.nntb.no/~dreibh/vmimage-builder-scripts/
+// ==========================================================================
+//
+// VM Image Builder Scripts
+// Copyright (C) 2017-2026 by Thomas Dreibholz
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Contact: thomas.dreibholz@gmail.com
+
+// OpenIndiana Hipster 2026.10
+
+{
+  // ====== ISO settings ====================================================
+  "iso_url": "https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-gui-20261030.iso",
+  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-gui-20261030.iso.sha256sum",
+  "ssh_username": "{{user `user_name`}}",
+  "ssh_password": "{{user `user_password`}}",
+  "ssh_pty": true,
+  "ssh_timeout": "60m",
+  "ssh_handshake_attempts": "1024",
+  "shutdown_command": "echo '{{user `user_password`}}' | sudo -S poweroff",
+
+  // ====== Boot into installer =============================================
+  "vboxmanage": [
+    // [ "modifyvm", "{{.Name}}", "--graphicscontroller", "vboxsvga"       ],
+    [ "modifyvm", "{{.Name}}", "--nictype1",           "82545EM"        ],
+    // [ "modifyvm", "{{.Name}}", "--mouse",              "usbtablet"      ],
+    [ "modifyvm", "{{.Name}}", "--ostype",             "OpenSolaris_64" ]
+  ],
+  "boot_wait": "45s",
+  "boot_command": [
+    // Set language and keyboard layout to default (US English):
+    "<enter><wait10s>",
+    "<enter><wait10s>",
+    // Change terminal to "sun-color":
+    "4<enter><wait10s>sun-color<enter><wait5s>",
+    // Select "Install OpenIndiana":
+    "1<enter><wait10s>",
+    // Prepare storage:
+    "<f2><wait30s>",
+    "<f2><wait30s>",
+    "<right><enter><wait10s>",
+    "<f2><wait10s>",
+    // Set hostname, and select automatic network configuration:
+    "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>{{user `host_name`}}<tab><wait10s>",
+    "<f2><wait10s>",
+    // Select time zone and date/time:
+    "<f2><wait5s><f2><wait5s>",
+    // User settings:
+    "{{user `user_password`}}<tab>",
+    "{{user `user_password`}}<tab>",
+    "{{user `user_realname`}}<tab>",
+    "{{user `user_name`}}<tab>",
+    "{{user `user_password`}}<tab>",
+    "{{user `user_password`}}<tab>",
+    "<wait10s><f2>",
+    // Confirm:
+    "<f2>",
+    // Installation usually takes around 22 minutes in VirtualBox ...
+    "<wait300s><wait300s><wait300s><wait1s>",
+    "<wait300s><wait300s><wait300s><wait1s>",
+    "<wait300s><wait300s><wait300s><wait1s>",
+    // Shell after installation:
+    "<f9>3<enter><wait5s>",
+    // VirtualBox again boots the CD-ROM, so it must be ejected.
+    // Copy "reboot" command, eject the CD-ROM, and then forcefully reboot:
+    "cp /usr/sbin/reboot /tmp && eject && /tmp/reboot -q<enter>",
+    // Rebooting ...
+    "<wait200s>",
+    // Log in and perform post-installation steps:
+    "{{user `user_name`}}<enter><wait5s>",
+    "{{user `user_password`}}<enter><wait5s>",
+    "wget -O /tmp/postinstall http://{{ .HTTPIP }}:{{ .HTTPPort }}/postinstall && ",
+    "chmod +x /tmp/postinstall && ",
+    "echo '{{user `user_password`}}' | sudo -S /tmp/postinstall",
+    "<enter>"
+  ]
+}
