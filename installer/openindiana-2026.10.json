@@ -27,12 +27,12 @@
 //
 // Contact: thomas.dreibholz@gmail.com
 
-// OpenIndiana Hipster 2026.10
+// OpenIndiana Hipster 2026.04
 
 {
   // ====== ISO settings ====================================================
-  "iso_url": "https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-gui-20261030.iso",
-  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20261030/OI-hipster-gui-20261030.iso.sha256sum",
+  "iso_url": "https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso",
+  "iso_checksum": "file:https://dlc.openindiana.org/isos/hipster/20260430/OI-hipster-text-20260430.iso.sha256sum",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
