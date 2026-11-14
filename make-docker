@@ -44,7 +44,7 @@ ARCHITECTURES=(
 )
 SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( "${DEFAULT_LINUX_SYSTEMS_CURRENT[@]}" "${DEFAULT_LINUX_SYSTEMS_LEGACY[@]}" )
-# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-44 )
+# SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-45 )
 # SYSTEMS=( Debian-Unstable )
 
 # ------ Parameters ---------------------------------------
