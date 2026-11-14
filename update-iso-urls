@@ -258,17 +258,18 @@ function find-ubuntu-isos ()
 function find-fedora-isos ()
 {
    system="Fedora"
-   major=40
+   major=44
    latestURL=""
    latestChecksum=""
    latestMajor=""
    latestMinor=""
+   set -x
    while true ; do
-      location="https://mirrors.xtom.de/fedora/releases/${major}/Server/x86_64/iso"
+      location="https://ftp.agdsn.de/fedora/linux/releases/${major}/Server//x86_64/iso/"
       isoPattern="Fedora-Server-netinst-x86_64-${major}-.*\.iso"
 
       rm -rf "F${major}"
-      if wget --quiet -P "F${major}" --recursive --no-parent --level 1 --accept-regex '.*-CHECKSUM$' "${location}" ; then
+      if wget --quiet  -P "F${major}" --recursive --no-parent --level 1 --accept-regex '.*-CHECKSUM$' "${location}" ; then
          checksums="$(find "F${major}" -name "*-CHECKSUM" | head -n1)"
          gpg --verify "${checksums}"
 
