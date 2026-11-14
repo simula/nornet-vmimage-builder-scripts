@@ -20,6 +20,8 @@
 
 set -euo pipefail
 
+# Old Ubuntu keys:
+# gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 843938DF228D22F7B3742BC0D94AA3F0EFE21092
 
 # Debian Images Key: https://keyring.debian.org/
 # gpg --quiet --keyserver hkp://keyring.debian.org --recv-keys 0xDF9B9C49EAA9298432589D76DA87E80D6294BE9B
@@ -35,6 +37,9 @@ set -euo pipefail
 #
 # NetBSD Image Keys (NetBSD Security Officer):
 # gpg --quiet --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x271133262BF35CB50D4F504689261E17F5EF49FF
+#
+# OpenBSD:
+# sudo apt install -y signify-openbsd
 
 
 # ###### Process result #####################################################
