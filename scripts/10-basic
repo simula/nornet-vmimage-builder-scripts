@@ -707,6 +707,11 @@ elif [ "${ID}" == "sunos" ] ; then
 #      clone-or-update rsplib https://dreibh@github.com/dreibh/rsplib
 #      ( cd /root/src/rsplib && ./autogen.sh -- -DENABLE_ICONS=OFF -DENABLE_QT=OFF && make install )
 #   fi
+   if ! command -v pdf2svg >/dev/null ; then
+      pkg install build-essential library/libpoppler library/desktop/cairo library/glib2 || [ $? -eq 4 ]
+      clone-or-update pdf2svg https://github.com/dawbarton/pdf2svg.git
+      ( cd pdf2svg && aclocal && autoconf && automake --add-missing && ./configure --prefix=/usr && make && make install )
+   fi
 
 
 # ------ Unknown ------------------------------------------------------------
