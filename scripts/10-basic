@@ -688,7 +688,7 @@ elif [ "${ID}" == "sunos" ] ; then
       ( cd /root/src/subnetcalc && ./autogen.sh -- -DWITH_GEOIP=OFF && make install )
    fi
    if ! command -v netperfmeter >/dev/null ; then
-      pkg install pkg://openindiana.org/developer/build/cmake gcc-15 gnu-getopt pkgconf  compress/bzip2 || [ $? -eq 4 ]
+      pkg install pkg://openindiana.org/developer/build/cmake gcc-15 gnu-getopt pkgconf compress/bzip2 perl-5/pdf-api2 qpdf  gnu-gettext || [ $? -eq 4 ]
       clone-or-update netperfmeter https://dreibh@github.com/dreibh/netperfmeter
       ( cd /root/src/netperfmeter && ./autogen.sh -- -DWITH_ICONS=OFF && make install )
    fi
