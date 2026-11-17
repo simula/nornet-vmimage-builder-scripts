@@ -586,8 +586,8 @@ elif [ "${ID}" == "sunos" ] ; then
       developer/build/libtool
       developer/build/make
       developer/build/pkg-config
-      developer/clang-18
-      developer/gcc-14
+      developer/clang-21
+      developer/gcc-15
       developer/debug/gdb
       developer/lexer/flex
       developer/parser/bison
