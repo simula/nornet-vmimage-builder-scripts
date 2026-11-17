@@ -31,9 +31,9 @@
 
 {
   // ====== ISO settings ====================================================
-  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu/tenacious/daily-live/current/SHA256SUMS | grep tenacious-live-server-amd64.iso
-  "iso_url": "https://cdimage.ubuntu.com/ubuntu/tenacious/daily-live/current/tenacious-live-server-amd64.iso",
-  "iso_checksum": "file:https://cdimage.ubuntu.com/ubuntu/tenacious/daily-live/current/SHA256SUMS",
+  // Checksum: curl -s https://cdimage.ubuntu.com/ubuntu-server/tenacious/daily-live/current/SHA256SUMS | grep tenacious-live-server-amd64.iso
+  "iso_url": "https://cdimage.ubuntu.com/ubuntu-server/tenacious/daily-live/current/tenacious-live-server-amd64.iso",
+  "iso_checksum": "file:https://cdimage.ubuntu.com/ubuntu-server/tenacious/daily-live/current/SHA256SUMS",
   "ssh_username": "{{user `user_name`}}",
   "ssh_password": "{{user `user_password`}}",
   "ssh_pty": true,
