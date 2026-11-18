@@ -407,8 +407,8 @@ elif [ "${ID}" == "freebsd" ] ; then
       libtool
       noto
       opensans-ttf
+      pkgconf
       p5-Image-ExifTool
-      p5-PkgConfig-LibPkgConf
       pkgconf
       py312-distro
       py312-psutil
