@@ -473,7 +473,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       cmake
       dejavu-ttf
       flex
-      gcc15
+      gcc14
       gdb
       ghostscript-agpl
       git-lfs
