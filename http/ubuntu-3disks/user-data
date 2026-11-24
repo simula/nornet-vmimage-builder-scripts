@@ -39,7 +39,7 @@ autoinstall:
   # ###### Installer Configuration ##########################################
   version: 1
   refresh-installer:
-    update: true
+    update: false
     channel: stable
 
 
@@ -100,13 +100,13 @@ autoinstall:
       - id: disk0-partition-efi
         type: partition
         device: disk0
-        size: 31457280
+        size: 134217728
         flag: boot
         grub_device: true
         preserve: false
       - id: disk0-partition-efi-format
         type: format
-        fstype: fat16
+        fstype: fat32
         label: EFI
         volume: disk0-partition-efi
         preserve: false
@@ -317,18 +317,8 @@ autoinstall:
       sed -i '/^# .* was on .*/d' /target/etc/fstab
 
       # ------ 6. Reinstall GRUB and update config --------------------------
-      mount -o bind /dev  /target/dev
-      mount -o bind /sys  /target/sys
-      mount -o bind /proc /target/proc
-      mount -o bind /run  /target/run
-      mount -o bind /sys/firmware/efi/efivars /target/sys/firmware/efi/efivars
-
-      chroot /target update-grub
-      chroot /target grub-install --efi-directory=/boot/efi
-
-      # Unbind virtual mounts
-      # (leaves /target, /target/boot, /target/boot/efi, /target/home intact):
-      umount /target/sys/firmware/efi/efivars /target/proc /target/sys /target/run /target/dev
+      curtin in-target --target=/target -- update-grub
+      curtin in-target --target=/target -- grub-install --efi-directory=/boot/efi
 
     # ====== Remove snapd (can be installed explicitly later, if needed) ====
     - |
