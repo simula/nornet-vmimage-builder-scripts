@@ -470,6 +470,7 @@ elif [ "${ID}" == "netbsd" ] ; then
       autoconf
       automake
       bison
+      clang
       cmake
       dejavu-ttf
       flex
