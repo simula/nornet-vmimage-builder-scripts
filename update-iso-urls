@@ -395,12 +395,12 @@ function find-netbsd-isos ()
    latestMajor=""
    latestMinor=""
    while true ; do
-      location1="https://cdn.netbsd.org/pub/NetBSD/images/${major}.${minor}"
+      location1="https://www.nic.funet.fi/pub/NetBSD/images/${major}.${minor}"
       location2="https://ftp.netbsd.org/pub/NetBSD/images/${major}.${minor}"
       iso1="NetBSD-${major}.${minor}-amd64.iso"
       algorithm="sha512"
       checksums="SHA512"
-      signature="https://cdn.netbsd.org/pub/NetBSD/security/hashes/NetBSD-${major}.${minor}_hashes.asc"
+      signature="https://ftp.netbsd.org/pub/NetBSD/security/hashes/NetBSD-${major}.${minor}_hashes.asc"
       find-isos || return 0
     done
 }

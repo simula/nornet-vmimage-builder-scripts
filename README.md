@@ -246,6 +246,7 @@ General settings:
 
 * Base: NetBSD installation ISO
 * EFI boot
+* Using ZFS for `/` and `/home`
 
 ## OpenBSD
 
