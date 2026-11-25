@@ -263,7 +263,6 @@ function find-fedora-isos ()
    latestChecksum=""
    latestMajor=""
    latestMinor=""
-   set -x
    while true ; do
       location="https://ftp.agdsn.de/fedora/linux/releases/${major}/Server//x86_64/iso/"
       isoPattern="Fedora-Server-netinst-x86_64-${major}-.*\.iso"
