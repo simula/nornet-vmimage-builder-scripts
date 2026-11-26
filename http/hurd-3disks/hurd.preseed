@@ -27,7 +27,7 @@
 #
 # Contact: thomas.dreibholz@gmail.com
 
-# Debian Preseed Configuration
+# Debian GNU/Hurd Preseed Configuration
 
 # ====== Auto-Install =======================================================
 d-i auto-install/enable                 boolean true
@@ -71,54 +71,43 @@ d-i passwd/username                     string  <SET_USERNAME_HERE>
 d-i passwd/user-password-crypted        password <SET_HASHED_PASSWORD_HERE>
 # NOTE: Example to add crypted password: echo "my password" | mkpasswd -s -m sha-512
 d-i passwd/user-uid                     string  1000
-d-i passwd/user-default-groups          string  adm cdrom sudo dip plugdev lpadmin sambashare
+d-i passwd/user-default-groups          string  adm cdrom sudo dip plugdev
 d-i user-setup/encrypt-home             boolean false
 
-# ====== Disk  ==============================================================
-d-i partman-basicfilesystems/no_swap    boolean false   # Disable "no swap" warning!
+# ====== Disk (MBR + single ext2 root, no swap during install) ==============
+d-i partman-basicfilesystems/no_swap    boolean false
 
 d-i partman/confirm                     boolean true
 d-i partman/confirm_write_new_label     boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
 d-i partman/confirm_nooverwrite         boolean true
 d-i partman/choose_partition            select finish
 
-# See https://www.bishnet.net/tim/blog/2015/01/29/understanding-partman-autoexpert_recipe/
-# for details on configuring partman-auto/expert_recipe!
+d-i partman-partitioning/choose_label   string msdos
+d-i partman-partitioning/default_label  string msdos
+
+# Note: On GNU/Hurd, disks are typically /dev/wd0..wd2 (rumpdisk) or /dev/hd0..hd2 (Mach IDE).
 d-i partman-auto/disk                   string <SET_ROOT_DISK_DEVICE_HERE>
 d-i partman-auto/method                 string regular
 d-i partman-auto/choose_recipe          string root
 d-i partman-auto/expert_recipe          string \
       root ::                                                     \
-              62 62 62 fat16                                      \
-                      $gptonly{ }                                 \
-                      $primary{ }                                 \
-                      method{ efi } format{ }                     \
-                      label{ EFI }                                \
-              .                                                   \
-              6144 16384 -1 btrfs                                 \
+              4096 16384 -1 ext2                                  \
                       $primary{ } $bootable{ }                    \
                       method{ format } format{ }                  \
-                      label{ Root }                               \
-                      use_filesystem{ } filesystem{ btrfs }       \
+                      use_filesystem{ } filesystem{ ext2 }        \
                       mountpoint{ / }                             \
-              .                                                   \
+              .
 
-# Additional partitions for GPT/EFI:
-#               1 1 1 free                                          \
-#                       $gptonly{ }                                 \
-#                       $primary{ }                                 \
-#                       $bios_boot{ }                               \
-#                       method{ biosgrub }                          \
-#                       label{ BIOS }                               \
-#               .                                                   \
-
-# ====== Mirror =============================================================
+# ====== Mirror (Debian Ports for hurd-amd64) ===============================
+d-i mirror/country                                  string manual
 d-i mirror/protocol                                 string http
 d-i mirror/http/proxy                               string
-d-i mirror/http/hostname                            string ftp.debian.org
-d-i mirror/http/directory                           string /debian
+d-i mirror/http/hostname                            string deb.debian.org
+d-i mirror/http/directory                           string /debian-ports
+d-i mirror/suite                                    string sid
 
-# ====== Grub ===============================================================
+# ====== Grub (BIOS/MBR) ====================================================
 grub-pc grub-pc/install_devices                     string <SET_ROOT_DISK_DEVICE_HERE>
 d-i grub-pc/install_devices_empty                   boolean yes
 d-i grub-installer/bootdev                          string <SET_ROOT_DISK_DEVICE_HERE>
@@ -126,61 +115,76 @@ d-i grub-installer/only_debian                      boolean true
 d-i grub-installer/with_other_os                    boolean true
 
 # ====== Packages ===========================================================
-# Repositories:
-popularity-contest popularity-contest/participate   boolean true   # !!! May be disabled! !!!
-d-i apt-setup/contrib                               boolean true
-d-i apt-setup/non-free                              boolean true
-d-i apt-setup/non-free-firmware                     boolean true
+# Repositories (debian-ports does not provide standard contrib/non-free/security):
+popularity-contest popularity-contest/participate   boolean false
+d-i apt-setup/cdrom/set-first                       boolean false
+d-i apt-setup/contrib                               boolean false
+d-i apt-setup/non-free                              boolean false
+d-i apt-setup/non-free-firmware                     boolean false
+d-i apt-setup/enable-source-repositories            boolean false
+d-i apt-setup/services-select                       multiselect
 
-# Package settings:
+# Package settings (avoid Linux-only acpid/qemu-guest-agent and sid full-upgrade):
 tasksel tasksel/first                               multiselect standard, ssh-server
 d-i pkgsel/language-packs                           multiselect en
-d-i pkgsel/install-language-support                 boolean true
-d-i pkgsel/update-policy                            select unattended-upgrades
-d-i pkgsel/upgrade                                  select full-upgrade
-d-i pkgsel/updatedb                                 boolean true
-d-i pkgsel/include                                  string acpid bash-completion gdisk openssh-server qemu-guest-agent
-# d-i base-installer/kernel/override-image          string <SET_NEW_KERNEL_HERE>
+d-i pkgsel/install-language-support                 boolean false
+d-i pkgsel/update-policy                            select none
+d-i pkgsel/upgrade                                  select safe-upgrade
+d-i pkgsel/updatedb                                 boolean false
+d-i pkgsel/include                                  string bash-completion inetutils-tools keyboard-configuration openssh-server parted sudo
 
 # ====== Post-Install =======================================================
 # The following tasks are performed:
 # * Handle 3-disk layout (separate disks for root, home, swap)
 # * Set the keyboard layout (the installer does not set it!)
 d-i preseed/late_command                            string \
- : "====== Change partition names ========================================" ; \
- in-target /sbin/sgdisk --change-name=1:EFI --change-name=2:Root <SET_ROOT_DISK_DEVICE_HERE> ; \
- in-target /bin/bash -c -- 'if [ -e "<SET_HOME_DISK_DEVICE_HERE>" ] ; then /sbin/sgdisk --zap-all -g --new 1:0:0 --typecode 1:8300 --change-name=1:Home <SET_HOME_DISK_DEVICE_HERE> ; mkfs.btrfs -L Home "<SET_HOME_DISK_DEVICE_HERE>1" ; fi' ; \
- in-target /bin/bash -c -- 'if [ -e "<SET_SWAP_DISK_DEVICE_HERE>" ] ; then /sbin/sgdisk --zap-all -g --new 1:0:0 --typecode 1:8200 --change-name=1:Swap <SET_SWAP_DISK_DEVICE_HERE> ; mkswap -L Swap "<SET_SWAP_DISK_DEVICE_HERE>1" ; fi' ; \
- : "====== Move files in /home to new subvolume ==========================" ; \
- if [ -e "<SET_HOME_DISK_DEVICE_HERE>" ] && [ -e "<SET_SWAP_DISK_DEVICE_HERE>" ] ; then \
-    mkdir -p /tmp/old && \
-    mkdir -p /tmp/new && \
-    mount -t btrfs "<SET_ROOT_DISK_DEVICE_HERE>2" /tmp/old && \
-    mount -t btrfs "<SET_HOME_DISK_DEVICE_HERE>1" /tmp/new && \
-    btrfs subvolume create /tmp/new/@home && \
-    if [ -e /tmp/old/@home ] ; then \
-       btrfs subvolume snapshot /tmp/old/@home /tmp/old/@home_ro && \
-       cp -a /tmp/old/@home_ro/* /tmp/new/@home/ && \
-       btrfs subvolume delete /tmp/old/@home_ro /tmp/old/@home ; \
-    else \
-       mv /tmp/old/@*/home/* /tmp/new/@home/ && \
-       rm -rf /tmp/old/@*/home ; \
-    fi ; \
-    umount /tmp/old && \
-    umount /tmp/new && \
-    mount -t btrfs -o subvol=@home "<SET_HOME_DISK_DEVICE_HERE>1" /target/home ; \
-    in-target /bin/bash -c -- '( cat /etc/fstab | grep -v "/home" | grep -v "/swapfile" ; echo "UUID=$(blkid "<SET_HOME_DISK_DEVICE_HERE>1" | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//") /home           btrfs   defaults,subvol=@home 0       2" ; echo "UUID=$(blkid "<SET_SWAP_DISK_DEVICE_HERE>1" | xargs -n1 | grep "^UUID=" | sed -e "s/UUID=//") none            swap    sw              0       0") >/etc/fstab.new' && \
-    in-target mv /etc/fstab.new /etc/fstab ; \
- fi ; \
+ : "====== Partition and configure Home and Swap disks ===================" ; \
+ in-target /bin/sh -euxc ' \
+   export PATH=/usr/sbin:/sbin:/usr/bin:/bin; \
+   HOME_DISK="<SET_HOME_DISK_DEVICE_HERE>"; \
+   SWAP_DISK="<SET_SWAP_DISK_DEVICE_HERE>"; \
+   if [ -n "$HOME_DISK" ]; then \
+     HOME_BASE="$(basename "$HOME_DISK")"; \
+     ( cd /dev && [ -e "$HOME_BASE" ] || ./MAKEDEV "$HOME_BASE" ); \
+     if dd if="$HOME_DISK" of=/dev/null bs=512 count=1 2>/dev/null; then \
+       HOME_PART="${HOME_DISK}s1"; \
+       parted -s "$HOME_DISK" mklabel msdos mkpart primary ext2 1MiB 100%; \
+       ( cd /dev && ./MAKEDEV "${HOME_BASE}s1" ); \
+       mke2fs -F -o hurd -L Home "$HOME_PART"; \
+       mkdir -p /tmp/new_home; \
+       mount -t ext2 "$HOME_PART" /tmp/new_home; \
+       cp -a /home/. /tmp/new_home/; \
+       umount /tmp/new_home; \
+       rmdir /tmp/new_home; \
+       rm -rf /home/* /home/.[!.]* /home/..?* 2>/dev/null || true; \
+       grep -v "[[:space:]]/home[[:space:]]" /etc/fstab > /etc/fstab.new || true; \
+       echo "$HOME_PART /home ext2 rw 0 2" >> /etc/fstab.new; \
+       mv /etc/fstab.new /etc/fstab; \
+     fi; \
+   fi; \
+   if [ -n "$SWAP_DISK" ]; then \
+     SWAP_BASE="$(basename "$SWAP_DISK")"; \
+     ( cd /dev && [ -e "$SWAP_BASE" ] || ./MAKEDEV "$SWAP_BASE" ); \
+     if dd if="$SWAP_DISK" of=/dev/null bs=512 count=1 2>/dev/null; then \
+       SWAP_PART="${SWAP_DISK}s1"; \
+       parted -s "$SWAP_DISK" mklabel msdos mkpart primary linux-swap 1MiB 100%; \
+       ( cd /dev && ./MAKEDEV "${SWAP_BASE}s1" ); \
+       mkswap -L Swap "$SWAP_PART"; \
+       grep -v "[[:space:]]swap[[:space:]]" /etc/fstab > /etc/fstab.new || true; \
+       echo "$SWAP_PART none swap sw 0 0" >> /etc/fstab.new; \
+       mv /etc/fstab.new /etc/fstab; \
+     fi; \
+   fi \
+ ' ; \
  : "====== Configure keyboard ============================================" ; \
  in-target /bin/sed -i "s/XKBMODEL=\"[a-z0-9]*\"/XKBMODEL=\"pc105\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBLAYOUT=\"[a-z]*\"/XKBLAYOUT=\"de\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBVARIANT=\"[a-z]*\"/XKBVARIANT=\"nodeadkeys\"/g" /etc/default/keyboard ; \
  in-target /bin/sed -i "s/XKBOPTIONS=\"[a-z]*\"/XKBOPTIONS=\"\"/g" /etc/default/keyboard ; \
  in-target /usr/sbin/dpkg-reconfigure -fnoninteractive keyboard-configuration ; \
+ in-target /bin/sh -c 'if [ -f /etc/default/hurd-console ]; then sed -i "s/^ENABLE=.*/ENABLE='\''true'\''/" /etc/default/hurd-console; fi' ; \
  : "====== Further post-install ==========================================" ; \
  in-target true # <SET_POSTINSTALL_COMMANDS_HERE>
 
-# ====== Power Off after installation =======================================
+# ====== Reboot after installation ==========================================
 d-i finish-install/reboot_in_progress               note
-# d-i debian-installer/exit/poweroff                  boolean true
