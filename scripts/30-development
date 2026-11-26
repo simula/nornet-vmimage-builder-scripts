@@ -395,7 +395,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       autoconf
       automake
       bison
-      cmake
+      cmake-core
       dejavu
       flex
       gcc

@@ -451,7 +451,7 @@ elif [ "${ID}" == "freebsd" ] ; then
       bind-tools
       bwm-ng
       chrpath
-      cmake
+      cmake-core
       curl
       flock
       gawk
