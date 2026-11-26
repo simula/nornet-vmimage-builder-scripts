@@ -292,8 +292,8 @@ while [ $# -gt 0 ] ; do
       echo >&2 "   [--cache-directory|-C directory]"
       echo >&2 "   [--hypervisor|-H VirtualBox|QEMU|vSphere]"
       echo >&2 "   [--vsphere|-VC vsphere_configuration_file]"
-      echo >&2 "   [--project|-P Template|NEAT|MELODIC|...]"
-      echo >&2 "   [--distribution|-D Ubuntu|Debian|Fedora|FreeBSD|NetBSD|OpenBSD|OpenIndiana]"
+      echo >&2 "   [--project|-P [Minimal|Basic|Development|...]"
+      echo >&2 "   [--distribution|-D [Ubuntu|Debian|Fedora|FreeBSD|NetBSD|OpenBSD|OpenIndiana|Hurd]"
       echo >&2 "   [--release|-R RELEASE]"
       echo >&2 "   [--system|-D DISTRIBUTION-RELEASE]"
       echo >&2 "   [--architecture|-A architecture]"
@@ -328,42 +328,39 @@ fi
 NAME="${HYPERVISOR}"
 VM_ARCHITECTURE="${ARCHITECTURE}"
 VM_PLATFORM="${ARCHITECTURE}"
-if [ "${HYPERVISOR}" == "VirtualBox" ] ; then
-   BUILDER_VMSETUP="virtualbox"
-   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
-   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
-   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
-   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
-elif [ "${HYPERVISOR}" == "QEMU" ] ; then
-   BUILDER_VMSETUP="qemu"
-   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
-   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
-   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
-   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
-elif [ "${HYPERVISOR}" == "vSphere" ] ; then
-   BUILDER_VMSETUP="vsphere"
-   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
-   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
-   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
-   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
-   if [ "${VSPHERE_CONFIG_FILE}" == "" ] ; then
-      echo >&2 "ERROR: No vSphere configuration file specified (--vsphere parameter)!"
-      exit 1
+if [ "${HYPERVISOR}" == "VirtualBox" ] || \
+   [ "${HYPERVISOR}" == "QEMU"       ] || \
+   [ "${HYPERVISOR}" == "vSphere"    ] || \
+   [ "${HYPERVISOR}" == "Proxmox"    ] ; then
+
+   BUILDER_VMSETUP="${HYPERVISOR,,}"
+   if [ "${DISTRIBUTION}" == "Hurd" ] ; then
+      VM_DISK_PREFIX="/dev/wd"   # Using /dev/wd<N> for disks!
+      VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}0"
+      VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}1"
+      VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}2"
+   else
+      VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
+      VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
+      VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
+      VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
    fi
-   # shellcheck disable=SC1090
-   source "${VSPHERE_CONFIG_FILE}"
-elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
-   BUILDER_VMSETUP="proxmox"
-   VM_DISK_PREFIX="/dev/sd"   # Using /dev/sd<N> for disks!
-   VM_DISK_ROOT_DEVICE="${VM_DISK_PREFIX}a"
-   VM_DISK_HOME_DEVICE="${VM_DISK_PREFIX}b"
-   VM_DISK_SWAP_DEVICE="${VM_DISK_PREFIX}c"
-   if [ "${PROXMOX_CONFIG_FILE}" == "" ] ; then
-      echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
-      exit 1
+
+   if [ "${HYPERVISOR}" == "vSphere" ] ; then
+      if [ "${VSPHERE_CONFIG_FILE}" == "" ] ; then
+         echo >&2 "ERROR: No vSphere configuration file specified (--vsphere parameter)!"
+         exit 1
+      fi
+      # shellcheck disable=SC1090
+      source "${VSPHERE_CONFIG_FILE}"
+   elif [ "${HYPERVISOR}" == "Proxmox" ] ; then
+      if [ "${PROXMOX_CONFIG_FILE}" == "" ] ; then
+         echo >&2 "ERROR: No Proxmox configuration file specified (--proxmox parameter)!"
+         exit 1
+      fi
+      # shellcheck disable=SC1090
+      source "${PROXMOX_CONFIG_FILE}"
    fi
-   # shellcheck disable=SC1090
-   source "${PROXMOX_CONFIG_FILE}"
 elif [ "${HYPERVISOR}" == "Docker" ] ; then
    BUILDER_VMSETUP="docker"
    NAME="${HYPERVISOR}-${VM_ARCHITECTURE^^}"
@@ -622,7 +619,7 @@ for httpFile in ${httpFiles} ; do
 done
 
 # Configure HTTP directory:
-if [ ! -e vmsetup/${BUILDER_VMSETUP}.json ] ; then
+if [ ! -e "vmsetup/${BUILDER_VMSETUP}.json" ] ; then
    echo >&2 "ERROR: vmsetup/${BUILDER_VMSETUP}.json does not exist!"
    exit 1
 fi
