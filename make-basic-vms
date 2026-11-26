@@ -41,9 +41,9 @@ SYSTEMS=( "${DEFAULT_SYSTEMS_CURRENT[@]}" )
 # SYSTEMS=( ${DEFAULT_SYSTEMS_CURRENT_AND_LEGACY[@]} )
 # SYSTEMS=( Ubuntu-26.04 Debian-13 Fedora-45 FreeBSD-15.1-RELEASE )
 # SYSTEMS=( Ubuntu-26.04 OpenSUSE-Tumbleweed Alpine-3.24 )
-# SYSTEMS=( FreeBSD-15.1-RELEASE NetBSD-11.1 OpenBSD-8.0 OpenIndiana-2026.04 OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-45 )
+# SYSTEMS=( FreeBSD-15.1-RELEASE NetBSD-11.1 OpenBSD-8.0 OpenIndiana-2026.10 OpenSUSE-Tumbleweed Alpine-3.24 Ubuntu-26.04 Ubuntu-24.04 Debian-13 Fedora-45 )
 # SYSTEMS=( FreeBSD-15.1-RELEASE Alpine-3.24 Ubuntu-24.04 Debian-13 Fedora-45 OpenSUSE-Tumbleweed )
-# SYSTEMS=( OpenIndiana-2026.04 FreeBSD-15.1-RELEASE NetBSD-11.1 OpenBSD-8.0 )
+# SYSTEMS=( OpenIndiana-2026.10 FreeBSD-15.1-RELEASE NetBSD-11.1 OpenBSD-8.0 )
 # SYSTEMS=( Ubuntu-26.04 )
 
 
