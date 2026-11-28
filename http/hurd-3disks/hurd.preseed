@@ -138,7 +138,7 @@ d-i pkgsel/include                                  string bash-completion inetu
 # * Handle 3-disk layout (separate disks for root, home, swap)
 # * Set the keyboard layout (the installer does not set it!)
 d-i preseed/late_command                            string \
- : "====== Partition and configure Home and Swap disks ===================" ; \
+ : "====== Partition Home and Swap disks in target ======================" ; \
  in-target /bin/sh -euxc ' \
    export PATH=/usr/sbin:/sbin:/usr/bin:/bin; \
    HOME_DISK="<SET_HOME_DISK_DEVICE_HERE>"; \
@@ -168,11 +168,25 @@ d-i preseed/late_command                            string \
      if dd if="$SWAP_DISK" of=/dev/null bs=512 count=1 2>/dev/null; then \
        SWAP_PART="${SWAP_DISK}s1"; \
        parted -s "$SWAP_DISK" mklabel msdos mkpart primary linux-swap 1MiB 100%; \
-       ( cd /dev && ./MAKEDEV "${SWAP_BASE}s1" ); \
-       mkswap -L Swap "$SWAP_PART"; \
        grep -v "[[:space:]]swap[[:space:]]" /etc/fstab > /etc/fstab.new || true; \
        echo "$SWAP_PART none swap sw 0 0" >> /etc/fstab.new; \
        mv /etc/fstab.new /etc/fstab; \
+     fi; \
+   fi \
+ ' ; \
+ : "====== Format Swap using d-i mkswap and persist /target/dev nodes ===" ; \
+ /bin/sh -euxc ' \
+   SWAP_DISK="<SET_SWAP_DISK_DEVICE_HERE>"; \
+   if [ -n "$SWAP_DISK" ]; then \
+     SWAP_BASE="$(basename "$SWAP_DISK")"; \
+     MAKEDEV_BIN="$(command -v MAKEDEV || echo /dev/MAKEDEV)"; \
+     ( cd /dev && [ -e "$SWAP_BASE" ] || "$MAKEDEV_BIN" "$SWAP_BASE" ); \
+     if dd if="$SWAP_DISK" of=/dev/null bs=512 count=1 2>/dev/null; then \
+       SWAP_PART="${SWAP_DISK}s1"; \
+       ( cd /dev && [ -e "${SWAP_BASE}s1" ] || "$MAKEDEV_BIN" "${SWAP_BASE}s1" ); \
+       mkswap "$SWAP_PART"; \
+       ( cd /target/dev && [ -e "$SWAP_BASE" ] || "$MAKEDEV_BIN" "$SWAP_BASE" ); \
+       ( cd /target/dev && [ -e "${SWAP_BASE}s1" ] || "$MAKEDEV_BIN" "${SWAP_BASE}s1" ); \
      fi; \
    fi \
  ' ; \
