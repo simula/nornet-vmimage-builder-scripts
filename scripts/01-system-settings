@@ -286,3 +286,14 @@ for directory in ${directories} ; do
    mkdir -p "/tmp/installtmp/${directory}"
    chown "${USER_NAME}":"${USER_GROUP}" "/tmp/installtmp/${directory}"
 done
+
+
+# ====== SystemD settings ===================================================
+if [ "${UNAME}" == "Linux" ] ; then
+   # ------ Keep nohup working as usual -------------------------------------
+   if [ -e /etc/systemd/logind.conf ] ; then
+      sed -e 's/^\(#KillUserProcesses.*\)$/KillUserProcesses=no/g' \
+         /etc/systemd/logind.conf >/etc/systemd/logind.conf.new
+      mv /etc/systemd/logind.conf.new /etc/systemd/logind.conf
+   fi
+fi
